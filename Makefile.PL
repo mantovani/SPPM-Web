@@ -9,6 +9,8 @@ all_from 'lib/SPPM/Web.pm';
 requires 'Catalyst::Runtime' => '5.80015';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
+requires 'Catalyst::Plugin::Cache';
+requires 'Catalyst::Plugin::Unicode';
 requires 'Catalyst::Action::RenderView';
 requires 'parent';
 requires 'Config::General'; # This should reflect the config file format you've chosen
@@ -16,6 +18,7 @@ requires 'Config::General'; # This should reflect the config file format you've 
 
 requires 'CatalystX::Declare';
 requires 'Calendar::Simple';
+requires 'Pod::Xhtml';
 
 catalyst;
 

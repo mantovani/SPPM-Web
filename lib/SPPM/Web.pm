@@ -14,7 +14,9 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use parent qw/Catalyst/;
-use Catalyst qw/-Debug
+use Catalyst qw/Unicode
+                Cache
+                -Debug
                 ConfigLoader
                 Static::Simple/;
 our $VERSION = '0.01';
@@ -28,7 +30,14 @@ our $VERSION = '0.01';
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( name => 'SPPM::Web' );
+__PACKAGE__->config(
+    name => 'SPPM::Web',
+    'Plugin::Cache' => { backend => {
+        class => 'Cache::FileCache',
+        namespace => 'SPPM::Web',
+    } },
+);
+
 
 # Start the application
 __PACKAGE__->setup();
