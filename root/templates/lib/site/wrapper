@@ -34,7 +34,7 @@
           <form action="" method="post">
             <fieldset>
             <input type="text" class="textbox" value="Busca..."/>
-            <input name="" type="image" src="/images/submit.gif" alt="Search" />
+            <input name="" type="image" src="/static/images/submit.gif" alt="Search" />
 
             </fieldset>
           </form>

@@ -95,10 +95,10 @@
 
                   <div class="full">
                     <h2 class="etv"></h2>
-                    <div class="box2 first"><img src="http://sao-paulo.perl.org.br/mt/mt-static//sppm/common/images/pic5.jpg" alt="Pic5" />
+                    <div class="box2 first"><img src="/static/images/pic5.jpg" alt="Pic5" />
                       <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios.</p>
                     </div>
-                    <div class="box2"><img src="http://sao-paulo.perl.org.br/mt/mt-static//sppm/common/images/pic6.jpg" alt="Pic5" />
+                    <div class="box2"><img src="/static/images/pic6.jpg" alt="Pic5" />
                       <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios.</p>
                     </div>
 
