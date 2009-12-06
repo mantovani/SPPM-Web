@@ -1,12 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
- <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="/static/styles.css" type="text/css" />
+
   <title>[% template.title or site.title %]</title>
  </head>
  <body>
+
+<div id="layout">
+  <div id="inner_layout">
+    <div id="header" class="png_bg">
+      <div id="links">
+        <ul>
+          <li><a href="#">Login</a></li>
+          <li>|</li>
+
+          <li><a href="#">Cadastro</a></li>
+          <li>|</li>
+          <li><a href="/contato">Contato</a></li>
+        </ul>
+      </div>
+      <div class="header">
+        <div class="logo">
+
+           <a href="/" accesskey="1">
+           <img src="/static/images/logo.png" alt="Logo" class="png_bg"/>
+           </a>
+        </div>
+        <div class="search">
+          <form action="" method="post">
+            <fieldset>
+            <input type="text" class="textbox" value="Busca..."/>
+            <input name="" type="image" src="/images/submit.gif" alt="Search" />
+
+            </fieldset>
+          </form>
+        </div>
+      </div>
+      <div id="menu">
+        <ul>
+          <li class="home"><a class="current"></a></li>
+          <li class="pipe"></li>
+
+          <li class="quem"><a href="/quemsomos"></a></li>
+          <li class="pipe"></li>
+          <li class="social"><a href="/social"></a></li>
+          <li class="pipe"></li>
+          <li class="artigos"><a href="/artigos"></a></li>
+          <li class="pipe"></li>
+          <li class="blogs"><a href="/blogs"></a></li>
+          <li class="pipe"></li>
+          <li class="podcast"><a href="/podcast"></a></li>
+
+          <li class="pipe"></li>
+          <li class="tecnico"><a href="/tecnico"></a></li>
+          <li class="pipe"></li>
+          <li class="treinamento"><a href="/treinamento"></a></li>
+          <li class="pipe"></li>
+          <li class="lista"><a href="/lista"></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="container" class="png_bg">
+
+<br/><br/>
+
 [% content %]
- </body>
+
+<br/><br/>
+
+    </div>
+    <div id="footer" class="png_bg">
+
+      <div id="inner_footer">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/quemsomos">Quem somos</a></li>
+          <li><a href="/social">ENCONTRO SOCIAL</a></li>
+          <li><a href="/artigos">Artigos</a></li>
+          <li><a href="/blogs">BLOGS</a></li>
+
+          <li><a href="/podcast">Podcast</a></li>
+          <li><a href="/et">ENCONTRO TÃCNICO</a></li>
+          <li><a href="/treinamento">Treinamento</a></li>
+          <li><a href="/lista">Lista</a></li>
+        </ul>
+        <div class="copyright">
+          <p>Copyright  SP Perl Mongers. Todos os diretiros reservados.</p>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+</body>
 </html>
 

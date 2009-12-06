@@ -1,10 +1,112 @@
 
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <div class="top_left">
+              <div class="widget-sobre-o-que-e-tudo-isso-afinal widget">
 
-<h2>  Sobre o que Ã© tudo isso, afinal?</h2>
+<h2>Sobre o que é tudo isso, afinal?</h2>
 
-Somos um grupo de pessoas dedicadas ao encorajamento de tudo o que estiver relacionado com o Perl, em SÃ£o Paulo. Isto envolve ajudar uns aos outros, discutir qualquer assunto que pareÃ§a interessante para algum dos membros, partilhar informaÃ§Ãµes sobre o Perl, sobre assuntos tÃ©cnicos, polÃ­ticos, culinÃ¡rios, empregos e tudo o mais que parecer partilhÃ¡vel, e ocasionalmente algumas tulipas de boa cerveja.
+<p>Somos um grupo de pessoas dedicadas ao encorajamento de tudo o que estiver relacionado com o Perl, em São Paulo. Isto envolve ajudar uns aos outros, discutir qualquer assunto que pareça interessante para algum dos membros, partilhar informações sobre  o Perl, sobre assuntos técnicos, políticos, culinários, empregos e tudo o mais que parecer partilhável, e ocasionalmente algumas tulipas de boa cerveja.</p>
 
-<br/><br/>
+</div>
+            </div>
+            <div class="top_right">
+              <div class="widget-seja-sociavel widget">
 
-Seja SociÃ¡vel! O SÃ£o Paulo Perl Mongers promove encontros sociais regulares sempre no terceiro (ou quarto?) sÃ¡bado de cada mÃªs. Informe-se sobre o encontro deste mÃªs em nossa lista de discussÃ£o.
+<h2>Seja Sociável!</h2>
+<p>O São Paulo Perl Mongers promove encontros sociais regulares sempre no terceiro (ou quarto?) sábado de cada mês. Informe-se sobre o encontro deste mês em nossa lista de discussão.</p>
+
+</div>
+            </div>
+
+          </div>
+          <div class="bottom">
+            <div class="bottom_top">
+              <div class="bottom_bottom">
+                <div class="left_section">
+                  <div class="side">
+                    <h2 class="artigos"></h2>
+                    <h3>Por que é Perl?</h3>
+
+                    <p>Porem é necessário deixar claro que Perl é uma linguagem voltada às soluções e meios para atingir os objetivos, e, não necessariamente voltada a quem vai desenvolver estas soluções.</p>
+                    <div class="list_heading">
+                      <h4>Mais Artigos</h4>
+                    </div>
+                    
+                            <ul>
+                            <li><a href="http://sao-paulo.perl.org.br/blogs/artigo-perl-linguagem-dos-deuses-da-computacao.html">Artigo: Perl , linguagem dos Deuses da Computação</a></li>
+                            </ul>
+
+                    
+
+                  </div>
+                  <div class="side">
+                    <h2 class="blog"></h2>
+   
+       <h3>pequeno texto</h3>
+
+
+    <p>teste muito pequeno<p>
+
+   
+                    <div class="list_heading">
+
+                      <h4>Mais BLOGS</h4>
+                    </div>
+   
+      <ul>
+         <li><a href="http://sao-paulo.perl.org.br/dicas/2009/07/post-mais-recente.html">post mais recente</a></li>
+      </ul>
+   
+      <ul>
+         <li><a href="http://sao-paulo.perl.org.br/dicas/2009/07/material-interessante-para-teste-da-home.html">Material interessante para teste da home</a></li>
+
+      </ul>
+   
+      <ul>
+         <li><a href="http://sao-paulo.perl.org.br/social/2009/07/social---blog-id-6.html">social - blog id = 6</a></li>
+      </ul>
+   
+      <ul>
+         <li><a href="http://sao-paulo.perl.org.br/pessoas/2009/07/mane---id-5.html">mane  _ id 5</a></li>
+      </ul>
+   
+      <ul>
+
+         <li><a href="http://sao-paulo.perl.org.br/dicas/2009/07/teste-2---id-4.html">Este é um blog de alguma coisa interessante e que tem um título enorme    _ id 4</a></li>
+      </ul>
+   
+
+                  </div>
+                </div>
+                <div class="right_section">
+                  <div class="box1">
+                    <h2 class="podcast"></h2>
+                    <h3>Por que é Perl?</h3>
+
+                    <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios para atingir os objetivos desenvolver.</p>
+                  </div>
+                  <div class="box1">
+                    <h2 class="treinamento"></h2>
+                    <h3>Por que é Perl?</h3>
+                    <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios para atingir os objetivos desenvolver.</p>
+                  </div>
+
+                  <div class="full">
+                    <h2 class="etv"></h2>
+                    <div class="box2 first"><img src="http://sao-paulo.perl.org.br/mt/mt-static//sppm/common/images/pic5.jpg" alt="Pic5" />
+                      <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios.</p>
+                    </div>
+                    <div class="box2"><img src="http://sao-paulo.perl.org.br/mt/mt-static//sppm/common/images/pic6.jpg" alt="Pic5" />
+                      <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios.</p>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
