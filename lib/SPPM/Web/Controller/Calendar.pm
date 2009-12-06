@@ -10,7 +10,8 @@ controller SPPM::Web::Controller::Calendar {
            
             goto RES_MAIN if ($year !~ /^\d{4}$/ || $day !~ /^\d\d?$/);
 
-            my $pod_file = $ctx->path_to('root', $year, "$day.pod");     
+            my $pod_file = $ctx->path_to('root','templates', 'src', 
+                'local', 'calendar', $year, "$day.pod");     
 
             goto RES_MAIN unless -e $pod_file;
 
