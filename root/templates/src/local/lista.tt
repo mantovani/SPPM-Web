@@ -1,5 +1,5 @@
 
-[% META title=" Lista " %]
+[% META title=" Lista " current_page="lista" %]
 
       <div id="container_top">
         <div id="container_bottom">

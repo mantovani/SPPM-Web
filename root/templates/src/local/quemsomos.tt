@@ -1,5 +1,5 @@
 
-[% META title=" Quem somos " %]
+[% META title=" Quem somos " current_page="quemsomos" %]
 
       <div id="container_top">
         <div id="container_bottom">

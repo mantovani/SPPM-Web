@@ -1,4 +1,4 @@
-[% META title=" Artigos " %]
+[% META title=" Artigos " current_page="artigos" %]
 
       <div id="container_top">
         <div id="container_bottom">

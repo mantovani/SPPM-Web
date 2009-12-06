@@ -1,5 +1,5 @@
 
-[% META title=" Encontro Social " %]
+[% META title=" Encontro Social " current_page="encontrosocial" %]
 
       <div id="container_top">
         <div id="container_bottom">

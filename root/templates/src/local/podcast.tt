@@ -1,5 +1,5 @@
 
-[% META title=" Podcast " %]
+[% META title=" Podcast " current_page="podcast" %]
 
 <style type="text/css">
 		

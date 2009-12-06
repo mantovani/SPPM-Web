@@ -1,5 +1,5 @@
 
-[% META title=" Principal " %]
+[% META title=" Principal " current_page='home' %]
 
       <div id="container_top">
         <div id="container_bottom">

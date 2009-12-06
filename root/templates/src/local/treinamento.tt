@@ -1,5 +1,5 @@
 
-[% META title=" Treinamento " %]
+[% META title=" Treinamento " current_page="treinamento" %]
 
       <div id="container_top">
         <div id="container_bottom">

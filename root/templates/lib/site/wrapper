@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" href="/static/styles.css" type="text/css" />
 
-  <title>S&atilde;o Paulo Perl Mongers :: [% template.title or site.title %]</title>
+  <title>S&atilde;o Paulo Perl Mongers :: [% template.title %]</title>
  </head>
  <body>
 
@@ -37,25 +37,25 @@
       </div>
       <div id="menu">
         <ul>
-          <li class="home"><a class="current"></a></li>
+          <li class="home"><a href="/" [% IF template.current_page == 'home' %] class="current" [% END %]></a></li>
           <li class="pipe"></li>
 
-          <li class="quem"><a href="/quemsomos"></a></li>
+          <li class="quem"><a href="/quemsomos" [% IF template.current_page == 'quemsomos' %] class="current" [% END %]></a></li>
           <li class="pipe"></li>
-          <li class="social"><a href="/encontrosocial"></a></li>
+          <li class="social"><a href="/encontrosocial" [% IF template.current_page == 'encontrosocial' %] class="current" [% END %]></a></li>
           <li class="pipe"></li>
-          <li class="artigos"><a href="/artigos"></a></li>
+          <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %]></a></li>
           <li class="pipe"></li>
-          <li class="blogs"><a href="/blogs"></a></li>
+          <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %]></a></li>
           <li class="pipe"></li>
-          <li class="podcast"><a href="/podcast"></a></li>
+          <li class="podcast"><a href="/podcast" [% IF template.current_page == 'podcast' %] class="current" [% END %]></a></li>
 
           <li class="pipe"></li>
-          <li class="tecnico"><a href="/encontrotecnico"></a></li>
+          <li class="tecnico"><a href="/encontrotecnico" [% IF template.current_page == 'encontrotecnico' %] class="current" [% END %]></a></li>
           <li class="pipe"></li>
-          <li class="treinamento"><a href="/treinamento"></a></li>
+          <li class="treinamento"><a href="/treinamento" [% IF template.current_page == 'treinamento' %] class="current" [% END %]></a></li>
           <li class="pipe"></li>
-          <li class="lista"><a href="/lista"></a></li>
+          <li class="lista"><a href="/lista" [% IF template.current_page == 'lista' %] class="current" [% END %]></a></li>
         </ul>
       </div>
     </div>
