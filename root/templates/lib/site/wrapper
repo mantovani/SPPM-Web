@@ -15,11 +15,6 @@
     <div id="header" class="png_bg">
       <div id="links">
         <ul>
-          <li><a href="#">Login</a></li>
-          <li>|</li>
-
-          <li><a href="#">Cadastro</a></li>
-          <li>|</li>
           <li><a href="/contato">Contato</a></li>
         </ul>
       </div>
