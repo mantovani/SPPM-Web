@@ -1,9 +1,10 @@
-[% META title=" Contato " %]
+
+[% META title=" Encontro Social " %]
 
       <div id="container_top">
         <div id="container_bottom">
           <div class="top">
-            <h2>Contato</h2>
+            <h2>Encontro Social</h2>
             <div class="whois">
             
 		<p>Nononono</p>

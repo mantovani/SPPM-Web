@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" href="/static/styles.css" type="text/css" />
 
-  <title>[% template.title or site.title %]</title>
+  <title>S&atilde;o Paulo Perl Mongers :: [% template.title or site.title %]</title>
  </head>
  <body>
 
@@ -47,7 +47,7 @@
 
           <li class="quem"><a href="/quemsomos"></a></li>
           <li class="pipe"></li>
-          <li class="social"><a href="/social"></a></li>
+          <li class="social"><a href="/encontrosocial"></a></li>
           <li class="pipe"></li>
           <li class="artigos"><a href="/artigos"></a></li>
           <li class="pipe"></li>
@@ -56,7 +56,7 @@
           <li class="podcast"><a href="/podcast"></a></li>
 
           <li class="pipe"></li>
-          <li class="tecnico"><a href="/tecnico"></a></li>
+          <li class="tecnico"><a href="/encontrotecnico"></a></li>
           <li class="pipe"></li>
           <li class="treinamento"><a href="/treinamento"></a></li>
           <li class="pipe"></li>
@@ -90,7 +90,7 @@
           <li><a href="/lista">Lista</a></li>
         </ul>
         <div class="copyright">
-          <p>Copyright  SP Perl Mongers. Todos os diretiros reservados.</p>
+          <p>Copyright S&atilde;o Paulo Perl Mongers. Todos os diretiros reservados.</p>
 
         </div>
       </div>
