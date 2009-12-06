@@ -80,12 +80,12 @@
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/quemsomos">Quem somos</a></li>
-          <li><a href="/social">ENCONTRO SOCIAL</a></li>
+          <li><a href="/encontrosocial">ENCONTRO SOCIAL</a></li>
           <li><a href="/artigos">Artigos</a></li>
           <li><a href="/blogs">BLOGS</a></li>
 
           <li><a href="/podcast">Podcast</a></li>
-          <li><a href="/et">ENCONTRO TÃCNICO</a></li>
+          <li><a href="/encontrotecnico">ENCONTRO TÃCNICO</a></li>
           <li><a href="/treinamento">Treinamento</a></li>
           <li><a href="/lista">Lista</a></li>
         </ul>
