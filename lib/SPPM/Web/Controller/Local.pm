@@ -6,21 +6,23 @@ controller SPPM::Web::Controller::Local {
         action base as '' under '/base';
 
         final action local(Str $local) as '' under base {
-            my (@local_pages) = split(' ', $ctx->config->{local_pages});
-          
             my $legal_chars = quotemeta('.-_/');
 
-            goto RES_MAIN if ( $local =~ /\.\./ 
-                || $local =~ /[^\w$legal_chars]/ );
+            if ($local =~ /\.\./ || $local =~ /[^\w$legal_chars]/ ) {
+                $ctx->res->redirect('/');
+                $ctx->detach;
+            }
 
-            goto RES_MAIN if ( ! grep (/^$local$/, @local_pages ) );
+            my $local_file = $ctx->path_to('root','templates', 'src',
+                'local', "$local.tt");
+            
+            if (! -e $local_file) {
+                $ctx->res->redirect('/');
+                $ctx->detach;
+            }
 
             $ctx->stash( template => 'local/' . $local . '.tt' );
             $ctx->forward('View::TT');
-            $ctx->detach;
-
-RES_MAIN:
-            $ctx->res->redirect('/');
 
         }
 
