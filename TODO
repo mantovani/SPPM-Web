@@ -1,11 +1,20 @@
 
-- Melhorar o texto do quemsomos.tt
-- Elaborar o texto do encontrosocial.tt
-- Escrever a entidade /artigos
-- Escrever a entidade /blogs
-- Melhorar o /podcast
-- Elaborar o texto do encontrotecnico.tt
-- Elaborar o texto do treinamento.tt
-- Elaborar o texto do lista.tt
-- Elaborar o texto do contato.tt
+Textos para escrever:
+- Quem somos
+- Encontro social
+- Encontro tecnico
+- Treinamento
+- Lista
+- Contato
+- Podcast
+- Calendario
+
+CSS:
+
+- Escrever CSS para <ul><li>.
+
+JQUERY:
+
+- Melhorar o player para o podcast.
+
 
