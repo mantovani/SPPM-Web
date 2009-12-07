@@ -8,8 +8,7 @@ controller SPPM::Web::Controller::Calendar {
         use File::stat;
 
         action base as 'calendar' under '/base' {
-            $ctx->stash->{calendar_dir} = $ctx->path_to('root','templates',
-                'src', 'calendar');
+            $ctx->stash->{calendar_dir} = $ctx->path_to('root','calendar');
         }
 
         final action index as '' under base {
