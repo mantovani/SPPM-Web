@@ -37,7 +37,7 @@
                     </div>
                     
                             <ul>
-                            <li><a href="http://sao-paulo.perl.org.br/blogs/artigo-perl-linguagem-dos-deuses-da-computacao.html">Artigo: Perl , linguagem dos Deuses da Computação</a></li>
+                            <li><a href="[% c.uri_for('/article', 'catalyst') %]">Tutorial sobre o Catalyst</a></li>
                             </ul>
 
                     
@@ -46,10 +46,10 @@
                   <div class="side">
                     <h2 class="blog"></h2>
    
-       <h3>pequeno texto</h3>
+       <h3>Comunidade</h3>
 
 
-    <p>teste muito pequeno<p>
+	<p>Em breve, iremos disponibilizar blogs para os membros do grupo.<p>
 
    
                     <div class="list_heading">
@@ -58,53 +58,30 @@
                     </div>
    
       <ul>
-         <li><a href="http://sao-paulo.perl.org.br/dicas/2009/07/post-mais-recente.html">post mais recente</a></li>
-      </ul>
-   
-      <ul>
-         <li><a href="http://sao-paulo.perl.org.br/dicas/2009/07/material-interessante-para-teste-da-home.html">Material interessante para teste da home</a></li>
 
-      </ul>
-   
-      <ul>
-         <li><a href="http://sao-paulo.perl.org.br/social/2009/07/social---blog-id-6.html">social - blog id = 6</a></li>
-      </ul>
-   
-      <ul>
-         <li><a href="http://sao-paulo.perl.org.br/pessoas/2009/07/mane---id-5.html">mane  _ id 5</a></li>
-      </ul>
-   
-      <ul>
-
-         <li><a href="http://sao-paulo.perl.org.br/dicas/2009/07/teste-2---id-4.html">Este é um blog de alguma coisa interessante e que tem um título enorme    _ id 4</a></li>
-      </ul>
+      	<li> Blog do Solli</li>
+	</ul>
    
 
                   </div>
                 </div>
-                <div class="right_section">
+        	<div class="left_section">
+		
+		</div>        
+	
+		<div class="right_section">
                   <div class="box1">
                     <h2 class="podcast"></h2>
-                    <h3>Por que é Perl?</h3>
-
-                    <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios para atingir os objetivos desenvolver.</p>
+                    <h3>Entrevistas</h3>
+			
+			<p>Perguntas relacionadas ao mercado, mundo, opni&otilde;es e Perl para pessoas ligadas a tecnologia.</p>
                   </div>
                   <div class="box1">
                     <h2 class="treinamento"></h2>
-                    <h3>Por que é Perl?</h3>
-                    <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios para atingir os objetivos desenvolver.</p>
-                  </div>
+                    <h3>Onde encontrar?</h3>
+                	<p>nonononon</p>  
+		</div>
 
-                  <div class="full">
-                    <h2 class="etv"></h2>
-                    <div class="box2 first"><img src="/static/images/pic5.jpg" alt="Pic5" />
-                      <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios.</p>
-                    </div>
-                    <div class="box2"><img src="/static/images/pic6.jpg" alt="Pic5" />
-                      <p>Porem é necessário deixar claro que Perl é uma linguagem voltada soluções e meios.</p>
-                    </div>
-
-                  </div>
                 </div>
               </div>
             </div>

@@ -85,7 +85,7 @@
           <li><a href="/encontrotecnico">ENCONTRO T&Eacute;CNICO</a></li>
           <li><a href="/treinamento">Treinamento</a></li>
           <li><a href="/lista">Lista</a></li>
-	  <li><a href="/calendar">Calend&aacute;rio</a></li>
+	  <li><a href="/equinocio">Meses do Equin&oacute;cio</a></li>
         </ul>
         <div class="copyright">
           <p>Copyright S&atilde;o Paulo Perl Mongers. Todos os diretiros reservados.</p>

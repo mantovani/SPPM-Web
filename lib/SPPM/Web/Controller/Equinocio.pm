@@ -1,28 +1,28 @@
 
 use CatalystX::Declare;
 
-controller SPPM::Web::Controller::Calendar {
+controller SPPM::Web::Controller::Equinocio {
         use Calendar::Simple;
         use DateTime;
         use SPPM::Web::Pod;
         use File::stat;
 
-        action base as 'calendar' under '/base' {
-            $ctx->stash->{calendar_dir} = $ctx->path_to('root','calendar');
+        action base as 'equinocio' under '/base' {
+            $ctx->stash->{equinocio_dir} = $ctx->path_to('root','equinocio');
         }
 
         final action index as '' under base {
-            opendir DIR, $ctx->stash->{calendar_dir}
+            opendir DIR, $ctx->stash->{equinocio_dir}
                 or die "Error opening: $!";
             my @years = sort grep { /\d{4}/ } readdir DIR;
             closedir DIR;
 
             my $year = pop @years || $ctx->stash->{now}->year;
-            $ctx->res->redirect( $ctx->uri_for('/calendar', $year) );
+            $ctx->res->redirect( $ctx->uri_for('/equinocio', $year) );
 
         }
 
-        action calendar (Int $year) as '' under base {
+        action equinocio (Int $year) as '' under base {
             if ($year !~ /^\d{4}$/) {
                 $ctx->res->redirect( $ctx->uri_for('/') );
                 $ctx->detach;
@@ -31,33 +31,45 @@ controller SPPM::Web::Controller::Calendar {
             # Problems with $ctx->stash( x => y);
             $ctx->stash->{year} = $year;
             $ctx->stash->{now} = DateTime->now();
-            $ctx->stash->{calendar} = calendar(2, $year);
+            $ctx->stash->{calendar_mar} = calendar(3, $year);
+            $ctx->stash->{calendar_set} = calendar(9, $year);
         }
 
-        under calendar {
+        under equinocio {
 
             final action year as '' {
 
-                my $year_dir = join('/', $ctx->stash->{calendar_dir}, 
+                my $year_dir = join('/', $ctx->stash->{equinocio_dir}, 
                     $ctx->stash->{year});     
 
                 if ( ! -d $year_dir ) {
                     $ctx->res->redirect( $ctx->uri_for('/') );
                     $ctx->detach;
                 }
-                $ctx->stash(template => 'calendar/year.tt');
+                $ctx->stash(template => 'equinocio/year.tt');
 
             }
 
-            final action day (Int $day) as '' {
+            action month (Str $month) as '' {
+                unless ($month eq 'mar' || $month eq 'set') {
+                    $ctx->res->redirect( $ctx->uri_for('/') );
+                    $ctx->detach;
+                }
+                $ctx->stash->{month} = $month;
+            }
+
+            final action day (Int $day) as '' under month{
+                
                 my $year = $ctx->stash->{year};
+                my $month = $ctx->stash->{month};
+                
                 if ($day !~ /^\d\d?$/) {
-                    $ctx->res->redirect( $ctx->uri_for('/calendar') );
+                    $ctx->res->redirect( $ctx->uri_for('/equinocio') );
                     $ctx->detach;
                 }
 
-                my $pod_file = join('/', $ctx->stash->{calendar_dir}, 
-                    $year, "$day.pod");     
+                my $pod_file = join('/', $ctx->stash->{equinocio_dir}, 
+                    $year, $month, "$day.pod");     
 
                 if (! -e $pod_file) {
                     $ctx->res->redirect( $ctx->uri_for('/') );
@@ -88,7 +100,7 @@ controller SPPM::Web::Controller::Calendar {
                 $ctx->stash(
                     day => $day,
                     pod => $cached_pod,
-                    template => 'calendar/day.tt'
+                    template => 'equinocio/day.tt'
                 );
                 $ctx->forward('View::TT');
 
