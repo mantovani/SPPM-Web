@@ -42,9 +42,12 @@ $(document).ready(function(){
 </script>
 
 
-<h2>Jos&eacute; Luis Pissin</h2>
+<h3>Jos&eacute; Luis Pissin</h3>
 
+<p>
 Trabalha na dataprev no Mato Grosso do Sul e coordena as pesquisas de software livre .... xxxx yyy, zzzz
+</p>
+
 <br/><br/>
 
 <a href="/static/podcast/pissin_dataprev.mp3"></a></li>

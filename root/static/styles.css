@@ -635,6 +635,14 @@ a.expand {
     padding:0px 0px 0px 50px;
   }
 
+#container .top h3 {
+    font:20px Arial, Helvetica, sans-serif;
+    background:url(/static/images/dots.gif) repeat-x 0px 100%;
+    margin-bottom:10px;
+    padding:5px 0px;
+    text-transform:uppercase;
+  }
+
 
 #container .top h2 {
     font:24px Arial, Helvetica, sans-serif;
