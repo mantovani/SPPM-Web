@@ -82,9 +82,10 @@
           <li><a href="/blogs">BLOGS</a></li>
 
           <li><a href="/podcast">Podcast</a></li>
-          <li><a href="/encontrotecnico">ENCONTRO TÃCNICO</a></li>
+          <li><a href="/encontrotecnico">ENCONTRO T&Eacute;CNICO</a></li>
           <li><a href="/treinamento">Treinamento</a></li>
           <li><a href="/lista">Lista</a></li>
+	  <li><a href="/calendar">Calend&aacute;rio</a></li>
         </ul>
         <div class="copyright">
           <p>Copyright S&atilde;o Paulo Perl Mongers. Todos os diretiros reservados.</p>

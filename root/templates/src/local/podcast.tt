@@ -1,6 +1,13 @@
 
 [% META title=" Podcast " current_page="podcast" %]
 
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>Podcast</h2>
+            <div class="whois">
+
+
 <style type="text/css">
 		
 .flash-replaced .alt {
@@ -34,11 +41,18 @@ $(document).ready(function(){
 });
 </script>
 
-<center>
 
-<ul>
-<li><a href="/static/podcast/pissin_dataprev.mp3">Pissin - Dataprev</a></li>
-</ul>
+<h2>Jos&eacute; Luis Pissin</h2>
+
+Trabalha na dataprev no Mato Grosso do Sul e coordena as pesquisas de software livre .... xxxx yyy, zzzz
+<br/><br/>
+
+<a href="/static/podcast/pissin_dataprev.mp3"></a></li>
 
 </center>
+
+	</div>
+	</div>
+	</div>
+	</div>
 
