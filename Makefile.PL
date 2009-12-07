@@ -19,6 +19,7 @@ requires 'Config::General'; # This should reflect the config file format you've 
 requires 'CatalystX::Declare';
 requires 'Calendar::Simple';
 requires 'Pod::Xhtml';
+requires 'Date::Calc';
 
 catalyst;
 

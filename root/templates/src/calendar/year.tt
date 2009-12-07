@@ -1,0 +1,45 @@
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>Fevereiro [% year %]</h2>
+            <div class="whois">
+
+<div id="contentcallendar">
+<table class="calendar">
+<tr>
+    <th>Domingo</th>
+    <th>Segunda</th>
+    <th>Ter&ccedil;a</th>
+    <th>Quarta</th>
+    <th>Quinta</th>
+    <th>Sexta</th>
+    <th>S&aacute;bado</th>
+</tr>
+[% USE date %]
+[% calc = date.calc %]
+[% FOR week = calendar %]
+<tr>
+    [% FOR day = week %]
+        [% UNLESS day %]
+    <td>&nbsp;</td>
+            [% NEXT %]
+        [% END %]
+[% today = 0 %]
+        [% TRY %]
+            [% USE File( c.path_to( 'root', year, "${day}.pod" ) ) %]
+    <td class="link[% IF today %] today[% END %]"><a href="[% c.uri_for( '/calendar', year, day ) %]">[% day %]</a></td>
+        [% CATCH File %]
+    <td[% IF today %] class="today"[% END %]>[% day %]</td>
+        [% END %]
+    [% END %]
+</tr>
+[% END %]
+</table>
+</div>
+
+                </div>
+          </div>
+        </div>
+      </div>
+

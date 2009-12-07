@@ -12,7 +12,6 @@ view SPPM::Web::View::TT
             TEMPLATE_EXTENSION => '.tt',
             ENCODING    => 'utf8',
             WRAPPER     => 'site/wrapper',
-            ERROR       => 'error.tt',
             TIMER       => 0,
         );
 }
