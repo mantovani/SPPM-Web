@@ -13,7 +13,7 @@
 [% INCLUDE equinocio/calendar.tt month='mar' fcalendar=calendar_mar %]
 
 <h3>Equin&oacute;cio Setembro</h3>
-[% INCLUDE equinocio/calendar.tt month='mar' fcalendar=calendar_set%]
+[% INCLUDE equinocio/calendar.tt month='set' fcalendar=calendar_set%]
 
 <p><h4>Este evento foi baseado no <a href="http://www.catalystframework.org/calendar/" target="_blank">Catalyst Advent Calendar</a>.</h4>
 </p>
