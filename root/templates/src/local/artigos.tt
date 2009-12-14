@@ -6,36 +6,7 @@
             <h2>Documenta&ccedil;&atilde;o</h2>
             <div class="whois">
 
-<p>
-<h3>Manual</h3>
-
-<h4>Tutoriais</h4>
-<ul>
-<li> Como instalar, passo a passo o: Apache, Mysql, Perl e m&oacute;dulos necess&aacute;rios do CPAN no Windows</a>
-</ul>
-
-<h4>Filosofia</h4>
-<ul>
-<li>As Tr&ecirc;s Grandes Virtudes do Programador</li>
-</ul>
-
-<h3>Referencias</h3>
-
-<h4>CPAN</h4>
-<ul>
-<li> Adicionando reposit&oacute;rios de m&oacute;dulos em seu PPM</li>
-<li> Usando o CPAN</li>
-<li> M&oacute;dulos Recomendados do CPAN</li>
-</ul>
-
-<h3>M&oacute;dulos</h3>
-<ul>
-<li> M&oacute;dulos b&aacute;sicos que voc&ecirc; precisa conhecer</li>
-<li> Introdu&ccedil;&atilde;o ao Inline::C</li>
-</ul>
-
 <h3>Not&iacute;cias e Blogs</h3>
-
 
 <h4>Grupos de usu&aacute;rios no Brasil</h4>
 <ul> 
@@ -61,9 +32,6 @@
 <li> <a href="http://planeta.perl.org.br" target="_blank">Planeta Perl-br</a>
 </ul>
 
-<h3>Veja tamb&eacute;m</h3>
-
-<h3>Contribua!</h3>
 
 		</div>
           </div>
