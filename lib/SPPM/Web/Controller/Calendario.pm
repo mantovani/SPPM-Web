@@ -6,7 +6,7 @@ controller SPPM::Web::Controller::Calendario {
         use DateTime;
 
         action base as 'calendario' under '/base' {
-            $ctx->stash->{equinocio_dir} = $ctx->path_to('root',
+            $ctx->stash->{calendario_dir} = $ctx->path_to('root',
                 'calendario');
         }
 
