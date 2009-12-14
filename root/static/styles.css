@@ -635,12 +635,41 @@ a.expand {
     padding:0px 0px 0px 50px;
   }
 
+
+
+#container .top h4 {
+    font:17px Arial, Helvetica, sans-serif;
+    margin-bottom:10px;
+    padding:5px 0px;
+    text-transform:uppercase;
+  }
+
+
 #container .top h3 {
     font:20px Arial, Helvetica, sans-serif;
     background:url(/static/images/dots.gif) repeat-x 0px 100%;
     margin-bottom:10px;
     padding:5px 0px;
     text-transform:uppercase;
+  }
+
+#container .top ul li {
+    color:#00552c;
+    font:12px Tahoma, Arial, Helvetica, sans-serif;
+    list-style:none;
+    padding:0px 0px;
+  }
+
+
+#container .top ul li.first {
+    background:none;
+  }
+
+
+#container .top ul li a {
+    padding-left:8px;
+    color:#00552c;
+    text-decoration:none;
   }
 
 

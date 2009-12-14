@@ -1,14 +1,14 @@
 
 use CatalystX::Declare;
 
-controller SPPM::Web::Controller::Article {
+controller SPPM::Web::Controller::Artigos {
 
         use File::stat;
         use POSIX qw(strftime);
         use DateTime;
         use SPPM::Web::Pod;
 
-        action base as 'article' under '/base';
+        action base as 'artigos' under '/base';
 
         final action article (Str $article) as '' under base {
             my $legal_chars = quotemeta('.-_/');

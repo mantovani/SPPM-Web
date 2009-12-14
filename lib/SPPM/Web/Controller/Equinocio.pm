@@ -17,7 +17,7 @@ controller SPPM::Web::Controller::Equinocio {
             my @years = sort grep { /\d{4}/ } readdir DIR;
             closedir DIR;
 
-            my $year = pop @years || $ctx->stash->{now}->year;
+            my $year = pop @years || DateTime->now->year;
             $ctx->res->redirect( $ctx->uri_for('/equinocio', $year) );
 
         }

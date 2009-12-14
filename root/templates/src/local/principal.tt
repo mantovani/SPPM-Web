@@ -37,7 +37,7 @@
                     </div>
                     
                             <ul>
-                            <li><a href="[% c.uri_for('/article', 'catalyst') %]">Tutorial sobre o Catalyst</a></li>
+                            <li><a href="[% c.uri_for('/artigos', 'catalyst') %]">Tutorial sobre o Catalyst</a></li>
                             </ul>
 
                     
