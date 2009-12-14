@@ -3,10 +3,16 @@
       <div id="container_top">
         <div id="container_bottom">
           <div class="top">
-            <h2>Contato</h2>
+            <h2>Calend&aacute;rio [% year %]</h2>
             <div class="whois">
 <p>            
-O atual mantenedor do website da S&atilde;o Paulo Perl Mongers &eacute; o <i>Thiago Rondon</i> que responde pelo e-mail <i>thiago.rondon</li> em gmail.
+
+<ul>
+[% FOREACH item = events %]
+<li> [% item.data %] - <a href="[% item.url %]">[% item.name %]</a></li>
+[% END %]
+</ul>
+
 </p>
 		</div>
           </div>
