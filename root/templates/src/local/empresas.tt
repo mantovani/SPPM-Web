@@ -1,0 +1,19 @@
+[% META title=" Empresas " %]
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>Empresas</h2>
+            <div class="whois">
+<p>            
+Abaixo uma rela&ccedil;&atilde;o de empresas que trabalham com Perl no estado de S&atilde;o Paulo.
+</p>
+
+<a href="/locaweb"><img src="/static/images/empresas/Locaweb.jpg" border="0"></a>
+
+		</div>
+          </div>
+        </div>
+      </div>
+
+
