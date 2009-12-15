@@ -22,6 +22,7 @@ requires 'CatalystX::Declare';
 requires 'Calendar::Simple';
 requires 'Pod::Xhtml';
 requires 'Date::Calc';
+requires 'Class::CSV';
 
 catalyst;
 
