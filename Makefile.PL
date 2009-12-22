@@ -23,6 +23,10 @@ requires 'Calendar::Simple';
 requires 'Pod::Xhtml';
 requires 'Date::Calc';
 requires 'Class::CSV';
+requires 'Cache::FileCache';
+requires 'DateTime';
+requires 'B::Hooks::OP::Check';
+
 
 catalyst;
 
