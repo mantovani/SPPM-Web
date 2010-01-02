@@ -1,37 +1,12 @@
-[% META title=" Documenta&ccedil;&atilde;o " current_page="artigos" %]
+[% META title=" Artigos " current_page="artigos" %]
 
       <div id="container_top">
         <div id="container_bottom">
           <div class="top">
-            <h2>Documenta&ccedil;&atilde;o</h2>
+            <h2>Artigos</h2>
             <div class="whois">
-
-<h3>Not&iacute;cias e Blogs</h3>
-
-<h4>Grupos de usu&aacute;rios no Brasil</h4>
-<ul> 
-<li> <a href="http://belem.pm.org" target="_blank">Belem.pm</a>
-<li> <a href="http://brasil.pm.org" target="_blank">Brasil.pm</a>
-<li> <a href="http://brasilia.pm.org" target="_blank">Brasilia.pm</a>
-<li> <a href="http://campinas.pm.org" target="_blank">Campinas.pm</a>
-<li> <a href="http://cascavel.pm.org" target="_blank">Cascavel.pm</a>
-<li> <a href="http://florianopolis.pm.org" target="_blank">Florian&oacute;polis.pm</a>
-<li> <a href="http://fortaleza.pm.org" target="_blank">Fortaleza.pm</a>
-<li> <a href="http://recife.pm.org" target="_blank">Recife.pm</a>
-<li> <a href="http://rio.pm.org" target="_blank">Rio.pm</a>
-<li> <a href="http://salvador.pm.org" target="_blank">Savaldor.pm</a>
-<li> <a href="http://sao-paulo.pm.org" target="_blank">Sao-Paulo.pm</a>
-<li> <a href="http://taubate.pm.org" target="_blank">Taubate.pm</a>
-<li> <a href="http://triangulo.pm.org" target="_blank">Triangulo.pm</a>
-<li> <a href="http://vitoria.pm.org" target="_blank">Vitoria.pm</a>
-<li> <a href="http://www.perl.org.br" target="_blank">Perl Brasil</a>
-</ul>
-
-<h4>Blogs</h4>
-<ul>
-<li> <a href="http://planeta.perl.org.br" target="_blank">Planeta Perl-br</a>
-</ul>
-
+            
+		<p>N&atilde;o h&aacute; registros.</p>
 
 		</div>
           </div>
