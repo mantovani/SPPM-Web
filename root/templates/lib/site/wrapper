@@ -27,15 +27,6 @@
            <img src="/static/images/logo.png" alt="Logo" class="png_bg"/>
            </a>
         </div>
-        <div class="search">
-          <form action="" method="post">
-            <fieldset>
-            <input type="text" class="textbox" value="Busca..."/>
-            <input name="" type="image" src="/static/images/submit.gif" alt="Search" />
-
-            </fieldset>
-          </form>
-        </div>
       </div>
       <div id="menu">
         <ul>
