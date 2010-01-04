@@ -1,5 +1,12 @@
 #!/usr/bin/env perl
 
+use lib qw[
+    /home/sppm/local/lib/perl5
+    /home/sppm/local/share/perl/5.8.8
+    /home/sppm/local/lib/perl/5.8.8
+    /home/sppm/local/lib
+];
+
 BEGIN { $ENV{CATALYST_ENGINE} ||= 'FastCGI' }
 
 use strict;
