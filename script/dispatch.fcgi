@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+use Catalyst::ScriptRunner;
+Catalyst::ScriptRunner->run('SPPM::Web', 'FastCGI');
 use lib qw[
     /home/sppm/local/lib/perl5
     /home/sppm/local/share/perl/5.8.8
@@ -54,20 +56,20 @@ sppm_web_fastcgi.pl [options]
 
  Options:
    -? -help      display this help and exits
-   -l -listen    Socket path to listen on
+   -l --listen   Socket path to listen on
                  (defaults to standard input)
                  can be HOST:PORT, :PORT or a
                  filesystem path
-   -n -nproc     specify number of processes to keep
+   -n --nproc    specify number of processes to keep
                  to serve requests (defaults to 1,
                  requires -listen)
-   -p -pidfile   specify filename for pid file
+   -p --pidfile  specify filename for pid file
                  (requires -listen)
-   -d -daemon    daemonize (requires -listen)
-   -M -manager   specify alternate process manager
+   -d --daemon   daemonize (requires -listen)
+   -M --manager  specify alternate process manager
                  (FCGI::ProcManager sub-class)
                  or empty string to disable
-   -e -keeperr   send error messages to STDOUT, not
+   -e --keeperr  send error messages to STDOUT, not
                  to the webserver
 
 =head1 DESCRIPTION

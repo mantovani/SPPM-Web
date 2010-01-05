@@ -6,7 +6,7 @@ use inc::Module::Install;
 name 'SPPM-Web';
 all_from 'lib/SPPM/Web.pm';
 
-requires 'Catalyst::Runtime' => '5.80015';
+requires 'Catalyst::Runtime' => '5.80016';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::Cache';
@@ -23,6 +23,10 @@ requires 'Calendar::Simple';
 requires 'Pod::Xhtml';
 requires 'Date::Calc';
 requires 'Class::CSV';
+requires 'Cache::FileCache';
+requires 'DateTime';
+requires 'B::Hooks::OP::Check';
+
 
 catalyst;
 
