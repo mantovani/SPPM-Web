@@ -1,0 +1,220 @@
+=pod
+
+r3 - 01 Dec 2006 - OtavioFernandes
+
+=head1 IntroduE<ccedil>E<atilde>o ao Inline::C
+
+I<>
+
+Inclua cE<oacute>digos-fonte de outras linguagens dentro do seu script
+Perl !
+
+=head2 IntroduE<ccedil>E<atilde>o:
+
+O Inline E<eacute> um mE<oacute>dulo que permite que vocE<ecirc>
+acrescente cE<oacute>digo de outras linguagens de
+programaE<ccedil>E<atilde>o diretamente no seu script Perl, salvando-o
+de ter que escrever dois programas e fazE<ecirc>-los "conversar",
+gastando muito mais tempo do que se vocE<ecirc> pudesse simplesmente
+misturar as linguagens ... mas com a flexibilidade do Perl e a ajuda do
+Inline vocE<ecirc> pode ! Nas linhas abaixo estarei demonstrando de
+forma descontraE<iacute>da e objetiva como isso E<eacute>
+possE<iacute>vel.
+
+=head2 Fazendo a InstalaE<ccedil>E<atilde>o:
+
+Antes de fazermos uso do Inline, temos que fazer a
+instalaE<ccedil>E<atilde>o, para isso separei duas formas de
+realizE<aacute>-la; uma via CPAN, a qual eu recomendo, pois E<eacute>
+muito mais fE<aacute>cil centralizar os pacotes do Perl em uma
+E<uacute>nica ferramenta, e tambE<eacute>m podemos ter sempre a
+versE<atilde>o mais nova de cada mE<oacute>dulo, o que nem sempre
+acontece com os pacotes prE<eacute>-compilados; e outra via apt-get:
+
+B<CPAN:>
+
+Com a mesma simplicidade dos cE<oacute>digos em Perl, utilizamos a
+CPAN: Neste primeiro passo, chamamos o prompt para
+execuE<ccedil>E<atilde>o de comandos:
+
+ perl -MCPAN -e shell
+
+Logo em seguida devemos requisitar a instalaE<ccedil>E<atilde>o do
+mE<oacute>dulo Inline:
+
+ install Inline
+
+Pronto. Observe os retornos e se necessE<aacute>rio trate os erros que
+aparecerE<atilde>o no meio do caminho. NE<atilde>o extenderei mais esta
+parte pois este nE<atilde>o E<eacute> o nosso foco.
+
+B<Debian:>
+
+No Debian, com a utilizaE<ccedil>E<atilde>o do apt-get, as coisas ficam
+tE<atilde>o fE<aacute>ceis quanto na CPAN, basta executar o seguinte
+comando (como I<root>, ou com permissE<otilde>es de
+super-usuE<aacute>rio):
+
+ # apt-get update
+ # apt-get install libc-scan-perl libinline-octave-perl libinline-perl libtest-inline-perl
+
+E esperar o retorno do comando, aqui nos meus testes eu nE<atilde>o
+tive nenhum problema com os dois tipos de instalaE<ccedil>E<atilde>o.
+
+=head2 Exemplos PrE<aacute>ticos:
+
+Em um determinado momento da nossa vida de programadores, seja
+profissionalmente ou apenas por diversE<atilde>o, faz-se
+necessE<aacute>rio a execuE<ccedil>E<atilde>o de algum(s)
+mE<eacute>todo(s) de uma biblioteca natural de outra linguagem, o que
+para alguns casos, E<eacute> aparentemente inviE<aacute>vel, mas com a
+flexibilidade do Perl, e as inovaE<ccedil>E<otilde>es dos
+mE<oacute>dulos presente na CPAN isso E<eacute> mais do que
+possE<iacute>vel, E<eacute> fE<aacute>cil e muito prE<aacute>tico. Nos
+exemplos abaixo, estaremos chamando mE<eacute>todos da nossa
+I<"libteste">, a qual estE<aacute> presente no diretE<oacute>rio
+I<"/usr/lib"> e tem seus headers no diretE<oacute>rio
+I<"/usr/include">, o I<teste.h>, para dificultar as coisas, quando
+instE<acirc>nciamos a I<libteste>, precisamos ter declarado dentro do
+nosso fonte uma estrutura (I<struct>), servindo para troca de dados, o
+nome dela E<eacute> I<treetst> (bem sugestivo :-P):
+
+Utilizando o Inline C, podemos fazer uso das funE<ccedil>E<otilde>es de
+duas formas distintas:
+
+B<1)> Escrevendo um trecho de cE<oacute>digo C que faE<ccedil>a a
+chamada da funE<ccedil>E<atilde>o, e retorne seu conteE<uacute>do para
+o nosso script:
+
+ 01| #!/usr/bin/perl
+ 02|
+ 03| use scrict;
+ 04| use warnings;
+ 05|
+ 06| # fazendo a chamada direta da função escrita no código abaixo
+ 07| my $retr = WrapFTest();
+ 08|
+ 09| # imprimindo na stdout o retorno da função WrapFTest
+ 10| print $retr, "\n";
+ 11|
+ 12| # declarando a nossa libteste como parâmetro para compilação
+ 13| use Inline C => Config => ENABLE => AUTOWRAP => LIBS => '-lteste';
+ 14| # da próxima linha até a string "END_OF_C_CODE" tudo é código C
+ 15| use Inline C => << 'END_OF_C_CODE';
+ 16|
+ 17| #include <teste.h>
+ 18|
+ 19| struct treetst *p1, *p1; 
+ 20|
+ 21| int WrapFTest () { return Teste(); }
+ 22|
+ 23| END_OF_C_CODE
+
+Segue o comentE<aacute>rio das linhas mais importantes deste
+cE<oacute>digo, na mesma organizaE<ccedil>E<atilde>o que o
+interpretador e o Inline o fazem:
+
+ [16-22]
+
+JunE<ccedil>E<atilde>o deste cE<oacute>digo ao trecho prE<eacute>
+existente de cE<oacute>digo C, preparado para o enxerto de novas
+linhas. Atente que o nosso fonte tem todos os requisitos para compilar
+a executar a I<libteste>, ou seja, a presenE<ccedil>a do I<"include">
+de seu header I<"teste.h"> e tambE<eacute>m apresenta da estrutura
+I<"treetst">, necessE<aacute>ria para troca de dados (nE<atilde>o
+tratados aqui);
+
+ [13]
+
+Configurando como serE<aacute> a compilaE<ccedil>E<atilde>o do
+cE<oacute>digo C, com o uso da I<"-lteste"> junto com o I<gcc>, esta
+linha que permite ao compilador saber qual biblioteca estamos
+procurando. Para maiores detalhes, execute o comando B<"# ldconfig -v">
+e faE<ccedil>a uma breve anE<aacute>lise dos resultados retornados;
+
+ [07]
+
+Fazendo a execuE<ccedil>E<atilde>o da funE<ccedil>E<atilde>o
+I<"WrapFTest()">, a qual tem o papel de intermediar a
+execuE<ccedil>E<atilde>o da funE<ccedil>E<atilde>o que nos interessa, a
+I<"Teste()">. Fazemos uso desta funE<ccedil>E<atilde>o porque
+nE<atilde>o temos acesso direto E<agrave> libteste, apenas ao
+pseudo-cE<oacute>digo que geramos no bloco de linhas I<16> a I<22>;
+
+ [10]
+
+Imprimindo o retorno da funE<ccedil>E<atilde>o I<"Teste()">. Lembrando
+que o retorno, ou parE<acirc>metros, ou atE<eacute> estruturas de
+dados, podem trocados entre o script e o cE<oacute>digo C (outras
+linguagens tambE<eacute>m).
+
+Pronto, executamos uma chamada na I<libteste> atravE<eacute>s do nosso
+pequeno, porE<eacute>m eficiente, cE<oacute>digo ANSI C, veremos no
+prE<oacute>ximo exemplo como fazer isso de forma direta.
+
+B<2)> Podemos instE<acirc>nciar as funE<ccedil>E<otilde>es diretamente
+da biblioteca e fazer uso no nosso script:
+
+ 01| #!/usr/bin/perl -w
+ 02| 
+ 03| use warnings;
+ 04| use strict;
+ 05| 
+ 06| use Inline C => Config => ENABLE => AUTOWRAP => LIBS => "-lteste";
+ 07| use Inline C => q{ struct treetst *p1, *p2; };
+ 08| use Inline C => q{ int Teste(); };
+ 09| 
+ 10| my $retr = Teste();
+ 11| 
+ 12| print $retr, "\n";
+
+Neste exemplo estamos acessando a I<libteste> diretamente do nosso
+script em Perl, sem a ajuda de cE<oacute>digo para enxerto, apenas com
+o protE<oacute>tipo das funE<ccedil>E<otilde>es (vide o arquivo
+I<header> para maiores detalhes). Segue o comentE<aacute>rio e
+explicaE<ccedil>E<atilde>o das linhas mais influentes do nosso script:
+
+ [07]
+
+Declarando a estrutura que vamos utilizar para trocar os dados com a
+I<libteste>, assim como fariamos em um cE<oacute>digo C comum (vide
+Caso 1);
+
+ [08]
+
+ProtE<oacute>tipo da funE<ccedil>E<atilde>o I<"Teste()">, presente no
+header I<"/usr/include/teste.h">;
+
+ [10]
+
+Eureca. Estamos acessando a funE<ccedil>E<atilde>o I<"Teste()">
+diretamente do nosso script :-);
+
+ [12]
+
+Imprimindo na saE<iacute>da padrE<atilde>o o retorno da
+funE<ccedil>E<atilde>o I<"Teste()">;
+
+=head2 Sobre o Autor:
+
+B<OtE<aacute>vio Fernandes>, exercendo atualmente o cargo Programador
+SE<ecirc>nior e Gerente de Projetos, tem larga experiE<ecirc>ncia em
+appliances para servidores de E-Mail e Anti-SPAM, fluE<ecirc>ncia em
+linguagens como ANSI C e C++, porem um aprendiz em Perl. Contato
+B<otaviof I<at> gmail I<dot> com>.
+
+=head2 Bibliografia:
+
+http://search.cpan.org/~ingy/Inline-0.44/C/C.pod
+
+http://search.cpan.org/~ingy/Inline-0.44/Inline.pod
+
+http://search.cpan.org/~ingy/Inline-0.44/C/C-Cookbook.pod
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 8936 bytes of input
+#Mon Dec 14 02:15:25 2009 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

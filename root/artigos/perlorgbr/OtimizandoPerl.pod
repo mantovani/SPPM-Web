@@ -1,0 +1,527 @@
+=pod
+
+r6 - 18 Jul 2007 - AlceuJunior
+
+=head1 Otimizando cE<oacute>digo Perl
+
+I<>
+
+Existem diversas formas de otimizar um programa, independentemente da
+linguagem de programaE<ccedil>E<atilde>o. Na maioria das vezes isso
+incluia a revisE<atilde>o de algorE<iacute>tmos, requisitos do programa
+e utilizaE<ccedil>E<atilde>o de recursos da linguagem e do sistema
+operacional, por exemplo. A grande dificuldade em otimizar um programa
+estE<aacute> em determinar:
+
+=over
+
+=item 1. Qual parte do cE<oacute>digo precisa ser otimizada
+
+=item 2. Quanto otimizar o cE<oacute>digo (isso inclui a capacidade de
+medir resultados antes e depois da otimizaE<ccedil>E<atilde>o)
+
+=item 3. Como otimizar o cE<oacute>digo
+
+=item 4. Quando otimizar o cE<oacute>digo
+
+=back
+
+Perl possui ferramentas padrE<otilde>es que podem ajudar com os dois
+primeiros itens. Nesse artigo serE<aacute> mostrado como usar o
+mE<oacute>dulo C<Devel::DProf> atravE<eacute>s de exemplos
+prE<aacute>ticos.
+
+=head2 Programa exemplo
+
+O programa-exemplo desse artigo lE<ecirc> uma planilha MS Excel que
+possui atividades a serem executadas, verificar quais atividades
+estE<atilde>o atrasadas e envia I<emails> para as pessoas definidas
+como responsE<aacute>veis via MS Outlook (1).
+
+Para dar conta disso tudo o programa utiliza o mE<oacute>dulo
+C<Win32::OLE> para acessar o MS Excel e o MS Outlook. Esse
+mE<oacute>dulo tem como requisito o MS Windows (versE<otilde>es 95 e
+posteriores, possivelmente) e do ActivePerl (ActivePerl 5.8.8;
+versE<otilde>es diferentes podem tambE<eacute>m funcionar) instalados,
+alE<eacute>m desses dois programas que fazem parte do MS Office. O
+mE<oacute>dulo C<Class::Accessor> tambE<eacute>m deve estar
+disponE<iacute>vel.
+
+E finalmente, para a interface grE<aacute>fica foi utilizado o
+I<toolkit> WxPerl, tambE<eacute>m disponE<iacute>vel para o ActivePerl.
+
+O programa E<eacute> constituE<iacute>do de duas partes: um
+mE<oacute>dulo chamado C<Pending.pm> e o script C<pending.pl>.
+
+=head2 Qual parte do cE<oacute>digo otimizar?
+
+Essa E<eacute> a primeira pergunta que o programador deve se fazer
+antes de comeE<ccedil>ar a trabalhar no cE<oacute>digo. Sem verificar
+primeiro as E<aacute>reas crE<iacute>ticas do programa que precisam de
+uma revisE<atilde>o para melhorar a performance, o programador pode
+perder muito tempo otimizando partes do cE<oacute>digo que representam
+uma parte pequena ou insignificante no tempo de
+execuE<ccedil>E<atilde>o total do programa.
+
+=head2 DProf e dprofpp
+
+Essas duas ferramentas ajudam a definir os tempos de
+execuE<ccedil>E<atilde>o de cada trecho do cE<oacute>digo. Para
+descobrir a quantas anda o programa, basta executar:
+
+ C:\> perl -d:DProf pending.pl
+
+O mE<oacute>dulo C<DProf> vai gerar um arquivo com o nome C<tmon.out>
+no mesmo diretE<oacute>rio aonde foi executado. Esse arquivo possui uma
+sE<eacute>rie de informaE<ccedil>E<otilde>es sobre a
+execuE<ccedil>E<atilde>o do programa, mas ler essa
+informaE<ccedil>E<atilde>o diretamente nE<atilde>o E<eacute> nada
+prE<aacute>tico:
+
+ #fOrTyTwO
+ $hz=1000;
+ $XS_VERSION='DProf 20050603.00';
+ # All values are given in HZ
+ $over_utime=31; $over_stime=15; $over_rtime=48;
+ $over_tests=10000;
+ $rrun_utime=641; $rrun_stime=375; $rrun_rtime=8218;
+ $total_marks=12819                                                                                                                                                                        
+ 
+ PART2
+ @ 15 0 16
+ & 2 main BEGIN
+ + 2
+ - 2
+ + 2
+ & 3 strict bits
+
+O trecho exibido acima mostra que olhar diretamente no arquivo
+nE<atilde>o E<eacute> lE<aacute> uma forma muito agradE<aacute>vel de
+entender os resultados. Para esse fim existe o programa C<dprofpp>:
+
+ C:\> dprofpp
+ 
+ Total Elapsed Time = 8.157477 Seconds
+   User+System Time = 0.955477 Seconds
+ Exclusive Times
+ %Time ExclSec CumulS #Calls sec/call Csec/c  Name
+  16.3   0.156  0.156     10   0.0156 0.0156  DynaLoader::dl_load_file
+  8.27   0.079  0.801      5   0.0158 0.1602  MyFrame::BEGIN
+  7.95   0.076  0.076    411   0.0002 0.0002  Params::Validate::_validate
+  4.92   0.047  0.077      4   0.0117 0.0193  DateTime::TimeZone::Local::Win32::
+                                              BEGIN
+  4.81   0.046  0.122    377   0.0001 0.0003  DateTime::Locale::_register
+  4.71   0.045  0.043    242   0.0002 0.0002  Win32::OLE::Dispatch
+  3.24   0.031  0.182      7   0.0044 0.0259  DateTime::Locale::BEGIN
+  3.24   0.031  0.031      8   0.0039 0.0038  Wx::BEGIN
+  3.24   0.031  0.305     23   0.0013 0.0133  DateTime::BEGIN
+  3.14   0.030  0.413      7   0.0043 0.0590  Pending::BEGIN
+  3.04   0.029  0.029    715   0.0000 0.0000  Win32::OLE::Tie::Fetch
+  3.04   0.029  0.138      1   0.0286 0.1378  Pending::send_warns
+  1.67   0.016  0.016      1   0.0160 0.0160  Wx::_boot_GDI
+  1.67   0.016  0.016      1   0.0160 0.0160  warnings::BEGIN
+  1.67   0.016  0.016      1   0.0160 0.0160  Wx::bootstrap
+
+Muito mais fE<aacute>cil dessa maneira. A saE<iacute>da mostra as
+subrotinas executadas, qual o tempo que elas consumiram da
+execuE<ccedil>E<atilde>o total do programa (C<%Time>) e as vezes que
+foram executadas (C<Calls>) entre outros detalhes.
+
+As subrotinas mais custosas foram as C<Win32::OLE::Const>,
+entE<atilde>o elas sE<atilde>o as candidatas a serem modificadas ou
+substituE<iacute>das. Como esse mE<oacute>dulo E<eacute> padrE<atilde>o
+do ActivePerl, tentar otimizE<aacute>-lo diretamente pode nE<atilde>o
+ser a melhor idE<eacute>ia: ela jE<aacute> estE<aacute> por aE<iacute>
+a um bom tempo, e alguE<eacute>m jE<aacute> deve ter tentado fazer isso
+anteriormente. Nesse caso especE<iacute>fico, as bibliotecas
+C<Win32::OLE> nE<atilde>o sE<atilde>o muito rE<aacute>pidas mesmo, e
+C<Win32::OLE::Const> sE<oacute> tem uma funE<ccedil>E<atilde>o:
+carregar constantes de um programa Microsoft para dentro do
+I<namespace> de um programa.
+
+Ainda que correndo o risco de diminuir a facilidade de
+manutenE<ccedil>E<atilde>o do programa, foi apenas uma questE<atilde>o
+de remover o uso dos mE<oacute>dulos:
+
+ #use Win32::OLE::Const 'Microsoft Excel';
+ #use Win32::OLE::Const 'Microsoft Outlook';
+
+E substituir as contantes por seus respectivos valores
+numE<eacute>ricos. Segue o trecho do cE<oacute>digo que usava as
+constantes do MS Excel:
+
+    # finding where the spreadsheet finishes
+    my $last_row = $sheet->UsedRange->Find(
+        {
+            What => "*",
+ 
+            # same as xlPrevious from Excel constants
+            SearchDirection => 2,
+ 
+            # same as xlByRows from Excel constants
+            SearchOrder => 1
+        }
+    )->{Row};
+
+E o trecho correspondente do MS Outlook:
+
+    # setting the email body as HTML
+    # same as constant olFormatHTML
+    $item->{BodyFormat} = 2;
+
+Ainda que fosse possE<iacute>vel carregar apenas as constantes
+desejadas, para um programa que usa apenas trE<ecirc>s constantes
+nE<atilde>o parece ser muita vantagem carregar esses mE<oacute>dulos
+grandalhE<otilde>es. E<Eacute> claro, o programa poderia deixar de
+funcionar com uma versE<atilde>o diferente do MS Office. E<Eacute> por
+isso que se diz que otimizaE<ccedil>E<otilde>es prematuras sE<atilde>o
+sempre um problema: E<eacute> sempre bom verificar B<antes> aonde se
+estE<aacute> pisando.
+
+Agora E<eacute> hora de testar o resultado das E<uacute>ltimas
+alteraE<ccedil>E<otilde>es:
+
+ C:\> perl -d:DProf pending.pl
+ C:\> dprofpp
+ 
+ Total Elapsed Time = 4.137462 Seconds
+   User+System Time = 0.637462 Seconds
+ Exclusive Times
+ %Time ExclSec CumulS #Calls sec/call Csec/c  Name
+  12.0   0.077  0.507      5   0.0154 0.1015  MyFrame::BEGIN
+  7.37   0.047  0.046    242   0.0002 0.0002  Win32::OLE::Dispatch
+  7.37   0.047  0.047     10   0.0047 0.0047  DynaLoader::dl_load_file
+  7.06   0.045  0.045    411   0.0001 0.0001  Params::Validate::_validate
+  5.02   0.032  0.032      6   0.0053 0.0053  ActiveState::Path::BEGIN
+  4.86   0.031  0.275      7   0.0044 0.0393  Pending::BEGIN
+  4.86   0.031  0.076    377   0.0001 0.0002  DateTime::Locale::_register
+  4.71   0.030  0.160      1   0.0304 0.1603  Pending::send_warns
+  4.71   0.030  0.030    715   0.0000 0.0000  Win32::OLE::Tie::Fetch
+  2.51   0.016  0.016      1   0.0160 0.0160  Wx::_boot_Frames
+  2.51   0.016  0.016      1   0.0160 0.0160  Exporter::Heavy::_rebuild_cache
+  2.51   0.016  0.016      1   0.0160 0.0160  Win32::TieRegistry::TiedRef
+  2.51   0.016  0.016      3   0.0053 0.0053  Win32::OLE::GetActiveObject
+  2.51   0.016  0.016      1   0.0160 0.0160  Wx::TreeItemId::BEGIN
+  2.51   0.016  0.016      2   0.0080 0.0080  Win32::CopyFile
+
+Nada mal para um comeE<ccedil>o rE<aacute>pido! Agora E<eacute> preciso
+encontrar outras coisas aonde seja possE<iacute>vel mexer sem muito
+estardalhaE<ccedil>o. Olhando o E<uacute>ltimo resultado, E<eacute>
+possE<iacute>vel ver que o campeE<atilde>o de chamadas e tempo
+utilizado E<eacute> uma subrotina do mE<oacute>dulo
+C<Params::Validate>. Eu nE<atilde>o uso esse mE<oacute>dulo diretamente
+dentro do meu programa, entE<atilde>o eu preciso dar uma procurada nos
+mE<oacute>dulos importados no programa e pesquisar pelo
+C<Params::Validate>. O ActivePerl fornece uma ferramenta chamada C<ppm>
+que ajuda nesse sentido:
+
+ C:\> ppm tree DateTime
+ package DateTime-0.35
+   needs DateTime-Locale (installed in site area)
+   package DateTime-Locale-0.33
+     needs Module::Build (v0.2806 installed in site area)
+     package Module-Build-0.2806 provide Module::Build
+       (no dependencies)
+     needs Params::Validate (v0.87 installed in site area)
+     package Params-Validate-0.87 provide Params::Validate
+ ...
+
+Analisando o cE<oacute>digo do programa, E<eacute> possE<iacute>vel
+verificar que o programa instancia objetos C<DateTime> mais vezes do
+que seria realmente necessE<aacute>rio:
+
+ # trecho do código da subrotina send_warns
+ 
+             if ( $status eq 'Ação Avisada' ) {
+ 
+                 my $prazo =
+                   $sheet->Cells( $row, $columns{PRAZO}->[0] )->{'Value'};
+ 
+                 # not assuming that the column have only date values
+                 if (    ( $prazo ne '' )
+                     and ( ref($prazo) eq 'Win32::OLE::Variant' ) )
+                 {
+ 
+                     if ( $prazo->Type == VT_DATE ) {
+ 
+                         my $variant = Variant( VT_DATE, $prazo );
+ 
+                         my $date = DateTime->new(
+                             year  => $variant->Date('yyyy'),
+                             month => $variant->Date('M'),
+                             day   => $variant->Date('dd')
+                         );
+ 
+ # the $date variable will have 0 in the values below, so it necessary to force 0 onto $now too
+ # to be able to compare both correctly
+                         my $now = DateTime->now();
+                         $now->set_hour(0);
+                         $now->set_minute(0);
+                         $now->set_second(0);
+ 
+                         my $result = DateTime->compare( $date, $now );
+
+Mais tarde, em outra subrotina:
+
+ sub queue_row {
+ 
+     my $sheet      = shift;
+     my $row        = shift;
+     my $fields_ref = shift;
+     my $message    = shift;
+     my $item;
+ 
+     my $today = DateTime->now();
+     $today->set_time_zone('local');
+ 
+     my $greetings;
+ 
+     $item = '<html><body>';
+ 
+     ( $today->hour() < 12 )
+       ? ( $greetings = 'Bom dia, ' )
+       : ( $greetings = 'Boa tarde, ' );
+
+Sem muito esforE<ccedil>o, seria possE<iacute>vel instanciar apenas um
+objeto C<DateTime> que represente o dia e horE<aacute>rio atuais. Mais
+uma alteraE<ccedil>E<atilde>o no cE<oacute>digo a fazer, sendo a
+primeira declarar esse objeto E<uacute>nico de forma que ele seja
+global para o pacote:
+
+ my $now = DateTime->now();
+ $now->set_time_zone('local');
+
+Alterando o trecho correspondente da subrotina C<send_warns> novamente:
+
+                       my $date = DateTime->new(
+                            year  => $variant->Date('yyyy'),
+                            month => $variant->Date('M'),
+                            day   => $variant->Date('dd'),
+ 
+                   # forcing the same time to be able to compare dates correctly
+                            hour   => $now->hour(),
+                            minute => $now->minute(),
+                            second => $now->second()
+                        );
+ 
+                        my $result = DateTime->compare( $date, $now );
+
+E tambE<eacute>m da subrotina C<queue_row>:
+
+ sub queue_row {
+ 
+ # html code is based on the code generated when the email is created mannually in Outlook
+ 
+     my $sheet      = shift;
+     my $row        = shift;
+     my $fields_ref = shift;
+     my $message    = shift;
+ 
+     my $item = '<html><body>';
+     my $greetings;
+ 
+     ( $now->hour() < 12 )
+       ? ( $greetings = 'Bom dia, ' )
+       : ( $greetings = 'Boa tarde, ' );
+
+Mais um teste com o C<dprofpp> para averiguar o resultado:
+
+ Total Elapsed Time = 3.983193 Seconds
+   User+System Time = 0.592193 Seconds
+ Exclusive Times
+ %Time ExclSec CumulS #Calls sec/call Csec/c  Name
+  10.3   0.061  0.075    377   0.0002 0.0002  DateTime::Locale::_register
+  7.94   0.047  0.456      5   0.0094 0.0913  MyFrame::BEGIN
+  7.77   0.046  0.046     10   0.0046 0.0046  DynaLoader::dl_load_file
+  5.40   0.032  0.032      4   0.0080 0.0080  DynaLoader::bootstrap
+  5.23   0.031  0.046      4   0.0077 0.0116  DateTime::TimeZone::Local::Win32::
+                                              BEGIN
+  4.90   0.029  0.029    715   0.0000 0.0000  Win32::OLE::Tie::Fetch
+  4.90   0.029  0.136      1   0.0285 0.1360  Pending::send_warns
+  2.70   0.016  0.016      1   0.0160 0.0160  Wx::_boot_Controls
+  2.70   0.016  0.152      1   0.0160 0.1520  Wx::App::MainLoop
+  2.70   0.016  0.016      1   0.0160 0.0159  Wx::import
+  2.70   0.016  0.016      3   0.0053 0.0053  main::BEGIN
+  2.70   0.016  0.031      4   0.0040 0.0077  Config::BEGIN
+  2.70   0.016  0.016      6   0.0027 0.0027  Params::Validate::BEGIN
+  2.70   0.016  0.016      5   0.0032 0.0032  warnings::register::import
+  2.70   0.016  0.016      4   0.0040 0.0039  DateTime::TimeZone::America::Sao_P
+                                              aulo::BEGIN
+
+Dessa vez o resultado nE<atilde>o foi tE<atilde>o animador assim. Mesmo
+reduzindo a criaE<ccedil>E<atilde>o de um objeto C<DateTime>, ainda
+assim vE<aacute>rios objetos serE<atilde>o instanciados uma vez que o
+programa entre em I<loop>. E falando em I<loop>, uma nova
+anE<aacute>lise no cE<oacute>digo sobre como evitar objetos sendo
+criados desnecessariamente mostram que o programa nE<atilde>o precisa
+de um novo objeto que represente o MS Excel a cada vez que a subrotina
+C<create_email> seja executada, como E<eacute> mostrado abaixo:
+
+ sub create_email {
+ 
+     my $body     = shift;
+     my $addresse = shift;
+     my $subject  = shift;
+ 
+     my $Outlook = Win32::OLE->GetActiveObject('Outlook.Application')
+       || Win32::OLE->new('Outlook.Application');
+
+Movendo essa instanciaE<ccedil>E<atilde>o para fora da
+funE<ccedil>E<atilde>o e testando novamente:
+
+ Total Elapsed Time = 4.788211 Seconds
+   User+System Time = 0.849211 Seconds
+ Exclusive Times
+ %Time ExclSec CumulS #Calls sec/call Csec/c  Name
+  9.18   0.078  0.077    411   0.0002 0.0002  Params::Validate::_validate
+  8.95   0.076  0.076    715   0.0001 0.0001  Win32::OLE::Tie::Fetch
+  7.42   0.063  0.641      5   0.0126 0.1282  MyFrame::BEGIN
+  7.07   0.060  0.137    377   0.0002 0.0004  DateTime::Locale::_register
+  5.65   0.048  0.393      7   0.0068 0.0562  Pending::BEGIN
+  5.53   0.047  0.210      7   0.0067 0.0300  DateTime::Locale::BEGIN
+  5.42   0.046  0.046     10   0.0046 0.0046  DynaLoader::dl_load_file
+  5.42   0.046  0.045     18   0.0025 0.0025  DateTime::TimeZone::BEGIN
+  5.18   0.044  0.042    242   0.0002 0.0002  Win32::OLE::Dispatch
+  3.77   0.032  0.032      3   0.0107 0.0107  Win32::OLE::GetActiveObject
+  3.65   0.031  0.062      4   0.0077 0.0155  DateTime::TimeZone::Local::Win32::
+                                              BEGIN
+  3.53   0.030  0.030    328   0.0001 0.0001  Params::Validate::_validate_pos
+  1.88   0.016  0.016      1   0.0160 0.0160  warnings::BEGIN
+  1.88   0.016  0.016      1   0.0160 0.0160  Wx::_boot_Events
+  1.88   0.016  0.016      1   0.0160 0.0160  Wx::Load
+
+O resultado piorou? Como E<eacute> possE<iacute>vel?
+
+Se for considerado que nem sempre um email serE<aacute> enviado, criar
+o objeto na inicializaE<ccedil>E<atilde>o do mE<oacute>dulo sE<oacute>
+atrasaria as coisas. Teoricamente seria possE<iacute>vel, por exemplo,
+implementar o padrE<atilde>o de projeto I<Singleton> e sempre devolver
+a mesma instE<acirc>ncia do objeto do Outlook quando a
+funE<ccedil>E<atilde>o C<create_email> for chamada mais de uma vez.
+Nesse caso, pode ser tentado algo bem mais simples:
+
+ # fora da subrotina create_email
+ my $Outlook;
+
+JE<aacute> dentro de C<create_email>:
+
+ sub create_email {
+ 
+     my $body     = shift;
+     my $addresse = shift;
+     my $subject  = shift;
+ 
+     unless ( defined($Outlook) ) {
+ 
+         $Outlook = Win32::OLE->GetActiveObject('Outlook.Application')
+           || Win32::OLE->new('Outlook.Application');
+ 
+     }
+
+Mais um teste:
+
+ Total Elapsed Time = 3.867208 Seconds
+   User+System Time = 0.805208 Seconds
+ Exclusive Times
+ %Time ExclSec CumulS #Calls sec/call Csec/c  Name
+  9.69   0.078  0.594      5   0.0156 0.1188  MyFrame::BEGIN
+  9.44   0.076  0.121    377   0.0002 0.0003  DateTime::Locale::_register
+  7.70   0.062  0.061    411   0.0001 0.0001  Params::Validate::_validate
+  5.84   0.047  0.378      7   0.0067 0.0540  Pending::BEGIN
+  5.46   0.044  0.044    715   0.0001 0.0001  Win32::OLE::Tie::Fetch
+  3.97   0.032  0.032     10   0.0032 0.0032  DynaLoader::dl_load_file
+  3.97   0.032  0.271     23   0.0014 0.0118  DateTime::BEGIN
+  3.85   0.031  0.194      7   0.0044 0.0278  DateTime::Locale::BEGIN
+  3.85   0.031  0.046      4   0.0077 0.0115  DateTime::TimeZone::Local::Win32::
+                                              BEGIN
+  3.85   0.031  0.043    241   0.0001 0.0002  Win32::OLE::DESTROY
+  3.73   0.030  0.028    242   0.0001 0.0001  Win32::OLE::Dispatch
+  3.73   0.030  0.030      3   0.0100 0.0100  Win32::OLE::GetActiveObject
+  3.73   0.030  0.030    328   0.0001 0.0001  Params::Validate::_validate_pos
+  3.73   0.030  0.046      4   0.0075 0.0114  Config::BEGIN
+  1.99   0.016  0.016      1   0.0160 0.0160  warnings::BEGIN
+
+=head2 ConclusE<atilde>o
+
+A idE<eacute>ia desse artigo nE<atilde>o E<eacute> mostrar a forma
+"correta" de otimizar um programa, atE<eacute> porque isso nE<atilde>o
+existe. VE<aacute>rios fatores influenciam no resultado final e nem
+sempre tE<eacute>cnicas utilizadas anteriormente podem ser aplicadas
+diretamente em oportunidades futuras. Como, quando e quanto otimizar um
+programa sE<atilde>o perguntas que poderE<atilde>o ser respondidas
+dependendo da experiE<ecirc>ncia do programador.
+
+PoderE<iacute>amos continuar tentando otimizar mais ainda o
+programa-exemplo, principalmente se for considerado que fatores
+indiretos (como otimizaE<ccedil>E<otilde>es no sistema operacional e no
+I<hardware>), influenciam no resultado final do programa. E<Eacute>
+importante, portanto, saber quando jE<aacute> se fez o suficiente e
+parar por aE<iacute>.
+
+Testar a performance de um programa pode ser mais difE<iacute>cil do
+que parece por conta dos fatores externos. Resultados diferentes podem
+ser mostrados pelo C<dprofpp> a cada execuE<ccedil>E<atilde>o,
+entE<atilde>o sempre E<eacute> aconselhE<aacute>vel repetir os testes
+mais de uma vez, tentando manter a mesma situaE<ccedil>E<atilde>o de
+testes. Programas que necessitam de interaE<ccedil>E<atilde>o com o
+usuE<aacute>rio sE<atilde>o piores ainda de serem testados e nesse caso
+o recomendado seria desativar essa interaE<ccedil>E<atilde>o da melhor
+forma possE<iacute>vel, automatizando opE<ccedil>E<otilde>es que seria
+feitas pelo usuE<aacute>rio. Testar otimizaE<ccedil>E<otilde>es quando
+o software utiliza um banco de dados tambE<eacute>m pode ser
+problemE<aacute>tico devido ao I<cache> automE<aacute>tico que os SGBD
+modernos costumam fazer.
+
+Outra observaE<ccedil>E<atilde>o importante E<eacute> que executar um
+programa em mE<aacute>quinas diferentes com certeza apresentarE<aacute>
+resultados diferentes dependendo das modificaE<ccedil>E<otilde>es do
+cE<oacute>digo. Se vocE<ecirc> usa ambientes diferentes durante o
+processo de desenvolvimento (ambientes de desenvolvimento, testes e
+produE<ccedil>E<atilde>o) o recomendE<aacute>vel E<eacute> que o
+programador otimize o cE<oacute>digo em um ambiente de testes muito
+similar ao que serE<aacute> utilizado em produE<ccedil>E<atilde>o para
+maximizar as otimizaE<ccedil>E<otilde>es feitas.
+
+=head2 Mais informaE<ccedil>E<otilde>es
+
+=over
+
+=item * WxPerl (instalaE<ccedil>E<atilde>o da biblioteca
+grE<aacute>fica): http://wxperl.sourceforge.net/
+
+=item * DocumentaE<ccedil>E<atilde>o do WxPerl:
+http://wxperl.pvoice.org/kwiki/index.cgi?
+
+=item * InstalaE<ccedil>E<atilde>o do ActivePerl:
+http://www.activeperl.com
+
+=item * Usando o MS Excel com Perl:
+http://www-128.ibm.com/developerworks/linux/library/l-pexcel/
+
+=item * Usando o MS Outlook com Perl:
+http://www.perlmonks.org/?node_id=185757
+
+=item * perldoc Devel::DProf
+
+=back
+
+Notes
+
+B<1> : Bem, isso E<eacute> uma pequena mentira: atualmente patches de
+seguranE<ccedil>a do Outlook nE<atilde>o permitem que isso seja feito
+diretamente, portanto o programa irE<aacute> salvar cada mensagem
+criada na pasta I<Drafts> e o usuE<aacute>rio terE<aacute> que clicar
+cada mensagem individualmente. Se isso E<eacute> impraticE<aacute>vel
+para vocE<ecirc> (por exemplo, vocE<ecirc> nE<atilde>o quer revisar
+milhares de mensagens) eu recomendo fortemente que vocE<ecirc> procure
+usar SMTP para enviar esses I<emails>.
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 23922 bytes of input
+#Mon Dec 14 02:15:06 2009 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

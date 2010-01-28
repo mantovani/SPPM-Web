@@ -1,0 +1,542 @@
+=pod
+
+r6 - 18 Jul 2007 - AlceuJunior
+
+=head1 Iniciando em perlguts, perlapi, perlcall e perlembed
+
+I<>
+
+Em algum momento vocE<ecirc> vai precisar passar por isso,
+entE<atilde>o por que nE<atilde>o dar uma olhada enquanto vocE<ecirc>
+ainda nE<atilde>o precisa?
+
+Tracei esse caminho quando quis fazer uma brincadeira de tentar
+construir uma estrutura de dados em C que eu pudesse importar do Perl
+da forma o mais fE<aacute>cil possE<iacute>vel. A idE<eacute>ia
+E<eacute> simples, dentro de um programa feito primeiramente em C,
+construir uma estrutura de dados flexE<iacute>vel de uma forma muito
+simples e conseguir importar essa estrutura de dentro do Perl
+tambE<eacute>m da forma mais simples possE<iacute>vel.
+
+E<Eacute> claro que XML, YAML ou qualquer outro formato
+transitE<oacute>rio passou pela minha cabeE<ccedil>a. Mas gerar esses
+arquivos em C nE<atilde>o E<eacute> tE<atilde>o simples, e eu queria
+reduzir ao mE<aacute>ximo a complexidade do parse quando fosse lido.
+Dessa forma, pensei que seria interessante guardar jE<aacute> no C em
+um formato que o Perl conseguisse ler nativamente. Foi entE<atilde>o
+que cheguei no mE<oacute>dulo Storable.
+
+O mE<oacute>dulo Storable E<eacute> uma forma bastante estE<aacute>vel
+de serializaE<ccedil>E<atilde>o do Perl e faz parte da
+distribuiE<ccedil>E<atilde>o padrE<atilde>o, entE<atilde>o isso
+tornaria o parse algo simples como:
+
+ use Storable qw(thaw);
+ use Data::Dumper;
+ local $/ = undef;
+ my $b = <STDIN>;
+ print Dumper(thaw($b))."\n";
+
+Nesse teste, eu espero, em STDIN, o conteE<uacute>do de uma
+referE<ecirc>ncia serializado usando o mE<eacute>todo Storable::freeze,
+cujo oposto E<eacute> Storable::thaw. Esse nE<atilde>o E<eacute> o modo
+mais comum de utilizar o Storable, mas elimina a obrigatoriedade de
+lidar com um arquivo e vocE<ecirc> tem um conjunto de bytes que
+vocE<ecirc> pode usar para o que quiser, como por exemplo, enviar por
+um socket. Nesse teste, vamos executar o programa em C que irE<aacute>
+jogar o conteE<uacute>do do freeze para STDOUT que serE<aacute>
+entE<atilde>o lido pelo script Perl acima.
+
+=head2 Comecando pelo perlguts
+
+A primeira coisa E<eacute> entender como o perl representa cada um dos
+tipos de variE<aacute>veis internamente. Por dentro, tudo acaba por ser
+um struct em C que guarda as informaE<ccedil>E<otilde>es dentro dele. E
+o que E<eacute> elegante nisso E<eacute> que vocE<ecirc>, quando lida
+com Perl em C, pode manipular essas estruturas exatamente da mesma
+maneira que o prE<oacute>prio perl manipula. Por isso o seu
+executE<aacute>vel em C (no final desse artigo), vai estar linkado com
+o libperl, mas veja bem, o prE<oacute>prio interpretador perl
+tambE<eacute>m estE<aacute> linkado com ela entE<atilde>o bem, o
+interpretador na verdade E<eacute> o libperl (e E<eacute> por isso que
+E<eacute> tE<atilde>o fE<aacute>cil embarcar Perl em outras
+aplicaE<ccedil>E<otilde>es, como o PostgreSQL) mas isso jE<aacute>
+seria perlembed, e ainda estamos no perlguts.
+
+EntE<atilde>o, se os tipos de variE<aacute>veis no perl sE<atilde>o
+representadas por structs, existe uma relaE<ccedil>E<atilde>o entre os
+tipos de variE<aacute>veis em Perl e em C. EntE<atilde>o aE<iacute>
+vai...
+
+Perl
+
+C
+
+ $test
+
+ SV* test
+
+ @test
+
+ AV* test
+
+ %test
+
+ HV* test
+
+E como vocE<ecirc> sabe, uma referE<ecirc>ncia tambE<eacute>m E<eacute>
+um scalar, entE<atilde>o
+
+Perl
+
+C
+
+ $a = \@b
+
+ SV* a = newRV((SV*)b)
+
+Mas como em C as coisas nE<atilde>o sE<atilde>o tE<atilde>o simples, as
+operaE<ccedil>E<otilde>es normais nE<atilde>o sE<atilde>o tE<atilde>o
+simples, entE<atilde>o...
+
+Perl
+
+C
+
+ $a = 1
+
+ SV* a = newSViv(1)
+
+ $b = 1.1
+
+ SV* b = newSVnv(1.1)
+
+ $c = "1.1"
+
+ SV* c = newSVpv("1.1",3)
+
+Por outro lado vocE<ecirc> ganha um bE<ocirc>nus, o perl faz as
+numificaE<ccedil>E<otilde>es e stringificaE<ccedil>E<otilde>es por
+vocE<ecirc>, e vocE<ecirc> nem precisa saber o formato original,
+nE<atilde>o por acaso, exatamente como o perl funciona.
+
+Perl
+
+C
+
+ $d = $a + $b + $c
+
+ double d = SvNV(a) + SvNV(b) + SvNV(c)
+
+ $d = $a . $b . $c
+
+ char* d; sprintf(d,"%s%s%s", SvPV_nolen(a), SvPV_nolen(b), SvPV_nolen(c))
+
+Foi nessa hora que eu pensei que E<eacute> mais fE<aacute>cil programar
+em C em Perl do que em C em C.
+
+Mas entE<atilde>o vamos lE<aacute>, agora falta a gente montar uma
+estrutura de dados um pouco mais complicada...
+
+        AV* data = newAV();
+        int i;
+        for (i = 0; i < 3; i++) {
+                HV* hash = newHV();
+                U32 ret = 0;
+                hv_store(hash,"ASDFGH",6,newSViv(i),ret);
+                av_push(data,newRV_noinc((SV*)hash));
+        }
+
+Mas se vocE<ecirc> ainda lembra que o cE<oacute>digo E<eacute> em C,
+vocE<ecirc> deve estar pensando que estE<aacute> faltando algum free, e
+que provavelmente tem algum memory leak. E, sim, do jeito que
+estE<aacute> aE<iacute> as variE<aacute>veis nE<atilde>o seriam
+liberadas. Como vocE<ecirc> provavelmente sabe, o perl libera a
+memE<oacute>ria utilizando um garbage collector baseado em contagem de
+referE<ecirc>ncias, ou seja, cada vez que vocE<ecirc> cria uma
+referE<ecirc>ncia para uma variE<aacute>vel, o refcount E<eacute>
+incrementado e cada vez que uma dessas referE<ecirc>ncias E<eacute>
+destruE<iacute>da o refcount E<eacute> decrementado. Quando o refcount
+chega a zero, a variE<aacute>vel E<eacute> destruE<iacute>da. Mas o que
+acontece E<eacute> que as operaE<ccedil>E<otilde>es newSV, newAV e
+newHV criam variE<aacute>veis com o refcount em 1, entE<atilde>o
+E<eacute> preciso decrementar o reference count para que elas sejam
+limpadas, ou criar um escopo perl e dizer que a variE<aacute>vel
+E<eacute> apenas daquele escopo.
+
+Para fazer isso vamos utilizar algumas macros que, no fim das contas,
+representam apenas abrir e fechar um escopo.
+
+O que em Perl seria "{", aqui passa a ser...
+
+ dSP;
+ ENTER;
+ SAVETMPS;
+
+e o que seria "}", aqui passa a ser...
+
+ FREETMPS;
+ LEAVE;
+
+E E<eacute> entE<atilde>o que chegamos ao conceito de mortalidade de
+variE<aacute>veis. O que acontece E<eacute> que vocE<ecirc> precisa
+dizer ao perl que uma variE<aacute>vel deverE<aacute> ser
+destruE<iacute>da ao sair do escopo. O que significa basicamente
+"agendar" um decremento de referE<ecirc>ncia para o fim desse escopo. O
+que basicamente E<eacute> algo como dizer que a variE<aacute>vel
+E<eacute> "my". Mas nE<atilde>o E<eacute> a mesma coisa. NE<atilde>o
+E<eacute> a mesma coisa simplesmente por que E<eacute> vocE<ecirc> que
+estE<aacute> criando cada variE<aacute>vel, entE<atilde>o E<eacute>
+vocE<ecirc> que tem que dizer que aquela variE<aacute>vel E<eacute>
+"mortal".
+
+Como o processo de tornar mortal E<eacute> apenas um agendamento do
+decremento da referE<ecirc>ncia, se vocE<ecirc> chamar mais vezes do
+que o necessE<aacute>rio vocE<ecirc> vai receber warnings de tentativa
+de fazer free de um scalar invE<aacute>lido, que E<eacute> um "double
+free" no sentido do perl.
+
+No entanto, E<eacute> preciso tomar cuidado, por que a
+operaE<ccedil>E<atilde>o newRV pode ser usada incrementando ou
+nE<atilde>o o refcount. VocE<ecirc> pode usar newRV_noinc ou newRV_inc.
+E a outra coisa que E<eacute> preciso ter cuidado E<eacute> que um hash
+quando for destruE<iacute>do vai diminuir o refcount dos seus
+elementos, assim como um array, quando for destruE<iacute>do
+tambE<eacute>m vai diminuir o refcount dos seus elementos.
+
+Dessa forma aquele cE<oacute>digo fica assim:
+
+Perl
+
+C
+
+ my @a = ();
+ for my $i (0..2) {
+       my %h = ();
+       $h{ASDFGH} = $i;
+       push @a, \%h;
+ } 
+
+        dSP;
+        ENTER;
+        SAVETMPS;
+        AV* data = (AV*)sv_2mortal((SV*)newAV());
+        int i;
+        for (i = 0; i < 3; i++) {
+                HV* hash = (HV*)sv_2mortal((SV*)newHV());
+                U32 ret = 0;
+                hv_store(hash,"ASDFGH",6,newSViv(i),ret);
+                av_push(data,newRV_inc((SV*)hash));
+        }
+        FREETMPS;
+        LEAVE;
+
+O cE<oacute>digo escrito acima foi mais ou menos uma
+traduE<ccedil>E<atilde>o, mas algumas coisas poderiam ser evitadas. Por
+exemplo: dentro do "for", primeiro faz um sv_2mortal para dizer que
+aquela referencia deve ser decrementada posteriormente, e depois
+E<eacute> utilizado o newRV_inc quando vai adicionar o hash no array.
+Se pararmos para pensar dois segundos, podemos evitar isso simplesmente
+utilizando o newRV_noinc. O que acontece E<eacute> que o HV* hash
+jE<aacute> vai ter o refcount em 1, e quando o array for
+destruE<iacute>do o seu refcount serE<aacute> imediatamente 0 e ele
+tambE<eacute>m serE<aacute> destruE<iacute>do. Uma forma interessante
+de ver como isso acontece E<eacute> utilizar o valgrind para ver se
+vocE<ecirc> deixou algum memory leak. Dessa forma, terminamos essa
+primeira parte com a construE<ccedil>E<atilde>o da estrutura de dados
+Perl em C (jE<aacute> brincando com o refcount).
+
+        dSP;
+        ENTER;
+        SAVETMPS;
+        AV* data = (AV*)sv_2mortal((SV*)newAV());
+        int i;
+        for (i = 0; i < 3; i++) {
+                HV* hash = (HV*)newHV();
+                U32 ret = 0;
+                hv_store(hash,"ASDFGH",6,newSViv(i),ret);
+                av_push(data,newRV_noinc((SV*)hash));
+        }
+        FREETMPS;
+        LEAVE;
+
+=head2 Agora um passeio rE<aacute>pido pelo perlapi
+
+Bem, como vamos chamar um mE<eacute>todo do Storable, precisamos,
+E<eacute> claro, fazer "use Storable". Seria completamente
+possE<iacute>vel utilizar o que vamos falar mais na frente sobre o
+perlcall e fazer um eval de "use Storable". Mas como queremos brincar
+um pouco mais, vamos atE<eacute> o perlapi e descobrimos o
+mE<oacute>dulo load_module. Esse mE<eacute>todo E<eacute>
+consideravelmente simples. Recebe o nome do mE<oacute>dulo,
+opcionalmente a versE<atilde>o e ainda mais opcionalmente ainda os
+parE<acirc>metros do use.
+
+entE<atilde>o...
+
+Perl
+
+C
+
+ require Storable;
+
+ SV* module = newSVpv("Storable",8);
+ load_module(PERL_LOADMOD_NOIMPORT,module,NULL); 
+
+Neste momento a flag PERL_LOADMOD_NOIMPORT E<eacute> importante, por
+que nE<oacute>s nE<atilde>o estaremos no contexto de uma
+aplicaE<ccedil>E<atilde>o normal Perl, entE<atilde>o o import falharia.
+Mas nE<atilde>o vamos entrar muito nesses detalhes. O importante dessa
+parte E<eacute> perceber que as funcionalidades do interpretador Perl
+estE<atilde>o completamente acessE<iacute>veis do C.
+
+=head2 O nosso objetivo real, perlcall
+
+O que queriamos mesmo era passar um valor para uma
+funE<ccedil>E<atilde>o Perl, entE<atilde>o E<eacute> aE<iacute> que
+chegamos ao perlcall, que explica como chamar cE<oacute>digos Perl de
+dentro do C, e mais importante que isso, como passar
+informaE<ccedil>E<otilde>es do C para o Perl. EntE<atilde>o vamos
+lE<aacute>... Para fins de delimitaE<ccedil>E<atilde>o de escopo, vamos
+considerar que vamos ter uma funE<ccedil>E<atilde>o wrapper em C para a
+funE<ccedil>E<atilde>o freeze do Storable. dessa forma, a assinatura
+E<eacute> a seguinte:
+
+ int storable_freeze(char** output, SV* data);
+
+Que tem mais ou menos o mesmo sentido da funE<ccedil>E<atilde>o
+Storable::freeze, recebe um scalar (no caso, SV* data) e retorna um
+conjunto de bytes com os dados serializados (nesse caso, vai definir
+output para um ponteiro alocado do tamanho do valor retornado pela
+funE<ccedil>E<atilde>o. Considerando isso, o nosso cE<oacute>digo
+inicial ganha mais 4 linhas (dentro do escopo principal) para chamar
+esse mE<eacute>todo e escrever a serializaE<ccedil>E<atilde>o para
+STDOUT chegando ao seguinte:
+
+ void test_storable() {
+         dSP;
+         ENTER;
+         SAVETMPS;
+         AV* data = (AV*)sv_2mortal((SV*)newAV());
+         int i;
+         for (i = 0; i < 3; i++) {
+                 HV* hash = (HV*)newHV();
+                 U32 ret = 0;
+                 hv_store(hash,"ASDFGH",6,newSViv(i),ret);
+                 hv_store(hash,"ASDFGHIJ",8,newSViv(i),ret);
+                 av_push(data,newRV_noinc((SV*)hash));
+         }
+         char* serialized;
+         int len = storable_freeze(&serialized,(SV*)data);
+         write(1,serialized,len);
+         free(serialized);
+         FREETMPS;
+         LEAVE;
+ }
+
+EntE<atilde>o agora vamos trabalhar na funE<ccedil>E<atilde>o
+storable_freeze. Em primeiro lugar, definimos o inE<iacute>cio e o fim
+de um escopo:
+
+ int storable_freeze(char** output, SV* data) {
+          dSP;
+         ENTER;
+         SAVETMPS;
+         STRLEN length;
+ 
+         LEAVE;
+         FREETMPS;
+         return length;
+ }
+
+Agora falta chamar o "Storable::freeze" e obter o resultado. Mas para
+chamar o mE<eacute>todo precisamos passar os parE<acirc>metros...
+
+Como vocE<ecirc> provavelmente sabe, o Perl lida com parE<acirc>metros
+e retornos como listas. O mE<eacute>todo recebe uma lista de argumentos
+(acessE<iacute>vel por @_) e retorna outra lista. EntE<atilde>o
+vocE<ecirc> precisa submeter essa lista e capturE<aacute>-la de volta.
+Para isso, existe uma sE<eacute>rie de macros que ajudam a fazer tudo
+certinho. Para comeE<ccedil>ar, vocE<ecirc> precisa dizer que vai
+manipular essa lista...
+
+ PUSHMARK(SP);
+ // aqui voce pode manipular a lista
+ PUTBACK;
+
+E, de uma forma bastante intuitiva, vocE<ecirc> faz push dos
+argumentos. No nosso caso...
+
+ XPUSHs(newRV_inc((SV*)data));
+
+E, na volta, vocE<ecirc> pode querer pegar os retornos... para isso,
+chama a macro POPs (o s E<eacute> de scalar, quando vocE<ecirc> ler a
+documentaE<ccedil>E<atilde>o vai ver que vocE<ecirc> pode jE<aacute>
+obter numificado ou stringificado.
+
+ SPAGAIN;
+ SV* serialized  = POPs;
+ PUTBACK;
+
+Dessa forma, falta apenas fazer o chamado ao mE<eacute>todo
+"Storable::freeze" e retornar a string. Para isso vamos chamar o
+call_pv com a flag G_SCALAR para dizer que o contexto da chamada
+E<eacute> scalar. Depois vamos converter em char* e retornar. Mas como
+temos um problema de escopo, vamos fazer um malloc e um memcpy. Segue
+entE<atilde>o o cE<oacute>digo completo para o storable_freeze.
+
+ int storable_freeze(char** output, SV* data) {
+         dSP;
+         ENTER;
+         SAVETMPS;
+         STRLEN len;
+         // preparar os parametros
+         PUSHMARK(SP);
+         XPUSHs(newRV_inc((SV*)data));
+         PUTBACK;
+         // chamar o método
+         call_pv("Storable::freeze",G_SCALAR);
+         // Obter o retorno
+         SPAGAIN;
+         SV* serialized = POPs;
+         PUTBACK;
+         // colocar no char*
+         char *ret = SvPV(serialized,len);
+         *output = malloc(len);
+         memcpy(*output,ret,len);
+         // encerrar o escopo
+         FREETMPS;
+         LEAVE;
+         return len;
+ }
+
+=head2 E finalmente, o perlembed
+
+E agora, a parte final, E<eacute> a de conseguir rodar cE<oacute>digo
+Perl de dentro do C. Para isso E<eacute> necessE<aacute>rio inicializar
+o interpretador Perl dentro do seu programa, E<eacute>
+necessE<aacute>rio compilar o seu programa com um conjunto de
+opE<ccedil>E<otilde>es especE<iacute>fico, que E<eacute> aquilo que foi
+utilizado para compilar a versE<atilde>o do Perl que vocE<ecirc>
+estE<aacute> usando.
+
+Em primeiro lugar, vamos aos includes. Para fazer as coisas que fizemos
+aqui atE<eacute> agora vocE<ecirc> vai precisar de dois includes do
+Perl,
+
+ #include <EXTERN.h>
+ #include <perl.h>
+
+Mas jE<aacute> que estamos falando de includes, uma vez que usamos o
+memcpy aqui, string.h tambE<eacute>m E<eacute> necessE<aacute>rio.
+
+ #include <string.h>
+
+Sempre que utilizamos o perl embarcado em um programa em C, precisamos
+utilizar a variE<aacute>vel estE<aacute>tica do interpretador...
+
+ static PerlInterpreter *my_perl;
+
+A parte de inicializar e finalizar o interpretador se resume em grande
+parte a copiar+colar. Com uma atenE<ccedil>E<atilde>o especial para a
+inicializaE<ccedil>E<atilde>o do XS, uma vez que queremos utilizar o
+Storable que tambE<eacute>m usa o XS. EntE<atilde>o... aE<iacute> vai o
+cE<oacute>digo final.
+
+ #define PERL_CODE /*
+ # To test this run
+ # cc -o test.o test.c `perl -MExtUtils::Embed -e ccopts -e ldopts` && ./test.o | perl test.c
+ use Storable qw(thaw);
+ use Data::Dumper;
+ local $/ = undef;
+ my $b = <STDIN>;
+ print Dumper(thaw($b))."\n";
+ __END__
+                   */
+ #include <EXTERN.h>
+ #include <perl.h>
+ #include <string.h>
+ /***    The Perl interpreter    ***/
+ static PerlInterpreter *my_perl;
+ 
+ int storable_freeze(char** output, SV* data) {
+         dSP;
+         ENTER;
+         SAVETMPS;
+         STRLEN len;
+         PUSHMARK(SP);
+         XPUSHs(newRV_inc((SV*)data));
+         PUTBACK;
+         call_pv("Storable::freeze",G_SCALAR);
+         SPAGAIN;
+         SV* serialized = POPs;
+         PUTBACK;
+         char *ret = SvPV(serialized,len);
+         *output = malloc(len);
+         memcpy(*output,ret,len);
+         FREETMPS;
+         LEAVE;
+         return len;
+ }
+ 
+ void test_storable() {
+         dSP;
+         ENTER;
+         SAVETMPS;
+         AV* data = (AV*)sv_2mortal((SV*)newAV());
+         int i;
+         for (i = 0; i < 3; i++) {
+                 HV* hash = (HV*)newHV();
+                 U32 ret = 0;
+                 hv_store(hash,"ASDFGH",6,newSViv(i),ret);
+                 hv_store(hash,"ASDFGHIJ",8,newSViv(i),ret);
+                 av_push(data,newRV_noinc((SV*)hash));
+         }
+         char* serialized;
+         int len = storable_freeze(&serialized,(SV*)data);
+         write(1,serialized,len);
+         free(serialized);
+         FREETMPS;
+         LEAVE;
+ }
+ 
+ 
+ EXTERN_C void xs_init (pTHX);
+ EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
+ EXTERN_C void xs_init(pTHX) {
+    char *file = __FILE__;
+    dXSUB_SYS;
+    newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
+ }
+ 
+ int main(int argc, char** argv, char** env) {
+         PERL_SYS_INIT3(&argc,&argv,&env);
+         my_perl = perl_alloc();
+         perl_construct(my_perl);
+         PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
+         char *embedding[] = { "", "-e", "0" };
+         perl_parse(my_perl, xs_init, 3, embedding, (char **)NULL);
+ 
+         SV* module = newSVpv("Storable",8);
+         load_module(PERL_LOADMOD_NOIMPORT,module,NULL);
+         
+         test_storable();
+ 
+         perl_destruct(my_perl);
+         perl_free(my_perl);
+         PERL_SYS_TERM();
+         return 0;
+ }
+
+EntE<atilde>o para testar, vocE<ecirc> pode baixar o arquivo test.c e
+rodar
+
+ cc -o test.o test.c `perl -MExtUtils::Embed -e ccopts -e ldopts` && ./test.o | perl test.c
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 23890 bytes of input
+#Mon Dec 14 02:15:08 2009 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

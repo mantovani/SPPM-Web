@@ -1,0 +1,595 @@
+=pod
+
+r3 - 20 Aug 2006 - JoenioCosta
+
+=head1 RecomendaE<ccedil>E<otilde>es para programaE<ccedil>E<atilde>o
+em Perl
+
+----
+
+=over
+
+=item * RecomendaE<ccedil>E<otilde>es gerais
+
+=item * EstE<eacute>tica do cE<oacute>digo
+
+=item * Filosofia de desenvolvimento
+
+=item * Nomenclatura em geral
+
+=item * Recursos interessantes da linguagem
+
+=item * ConsideraE<ccedil>E<otilde>es finais
+
+=back
+
+----
+
+I<>
+
+Essas recomendaE<ccedil>E<otilde>es foram fortemente baseadas no
+"perlstyle" - a manpage que E<eacute> o guia de estilo de
+programaE<ccedil>E<atilde>o "oficial" de Perl. AlE<eacute>m disso uma
+outra apresentaE<ccedil>E<atilde>o com sugestE<otilde>es de estilo para
+garantir a legibilidade do cE<oacute>digo tambE<eacute>m foi utilizada
+como base. Essa apresentaE<ccedil>E<atilde>o pode ser gerada a partir
+do script contido no endereE<ccedil>o:
+
+=over
+
+=item *
+http://www.cpan.org/modules/by-authors/id/TOMC/scripts/perlstyle-talk.gz
+
+=back
+
+=head2 RecomendaE<ccedil>E<otilde>es gerais
+
+Cada programador terE<aacute> as suas prE<oacute>prias
+preferE<ecirc>ncias relativas E<agrave> formataE<ccedil>E<atilde>o do
+cE<oacute>digo. PorE<eacute>m, existem algumas sugestE<otilde>es gerais
+que tornarE<atilde>o os programas mais fE<aacute>ceis de ler, entender
+e manter.
+
+A primeira e mais importante providE<ecirc>ncia a se tomar E<eacute>
+executar os programas sob a flag -w ou entE<atilde>o garantir que
+exista um "use warnings" no inE<iacute>cio de cada arquivo. Os
+programas tambE<eacute>m devem sempre rodar sob "use strict". Essas
+duas recomendaE<ccedil>E<otilde>es garantem com que muitos problemas
+nem cheguem a aparecer no futuro. Caso vocE<ecirc> tenha algum
+problema, um "use diagnostics" tentarE<aacute> dar uma
+explicaE<ccedil>E<atilde>o do que significa um warning e os motivos
+usuais dele estar sendo disparado. E<Agrave>s vezes E<eacute>
+interessante que os warnings se tornem fatais, para que o programa se
+recuse a executar caso existam warnings. Nesse caso, utilize:
+
+   use warnings FATAL => 'all';
+
+=head2 EstE<eacute>tica do cE<oacute>digo
+
+Esses sE<atilde>o apenas guias de estE<eacute>tica. As
+recomendaE<ccedil>E<otilde>es mais importantes estE<atilde>o marcadas
+com um astericos. Um "bloco" E<eacute> definido por uma abertura e
+fechamento de chaves.
+
+=over
+
+=item * CE<oacute>digo indentado (preferencialmente, com
+indentaE<ccedil>E<atilde>o de 4 colunas)
+
+=over
+
+=item * Abrir as chaves na mesma linha do comando. Caso nE<atilde>o
+seja possE<iacute>vel (no caso de uma condiE<ccedil>E<atilde>o muito
+grande, por exemplo) garanta com que as chaves de abertura e fechamento
+do bloco estE<atilde>o alinhadas
+
+=item * EspaE<ccedil>o em branco antes do inE<iacute>cio de um bloco
+
+=item * Um bloco de uma linha pode ser colocado na mesma linha do
+comando, incluindo as chaves ( ex: "if ($x) { $y = $z }" ), sem
+utilizar ponto-e-vE<iacute>rgula
+
+=item * Sem espaE<ccedil>o antes do ponto-e-vE<iacute>rgula
+
+=item * EspaE<ccedil>o em volta da maioria dos operadores
+
+=back
+
+=item * Linhas em branco entre pedaE<ccedil>os de cE<oacute>digo que
+fazem coisas diferentes
+
+=over
+
+=item * Sem espaE<ccedil>o antes da chamada de uma
+funE<ccedil>E<atilde>o ("funcao()" ao invE<eacute>s de "funcao ()")
+
+=item * EspaE<ccedil>o depois de cada vE<iacute>rgula
+
+=back
+
+=item * Linhas grandes sE<atilde>o quebradas apE<oacute>s um operador
+
+=item * Alinhas itens correspondentes verticalmente. Exemplo:
+
+=back
+
+        @animais = ( 'cachorro', 'gato', 'avestruz',
+                     'urubu',    'leão', 'girafa'    );
+
+=over
+
+=item * Omita pontuaE<ccedil>E<atilde>o redundante.
+
+=back
+
+Essas foram algumas sugestE<otilde>es mais superficiais. Bem ligadas
+E<agrave> estE<eacute>tica tradicional do cE<oacute>digo. Algumas
+sugestE<otilde>es mais substanciais sE<atilde>o:
+
+=over
+
+=item * SE<oacute> porque vocE<ecirc> PODE fazer alguma coisa de uma
+maneira especE<iacute>fica nE<atilde>o quer dizer que vocE<ecirc> DEVA
+fazer dessa forma. Perl foi feito para dar vE<aacute>rias maneiras de
+se fazer qualquer coisa, entE<atilde>o tente escolher a alternativa
+mais legE<iacute>vel. Por exemplo:
+
+=back
+
+        open(my $fh, 'arq') or die "Não foi possível abrir 'arq': $!";
+
+E<eacute> melhor que
+
+        die "Não foi possível abrir 'arquivo': $!" unless open(my $fh, 'arq');
+
+porque a segunda forma esconde o ponto principal da sentenE<ccedil>a em
+um modificador. Por outro lado
+
+         print "Iniciando análise\n" if $verbose;
+
+E<eacute> melhor que
+
+         $verbose && print "Iniciando análise\n";
+
+porque o ponto principal nE<atilde>o E<eacute> se o usuE<aacute>rio
+estE<aacute> em modo verbose ou nE<atilde>o.
+
+=over
+
+=item * NE<atilde>o faE<ccedil>a contorE<ccedil>E<otilde>es bobas para
+sair de um loop no seu topo ou no seu fim, uma vez que Perl
+provE<ecirc> o operador "last" para que vocE<ecirc> possa sair no meio.
+Apenas garanta que ele fique claramente visE<iacute>vel de alguma
+forma. Por exemplo:
+
+=back
+
+        for my $i (1..10) {
+            
+            my $resultado = funcao($i);
+            
+            # termina o loop se o resultado for verdadeiro
+            last if $resultado;
+            
+            processa_inteiro($i);
+        }
+
+=over
+
+=item *
+
+=over
+
+=item * NE<atilde>o tenha medo de utilizar labels para os loops,
+jE<aacute> que eles existem para melhorar a legibilidade e permitir
+quebras em loops de vE<aacute>rios nE<iacute>veis. Por exemplo:
+
+=back
+
+=back
+
+                 LINE: while (<$fh>) {
+                           next LINE if /xxx/;
+                 CHAR:     for my $char (split '') {
+                                next CHAR if /[A-F]/;
+                                next LINE if /[0-9]/
+                                print $char;
+                           }
+                       }
+
+=over
+
+=item * Use identificadores (nomes de variE<aacute>veis, de
+funE<ccedil>E<otilde>es, etc) que tenham algum significado aparente.
+Use underscores para separar as palavras. Geralmente E<eacute> mais
+fE<aacute>cil ler $var_names_like_this do que $VarNamesLikeThis ou
+alguma outra forma, principalmente considerando um cE<oacute>digo em
+inglE<ecirc>s escrito por pessoas que nE<atilde>o falam a
+lE<iacute>ngua nativamente. Essa E<eacute> uma regra simples que
+funciona de forma consistente com $VAR_NAMES_LIKE_THIS.
+
+=item * Pode ser E<uacute>til utilizar letras maiE<uacute>sculas ou
+minE<uacute>sculas para representar o escopo ou a natureza das
+variE<aacute>veis:
+
+=back
+
+      $ALL_CAPS_HERE   constantes (cuidado pois existem nomes reservados)
+      $Some_Caps_Here  variáveis globais
+      $no_caps_here    variáveis de escopo local ( my() ou local() )
+
+Nomes de funE<ccedil>E<otilde>es e mE<eacute>todos normalmente ficam
+melhores sempre em letras minE<uacute>sculas.
+
+VocE<ecirc> pode utilizar um underscore como caracter inicial de um
+identificador para indicar que uma variE<aacute>vel ou
+funE<ccedil>E<atilde>o nE<atilde>o deve ser utilizada fora do pacote em
+que ela foi definida (variE<aacute>veis / mE<eacute>todos privados).
+
+=over
+
+=item *
+
+=over
+
+=item * Use os operadores "and" e "or" ao invE<eacute>s de "&&" e "||"
+para reduzir o nE<uacute>mero de caracteres de
+pontuaE<ccedil>E<atilde>o. PorE<eacute>m, tome cuidado pois eles
+possuem precedE<ecirc>ncias diferentes ao se relacionar com outros
+operadores. Veja mais detalhes na manpage "perlop".
+
+=back
+
+=back
+
+=over
+
+=item * Ao invE<eacute>s de vE<aacute>rios print()s ou
+atribuiE<ccedil>E<otilde>es / concatenaE<ccedil>E<otilde>es repetidas,
+utilize os "here documents". Por exemplo:
+
+=back
+
+Ao invE<eacute>s de
+
+        $output .= "<td>\n";
+        $output .= "  <tr>\n";
+        $output .= "    <input type=submit>\n";
+        $output .= "  </tr>\n";
+        $output .= "</td>\n";
+
+Utilize
+
+        $output .= <<'ENDOFHTML';
+        <td>
+          <tr>
+            <input type=submit>
+          </tr>
+        </td>
+        ENDOFHTML
+
+Note que a string de fim do documento deve estar sozinha numa linha,
+sem caracteres (incluindo espaE<ccedil>os) antes ou depois. A
+indentaE<ccedil>E<atilde>o observada acima E<eacute> do documento e
+nE<atilde>o do cE<oacute>digo.
+
+=over
+
+=item * ME<oacute>dulos bem escritos quase nunca requerem o uso de "::"
+para a chamada de funE<ccedil>E<otilde>es. As funE<ccedil>E<otilde>es
+devem ser importadas ou utilizadas como mE<eacute>todos da classe.
+
+=back
+
+Escreva mE<oacute>dulos que aceitam a forma
+
+        Modulo->funcao(@parametros);
+
+Ao invE<eacute>s de
+
+        Modulo::funcao(@parametros);
+
+=head2 Filosofia de desenvolvimento
+
+O primeiro ponto a ser levantado E<eacute> um dos mais importantes:
+sempre que fizer sentido, pense em reusabilidade. Porque
+desperdiE<ccedil>ar seu esforE<ccedil>o com uma soluE<ccedil>E<atilde>o
+especE<iacute>fica se depois vocE<ecirc> provavelmente
+precisarE<aacute> de fazer algo similar novamente? Pense em generalizar
+o seu cE<oacute>digo. Pense em escrever um mE<oacute>dulo ou uma
+classe.
+
+Sempre lembre que vocE<ecirc> estE<aacute> programando em Perl. Como
+foi citado na seE<ccedil>E<atilde>o anterior, "sE<oacute> porque
+vocE<ecirc> PODE fazer alguma coisa de uma maneira especE<iacute>fica
+nE<atilde>o significa que vocE<ecirc> DEVA fazer dessa forma". Se
+vocE<ecirc> se encontrar escrevendo linhas de programa que se
+pareE<ccedil>am com C, Java ou Pascal, vocE<ecirc> nE<atilde>o
+estE<aacute> no caminho correto. VocE<ecirc> precisa aprender a
+programar o "Perl nativo". NE<atilde>o evite certas formas de escrever
+o cE<oacute>digo sE<oacute> porque ela utiliza um recurso pouco
+conhecido e/ou inexistente em outras linguagens. Quem for manter seu
+cE<oacute>digo no futuro deve ser alguE<eacute>m que conhece a
+linguagem. VocE<ecirc> nE<atilde>o escreve portuguE<ecirc>s para que um
+alemE<atilde>o ou francE<ecirc>s entenda, vocE<ecirc> escreve
+portuguE<ecirc>s para que pessoas que entendam portuguE<ecirc>s leiam.
+
+Procure sempre escrever programas que sE<atilde>o funcionais,
+minimalE<iacute>sticos, flexE<iacute>veis e compreensE<iacute>veis
+(nE<atilde>o necessariamente nessa ordem). Pense primeiro, depois
+comece a programar. Se as coisas parecerem muito ruins, jogue tudo fora
+e comece do zero de novo. Nunca tente "remendar" algo que estE<aacute>
+ruim: sempre que possE<iacute>vel, refaE<ccedil>a do zero. Isso melhora
+o seu entendimento, aprimora a criatividade e produz um produto final
+mais refinado. Lembre-se: o bom senso E<eacute> o que reina nas boas
+prE<aacute>ticas de programaE<ccedil>E<atilde>o. Algumas vezes, um
+cE<oacute>digo menor o torna mais mantE<iacute>vel, outras vezes
+nE<atilde>o.
+
+FaE<ccedil>a comentE<aacute>rios relevantes, B<sem parafrasear o
+cE<oacute>digo>. Fique longe de grandes blocos de comentE<aacute>rios
+com pouco conteE<uacute>do e caracteres de pontuaE<ccedil>E<atilde>o em
+volta "desenhando" o seu contorno. PorE<eacute>m, nE<atilde>o
+faE<ccedil>a comentE<aacute>rios de linhas especE<iacute>ficas mas,
+sim, comentE<aacute>rios relativos a um bloco de cE<oacute>digo
+inteiro. Normalmente, E<eacute> mais importante que suas estruturas de
+dados estejam bem comentadas que os algoritmos propriamente ditos. Isso
+nE<atilde>o E<eacute> uma regra geral, mas, normalmente, um
+cE<oacute>digo que precisa de comentE<aacute>rios para ser entendido
+por um programador fluente na linguagem E<eacute> um indE<iacute>cio de
+um cE<oacute>digo mal escrito.
+
+Quebre tarefas complexas em subrotinas. Quebre subrotinas em
+pedaE<ccedil>os que sE<atilde>o mais facilmente gerenciE<aacute>veis.
+NE<atilde>o tente colocar tudo em uma sE<oacute> expressE<atilde>o
+regular. Quando vocE<ecirc> vE<ecirc> funcionalidade similar em dois
+lugares, unifique o cE<oacute>digo em uma subrotina mais
+genE<eacute>rica.
+
+=head2 Nomenclatura em geral
+
+Para evitar os comentE<aacute>rios E<eacute> fundamental que a escolha
+dos nomes de variE<aacute>veis, funE<ccedil>E<otilde>es, procedimentos,
+etc. seja feita de forma pensada. NE<atilde>o basta seguir uma
+convenE<ccedil>E<atilde>o: novamente, o bom senso E<eacute> muito
+importante.
+
+Como regra geral, os nomes de procedimentos (subs que nE<atilde>o
+retornam nada) devem refletir o que elas fazem. Os nomes de
+funE<ccedil>E<otilde>es devem refletir o que elas retornam. DE<ecirc>
+nome E<agrave>s coisas de forma que elas leiam bem na linguagem na em
+que o cE<oacute>digo E<eacute> escrito. Caso estejamos usando
+inglE<ecirc>s para nomear uma funE<ccedil>E<atilde>o que retorna
+verdadeiro ou falso, "is_ready" E<eacute> um nome melhor que "ready". E
+assim por diante, utilizando os predicados "is", "does", "can", "has",
+etc. Assim sendo, teremos "canonize" como um procedimento,
+"canonical_version" com uma funE<ccedil>E<atilde>o que retorna um valor
+e "is_canonical" como uma verificaE<ccedil>E<atilde>o booleana. Para
+funE<ccedil>E<otilde>es de conversE<atilde>o ou de mapeamento,
+"abc2xyz" ou "abc_to_xyz" sE<atilde>o nomes normalmente utilizados.
+Hashes normalmentes especificam uma propriedade das suas chaves e
+sE<atilde>o usadas como uma relaE<ccedil>E<atilde>o de possessividade.
+Em outras palavras, dE<ecirc> nome E<agrave>s hashes pelos seus valores
+nE<atilde>o pelas suas chaves. Por ex:
+
+=over
+
+=item * CERTO:
+
+=back
+
+        %color = ('apple' => 'red', 'banana' => 'yellow');
+        print $color{'apple'};          # Prints `red'
+
+=over
+
+=item * ERRADO:
+
+=back
+
+        %fruit = ('apple' => 'red', 'banana' => 'yellow');
+        print $fruit{'apple'};          # Prints `red'
+
+Ao nomear alguns tipos de variE<aacute>veis, muitas vezes E<eacute>
+interessante utilizar algumas convenE<ccedil>E<otilde>es relativas ao
+seu tipo. Abaixo estE<atilde>o algumas sugestE<otilde>es para prefixos
+de nomes de variE<aacute>veis retiradas diretamente da manpage do
+"DBI":
+
+    $dbh    Database handle object
+    $sth    Statement handle object
+    $fh     A filehandle
+    \%attr  Reference to a hash of attribute values passed to methods
+
+=head2 Recursos interessantes da linguagem
+
+Algumas seE<ccedil>E<otilde>es atrE<aacute>s, quando falE<aacute>vamos
+sobre filosofia de desenvolvimento, citamos que existem recursos que
+fazem com que seu cE<oacute>digo deixe de se parecer com outras
+linguagens e se torne "Perl nativo". Aqui serE<atilde>o listadas
+algumas dessas tE<eacute>cnicas.
+
+Quando trabalhando com expressE<otilde>es regulares E<eacute> comum
+precisar de copiar valores e modificar somente a cE<oacute>pia. Com
+Perl, vocE<ecirc> pode copiar e mudar de uma vez sE<oacute>. Alguns
+exemplos:
+
+      # ex1
+      chomp($answer = <TTY>);
+ 
+      # ex2
+      ($a += $b) *= 2;
+ 
+      # ex3
+      # strip to basename
+      ($progname = $0)        =~ s!^.*/!!;
+ 
+      # ex4
+      # Make All Words Title-Cased
+      ($capword  = $word)     =~ s/(\w+)/\u\L$1/g;
+ 
+      # ex5
+      # /usr/man/man3/foo.1 changes to /usr/man/cat3/foo.1
+      ($catpage  = $manpage)  =~ s/man(?=\d)/cat/;
+ 
+      # ex6
+      @bindirs = qw( /usr/bin /bin /usr/local/bin );
+      for (@libdirs = @bindirs) { s/bin/lib/ }
+      print "@libdirs\n";
+      # saída: "/usr/lib /lib /usr/local/lib"
+
+Para pegar o E<uacute>ltimo elemento de uma array, dE<ecirc>
+preferencia a $array-1 ao invE<eacute>s de $array$#array. Um bom efeito
+colateral disso E<eacute> que utilizando a forma sugerida, vocE<ecirc>
+consegue pegar o E<uacute>ltimo elemento de uma lista tambE<eacute>m.
+Ex:
+
+      print( (1, 2, 3, 4)[-1] ); # imprime "4"
+
+Lembre-se que substr, index, rindex e splice tambE<eacute>m aceitam
+E<iacute>ndices negativos para contar de trE<aacute>s pra frente.
+Lembre-se que vocE<ecirc> pode atribuir valores a uma substring ou
+modificE<aacute>-la de qualquer outra forma:
+
+      substr($s, -10) =~ s/ /./g;
+
+VocE<ecirc> sE<oacute> estarE<aacute> comeE<ccedil>ando a pensar em
+Perl quando pensa seus algoritmos em termos de hashes. Utilize uma hash
+sempre que vocE<ecirc> quiser representar um conjunto, uma
+relaE<ccedil>E<atilde>o, uma tabela, uma estrutura ou um registro.
+
+Use loops foreach. Seu poder de localizaE<ccedil>E<atilde>o das
+variE<aacute>veis locais E<eacute> bastante E<uacute>til. Supondo que
+vocE<ecirc> tenha duas arrays de nE<uacute>meros e queira multiplicar
+todos os seus elementos por pi. FaE<ccedil>a dessa maneira:
+
+      foreach my $e (@a, @b) { $e *= 3.14159 }
+
+Quando vocE<ecirc> modifica a variE<aacute>vel $e dentro do loop, o
+elemento da array original E<eacute> modificado e nE<atilde>o uma
+cE<oacute>pia dele. Lembre-se que vocE<ecirc> pode copiar e modificar
+de uma vez sE<oacute>. Portanto, como exemplo, caso vocE<ecirc> queira
+criar uma array com os elementos de outra elevados ao quadrado,
+faE<ccedil>a da seguinte maneira:
+
+      foreach my $n (@square = @single) { $n **= 2 }
+
+Atente para o fato de que as funE<ccedil>E<otilde>es tambE<eacute>m
+sE<atilde>o estruturas de dados. EntE<atilde>o vocE<ecirc> pode
+utilizar referE<ecirc>ncias para funE<ccedil>E<otilde>es como
+argumentos para outras funE<ccedil>E<otilde>es ou em estruturas de
+dados. Por exemplo:
+
+      %State_Table = (
+          Initial  => \&show_top,
+          Execute  => \&run_query,
+          Format   => \&get_format,
+          Login    => \&resister_login,
+          Review   => \&review_selections,
+          Sorting  => \&get_sorting,
+          Wizard   => \&wizards_only,
+      );
+ 
+      foreach my $state (sort keys %State_Table) {
+          my $function = $State_Table{$state};
+          my $how      = ($action == $function)
+                          ? SCREEN_DISPLAY
+                          : SCREEN_HIDDEN;
+          $function->($how);
+      }
+
+Existe um recurso que Perl incorporou das linguagens de
+programaE<ccedil>E<atilde>o funcionais (como Lisp, Haskell, etc) que
+E<eacute> bastante E<uacute>til em alguns casos. Esse recurso
+sE<atilde>o os closures. VocE<ecirc> pode clonar
+funE<ccedil>E<otilde>es similares utilizando-os:
+
+      no strict 'refs';
+      for my $color (qw[red yellow orange green blue purple violet]) {
+          *$color = sub { qq<<FONT COLOR="\U$color\E">@_</FONT>> };
+      }
+
+Perl nE<atilde>o possui uma funE<ccedil>E<atilde>o de switch como a de
+C. PorE<eacute>m, vocE<ecirc> pode ter a mesma funcionalidade
+utilizando um for. Aprenda fazer um switch utilizando for:
+
+     SWITCH: for ($where) {
+                 /In Card Names/     && do { push @flags, '-e'; last; };
+                 /Anywhere/          && do { push @flags, '-h'; last; };
+                 /In Rulings/        && do {                    last; };
+                 die "unknown value for form variable where: `$where'";
+             }
+
+Mais recomendaE<ccedil>E<otilde>es para garantir um cE<oacute>digo
+mantE<iacute>vel
+
+=over
+
+=item * Use hashes de registros, nE<atilde>o estruturas de dados
+paralelas. NE<atilde>o faE<ccedil>a isso:
+
+=back
+
+      $idade{"João"} = 23;
+      $pai{"João"}   = "Joaquim";
+
+Quando vocE<ecirc> deveria fazer isso
+
+      $pessoas{"João"}{idade} = 23;
+      $pessoas{"João"}{pai}   = "Joaquim;
+
+=over
+
+=item * Evite o uso de barras de escape ("\") em expressE<otilde>es
+regulares ou outros operadores quote-like. Perl deixa com vocE<ecirc> a
+escolha dos delimitadores, entE<atilde>o tente usar esse poder:
+
+=back
+
+      m#^/usr/spool/m(ail|queue)#
+
+=over
+
+=item * Retire cE<oacute>digo repetido de dentro de loops ou
+condicionais.
+
+=back
+
+Antes
+
+      if (...) {
+          X;  Y;
+      } else {
+        X;  Z;
+      }
+
+Depois
+
+      X;
+      if (...) {
+          Y;
+      } else {
+          Z;
+      }
+
+=head2 ConsideraE<ccedil>E<otilde>es finais
+
+Como foi dito vE<aacute>rias vezes ao longo desse texto: o mais
+importante de tudo E<eacute> utilizar o bom senso. Tente pensar se o
+cE<oacute>digo escrito estaria claro caso outra pessoa fosse
+entendE<ecirc>-lo e tivesse que corrigir algum problema, por exemplo.
+Seja sincero consigo mesmo e saiba reconhecer os seus vE<iacute>cios
+que nE<atilde>o sE<atilde>o "saudE<aacute>veis" para o cE<oacute>digo.
+
+----
+
+Criada por: frighetti E<uacute>ltima modificaE<ccedil>E<atilde>o em:
+Quinta-feira 26 of Janeiro, 2006 [18:29:37 UTC] por frighetti
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 21723 bytes of input
+#Mon Dec 14 02:15:37 2009 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>
