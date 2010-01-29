@@ -1,0 +1,416 @@
+=pod
+
+r6 - 22 Feb 2007 - AlceuJunior
+
+=head1 Criando programas em Perl de forma segura
+
+I<>
+
+TE<eacute>cnicas para criar programas em Perl de forma segura.
+
+=head2 MotivaE<ccedil>E<otilde>es
+
+Este texto tem a intenE<ccedil>E<atilde>o de servir com um tutorial de
+como escrever programas em Perl que eventualmente precisem executar um
+outro programa, seja para capturar a saE<iacute>da do mesmo ou depender
+de alguma atividade que ele executa e vocE<ecirc> nE<atilde>o quer
+reproduzir isso em cE<oacute>digo Perl por diversos motivos. Eu escrevi
+este texto por dois motivos basicamente:
+
+1 - Cansei de ver mensagens na lista sobre I<scripts> ruins
+disponE<iacute>veis no Matt's script archive (se vocE<ecirc>
+estE<aacute> procurando um repositE<oacute>rio de scripts prontos
+entE<atilde>o evite o Matt Script Archive, aonde vocE<ecirc> encontra
+exemplos realmente bons de como B<nE<atilde>o> programar em Perl; uma
+alternativa muito melhor E<eacute> o projeto NMS).
+
+2 - Perl E<eacute> uma linguagem famosa como I<glue language> no
+entanto nE<atilde>o existe nenhum documento em portuguE<ecirc>s sobre o
+como executar outros programas de forma segura (pelo menos atE<eacute>
+o tE<eacute>rmino deste artigo).
+
+Este texto foi redigido originalmente no Vim, um programa felizmente de
+uso livre. Nenhum bit foi ferido durante o processo.
+
+=head2 ProgramaE<ccedil>E<atilde>o segura
+
+Programar de forma segura E<eacute>, acima de tudo, um hE<aacute>bito.
+Mesmo que a linguagem de programaE<ccedil>E<atilde>o ofereE<ccedil>a
+recursos para programar desta forma, geralmente isso E<eacute>
+opcional. Na realidade, existem poucos casos em que vocE<ecirc> talvez
+nE<atilde>o precise se preocupar com isso. Vou citar dois exemplos em
+que talvez isso funcione:
+
+1 - VocE<ecirc> desenvolve em Perl apenas para vocE<ecirc> (seu
+egoE<iacute>sta!).
+
+2 - VocE<ecirc> trabalha sozinho e E<eacute> o E<uacute>nico ser vivo,
+racional, que tem acesso ao computador aonde seus programas em Perl
+residem.
+
+Em outros casos vocE<ecirc> deveria se preocupar sobre o quanto seu
+programa E<eacute> seguro para ser usado. UsuE<aacute>rios comentem
+bobagens E<agrave>s vezes por descuido ou inocE<ecirc>ncia. Outras
+vezes as cometem por maldade mesmo. Prever o dano que seu programa pode
+causar se usado de forma errE<ocirc>nea E<eacute> um risco que
+vocE<ecirc> sempre deve analisar caso seja responsE<aacute>vel pelos
+programas que escreve.
+
+=head2 O bE<aacute>sico
+
+Existem dois cuidados bE<aacute>sicos para qualquer programa que
+vocE<ecirc> for escrever em Perl:
+
+=over
+
+=item * Sempre verifique a entrada de dados feitas pelo usuE<aacute>rio
+ou por outro programa que execute seu I<script> Perl;
+
+=back
+
+Isso E<eacute> atE<eacute> considerado muito bE<aacute>sico.
+VocE<ecirc> deve B<sempre> testar a entrada de dados do seu
+usuE<aacute>rio. Primeiro porque vocE<ecirc> pode assim evitar que o
+programa se comporte de maneira errada e ainda corrigir o
+usuE<aacute>rio. Segundo, se a entrada de seu usuE<aacute>rio influir
+diretamente no comando de sistema que vocE<ecirc> quer executar
+vocE<ecirc> poderE<aacute> se deparar com coisas assim:
+
+ my $entrada = shift;
+ system("cat /etc/passwd | grep $entrada");
+
+Esse E<eacute> um exemplo ingE<ecirc>nuo, mas funcional. Isso mostraria
+uma ou mais linhas de respostas baseadas no critE<eacute>rio de
+pesquisa do comando B<grep>. Agora imagine que a entrada do
+usuE<aacute>rio seria essa:
+
+ # programa.pl > /etc/shadow'
+
+Assim que o Perl substitui-se o valor da variE<aacute>vel B<$entrada>,
+vocE<ecirc> teria o conteE<uacute>do do arquivo de senhas
+substituE<iacute>do pelo conteE<uacute>do de /etc/passwd. Isso
+provavelmente seria algo prejudicial para seu programa e para o sistema
+em si.
+
+=over
+
+=item * Sempre procure encontrar mE<oacute>dulos em Perl no CPAN que
+possam estar executando a tarefa que vocE<ecirc> quer realizar. Isso
+evita chamadas ao sistema, o que E<eacute> mais seguro e muitas vezes
+mais rE<aacute>pido. Supondo que vocE<ecirc> seja preguiE<ccedil>oso (e
+isso E<eacute> uma virtude para programadores, segundo Larry Wall)
+vocE<ecirc> nE<atilde>o quer reinventar a roda: quer apenas resolver
+seu problema. Isso E<eacute> louvE<aacute>vel. Mas procure sempre
+encontrar um substituto escrito em Perl para o programa que vocE<ecirc>
+queira rodar. Para tarefas simples e corriqueiras, como executar um
+'tail' no I<shell>, existe muitos mE<oacute>dulos em Perl que
+jE<aacute> lhe oferecem isso, e estE<atilde>o disponE<iacute>veis no
+CPAN. Tudo que vocE<ecirc> tem que fazer E<eacute> baixar e instalar
+esses mE<oacute>dulos (vide perldoc CPAN para maiores
+informaE<ccedil>E<otilde>es de como fazer isso). Tendo essas tarefas
+sendo executadas pelo prE<oacute>prio interpretador do Perl,
+vocE<ecirc> nE<atilde>o precisa fazer chamadas de sistemas, o que
+E<eacute> mais rE<aacute>pido (na maioria das vezes), seguro e limpo.
+
+=back
+
+=head2 Revendo as tE<eacute>cnicas bE<aacute>sicas
+
+Existem diversas formas que se pode utilizar em Perl para executar
+programas de sistema:
+
+=over
+
+=item * a crase;
+
+=item * B<system>;
+
+=item * B<open>;
+
+=item * B<exec>;
+
+=item * B<IPC::Open2>;
+
+=item * B<IPC::Open3>
+
+=back
+
+Alguns desses comandos vocE<ecirc> usarE<aacute> apenas para executar
+um programa. Outros, para capturar a saE<iacute>da de um programa ou
+ainda fornecer dados para esse programa atravE<eacute>s da entrada
+padrE<atilde>o dele (STDIN). Outros ainda permitem executar o comando e
+capturar a saE<iacute>da comum e de erro do mesmo.
+
+Com certeza devem existir outras formas de fazer isso. Mas estas
+sE<atilde>o as clE<aacute>ssicas, se vocE<ecirc> resolver utilizar
+outra tente abstrair o que leu aqui para essa outra forma.
+
+=head2 NE<atilde>o usarE<aacute>s!
+
+Algum comandos (ou uma de suas formas de utilizaE<ccedil>E<atilde>o)
+vE<atilde>o chamar o I<shell> para interpretar e executar o programa.
+Isso inclui a interpretaE<ccedil>E<atilde>o de coisas como "*", "?",
+"E<lt>", "E<gt>", etc... VocE<ecirc> deve se lembrar o quanto esses
+metacaracteres podem ser perigosos.
+
+Existem algumas coisas que vocE<ecirc> simplesmente nE<atilde>o
+poderE<aacute> usar quando quiser escrever um programa seguro:
+
+=over
+
+=item * crase
+
+=back
+
+Tal como o I<shellscript>, Perl permite que vocE<ecirc> capture a
+saE<iacute>da de execuE<ccedil>E<atilde>o de um programa para uma
+variE<aacute>vel utilizando a seguinte forma:
+
+ $var = `who`
+
+Mas usar a crase significa que a Perl B<sempre> vai chamar o shell para
+interpretar o comando e devolver a resposta.
+
+=over
+
+=item * B<system> com apenas um argumento
+
+=back
+
+E<Eacute> uma mE<aacute> idE<eacute>ia usar B<system> dessa forma:
+
+ system("algum comando para executar");
+
+Quando chamado dessa forma, a Perl passa novamente seu comando para o
+shell interpretar, incluindo os parE<acirc>metros.
+
+=over
+
+=item * B<open>
+
+=back
+
+Usar B<open> para servir de entrada padrE<atilde>o para um programa ou
+ler a saE<iacute>da dele. Isso tambE<eacute>m E<eacute> executado no
+I<shell>, mas existe uma outra forma (que apresentarei logo a seguir)
+para usar o B<open> sem esses problemas.
+
+=head2 UsarE<aacute>s (e com cuidado)!
+
+=over
+
+=item * Os comandos listados abaixo nE<atilde>o usam a I<shell>,
+entE<atilde>o vocE<ecirc> deve considerar usE<aacute>-los sempre que
+lhe for possE<iacute>vel.
+
+=back
+
+Novamente o B<system>. Quando utilizado com a sintaxe seguinte:
+
+ system("comando","argumento1","argumento2");
+
+o B<system> nE<atilde>o chama mais o I<shell> para interpretar o
+comando, sendo executado diretamente pela Perl.
+
+=over
+
+=item * A dobradinha B<open> e B<exec>
+
+=back
+
+Quando se junta os comandos B<open> e B<exec> para capturar a
+saE<iacute>da/enviar entrada de/para um programa, a shell nE<atilde>o
+E<eacute> mais executada. Isso acontece quando se usa a sintaxe do
+B<open> para fazer um B<fork> e criar um processo filho. O B<exec> (o
+processo filho) entE<atilde>o executa o comando e seus argumentos sem
+chamar a I<shell> para interpretE<aacute>-los. A sintaxe E<eacute> a
+seguinte:
+
+ open(FOO, '|-') || exec 'tr', '[a-z]', '[A-Z]';
+ open(FOO, '-|') || exec 'cat', '-n', $file;
+
+Respectivamente, direcionando a saE<iacute>da do programa Perl para o
+programa B<tr> e redirecionando a saE<iacute>da do B<cat> para seu
+programa em Perl.
+
+=over
+
+=item * usando o B<exec>
+
+=back
+
+O B<exec> nunca chama o I<shell> para executar um comando. Mas
+tambE<eacute>m nE<atilde>o retorna nada de volta, o que E<eacute> meio
+triste por sinal. Mas pelo menos funciona.
+
+=over
+
+=item * B<IPC::Open2>
+
+=back
+
+O B<open2> faz parte do mE<oacute>dulo B<IPC>, presente por
+padrE<atilde>o em qualquer distribuiE<ccedil>E<atilde>o Perl que
+nE<atilde>o tenha sido compilada na era PaleozE<oacute>ica. Imagine ele
+como o B<open> com esterE<oacute>ides. Ele pode executar um programa
+sem usar o interpretador de comandos (desde que vocE<ecirc> passe os
+parE<acirc>metros em forma de lista), e ainda vai lhe fornecer acesso
+controlado ao B<STDIN> e B<STDOUT> do programa executado. Isso
+significa que vocE<ecirc> pode empurrar coisas a vontade para o
+programa tentar digerir (em B<STDIN>) e ler/processar/omitir a
+saE<iacute>da de B<STDOUT>.
+
+Mas nem tudo E<eacute> belo: seu programa pode travar se tentar ler a
+entrada/saE<iacute>da do programa sendo executado. Isso pode ocorrer
+caso o I<script> tente ler uma entrada ou uma saE<iacute>da que nunca
+E<eacute> fornecida ou E<eacute> utilizada em excesso. VocE<ecirc> pode
+evitar esse travamento utilizando a funE<ccedil>E<atilde>o B<select> ou
+o mE<oacute>dulo B<IO::Select>, que oferece acesso as
+operaE<ccedil>E<otilde>es da funE<ccedil>E<atilde>o B<select> mas
+atravE<eacute>s de uma interface orientada a objetos. Segue um exemplo
+(extraE<iacute>do a documentaE<ccedil>E<atilde>o do mE<oacute>dulo):
+
+ use IPC::Open2;
+ 
+ # Exemplo 1
+ # essa é a forma incorreta de se evitar o shell!
+ $pid = open2(\*RDRFH, \*WTRFH, 'some cmd and args');
+ 
+ # Exemplo 2
+ # esta é a forma correta
+ $pid = open2(\*RDRFH, \*WTRFH, 'some', 'cmd', 'and', 'args');
+
+=over
+
+=item * B<IPC::Open3>
+
+=back
+
+O B<open3> faz as mesmas coisa que o B<open2>, com
+adiE<ccedil>E<atilde>o de poder trabalhar tambE<eacute>m com B<STDERR>
+do programa sendo executado. Infelizmente, o B<open3> tambE<eacute>m
+estE<aacute> sujeito aos mesmos problemas do B<open2>. Um exemplo
+(tambE<eacute>m extraE<iacute>do da documentaE<ccedil>E<atilde>o do
+mE<oacute>dulo):
+
+ use IPC::Open3;
+ use strict;
+ use warnings;
+ 
+ my($wtr, $rdr, $err);
+ $pid = open3($wtr, $rdr, $err,'some cmd and args', 'optarg', ...);
+
+Onde B<$wtr>, B<$rdr> e B<$err> sE<atilde>o respectivamente B<STDIN>,
+B<STDOUT> e B<STDERR> do programa sendo executado. Particularmente eu
+gosto do open3 para ter maior controle sobre a
+aplicaE<ccedil>E<atilde>o sendo executada: normalmente o programa pode
+usar B<STDOUT> e B<STDERR> para emitir mensagens e elas podem ser
+necessE<aacute>rias para controle do script ou ainda precisam ser
+omitidas. Ao invE<eacute>s de trabalhar com B<STDIN>, B<STDOUT> e
+B<STDERR> de forma separada, vocE<ecirc> pode simplesmente fazer assim:
+
+ use IPC::Open3;
+ use strict;
+ use warnings;
+ 
+ my $pid = open3(\*WTRFH,\*FROMCHILD,\*FROMCHILD,"ps","ax");
+ 
+ while ( <FROMCHILD> ) {print;}
+ 
+ close(FROMCHILD);
+ close(WTRFH);
+
+Entendeu o truque? Estamos usando B<STDOUT> e B<STDERR> com a mesma
+referE<ecirc>ncia, o que nos permite ler os dois I<handles> de uma vez
+sE<oacute>.
+
+=head2 Outros cuidados
+
+Existem muitos cuidados que vocE<ecirc> ter quando quiser escrever um
+programa Perl de modo que ele funcione com uma relativa
+seguranE<ccedil>a. Algumas coisas sE<atilde>o relativas a cuidados de
+arquitetura, como I<race conditions>. Outros sE<atilde>o cuidados
+mE<iacute>nimos, como usar a opE<ccedil>E<atilde>o "Taint" do Perl. A
+opE<ccedil>E<atilde>o Taint funciona como uma B<pragma> do Perl, assim
+como B<warnings> e B<strict>. VocE<ecirc> pode invocar o modo Taint
+dessa forma:
+
+ #!/usr/bin/perl -T
+
+ou ainda assim:
+
+ # perl -T script_perl
+
+Quando o modo Taint for ativado, o Perl vai assumir que quaisquer
+outros dados vindos de fora do programa, como variE<aacute>veis
+definidas pela entrada do usuE<aacute>rio em tempo de
+execuE<ccedil>E<atilde>o, sE<atilde>o marcadas como corrompidas e o
+programa E<eacute> interrompido no ato quando E<eacute> tentado usar
+essa variE<aacute>vel para coisas perigosas, como definir um nome de
+arquivo a ser criado. Para resolver isso, vocE<ecirc> deve "lavar" os
+dados para que a Perl passe a aceitE<aacute>-lo:
+
+ use strict;
+ use warnings;
+ 
+ my $arquivo = shift;
+ 
+ unless ($arquivo =~ /(^[\w\.\-\_]+$)/) {
+ 
+   die "Nome de arquivo inválido\n";
+ 
+ } else {
+ 
+   $arquivo = $1;
+ 
+ }
+
+Essas linhas somente permitirE<atilde>o que um nome de arquivo seja
+composto apenas de letras, nE<uacute>meros, "-", "_" e pontos (".").
+Qualquer outra coisa E<eacute> tida como inaceitE<aacute>vel (como um
+"E<gt>") e o programa E<eacute> abortado.
+
+VocE<ecirc> sempre tem que "lavar" os dados dessa maneira e dessa forma
+o modo Taint vai aceitar a variE<aacute>vel caso ela nE<atilde>o cai na
+ocorrE<ecirc>ncia de possuir um caracter indesejado. E<Eacute>
+importante cuidar para que a expressE<atilde>o regular realmente
+elimine qualquer outra coisa que nE<atilde>o o aceitE<aacute>vel. Se
+vocE<ecirc> tentar enganar o modo Taint, vai apenas enganar a si mesmo.
+
+O modo Taint tambE<eacute>m o ajuda a evitar uma porE<ccedil>E<atilde>o
+de outras coisas tambE<eacute>m. Procure ler sua
+documentaE<ccedil>E<atilde>o perldoc perlsec para maiores detalhes de
+como essa pragma pode lhe ajudar.
+
+Usar o modo Taint E<agrave>s vezes pode ser algo chato de se fazer.
+Afinal, vocE<ecirc> pode ter que comeE<ccedil>ar a lavar uma
+porE<ccedil>E<atilde>o de variE<aacute>veis que antes nE<atilde>o
+estavam causando nenhum problema em seu script. Mas fazer algo bem
+feito exige esforE<ccedil>o, entE<atilde>o tente nE<atilde>o ser
+preguiE<ccedil>oso nesse sentido.
+
+=head2 Bibligrafia
+
+=over
+
+=item * perldoc -f open
+
+=item * perldoc IPC::Open2
+
+=item * perldoc IPC::Open3
+
+=item * perldoc -f select
+
+=item * perldoc IO::Select
+
+=item * perldoc perlsec
+
+=back
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 16417 bytes of input
+#Thu Jan 28 21:53:24 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

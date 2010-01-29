@@ -1,0 +1,520 @@
+=pod
+
+r2 - 19 Aug 2006 - JoenioCosta
+
+=head1 TE<eacute>cnicas de manipulaE<ccedil>E<atilde>o
+
+I<>
+
+Este artigo aborda algumas tE<eacute>cnicas de como manipular
+corretamente as estruturas um tanto complexas que perl permite criar,
+buscando explanar o mE<aacute>ximo de detalhes possE<iacute>veis.
+
+Com um simples array pode-se interpretar vE<aacute>rias estruturas de
+dados como uma fila, lista, arvores... Assim o trabalho fica muito mais
+simples e conseqE<uuml>entemente mais rE<aacute>pido de se resolver.
+
+Por se tratar de um assunto muito requisitado, ou seja, de extrema
+necessidade para quem deseja iniciar a programar, ele nE<atilde>o vai
+ser muito teE<oacute>rico e sim exemplificativo.
+
+=head2 1. Arrays
+
+Mais conhecido como "vetor" ou ainda "matriz" (quando formado por duas
+ou mais dimensE<otilde>es) sendo basicamente formado por uma lista de
+elementos escalares e identificado pelo sE<iacute>mbolo "@".
+
+Array: "Uma seqE<uuml>E<ecirc>ncia ordenada de valores, armazenados de
+modo que vocE<ecirc> possa facilmente acessar qualquer um dos valores
+usando subscrito inteiro que especifica o offset do valor da
+seqE<uuml>E<ecirc>ncia". (ProgramaE<ccedil>E<atilde>o Perl, Ed. 3,
+pE<aacute>g. 1002)
+
+Como descrito acima, todo array E<eacute> acessado por um offset
+inteiro (comeE<ccedil>ando pelo 0). O interessante disto E<eacute> que
+pode usar nE<uacute>meros negativos tambE<eacute>m, obtendo-se um
+efeito "reverso" (de trE<aacute>s para frente).
+
+Vamos supor que vocE<ecirc> queira acessar o E<uacute>ltimo elemento,
+vocE<ecirc> poderia fazer assim:
+
+   $array[$#array];
+
+Como visto "$#" indica o nE<uacute>mero de elementos que existe no
+array. Mas simplificando, bastaria fazer isto.
+
+   $array[-1];
+
+=head2 1.1. Criando
+
+Vou abordar como criar arrays "unidimensionais", "bidimensionais" e
+"tridimensionais". Perceba como E<eacute> atribuE<iacute>do os valores
+por () e [] pois existe uma diferenE<ccedil>a entre eles. Existem
+vE<aacute>rios mE<eacute>todos de se criar um array, isto vai depender
+de sua "criatividade", mas dentre estes mE<eacute>todos vou utilizar a
+funE<ccedil>E<atilde>o qw//.
+
+     () - Significa que você esta atribuindo uma lista.
+     [] - É uma referência aos escalares.
+   qw// - Vai "quebrar" entre os espaços.
+     .. - É uma seqüência de valores.
+ 
+ 
+ 
+   # Unidimensional.
+   my       @uni = ("Primeiro", "Segundo", "Terceiro", "Quarto");
+   my @intervalo = ( 1 .. 50 );
+   my    @quoted = qw(Primeiro Segundo Terceiro Quarto);
+   my     @misto = (50, 5.1252351, "Numero");
+ 
+ 
+ 
+   # Bidimensional.
+   my        @bi = (
+                    ["Primeiro", "Segundo", "Terceiro", "Quarto"],
+                    [ 1 .. 50 ],
+                    [ qw(Primeiro Segundo Terceiro Quarto) ],
+                    [50, 5.1252351, "Numero"],
+                   );
+ 
+ 
+ 
+   # Tridimensional.
+   my       @tri = (
+                    [
+                     ["Primeiro", "Segundo", "Terceiro", "Quarto"],
+                     [ 1 .. 50 ],
+                     [ qw(Primeiro Segundo Terceiro Quarto) ],
+                     [50, 5.1252351, "Numero"],
+                    ],
+                    [
+                     ["Primeiro", "Segundo", "Terceiro", "Quarto"],
+                     [ 1 .. 50 ],
+                     [ qw(Primeiro Segundo Terceiro Quarto) ],
+                     [50, 5.1252351, "Numero"],
+                    ],
+                    [
+                     ["Primeiro", "Segundo", "Terceiro", "Quarto"],
+                     [ 1 .. 50 ],
+                     [ qw(Primeiro Segundo Terceiro Quarto) ],
+                     [50, 5.1252351, "Numero"],
+                    ],
+                   );
+
+=head2 1.2. Acessando
+
+O acesso a valores do array E<eacute> feito por um nE<uacute>mero
+inteiro podendo ser positivo ou negativo.
+
+   $# - Retorna o total de elementos que pertence ao array.
+ 
+ 
+   # Unidimensional.
+   $uni[0];  # Acessando um elemento.
+   $uni[-1]; # Acessando o ultimo elemento.
+ 
+   for my $x (0..$#uni) { # Imprimindo todos os elementos.
+    print "\$uni[$x] == \"$uni[$x]\"\n";
+   }
+ 
+ 
+ 
+   # Bidimensional.
+   $bi[0][0];   # Acessando um elemento.
+   $bi[-1][-1]; # Acessando o último elemento.
+ 
+   for my $x (0..$#bi) { # Imprimindo todos os elementos.
+    for my $y (0..$#{$bi[$x]}) {
+     print "\$bi[$x][$y] == \"$bi[$x][$y]\"\n";
+    }
+   }
+ 
+ 
+ 
+   # Tridimensional.
+   $tri[0][0][0];    # Acessando um elemento.
+   $tri[-1][-1][-1]; # Acessando o último elemento.
+ 
+   for my $x (0..$#tri) { # Imprimindo todos os elementos.
+    for my $y (0..$#{$tri[$x]}) {
+     for my $z (0..$#{$tri[$x][$y]}) {
+      print "\$tri[$x][$y][$z] == \"$tri[$x][$y][$z]\"\n";
+     }
+    }
+   }
+
+=head2 1.3. Adicionando e Removendo
+
+Com este simples array podemos facilmente interpretar estruturas como
+listas e filas apenas usando algumas funE<ccedil>E<otilde>es que perl
+nos disponibiliza, entre elas:
+
+   unshift() - Adiciona no início.
+     shift() - Remove e retorna o elemento removido do início.
+      push() - Adiciona no final.
+       pop() - Remove e retorna o elemento removido do final.
+    splice() - Exclui um ou mais elementos.
+ 
+ 
+ 
+   # Unidimensional.
+   unshift(@uni, "Começo");
+   unshift(@uni, "Próximo", "Seguinte");
+   push(@uni, "Sexto");
+   push(@uni, "Sétimo", "Oitavo");
+   my $primeiro = shift(@uni);
+   my $ultimo   = pop(@uni);
+   splice(@uni, 3, 1); # Onde 3 é o offset e 1 é o tamanho.
+ 
+ 
+ 
+   # Bidimensional.
+   unshift(@bi, ["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]);
+   unshift(@{$bi[0]}, "Começo", "Próximo", "Seguinte");
+   push(@bi, ["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]);
+   push(@{$bi[0]}, "Sexto", "Sétimo", "Oitavo");
+   my $primeiro = shift(@{$bi[0]});
+   my $ultimo   = pop(@{$bi[0]});
+   splice(@{$bi[0]}, 3, 1);
+ 
+ 
+ 
+   # Tridimensional.
+   unshift(@tri, [["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]]);
+   unshift(@{$tri[0]}, ["Primeiro", "Segundo", "Terceiro", "Quarto"]);
+   unshift(@{$tri[0][0]}, "Começo", "Próximo", "Seguinte");
+   push(@tri, [["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]]);
+   push(@{$tri[0]}, ["Primeiro", "Segundo", "Terceiro", "Quarto"]);
+   push(@{$tri[0][0]}, "Sexto", "Sétimo", "Oitavo");
+   my $primeiro = shift(@{$tri[0][0]});
+   my $ultimo   = pop(@{$tri[0][0]});
+
+=head2 1.4. Fatias
+
+Vamos supor que vocE<ecirc> queira apenas uma seqE<uuml>E<ecirc>ncia de
+elementos do array, isso E<eacute> possE<iacute>vel pelo uso do
+operador "..".
+
+   # Unidimensional.
+   my @fatia_uni = @uni[0..3];
+ 
+ 
+ 
+   # Bidimensional.
+   my @fatias_bi;
+   for my $x (0..$#bi) {
+    push(@fatias_bi, [ @{$bi[$x]}[0..3] ]);
+   }
+ 
+ 
+ 
+   # Tridimensional.
+   my @fatias_tri;
+   for my $x (0..$#tri) {
+    for my $y (0..$#{$tri[$x]}) {
+     push(@fatias_tri, [ @{$tri[$x][$y]}[0..3] ]);
+    }
+   }
+
+=head2 2. Hashes
+
+TambE<eacute>m conhecido como "Listas Associativas". SE<atilde>o
+identificadas pelo sE<iacute>mbolo "%". Hash: "Uma
+associaE<ccedil>E<atilde>o desordenada de pares chave/valor, armazenada
+de modo que vocE<ecirc> possa usar facilmente uma chave de string para
+procurar seu valor de dados associado". (ProgramaE<ccedil>E<atilde>o
+Perl, Ed. 3, pE<aacute>g. 1017) Bom isto nada mais E<eacute> do que
+associar vE<aacute>rios nomes a um valor escalar, ou seja, fazer
+referE<ecirc>ncias a listas de escalares.
+
+=head2 2.1. Criando
+
+Em hashes o offset E<eacute> uma string e nE<atilde>o mais um inteiro
+como no array, tornando esta estrutura um tanto "divertida" de se
+trabalhar.
+
+   # Unidimensional.
+   my %uni_numeros = ("Primeiro", 1, "Segundo", 2, "Terceiro", 3, "Quarto", 4);
+   my %uni_sons = (
+                   Vaca   => "moooo",
+                   Pato   => "quack",
+                   Cavalo => "whinny",
+                   Ovelha => "bee",
+                   Peru   => "cluck",
+                   Porco  => "oink"
+                   );
+ 
+ 
+ 
+   # Bidimensional.
+   my %bi_sons = (
+                      E => {
+                            vaca   => "moooo",
+                            pato   => "quack",
+                            cavalo => "whinny",
+                            ovelha => "bee",
+                            peru   => "cluck",
+                            porco  => "oink",
+                           },
+                   Tres => {
+                            vaca   => "moooo",
+                            pato   => "quack",
+                            cavalo => "whinny",
+                            ovelha => "bee",
+                            peru   => "cluck",
+                            porco  => "oink",
+                           },
+                  Cinco => {
+                            vaca   => "moooo",
+                            pato   => "quack",
+                            cavalo => "whinny",
+                            ovelha => "bee",
+                            peru   => "cluck",
+                            porco  => "oink",
+                           },
+                 );
+ 
+ 
+ 
+   # Tridimensional.
+   my %tri_sons = (
+                   Entao => {
+                             a => { "vaca", "moooo", "ovelha", "bee" },
+                             o => { "pato", "quack", "cavalo", "whinny" },
+                            },
+                  );
+
+=head2 2.2. Acessando
+
+Como descrito o offset para acessar os elementos do hash E<eacute> uma
+string podendo utilizar aspas (") ou nE<atilde>o.
+
+     each - Retorna uma lista de dois elementos contendo chave e valor.
+     keys - Retorna uma lista contendo todas as chaves.
+     sort - Classifica e retorna a lista.
+   values - Retorna uma lista contendo todos os valores.
+ 
+ 
+ 
+   # Unidimensional.
+   $uni_numeros{Primeiro};
+   $uni_sons{vaca};
+ 
+   for my $indice (keys %uni_sons) { # Elementos desordenados.
+    print "$indice faz $uni_sons{$indice}.\n";
+   }
+ 
+   for my $indice (sort keys %uni_sons) { # Elementos ordenados.
+    print "$indice faz $uni_sons{$indice}.\n";
+   }
+ 
+   my @indice = keys %uni_sons;    # Pegando o índice.
+   my @valores = values %uni_sons; # Pegando os valores.
+ 
+   while (my ($indice, $valor) = each %uni_sons) { # Índice e valor.
+    print "$indice faz $valor.\n";
+   }
+ 
+ 
+ 
+   # Bidimensional.
+   $bi_sons{Tres}{vaca};
+ 
+   for my $i (keys %bi_sons) { # Elementos desordenados.
+    for my $j (keys %{$bi_sons{$i}}) {
+     print "$i $j faz $bi_sons{$i}{$j}.\n";
+    }
+   }
+ 
+   for my $i (sort keys %bi_sons) { # Elementos ordenados.
+    for my $j (sort keys %{$bi_sons{$i}}) {
+     print "$i $j faz $bi_sons{$i}{$j}.\n";
+    }
+   }
+ 
+   my @indice = keys %bi_sons;       # Pegando o índice.
+   my @subindice = keys %{$bi_sons{E}};
+   my @valores = values %{$bi_sons{E}}; # Pegando os valores.
+ 
+   for my $i (keys %bi_sons) { # Índice e valor.
+    while (my ($indice, $valor) = each %{$bi_sons{$i}}) {
+     print "$i $indice faz $valor.\n";
+    }
+   }
+ 
+ 
+ 
+   # Tridimensional.
+   $tri_dons{Entao}{a}{vaca};
+ 
+   for my $i (keys %tri_sons) { # Elementos desordenados.
+    for my $j (keys %{$tri_sons{$i}}) {
+     for my $k (keys %{$tri_sons{$i}{$j}}) {
+      print "$i $j $k faz $tri_sons{$i}{$j}{$k}.\n"
+     }
+    }
+   }
+ 
+   for my $i (sort keys %tri_sons) { # Elementos ordenados.
+    for my $j (sort keys %{$tri_sons{$i}}) {
+     for my $k (sort keys %{$tri_sons{$i}{$j}}) {
+      print "$i $j $k faz $tri_sons{$i}{$j}{$k}.\n";
+     }
+    }
+   }
+ 
+   my @indice = keys %{$tri_sons{Entao}{a}};    # Pegando o índice.
+   my @valores = values %{$tri_sons{Entao}{a}}; # Pegando os valores.
+ 
+   for my $i (keys %tri_sons) { # Índice e valor.
+    for my $j (keys %{$tri_sons{$i}}) {
+     while (my ($indice, $valor) = each %{$tri_sons{$i}{$j}}) {
+      print "$i $j $indice faz $valor.\n";
+     }
+    }
+   }
+
+=head2 2.3. Adicionando e Removendo
+
+Veja como E<eacute> flexE<iacute>vel esta estrutura.
+
+   # Unidimensional.
+   $uni_sons{Trem} = "piui";  # Adicionando.
+   delete($uni_sons{Ovelha}); # Removendo
+ 
+ 
+ 
+   # Bidimensional.
+   $bi_sons{Um}{trem} = "piui"; # Adicionando.
+   $bi_sons{Sete} = {
+                     vaca   => "moooo",
+                     pato   => "quack",
+                     cavalo => "whinny",
+                     ovelha => "bee",
+                     peru   => "cluck",
+                     porco  => "oink",
+                    };
+   delete($bi_sons{Sete}{porco}); # Removendo
+   delete($bi_sons{Sete});
+ 
+ 
+ 
+   # Tridimensional.
+   $tri_sons{Entao}{o}{trem} = "piui"; # Adicionando.
+   delete($tri_sons{Entao}{o}{pato});  # Removendo.
+
+=head2 2.4. Fatias
+
+Caso vocE<ecirc> queira apenas alguns valores do hash isto E<eacute>
+possE<iacute>vel listando os elementos desejados dentro das {}.
+
+   # Unidimensional.
+   my @uni_fatia = @sons{"Vaca", "Porco", "Cavalo", "Trem"};
+ 
+ 
+ 
+   # Bidimensional.
+   my @bi_fatia = @{$sons{E}}{"vaca", "porco", "cavalo"};
+ 
+ 
+ 
+   # Tridimensional.
+   my @tri_fatia = @{$sons{Entao}{a}}{"vaca", "ovelha"};
+
+=head2 3. Misturando
+
+Agora misturando estas duas estruturas poderemos obter grandes
+facilidades em relaE<ccedil>E<atilde>o a flexibilidade.
+
+=head2 3.1. Arrays de Hashes
+
+Este E<eacute> E<uacute>til quando se tem uma lista de chaves e valores
+(registros).
+
+   # Criando.
+   @array = (
+             {
+              user => "geek",
+              pass => "geekpass",
+             },
+             {
+              user => "freak",
+              pass => "freakpass",
+             },
+            );
+ 
+   # Acessando.
+   $array[0]{user};
+ 
+   # Adicionando.
+   unshift(@array, { user => "lary", pass => "larypass" });
+   push(@array, { user => "monger", pass => "mongerpass" });
+ 
+   # Removendo.
+   delete($array[0]);
+ 
+   # Imprimindo.
+   for my $i (0..$#array) {
+    for my $j (keys %{$array[$i]}) {
+     print "$i - $j == $array[$i]{$j}\n";
+    }
+   }
+
+=head2 3.2. Hashes de Arrays
+
+Podemos usar esta estrutura quando tivermos uma lista atribuE<iacute>da
+a uma chave.
+
+   # Criando.
+   my %hash = {
+               lab01 => [ "maria", "joao", "jose" ],
+               lab02 => [ "ana", "cleusa", "elza" ],
+              };
+ 
+   # Acessando.
+   $hash{lab01}[0];
+ 
+   # Adicionando.
+   unshift(@{$hash{lab01}}, "sonia");
+   push(@{$hash{lab01}}, "fernanda");
+ 
+   # Removendo.
+   my $primeiro = shift(@{$hash{lab01}});
+   my $ultimo = pop(@{$hash{lab01}});
+ 
+   # Imprimindo.
+   for my $i (keys %hash) {
+    for my $j (0..$#{$hash{$i}}) {
+     print "user $i: $hash{$i}{$j}\n";
+    }
+   }
+
+=head2 4. Bibliografia
+
+=over
+
+=item * Online
+
+=over
+
+=item * TE<iacute>tulo: PerlDSC man page?
+
+=item * DescriE<ccedil>E<atilde>o: DocumentaE<ccedil>E<atilde>o oficial
+sobre estrutura de dados em perl.
+
+=back
+
+=back
+
+----
+
+Criada por: frighetti E<uacute>ltima modificaE<ccedil>E<atilde>o em:
+Segunda-feira 16 of Janeiro, 2006 [19:41:01 UTC] por frighetti
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 17586 bytes of input
+#Thu Jan 28 21:54:10 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>
