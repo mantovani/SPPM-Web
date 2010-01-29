@@ -175,6 +175,6 @@ Leia o documento completo:
 
 #Pod::HTML2Pod conversion notes:
 # 8461 bytes of input
-#Mon Dec 14 02:15:32 2009 mantovani
+#Thu Jan 28 21:53:54 2010 mantovani
 # No a_name switch not specified, so will not try to render <a name='...'>
 # No a_href switch not specified, so will not try to render <a href='...'>

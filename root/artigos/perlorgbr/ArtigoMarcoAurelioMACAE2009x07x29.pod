@@ -108,6 +108,6 @@ compatE<iacute>veis com o sistema operacional da MS.
 
 #Pod::HTML2Pod conversion notes:
 # 6814 bytes of input
-#Mon Dec 14 02:14:55 2009 mantovani
+#Thu Jan 28 21:52:54 2010 mantovani
 # No a_name switch not specified, so will not try to render <a name='...'>
 # No a_href switch not specified, so will not try to render <a href='...'>

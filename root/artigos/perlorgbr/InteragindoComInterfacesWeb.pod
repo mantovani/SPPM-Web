@@ -59,6 +59,6 @@ TerE<ccedil>a-feira 24 of Janeiro, 2006 [23:30:19 UTC] por frighetti
 
 #Pod::HTML2Pod conversion notes:
 # 1813 bytes of input
-#Mon Dec 14 02:15:39 2009 mantovani
+#Thu Jan 28 21:54:04 2010 mantovani
 # No a_name switch not specified, so will not try to render <a name='...'>
 # No a_href switch not specified, so will not try to render <a href='...'>

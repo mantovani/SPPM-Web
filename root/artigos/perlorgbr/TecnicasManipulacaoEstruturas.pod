@@ -515,6 +515,6 @@ Segunda-feira 16 of Janeiro, 2006 [19:41:01 UTC] por frighetti
 
 #Pod::HTML2Pod conversion notes:
 # 17586 bytes of input
-#Mon Dec 14 02:15:43 2009 mantovani
+#Thu Jan 28 21:54:10 2010 mantovani
 # No a_name switch not specified, so will not try to render <a name='...'>
 # No a_href switch not specified, so will not try to render <a href='...'>

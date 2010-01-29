@@ -34,6 +34,6 @@ Assim, esta E<eacute> a Terceira Grande Virtude do Programador.
 
 #Pod::HTML2Pod conversion notes:
 # 1443 bytes of input
-#Mon Dec 14 02:15:23 2009 mantovani
+#Thu Jan 28 21:53:40 2010 mantovani
 # No a_name switch not specified, so will not try to render <a name='...'>
 # No a_href switch not specified, so will not try to render <a href='...'>

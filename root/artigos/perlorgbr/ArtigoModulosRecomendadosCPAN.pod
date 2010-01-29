@@ -313,6 +313,6 @@ humanos. (Veja tambE<eacute>m: JSON)
 
 #Pod::HTML2Pod conversion notes:
 # 10101 bytes of input
-#Mon Dec 14 02:14:56 2009 mantovani
+#Thu Jan 28 21:52:56 2010 mantovani
 # No a_name switch not specified, so will not try to render <a name='...'>
 # No a_href switch not specified, so will not try to render <a href='...'>
