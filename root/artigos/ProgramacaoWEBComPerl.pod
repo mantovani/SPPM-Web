@@ -1,0 +1,466 @@
+=pod
+
+r2 - 19 Aug 2006 - JoenioCosta
+
+=head1 ProgramaE<ccedil>E<atilde>o WEB com Perl
+
+I<>
+
+Hoje em dia, com a popularizaE<ccedil>E<atilde>o da WEB, mesmo que de
+forma desigual e discriminatE<oacute>ria, grande parte dos
+esforE<ccedil>os de desenvolvimento de
+aplicaE<ccedil>E<otilde>es/sistemas computacionais voltaram-se para o
+ambiente WEB. Sendo assim, E<eacute> natural o surgimento de diversas
+linguagens e ferramentas com essa finalidade. A Perl, devido sua
+flexibilidade e capacidade para manipulaE<ccedil>E<atilde>o de arquivos
+texto, tem se monstrado bastante eficiente na geraE<ccedil>E<atilde>o
+dinE<acirc>mica de arquivos texto formatados, como E<eacute> o caso dos
+arquivos HTML, que com seu conjunto de marcadores tem sido desde o
+princE<iacute>pio, o principal meio para a publicaE<ccedil>E<atilde>o
+de conteE<uacute>do na WEB.
+
+Esse artigo pretende analisar alguns dos paradigmas de
+programaE<ccedil>E<atilde>o utilizados no desenvolvimento de
+aplicaE<ccedil>E<otilde>es/sistemas para WEB, apontar as vantagens e
+desvantagens de cada um e, finalmente, fazer a
+apresentaE<ccedil>E<atilde>o de duas bibliotecas ou mE<oacute>dulos,
+como E<eacute> mais conhecido pelos programadores da linguagem PERL.
+ME<oacute>dulos estes, voltados para a programaE<ccedil>E<atilde>o WEB
+que adota o paradigma de separar a codificaE<ccedil>E<atilde>o da
+marcaE<ccedil>E<atilde>o.
+
+=head2 1. Paradigmas
+
+Independentemente da linguagem utilizada na programaE<ccedil>E<atilde>o
+de uma aplicaE<ccedil>E<atilde>o WEB convencional (aquela cujo o
+objetivo E<eacute> gerar hipertexto dinE<acirc>micamente), existem
+trE<ecirc>s paradigmas que podem ser adotados para tal fim: um, inserir
+os marcadores do hipertexto dentro do cE<oacute>digo; dois, inserir o
+cE<oacute>digo dentro do hipertexto e trE<ecirc>s, nE<atilde>o misturar
+o hipertexto com a codificaE<ccedil>E<atilde>o.
+
+Das trE<ecirc>s abordagens, a E<uacute>ltima E<eacute> a menos aplicada
+e por mais estranho que possa parecer, dentre os trE<ecirc>s paradigmas
+discutidos nesse artigo, esta E<eacute> a abordagem que possui mais
+vantagens do que desvantagens. Analise os exemplos abaixo e
+comeE<ccedil>arE<aacute> perceber por que ela E<eacute> mais vantagosa.
+
+=over
+
+=item * Codigo com marcaE<ccedil>E<otilde>es
+
+=back
+
+   #!/usr/bin/perl
+   use strict;
+ 
+   $titulo = 'Minha Home Page';
+   $autor = 'José Maria';
+   $data = scalar localtime;
+ 
+   print "Content-Type: text/html;\n\n";
+   print <<EOF;
+       <html>
+           <head>
+      <title>
+          $titulo
+      </title>
+           </head>
+ 
+           <body>
+      <h2>
+          $titulo
+      </h2>
+ 
+      <b>$autor</b> (#) $data
+           </body>
+       </html>
+   EOF
+ 
+   exit 0;
+
+=over
+
+=item * MarcaE<ccedil>E<otilde>es com cE<oacute>digo (exemplicando com
+Embperl)
+
+=back
+
+   [-
+       $titulo = 'Minha Home Page';
+       $autor = 'José Maria';
+       $data = date ("l dS of F Y h:i:s A");
+   -]
+   <html>
+       <head>
+           <title>
+               [+ $titulo +]
+           </title>
+       </head>
+ 
+       <body>
+           <h2>
+               [+ $titulo +]
+           </h2>
+ 
+           <b>[+ $autor +]</b> (#) [+ $data +]
+       </body>
+   </html>
+
+=over
+
+=item * CE<oacute>digo e marcaE<ccedil>E<otilde>es separados
+(exemplificando com HTML::Template)
+
+=back
+
+   #!/usr/bin/perl
+   use strict;
+   use HTML::Template;
+ 
+   my $t = HTML::Template->new(filename=>'teste.tmpl');
+ 
+   $t->param(titulo=>'Minha Home Page');
+   $t->param(autor=>'José Maria');
+   $t->param(data=>scalar localtime);
+ 
+   print "Content-Type: text/html;\n\n";
+   print $t->output;
+
+=over
+
+=item * MARCAE<Ccedil>E<Otilde>ES (teste.tmpl)
+
+=back
+
+   <html>
+       <head>
+           <title>
+               <TMPL_VAR titulo>
+           </title>
+       </head>
+ 
+       <body>
+           <h2>
+               <TMPL_VAR titulo>
+           </h2>
+ 
+           <b><TMPL_VAR autor></b> (#) <TMPL_VAR data>
+       </body>
+   </html>
+
+=head2 1.1. PARADIGMA 1: CE<oacute>digo com marcaE<ccedil>E<otilde>es
+
+Essa E<eacute> a mais convencional e tradicional de todas as abordagens
+e nE<atilde>o difere muito da programaE<ccedil>E<atilde>o normal a que
+todo programador estE<aacute> habituado. Sua vantagem, E<eacute>
+nE<atilde>o exigir do programador nenhum conhecimento extra, fora o
+entendimento de como a aplicaE<ccedil>E<atilde>o E<eacute> processada
+no servidor WEB e apresentada pelo navegador. A desvantagem, E<eacute>
+que o cE<oacute>digo, com todos os marcadores em meio a ele,
+ficarE<aacute> sujo e pouco legE<iacute>vel, o que dificultarE<aacute>
+bastante a manutenE<ccedil>E<atilde>o. E mesmo sendo uma
+manutenE<ccedil>E<atilde>o simples, que exiga apenas
+alteraE<ccedil>E<otilde>es visuais (nas marcaE<ccedil>E<otilde>es)
+nE<atilde>o poderE<aacute> ser feita por uma pessoa especializada
+E<uacute>nicamente na linguagem de marcaE<ccedil>E<atilde>o.
+
+=head2 1.2. PARADIGMA 2: MarcaE<ccedil>E<otilde>es com cE<oacute>digo
+
+O suprimento imediato de uma necessidade muitas vezes pesa bastante na
+escolha por esse ou aquele paradigma. Quando se tem, por exemplo, uma
+pE<aacute>gina HTML completamente estE<aacute>tica e surge a
+necessidade de adicionar informaE<ccedil>E<otilde>es dinE<acirc>micas a
+ela, o caminho mais curto E<eacute> inserir em meio as
+marcaE<ccedil>E<otilde>es trechos de cE<oacute>digo que irE<atilde>o
+gerar ou obter essas informaE<ccedil>E<otilde>es de algum lugar. E
+essa, E<eacute> uma das vantagens dessa abordagem, praticidade (nessa
+situaE<ccedil>E<atilde>o). Por outro lado, para projetos grandes esse
+tipo de codificaE<ccedil>E<atilde>o E<eacute> pouco eficiente, pois
+como na abordagem anterior (Paradigma 1), em todas as fases de
+construE<ccedil>E<atilde>o da aplicaE<ccedil>E<atilde>o e nas
+manutenE<ccedil>E<otilde>es, serE<aacute> necessE<aacute>rio pessoas
+com conhecimento tanto de linguagem de programaE<ccedil>E<atilde>o
+quanto de marcaE<ccedil>E<atilde>o. AlE<eacute>m disso, devido ao fato
+do cE<oacute>digo e as marcaE<ccedil>E<atilde>o estarem juntos, tal
+abordagem irE<aacute> exigir um esforE<ccedil>o extra por parte dos
+programadores, que passarE<atilde>o a ter que se preocupar nE<atilde>o
+sE<oacute> com a depuraE<ccedil>E<atilde>o da
+codificaE<ccedil>E<atilde>o, mas tambE<eacute>m com a das
+marcaE<ccedil>E<otilde>es.
+
+=head2 1.3. PARADIGMA 3: CE<oacute>digo e (separadamente)
+marcaE<ccedil>E<otilde>es
+
+Manter cE<oacute>digo e marcaE<ccedil>E<atilde>o separados, pelo que
+jE<aacute> foi exposto, E<eacute> algo sensato de ser feito. E
+E<eacute> justamente essa a abordagem desse terceiro paradigma. Os
+programadores continuarE<atilde>o codificando seus cE<oacute>digos como
+habitualmente o fazem e os profissionais resposE<aacute>veis pela
+formataE<ccedil>E<atilde>o de hipertexto poderE<atilde>o continuar
+preocupando-se E<uacute>nica e exclusivamente com a
+apresentaE<ccedil>E<atilde>o. Essa divisE<atilde>o de tarefas,
+E<eacute> bastante produtiva e eficiente, pois nE<atilde>o exige
+esforE<ccedil>os extras de nenhuma das partes, somente um pouco de
+entrosamento e compromisso entre ambas. As partes trabalharE<atilde>o
+quase que independentemente, uma nE<atilde>o interferindo no que diz
+respeito a outra. ModificaE<ccedil>E<otilde>es na
+aplicaE<ccedil>E<atilde>o relacionadas a apresentaE<ccedil>E<atilde>o
+(marcaE<ccedil>E<otilde>es), na maior parte das vezes, nE<atilde>o
+exigirE<aacute> alteraE<ccedil>E<otilde>es tambE<eacute>m na
+codificaE<ccedil>E<atilde>o e vice-versa. E<Eacute> nesse sentindo que
+este artigo quer demonstrar que esta abordagem possui mais vantagens do
+que desvantagens em relaE<ccedil>E<atilde>o E<agrave>s duas anteriores,
+entretanto, cada aplicaE<ccedil>E<atilde>o E<eacute> um caso
+diferenciado, igualmente diferente, cada pessoa que a constrE<oacute>i
+e suas necessidades.
+
+=head2 2. O mE<oacute>dulo HTML::Template
+
+Esse mE<oacute>dulo, jE<aacute> exemplificado neste artigo, E<eacute> a
+ferramenta mais interessante para a adoE<ccedil>E<atilde>o do paradigma
+3 no desenvolvimento de aplicaE<ccedil>E<otilde>es WEB. Ele basea-se na
+utilizaE<ccedil>E<atilde>o de "Templates" (ex.: um hipertexto
+estE<aacute>tico) com alguns marcadores especiais que serE<atilde>o
+substituidos pela informaE<ccedil>E<atilde>o dinE<acirc>mica gerada ou
+obtida pelo CGI da aplicaE<ccedil>E<atilde>o WEB. Esse conjunto de
+marcadores especiais sE<atilde>o semelhantes aos marcadores do
+hipertexto e a primeira vista, podem atE<eacute> se confundir com
+estes. Abaixo relaciono todos eles:
+
+   <TMPL_VAR NAME="param">
+ 
+   <TMPL_IF NAME="param"> [ <TMPL_ELSE> ] </TMPL_IF>
+ 
+   <TMPL_UNLESS NAME="param"> [ <TMPL_ELSE> ] </TMPL_UNLESS>
+ 
+   <TMPL_LOOP NAME="param"></TMPL_LOOP>
+ 
+   <TMPL_INCLUDE NAME="file">
+
+OBS: O termo 'NAME=' dos marcadores acima E<eacute> opcional, tendo
+sido omitido do exemplo mostrado no inE<iacute>cio deste artigo.
+
+O marcador serE<aacute> substituido pelo contE<eacute>udo do
+parE<acirc>metro do tipo "hash", inicializado atravE<eacute>s do
+mE<eacute>todo "$obj-E<gt>param()". Por sua vez, os marcadores e
+irE<atilde>o avaliar logicamente o conteE<uacute>do de um de
+parE<acirc>metro. JE<aacute> o marcador , E<eacute> um pouco
+diferenciado. Ele irE<aacute> avaliar um parE<acirc>metro do tipo
+"array" e realizarE<aacute> tantas interaE<ccedil>E<otilde>es (loops)
+quanto forem os elementos deste "array". Cada elemento deverE<aacute>
+ser um "hash" cujo os valores serE<atilde>o colocados no lugar dos
+marcadores correspondentes, no interior de . E finalmente, o marcador
+serE<aacute> substituido pelo conteE<uacute>do do arquivo que ele
+referencia.
+
+Abaixo um exemplo bastante ilustrativo de como aplicar esses
+marcadores:
+
+   #!/usr/bin/perl
+   #---------------------------------------------------------------#
+   ## Exemplo de um programa utilizando HTML::Template             #
+   #---------------------------------------------------------------#
+ 
+   use strict;
+   use HTML::Template
+ 
+   my $t = HTML::Template->new(filename=>'exemplo.tmpl');
+ 
+   $t->param(nome => 'Revista Eletrônica');
+   $t->param(edicao => '1');
+   $t->param(artigos => [
+       {
+           artigo => 'Artigo 1',
+           autor => 'José',
+           nivel => 0,
+       },
+       {
+           artigo => 'Artigo 2',
+           autor => 'Maria',
+           nivel => 1,
+       },
+       {
+           artigo => 'Artigo 3',
+           autor => 'Pedro',
+           nivel => 2,
+        }]
+   );
+ 
+   print "Content-Type: text/html;\n\n";
+   print $t->output;
+ 
+ 
+ 
+    <!-- exemplo.tmpl -->
+ 
+    <html>
+        <head>
+            <title>
+                <TMPL_VAR nome>
+            </title>
+        </head>
+ 
+        <body>
+            <h2>
+                <TMPL_VAR nome>, edição <TMPL_VAR edicao>
+            </h2>
+ 
+           <table>
+               <TMPL_LOOP artigos>
+               <tr>
+                   <td>
+                       <TMPL_VAR artigo>
+                   </td>
+                   <td>
+                       <TMPL_VAR autor>
+                   </td>
+                   <td>
+                       <TMPL_IF nivel>
+                           Avançado
+                       <TMPL_ELSE>
+                           Iniciante
+                       </TMPL_IF>
+                   </td>
+               </tr>
+               </TMPL_LOOP>
+           </table>
+       </body>
+   </html>
+
+=head2 3. O mE<oacute>dulo EL::cgi
+
+Esse mE<oacute>dulo, desenvolvido pelo autor deste artigo, E<eacute>
+apenas um, de uma sE<eacute>rie de outros mE<oacute>dulos que objetivam
+tornar a programaE<ccedil>E<atilde>o de aplicaE<ccedil>E<otilde>es WEB
+mais rE<aacute>pida, eficiente e organizada, seguindo a abordagem de
+implementaE<ccedil>E<atilde>o com cE<oacute>digo e
+marcaE<ccedil>E<otilde>es em separado. Basicamente, esse mE<oacute>dulo
+e os demais da sE<eacute>rie "EL *", sE<atilde>o uma
+abstrataE<ccedil>E<atilde>o de outros mE<oacute>dulos (ex.: HTML
+Template, DBI, Apache::Session, etc.) de forma consistente e integrada,
+o que facilita o entendimento do funcionamento e a
+utilizaE<ccedil>E<atilde>o dos mesmos. Veja a referE<ecirc>ncia
+bibliogrE<aacute>fica para mais detalhes sobre esses mE<oacute>dulos.
+No exemplo abaixo, E<eacute> dada uma noE<ccedil>E<atilde>o bem
+bE<aacute>sica de como ele funciona.
+
+   #---------------------------------------------------------------#
+   ## calc.pl                                                      #
+   #---------------------------------------------------------------#
+ 
+   use strict;
+   use EL::cgi;
+ 
+   my $cgi = EL::cgi->new;
+ 
+   my %h = (
+       op1 => {
+           dsc => 'Operator 1',
+           rex => '\d+',
+           msg => 'Type any number !!',
+       }
+       ope => {
+           dsc => 'Operation',
+           rex => '[+-*/]',
+           msg => 'Operation are "+", "-", "*", "/"',
+       }
+       ope2 => {
+           dsc => 'Operator 2',
+           rex => '\d+',
+           msg => 'Type any number',
+       }
+   );
+ 
+   if ($cgi->valid(\%h)) {
+       my $r = eval '$r = ' $cgi->get('op1') .
+                            $cgi->get('ope') .
+                            $cgi->get('op2');
+       $cgi->set('result',$r);
+   }
+ 
+   $cgi->out('calc.tmpl');
+ 
+ 
+ 
+   <-- calc.tmpl -->
+ 
+   <form action="calc.pl" method="post">
+       <input type="text" name="op1" value="<TMPL_VAR op1>">
+       <select name="ope">
+           <option value="+">
+           <option value="-">
+           <option value="*">
+           <option value="/">
+       </select>
+       <input type="text" name="op2" value="<TMPL_VAR op2>">
+       =
+       <b><TMPL_VAR result></b>
+ 
+       <TMPL_IF error_msg>
+       <br>
+       <b><TMPL_VAR error_msg></b>
+       </TMPL_IF>
+   </form>
+
+=head2 4. Bibliografia
+
+=over
+
+=item * Online
+
+=over
+
+=item * TE<iacute>tulo: EmbPerl
+
+=item * DescriE<ccedil>E<atilde>o: Framework para
+contruE<ccedil>E<atilde>o de aplicaE<ccedil>E<otilde>es WEB com o
+cE<oacute>digo embutido nas marcaE<ccedil>E<otilde>es.
+
+=back
+
+=back
+
+=over
+
+=item *
+
+=over
+
+=item * TE<iacute>tulo: HTML::Template
+
+=item * DescriE<ccedil>E<atilde>o: ME<oacute>dulo que permite separar o
+cE<oacute>digo das marcaE<ccedil>E<otilde>es.
+
+=back
+
+=back
+
+=over
+
+=item *
+
+=over
+
+=item * TE<iacute>tulo: EL::cgi
+
+=item * DescriE<ccedil>E<atilde>o: ME<oacute>dulo para
+construE<ccedil>E<atilde>o de aplicaE<ccedil>E<otilde>es WEB baseado no
+paradigma 3.
+
+=back
+
+=back
+
+----
+
+Criada por: frighetti E<uacute>ltima modificaE<ccedil>E<atilde>o em:
+Segunda-feira 16 of Janeiro, 2006 [19:29:43 UTC] por frighetti
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 16235 bytes of input
+#Sun Jan 31 01:46:08 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

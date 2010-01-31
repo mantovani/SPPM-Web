@@ -1,0 +1,140 @@
+=pod
+
+r2 - 19 Aug 2006 - JoenioCosta
+
+=head1 Adicionando repositE<oacute>rios de mE<oacute>dulos em seu PPM
+
+I<>
+
+NE<atilde>o achou certo mE<oacute>dulo em seu repositE<oacute>rio?
+Consulte outros...
+
+=head2 1. IntroduE<ccedil>E<atilde>o
+
+Saiba como adicionar e instalar mE<oacute>dulos que estejam em outros
+repositE<oacute>rios.
+
+=head2 2. Adicionando um novo repositE<oacute>rio
+
+Estando em linux, windows ou mac, vE<aacute> atE<eacute> seu
+console/terminal/ms-dos/shell e em seguida entre em seu ppm digitando
+apenas "ppm".
+
+=head2 2.1 Sintaxe padrE<atilde>o
+
+O comando padrE<atilde>o para adicionar repositE<oacute>rios E<eacute>:
+
+     rep add NOME_DO_REPOSITÓRIO ENDEREÇO_DO_REPOSITÓRIO
+
+=head2 2.2 Exemplos
+
+     rep add CrazyInsomniac http://crazyinsomniac.perlmonk.org/perl/ppm/5.8/
+     rep add TheoryX5 http://theoryx5.uwinnipeg.ca/ppms/
+     rep add Theory http://theoryx5.uwinnipeg.ca/ppmpackages/
+
+=head2 3 Instalando um mE<oacute>dulo
+
+Para instalar um mE<oacute>dulo, entre seu seu PPM e execute o seguinte
+comando:
+
+     install NOME_DO_MÓDULO
+
+Exemplo...
+
+     install dbi
+     install DBD::Mysql
+
+Ele irE<aacute> pesquisar em todos os repositE<oacute>rios que
+estiverem em sua lista de repositE<oacute>rios e caso ache, irE<aacute>
+instala-lo.
+
+Caso haja mE<oacute>dulos com nomes semelhantes, irE<aacute> aparecer
+uma lista com os nomes e vocE<ecirc> terE<aacute> uma
+opE<ccedil>E<atilde>o de instalar o mE<oacute>dulo desejado.
+
+=head2 4 CPAN.org - O chefE<atilde>o dos repositE<oacute>rios
+
+Todos sabem que o CPAN.org E<eacute> o maior repositE<oacute>rio de
+mE<oacute>dulos Perl que existe, e que nele vocE<ecirc> encontra
+mE<oacute>dulos para qualquer ocasiE<atilde>o...
+
+Para usar o repositE<oacute>rio de mE<oacute>dulos do CPAN.org bastar
+entrar em seu shell/ms-dos/terminal (...) e entrar com o seguinte
+comando:
+
+     cpan
+
+De inicio pode aparecer algumas perguntas de
+configuraE<ccedil>E<atilde>o, porE<eacute>m, apE<oacute>s responde-las
+basta usar os mesmos comandos do PPM.
+
+=head2 4.1 Instalando mE<oacute>dulos manualmente
+
+Quando vocE<ecirc> nE<atilde>o tiver conexE<atilde>o com a internet,
+vocE<ecirc> pode entrar nas pE<aacute>ginas do CPAN.org e baixar o PPD
+de seu respectivo mE<oacute>dulo para prosseguir com a
+instalaE<ccedil>E<atilde>o "manual".
+
+=over
+
+=item * As vezes o PPD vem dentro de um arquivo zipado que
+contE<eacute>m documentaE<ccedil>E<atilde>o do mE<oacute>dulo,
+exemplos...
+
+=back
+
+=head2 Instalando
+
+No seu shell/ms-dos/terminal (...), vE<aacute> atE<eacute> o
+diretE<oacute>rio aonde se encontra o arquivo (os comandos para
+navegaE<ccedil>E<atilde>o de diretE<oacute>rio variam de acordo com seu
+OS) com a extenE<ccedil>E<atilde>o .PPD e em seguida dE<ecirc> o
+comando de instalaE<ccedil>E<atilde>o:
+
+     install ppd NOME_DO_ARQUIVO.ppd
+
+Simples nE<atilde>o?!
+
+=head2 5. Bibliografia
+
+=over
+
+=item * Online
+
+=over
+
+=item * TE<iacute>tulo: Cascavel PM
+
+=item * DescriE<ccedil>E<atilde>o: Maillist da Cascavel PM
+
+=back
+
+=back
+
+=over
+
+=item *
+
+=over
+
+=item * TE<iacute>tulo: CGiClube.net
+
+=item * DescriE<ccedil>E<atilde>o: AlteraE<ccedil>E<atilde>o de outro
+artigo meu...
+
+=back
+
+=back
+
+----
+
+Criada por: JoaoGabriel? E<uacute>ltima modificaE<ccedil>E<atilde>o em:
+Segunda-feira 30 of Janeiro, 2006 [20:58:52 UTC] por JoaoGabriel?
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 4361 bytes of input
+#Sun Jan 31 01:46:10 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

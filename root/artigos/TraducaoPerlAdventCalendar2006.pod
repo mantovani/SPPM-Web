@@ -1,0 +1,124 @@
+=pod
+
+r2 - 27 Dec 2006 - NilsonSantos
+
+=head1 TraduE<ccedil>E<atilde>o pt-BR Perl Advent Calendar 2006
+
+I<>
+
+Quem quiser contribuir, anote abaixo qual(is) artigo(s) vai traduzir
+com uma data prometida. Para os artigos por vir, teremos de prometer
+para o dia seguinte ou o mesmo dia para acompanhar o advento de perto.
+Substitua as linhas porque assim serE<aacute> mais fE<aacute>cil de
+manter a lista.
+
+PeE<ccedil>o tambE<eacute>m que os voluntE<aacute>rios incluam seu nome
+na lista de tradutores e editores. Incluam uma linha tambE<eacute>m
+(para facilitar a manutenE<ccedil>E<atilde>o da lista).
+
+=head2 Artigos
+
+=head2 Publicados
+
+=over
+
+=item * 1 (em 17/Dez) (http://ferreira.nfshost.com/perl/br-01.html,
+para revisE<atilde>o) ferreira
+
+=item * 2 (em 19/Dez) (http://ferreira.nfshost.com/perl/br-02.html,
+para revisE<atilde>o) donatoaz
+
+=item * 3
+
+=item * 4 (em 20/Dez) (http://ferreira.nfshost.com/perl/br-04.html,
+para revisE<atilde>o) nilsonsfj
+
+=item * 5
+
+=item * 6
+
+=item * 7
+
+=item * 8
+
+=item * 9
+
+=item * 10 (em 27/Dez)
+(http://www.nilson.org/perladvent/2006/br-10.html, para
+revisE<atilde>o) nilsonsfj
+
+=item * 11
+
+=item * 12
+
+=item * 13 (prometido para 18/Dez) ferreira
+
+=item * 14 (prometido para 20/Dez) donatoaz
+
+=item * 15
+
+=item * 16
+
+=item * 17
+
+=item * 18 (em 27/Dez)
+(http://www.nilson.org/perladvent/2006/br-18.html, para
+revisE<atilde>o) nilsonsfj
+
+=item * 19
+
+=item * 20 (em 27/Dez)
+(http://www.nilson.org/perladvent/2006/br-20.html, para
+revisE<atilde>o) nilsonsfj
+
+=item * 21
+
+=item * 22
+
+=item * 23 (em 27/Dez)
+(http://www.nilson.org/perladvent/2006/br-23.html, para
+revisE<atilde>o) nilsonsfj
+
+=item * 24
+
+=item * 25 (prometido para 25/Dez) (quem se habilita? conversaremos a
+respeito)
+
+=back
+
+Ao invE<eacute>s de colocar uma lista de pessoas potenciamente
+dispostas a traduzir, acho melhor que elas conversem entre si e por
+exemplo ponham mais de um nome em determinados artigos. Interajam,
+pessoal!
+
+=head2 Tradutores
+
+=over
+
+=item * (ferreira) Adriano Rodrigues Ferreira,
+
+=item * (donatoaz) Donato Azevedo
+
+=item * (nilsonsfj) Nilson Santos Figueiredo JE<uacute>nior
+
+=item * (quem mais se habilita?)
+
+=back
+
+=head2 Editores/Revisores
+
+=over
+
+=item * Adriano Rodrigues Ferreira,
+
+=item * (quem mais se habilita?)
+
+=back
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 2922 bytes of input
+#Sun Jan 31 01:45:41 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

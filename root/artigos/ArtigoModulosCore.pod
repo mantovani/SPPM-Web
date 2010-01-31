@@ -1,0 +1,211 @@
+=pod
+
+r10 - 17 Dec 2008 - JoenioCosta
+
+=head1 ME<oacute>dulos bE<aacute>sicos que vocE<ecirc> precisa conhecer
+
+I<>
+
+Perl jE<aacute> vem com muitos mE<oacute>dulos prE<eacute>-instalados
+-- os chamados mE<oacute>dulos "core", ou "padrE<atilde>o". Esta
+E<eacute> uma lista de mE<oacute>dulos que vale a pena conhecer.
+
+A lista de mE<oacute>dulos "core" E<eacute> imensa. Se vocE<ecirc>
+quiser uma lista completa, pode encontrE<aacute>-la em:
+
+ perldoc perlmodlib
+
+Estes mE<oacute>dulos nE<atilde>o precisam de
+instalaE<ccedil>E<atilde>o; sE<atilde>o parte da
+distribuiE<ccedil>E<atilde>o padrE<atilde>o de Perl.
+
+(AtenE<ccedil>E<atilde>o: este E<eacute> um tE<oacute>pico voltado para
+iniciantes -- portanto, vamos nos concentrar em mE<oacute>dulos simples
+e genE<eacute>ricos, que podem ser usados em muitos tipos de programas
+-- e evitar mE<oacute>dulos especE<iacute>ficos ou esotE<eacute>ricos.)
+
+=head2 Carp
+
+Gera mensagens de erro sob o ponto de vista de quem chamou o
+mE<oacute>dulo. Ao invE<eacute>s de gerar mensagens sob o ponto de
+vista do mE<oacute>dulo, como faria o die ("File not found at
+My::Fancy::Module line 42" -- o que E<eacute> verdadeiro, porE<eacute>m
+inE<uacute>til), as rotinas de Carp geram mensagens sob o ponto de
+vista de quem chamou o metodo ("File not found at script.pl line 10").
+
+DocumentaE<ccedil>E<atilde>o perldoc
+
+=head2 Cwd
+
+Descubra o diretE<oacute>rio a partir do qual seu script foi chamado.
+(Veja tambE<eacute>m: FindBin, para descobrir o diretorio real do seu
+script)
+
+DocumentaE<ccedil>E<atilde>o perldoc
+
+=head2 Data::Dumper
+
+Converte estruturas de dados complexas para string que pode ser
+armazenada, impressa na tela (muito E<uacute>til para
+depuraE<ccedil>E<atilde>o!), ou avaliada (eval) de volta para uma
+estrutura de dados.
+
+DocumentaE<ccedil>E<atilde>o perldoc
+
+=head2 Encode
+
+FaE<ccedil>a conversE<otilde>es entre diferentes
+codificaE<ccedil>E<otilde>es de caracteres (utf8, latin1, etc). Por
+exemplo:
+
+    use Encode;
+ 
+    while ( my $line = <> ) {
+        Encode::from_to( $line, 'latin1', 'utf8' ); # converte de latin1 para utf8
+        print $line;
+    }
+
+O cE<oacute>digo acima pode ser simplificado para o seguinte one-liner:
+
+    perl -MEncode -p -e 'Encode::from_to( $_, "latin1", "utf8" )' arquivo.txt
+
+=head2 English
+
+Use nomes de variE<aacute>veis descritivos, ao invE<eacute>s de
+variE<aacute>veis de pontuaE<ccedil>E<atilde>o ($INPUT_RECORD_SEPARATOR
+ao inves de $/ ; $EVAL_ERROR ao inves de $@ ;etc).
+
+=head2 File::Temp
+
+Obtenha um filehandle para um arquivo temporE<aacute>rio -- com
+seguranE<ccedil>a.
+
+=head2 FindBin
+
+Descubra o diretE<oacute>rio original do seu script. (Veja
+tambE<eacute>m: Cwd, para descobrir o diretorio a partir do qual o seu
+script foi chamado)
+
+=head2 Getopt::Long
+
+Sistema flexivel para obter opE<ccedil>E<otilde>es de linha de comando
+(-h, --help, etc). Veja tambE<eacute>m: Pod::Usage
+
+=head2 Hash::Util
+
+Rotinas E<uacute>teis para lidar com hashes (por exemplo:
+lock_keys/unlock_keys para tornar as chaves "estritas").
+
+=head2 List::Util
+
+Rotinas E<uacute>teis para lidar com arrays (por exemplo: first, max,
+min, shuffle, sum).
+
+(Veja tambE<eacute>m: List::MoreUtils -- que nE<atilde>o E<eacute> um
+mE<oacute>dulo core, mas um bom complemento para este mE<oacute>dulo)
+
+=head2 Memoize
+
+Implemente um cache para resultados de subrotinas. (Util para acelerar
+funcoes que dependem somente dos valores de seus argumentos)
+
+=head2 Module::Pluggable
+
+Permita que o seu cE<oacute>digo seja extendido por plugins. Por
+exemplo, imagine que vocE<ecirc> tem um mE<oacute>dulo chamado
+Email::Examiner, e deseja que ele possa ser extendido por plugins:
+
+    package Email::Examiner;
+ 
+    use strict;
+    use Email::Simple;
+    use Module::Pluggable require => 1;
+ 
+    sub handle_email {
+        my $self  = shift;
+        my $email = shift;
+ 
+        foreach my $plugin ($self->plugins) { # Para cada plugin encontrado...
+            $plugin->examine($email);
+        }
+ 
+        return 1;
+    }
+
+Isso E<eacute> tudo o que vocE<ecirc> precisa fazer -- o mE<oacute>dulo
+procurarE<aacute> por um sub-diretE<oacute>rio "Plugin", e todos os
+mE<oacute>dulos dentro de "Email/Examiner/Plugin/*" terE<atilde>o a
+chance de examinar o conteE<uacute>do de $email.
+
+=head2 Pod::Usage
+
+Exiba uma mensagem de uso a partir da documentaE<ccedil>E<atilde>o pod.
+(Util para apresentar a opcao --help, em conjunto com Getopt::Long
+
+ use Pod::Usage;
+ use Getopt::Long;
+ 
+ ## Define options
+ my %options = ();
+ my @opt_specs = (
+     'help',
+     'man',
+     'foo=s',
+     'bar=s',
+ );
+ 
+ ## Parse options
+ GetOptions(\%options, @opt_specs)  ||  pod2usage(2);
+ pod2usage(1)  if $options{help};
+ pod2usage(VERBOSE => 2)  if $options{man};
+
+=head2 Scalar::Util
+
+Rotinas E<uacute>teis para lidar com variE<aacute>veis escalares. (Veja
+tambE<eacute>m: List::Util e Hash::Util)
+
+=head2 Test::More
+
+A infraestrutura para testes automatizados em Perl. Altamente
+recomendado!
+
+=head2 Tie::File
+
+Manipule um arquivo como se fosse um array. (Use shift() para ler a
+primeira linha, pop() para ler a ultima, etc).
+
+=head2 Time::HiRes
+
+Se vocE<ecirc> quer que o seu programa "adormeca" por alguns segundos,
+E<eacute> muito fE<aacute>cil:
+
+  sleep(1); # 1 segundo
+
+Infelizmente, a funcE<atilde>o C<sleep()> padrE<atilde>o nE<atilde>o
+aceita intervalos fracionE<aacute>rios.
+
+O mE<oacute>dulo Time::HiRes permite criar timers de alta
+resoluE<ccedil>E<atilde>o, isto E<eacute>, intervalos menores do que 1
+segundo:
+
+  use Time::HiRes qw( sleep );
+  sleep (0.5);
+
+AlE<eacute>m disso, o Time::HiRes E<eacute> E<uacute>til para descobrir
+quanto tempo seu programa levou para executar uma determinada tarefa:
+
+  my $t0 = [gettimeofday];
+ 
+  # seu codigo aqui
+ 
+  my $interval = tv_interval ( $t0 );
+ 
+  print "Tempo de execucao: $interval segundos\n";
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 6958 bytes of input
+#Sun Jan 31 01:45:17 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>
