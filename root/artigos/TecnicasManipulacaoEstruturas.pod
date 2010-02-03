@@ -54,10 +54,10 @@ vE<aacute>rios mE<eacute>todos de se criar um array, isto vai depender
 de sua "criatividade", mas dentre estes mE<eacute>todos vou utilizar a
 funE<ccedil>E<atilde>o qw//.
 
-     () - Significa que vocÍ esta atribuindo uma lista.
-     [] - … uma referÍncia aos escalares.
-   qw// - Vai "quebrar" entre os espaÁos.
-     .. - … uma seq¸Íncia de valores.
+     () - Significa que voc√™ esta atribuindo uma lista.
+     [] - √â uma refer√™ncia aos escalares.
+   qw// - Vai "quebrar" entre os espa√ßos.
+     .. - √â uma seq√º√™ncia de valores.
  
  
  
@@ -121,7 +121,7 @@ inteiro podendo ser positivo ou negativo.
  
    # Bidimensional.
    $bi[0][0];   # Acessando um elemento.
-   $bi[-1][-1]; # Acessando o ˙ltimo elemento.
+   $bi[-1][-1]; # Acessando o √∫ltimo elemento.
  
    for my $x (0..$#bi) { # Imprimindo todos os elementos.
     for my $y (0..$#{$bi[$x]}) {
@@ -133,7 +133,7 @@ inteiro podendo ser positivo ou negativo.
  
    # Tridimensional.
    $tri[0][0][0];    # Acessando um elemento.
-   $tri[-1][-1][-1]; # Acessando o ˙ltimo elemento.
+   $tri[-1][-1][-1]; # Acessando o √∫ltimo elemento.
  
    for my $x (0..$#tri) { # Imprimindo todos os elementos.
     for my $y (0..$#{$tri[$x]}) {
@@ -149,8 +149,8 @@ Com este simples array podemos facilmente interpretar estruturas como
 listas e filas apenas usando algumas funE<ccedil>E<otilde>es que perl
 nos disponibiliza, entre elas:
 
-   unshift() - Adiciona no inÌcio.
-     shift() - Remove e retorna o elemento removido do inÌcio.
+   unshift() - Adiciona no in√≠cio.
+     shift() - Remove e retorna o elemento removido do in√≠cio.
       push() - Adiciona no final.
        pop() - Remove e retorna o elemento removido do final.
     splice() - Exclui um ou mais elementos.
@@ -158,21 +158,21 @@ nos disponibiliza, entre elas:
  
  
    # Unidimensional.
-   unshift(@uni, "ComeÁo");
-   unshift(@uni, "PrÛximo", "Seguinte");
+   unshift(@uni, "Come√ßo");
+   unshift(@uni, "Pr√≥ximo", "Seguinte");
    push(@uni, "Sexto");
-   push(@uni, "SÈtimo", "Oitavo");
+   push(@uni, "S√©timo", "Oitavo");
    my $primeiro = shift(@uni);
    my $ultimo   = pop(@uni);
-   splice(@uni, 3, 1); # Onde 3 È o offset e 1 È o tamanho.
+   splice(@uni, 3, 1); # Onde 3 √© o offset e 1 √© o tamanho.
  
  
  
    # Bidimensional.
    unshift(@bi, ["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]);
-   unshift(@{$bi[0]}, "ComeÁo", "PrÛximo", "Seguinte");
+   unshift(@{$bi[0]}, "Come√ßo", "Pr√≥ximo", "Seguinte");
    push(@bi, ["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]);
-   push(@{$bi[0]}, "Sexto", "SÈtimo", "Oitavo");
+   push(@{$bi[0]}, "Sexto", "S√©timo", "Oitavo");
    my $primeiro = shift(@{$bi[0]});
    my $ultimo   = pop(@{$bi[0]});
    splice(@{$bi[0]}, 3, 1);
@@ -182,10 +182,10 @@ nos disponibiliza, entre elas:
    # Tridimensional.
    unshift(@tri, [["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]]);
    unshift(@{$tri[0]}, ["Primeiro", "Segundo", "Terceiro", "Quarto"]);
-   unshift(@{$tri[0][0]}, "ComeÁo", "PrÛximo", "Seguinte");
+   unshift(@{$tri[0][0]}, "Come√ßo", "Pr√≥ximo", "Seguinte");
    push(@tri, [["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]]);
    push(@{$tri[0]}, ["Primeiro", "Segundo", "Terceiro", "Quarto"]);
-   push(@{$tri[0][0]}, "Sexto", "SÈtimo", "Oitavo");
+   push(@{$tri[0][0]}, "Sexto", "S√©timo", "Oitavo");
    my $primeiro = shift(@{$tri[0][0]});
    my $ultimo   = pop(@{$tri[0][0]});
 
@@ -308,10 +308,10 @@ string podendo utilizar aspas (") ou nE<atilde>o.
     print "$indice faz $uni_sons{$indice}.\n";
    }
  
-   my @indice = keys %uni_sons;    # Pegando o Ìndice.
+   my @indice = keys %uni_sons;    # Pegando o √≠ndice.
    my @valores = values %uni_sons; # Pegando os valores.
  
-   while (my ($indice, $valor) = each %uni_sons) { # Õndice e valor.
+   while (my ($indice, $valor) = each %uni_sons) { # √çndice e valor.
     print "$indice faz $valor.\n";
    }
  
@@ -332,11 +332,11 @@ string podendo utilizar aspas (") ou nE<atilde>o.
     }
    }
  
-   my @indice = keys %bi_sons;       # Pegando o Ìndice.
+   my @indice = keys %bi_sons;       # Pegando o √≠ndice.
    my @subindice = keys %{$bi_sons{E}};
    my @valores = values %{$bi_sons{E}}; # Pegando os valores.
  
-   for my $i (keys %bi_sons) { # Õndice e valor.
+   for my $i (keys %bi_sons) { # √çndice e valor.
     while (my ($indice, $valor) = each %{$bi_sons{$i}}) {
      print "$i $indice faz $valor.\n";
     }
@@ -363,10 +363,10 @@ string podendo utilizar aspas (") ou nE<atilde>o.
     }
    }
  
-   my @indice = keys %{$tri_sons{Entao}{a}};    # Pegando o Ìndice.
+   my @indice = keys %{$tri_sons{Entao}{a}};    # Pegando o √≠ndice.
    my @valores = values %{$tri_sons{Entao}{a}}; # Pegando os valores.
  
-   for my $i (keys %tri_sons) { # Õndice e valor.
+   for my $i (keys %tri_sons) { # √çndice e valor.
     for my $j (keys %{$tri_sons{$i}}) {
      while (my ($indice, $valor) = each %{$tri_sons{$i}{$j}}) {
       print "$i $j $indice faz $valor.\n";

@@ -394,7 +394,7 @@ entE<atilde>o o cE<oacute>digo completo para o storable_freeze.
          PUSHMARK(SP);
          XPUSHs(newRV_inc((SV*)data));
          PUTBACK;
-         // chamar o método
+         // chamar o mÃ©todo
          call_pv("Storable::freeze",G_SCALAR);
          // Obter o retorno
          SPAGAIN;

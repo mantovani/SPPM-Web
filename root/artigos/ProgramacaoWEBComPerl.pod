@@ -55,7 +55,7 @@ comeE<ccedil>arE<aacute> perceber por que ela E<eacute> mais vantagosa.
    use strict;
  
    $titulo = 'Minha Home Page';
-   $autor = 'José Maria';
+   $autor = 'JosÃ© Maria';
    $data = scalar localtime;
  
    print "Content-Type: text/html;\n\n";
@@ -88,7 +88,7 @@ Embperl)
 
    [-
        $titulo = 'Minha Home Page';
-       $autor = 'José Maria';
+       $autor = 'JosÃ© Maria';
        $data = date ("l dS of F Y h:i:s A");
    -]
    <html>
@@ -121,7 +121,7 @@ Embperl)
    my $t = HTML::Template->new(filename=>'teste.tmpl');
  
    $t->param(titulo=>'Minha Home Page');
-   $t->param(autor=>'José Maria');
+   $t->param(autor=>'JosÃ© Maria');
    $t->param(data=>scalar localtime);
  
    print "Content-Type: text/html;\n\n";
@@ -267,12 +267,12 @@ marcadores:
  
    my $t = HTML::Template->new(filename=>'exemplo.tmpl');
  
-   $t->param(nome => 'Revista Eletrônica');
+   $t->param(nome => 'Revista EletrÃ´nica');
    $t->param(edicao => '1');
    $t->param(artigos => [
        {
            artigo => 'Artigo 1',
-           autor => 'José',
+           autor => 'JosÃ©',
            nivel => 0,
        },
        {
@@ -303,7 +303,7 @@ marcadores:
  
         <body>
             <h2>
-                <TMPL_VAR nome>, edição <TMPL_VAR edicao>
+                <TMPL_VAR nome>, ediÃ§Ã£o <TMPL_VAR edicao>
             </h2>
  
            <table>
@@ -317,7 +317,7 @@ marcadores:
                    </td>
                    <td>
                        <TMPL_IF nivel>
-                           Avançado
+                           AvanÃ§ado
                        <TMPL_ELSE>
                            Iniciante
                        </TMPL_IF>

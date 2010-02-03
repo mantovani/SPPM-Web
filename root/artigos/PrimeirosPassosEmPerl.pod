@@ -14,7 +14,7 @@ experiencia em programacao.
 Inicie o seu editor de textos favorito, e digite o seguinte programa.
 Salve-o como "print.pl":
 
- print "Ol·, mundo!!!";
+ print "Ol√°, mundo!!!";
 
 O programa E<eacute> realmente simples: utiliza o comando C<print> para
 imprimir um texto na tela do computador.
@@ -30,7 +30,7 @@ VocE<ecirc> deverE<aacute> ver a mensagem na tela.
 
 Experimente agora digitar o seguinte programa (print2.pl):
 
- print "Ol·, 
+ print "Ol√°, 
  mundo!!!"; 
 
 Execute o programa (perl print2.pl) e veja o resultado.
@@ -45,7 +45,7 @@ vocE<ecirc> deseja.)
 
 Este terceiro programa faz a mesma coisa:
 
- print "Ol·,\nmundo!!!"; 
+ print "Ol√°,\nmundo!!!"; 
 
 O sE<iacute>mbolo C<\n> indica uma quebra de linha, o equivalente a
 digitar C<enter>. Sempre que vocE<ecirc> quiser imprimir um texto em
@@ -68,7 +68,7 @@ Antes de mais nada, digite o seguinte programa e salve-o como
 
  print "Digite o seu nome: ";
  my $nome = <>;
- print "Ol·, $nome!!!";
+ print "Ol√°, $nome!!!";
 
 Se o programa nE<atilde>o contiver erros, a mensagem "Digite o seu
 nome:" serE<aacute> impressa na tela, com o cursor piscando ao lado.
@@ -94,11 +94,11 @@ Antes de responder essa pergunta, digite mais esse programa:
  print "Digite um numero: ";
  my $x = <>;
  chomp $x;
- print "$x vezes 2 È igual a ", ($x * 2), "\n";
+ print "$x vezes 2 √© igual a ", ($x * 2), "\n";
  print "Agora digite uma palavra: ";
  $x = <>;
  chomp $x;
- print "A palavra È '$x'!!!";
+ print "A palavra √© '$x'!!!";
 
 Este programa mostra que a mesma variE<aacute>vel, $x, pode conter
 letras ou nE<uacute>meros.
@@ -118,7 +118,7 @@ de digitaE<ccedil>E<atilde>o:
 
  print "Digite o seu nome: ";
  my $nome = <>;
- print "Ol·, $name!!!";
+ print "Ol√°, $name!!!";
 
 VocE<ecirc> consegue enxergar o erro?
 
@@ -324,15 +324,15 @@ resultado, executa uma sequE<ecirc>ncia de comandos. Ele funciona mais
 ou menos assim:
 
  
-   se (express„o È verdadeira) {
-      execute uma sÈrie de comandos
+   se (express√£o √© verdadeira) {
+      execute uma s√©rie de comandos
    }
 
 Um exemplo simples, em Perl:
 
  
    if ($idade < 18) {
-      die "Este programa È proibido para menores de 18 anos!";
+      die "Este programa √© proibido para menores de 18 anos!";
    }
    # o programa continua...
 
@@ -372,11 +372,11 @@ trabalhando com strings, utilizaremos as comparaE<ccedil>E<otilde>es
 literais:
 
  
-   # ComparaÁıes numÈricas
+   # Compara√ß√µes num√©ricas
    if ($idade == 18) { ... }
    if ($idade > 100) { ... }
  
-   # ComparaÁıes literais
+   # Compara√ß√µes literais
    if ($resposta eq "s") { ... }
    if ($nome ne "Larry") { ... }
 
@@ -388,7 +388,7 @@ inverter a ordem de uma frase.
 Veja o seguinte exemplo:
 
    # Confirma
-   print "VocÍ deseja continuar? (s/n) ";
+   print "Voc√™ deseja continuar? (s/n) ";
    my $resposta = getc();
  
    die "O programa termina aqui.\n" if $resposta ne "s";

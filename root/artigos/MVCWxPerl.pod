@@ -109,7 +109,7 @@ por exemplo:
  EVT_BUTTON(
         $self,
         $self->{salvar}->GetId(),
-        funÁ„o_qualquer( par‚metro )
+        fun√ß√£o_qualquer( par√¢metro )
     );
 
 O evento EVT_BUTTON se aplica a todos os botE<otilde>es do I<frame>
@@ -127,7 +127,7 @@ parE<acirc>metro.
         $self,
         $self->{salvar}->GetId(),
         sub { # isso vai gerar algo no terminal!
-                 warn "Exemplo de funÁ„o";
+                 warn "Exemplo de fun√ß√£o";
                }
     );
 
@@ -199,7 +199,7 @@ exemplo de um arquivo INI:
 
  [Siebel Tools]
  DSN = data source name
- user = usu·rio
+ user = usu√°rio
  password = senha
 
 A seE<ccedil>E<atilde>o "Siebel Tools" serE<aacute> exibida no menu

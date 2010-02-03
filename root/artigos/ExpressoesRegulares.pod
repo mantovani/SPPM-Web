@@ -138,7 +138,7 @@ expressE<atilde>o '[^0123456789]' ou '[^0-9]'.
        ^  ->  caracter que o segue inicia o elemento
        $  ->  caracter que o antecede finaliza o elemento
  
-       .   ->  caracter È um sÌmbolo qualquer (exceto nova linha)
+       .   ->  caracter √© um s√≠mbolo qualquer (exceto nova linha)
  
        |   ->  enumerador de alternativas
       ()   ->  agrupador
@@ -149,7 +149,7 @@ expressE<atilde>o '[^0123456789]' ou '[^0-9]'.
        ?   ->  caracter ocorre 1 ou 0 vezes
      {n}  ->  caracter ocorre exatamente "n" vezes
     {n,}  ->  caracter ocorre pelo menos "n" vezes
-  {n,m} ->  caracter ocorre pelo menos "n" vezes e n„o mais que "m" vezes
+  {n,m} ->  caracter ocorre pelo menos "n" vezes e n√£o mais que "m" vezes
 
 =head2 2.2. Complementares
 
@@ -173,7 +173,7 @@ tabulaE<ccedil>E<atilde>o.
    \d  ->  [0-9], [0123456789] ou (0|1|2|3|4|5|6|7|8|9)
    \D  ->  [^0-9]
  
-   \t   ->  tabulaÁ„o
+   \t   ->  tabula√ß√£o
    \n  ->  (LF ou NL) nova linha
    \r   ->  (CR) retorno
    \f   ->  (FF) form feed
@@ -234,13 +234,13 @@ serviE<ccedil>o:
  
   foreach $url (@ARGV) {
      if ($url =~ /^http:/) {
-        print "EndereÁo de um serviÁo WEB\n";
+        print "Endere√ßo de um servi√ßo WEB\n";
      }
      elsif ($url =~ /^https:/) {
-        print "EndereÁo de um serviÁo WEB seguro\n";
+        print "Endere√ßo de um servi√ßo WEB seguro\n";
      }
      elsif ($url =~ /^ftp:/) {
-        print "EndereÁo de um serviÁo FTP\n";
+        print "Endere√ßo de um servi√ßo FTP\n";
      }
   }
 
@@ -264,20 +264,20 @@ funcionalidade:
       if ($url =~ /^(.+):\/\/(.*)$/)
          print "-- $2: ";
          if ($1 eq 'http') {
-            print "endereÁo de serviÁo WEB\n";
+            print "endere√ßo de servi√ßo WEB\n";
          }
          elsif ($1 eq 'http') {
-            print "endereÁo de serviÁo WEB seguro\n";
+            print "endere√ßo de servi√ßo WEB seguro\n";
          }
          elsif ($1 eq 'ftp') {
-            print "endereÁo de serviÁo de FTP\n";
+            print "endere√ßo de servi√ßo de FTP\n";
          }
          else {
-            print "endereÁo de um serviÁo desconhecido\n";
+            print "endere√ßo de um servi√ßo desconhecido\n";
          }
       }    
       else {
-         print "Url inv·lida\n";
+         print "Url inv√°lida\n";
       }
    }
 
@@ -292,10 +292,10 @@ HE<aacute> tambE<eacute>m uma outra composiE<ccedil>E<atilde>o, "s///,
 onde "s" significa "substitute". Ambas as composiE<ccedil>E<atilde>o
 suportam os modificadores abaixo:
 
-   i   ->  avalia desconsiderando mai˙sculas e min˙sculas
+   i   ->  avalia desconsiderando mai√∫sculas e min√∫sculas
    m ->  avalia considerando "string" com mais de uma linha
-   s  ->  avalia considerando "string" com uma ˙nica linha
-   x  ->  avalia desconsiderando espaÁos e coment·rios
+   s  ->  avalia considerando "string" com uma √∫nica linha
+   x  ->  avalia desconsiderando espa√ßos e coment√°rios
    g  ->  avalia ou substitui (quando "s///") globalmente
 
 O operador "s///" tem um comportamento bastante diferenciado. Ele
@@ -310,8 +310,8 @@ sintE<aacute>tica desse operando:
 
 onde,
 
-      REX     ->  express„o regular
-      STRING  ->  um grupo de caracteres para substituiÁ„o
+      REX     ->  express√£o regular
+      STRING  ->  um grupo de caracteres para substitui√ß√£o
       imsxg   ->  modificadores
 
 Sua operaE<ccedil>E<atilde>o consiste em confrontar um elemento com uma
@@ -328,29 +328,29 @@ manipulaE<ccedil>E<atilde>o com "strings". Experimente!
  
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elmento =~ s/a/+/;
-   print "$elemento\n";            # Resultar· em: -+-A-a-A-a-A-a-A-a-A
+   print "$elemento\n";            # Resultar√° em: -+-A-a-A-a-A-a-A-a-A
  
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elemento =~ s/a/+/g;
-   print "$elemento\n";            # Resultar· em: -+-A-+-A-+-A-+-A-+-A
+   print "$elemento\n";            # Resultar√° em: -+-A-+-A-+-A-+-A-+-A
  
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elemento =~ s/a/+/gi;
-   print "$elemento\n";            # Resultar· em: -+-+-+-+-+-+-+-+-+-+
+   print "$elemento\n";            # Resultar√° em: -+-+-+-+-+-+-+-+-+-+
  
    #
-   # Esse exemplo, È uma alternativa ao anterior
+   # Esse exemplo, √© uma alternativa ao anterior
    #
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elemento =~ s/[aA]/+/g;
-   print "$elemento\n";            # Resultar· em: -+-+-+-+-+-+-+-+-+-+
+   print "$elemento\n";            # Resultar√° em: -+-+-+-+-+-+-+-+-+-+
  
    #
    # Aplicando o metacaracter "()"
    #
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elemento =~ s/([aA])/($1)/g;
-   print "$elemento\n";            # Resultar· em: -(a)-(A)-(a)-(A)-(a)-(A)
+   print "$elemento\n";            # Resultar√° em: -(a)-(A)-(a)-(A)-(a)-(A)
                                                    -(a)-(A)-(a)-(A)
 
 =head2 3.3. FunE<ccedil>E<otilde>es
@@ -375,7 +375,7 @@ regular.
  
  
    #
-   # Usando "grep" com uma express„o regular
+   # Usando "grep" com uma express√£o regular
    #
    my @numeros = (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
    my @numeros_pares = grep /[02468]$/,@numeros;

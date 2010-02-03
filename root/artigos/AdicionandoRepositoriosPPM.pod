@@ -24,7 +24,7 @@ apenas "ppm".
 
 O comando padrE<atilde>o para adicionar repositE<oacute>rios E<eacute>:
 
-     rep add NOME_DO_REPOSITÓRIO ENDEREÇO_DO_REPOSITÓRIO
+     rep add NOME_DO_REPOSITÃ“RIO ENDEREÃ‡O_DO_REPOSITÃ“RIO
 
 =head2 2.2 Exemplos
 
@@ -37,7 +37,7 @@ O comando padrE<atilde>o para adicionar repositE<oacute>rios E<eacute>:
 Para instalar um mE<oacute>dulo, entre seu seu PPM e execute o seguinte
 comando:
 
-     install NOME_DO_MÓDULO
+     install NOME_DO_MÃ“DULO
 
 Exemplo...
 

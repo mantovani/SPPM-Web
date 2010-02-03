@@ -284,7 +284,7 @@ programa nesses casos, forE<ccedil>ando o programador a arrumar o erro.
 Voltando ao exemplo, vamos adicionar mais uma linha para exemplificar
 isso:
 
- print “Welcome to MP3 descriptor - $version\n”;
+ print Â“Welcome to MP3 descriptor - $version\nÂ”;
 
 O programa agora jE<aacute> pode executar alguma coisa, imprimindo uma
 mensagem de boas vindas. O comando B<print> cuida disso, imprimindo os
@@ -327,9 +327,9 @@ programa. Para evitar repetir linhas, apenas a parte modificada
 serE<aacute> mostrada, em destaque:
 
  use strict;
- # versão do sistema
+ # versÃ£o do sistema
  my $version;
- print “Welcome to MP3 descriptor – version $version\n”;
+ print Â“Welcome to MP3 descriptor Â– version $version\nÂ”;
 
 Na primeira nova linha o leitor vai se deparar com um tE<iacute>pico
 comentE<aacute>rio: o caractere de sustenido (#) diz ao interpretador
@@ -356,7 +356,7 @@ linhas, apenas a parte modificada serE<aacute> mostrada, em destaque:
 
  use strict;
  
- # versão do sistema
+ # versÃ£o do sistema
  my $version = 1;
  
  print "Welcome to MP3 descriptor - $version\n";
@@ -391,15 +391,15 @@ Veja uns exemplos:
 
  # ponto flutuante
  my $exemplo1 = 234.56;
- # notação científica
+ # notaÃ§Ã£o cientÃ­fica
  my $exemplo2 = 32.04e12;
  # um inteiro bem grande, sublinhado para facilitar a leitura
  my $exemplo3 = 36_152_695;
- # declaração de um octal (basta usar zero no início)
+ # declaraÃ§Ã£o de um octal (basta usar zero no inÃ­cio)
  my $exemplo4 = 0377;
- # declaração de um hexadecimal (como o octal, mas usando “0x”)
+ # declaraÃ§Ã£o de um hexadecimal (como o octal, mas usando Â“0xÂ”)
  my $exemplo5 = 0xffff;
- # declaração de um binário (como octal, mas usando “0b”)
+ # declaraÃ§Ã£o de um binÃ¡rio (como octal, mas usando Â“0bÂ”)
  my $exemplo6 = 0b1100_0000;
 
 AlE<eacute>m de caracteres e nE<uacute>meros, uma variE<aacute>vel
@@ -428,7 +428,7 @@ passo E<eacute> modificar o programa novamente para receber esse
 parE<acirc>metro, incluindo mais cE<oacute>digo. Para evitar repetir
 linhas, apenas a parte modificada serE<aacute> mostrada, em destaque:
 
- print "Welcome to MP3 descriptor – version $version\n";
+ print "Welcome to MP3 descriptor Â– version $version\n";
  
  my $location = $ARGV[0];
  print "Will try to find program at $location\n" if ( defined($location) );
@@ -505,7 +505,7 @@ modificada serE<aacute> mostrada, em destaque:
  use strict;
  use Cwd;
  
- # versão do sistema
+ # versÃ£o do sistema
  my $version = 1;
  print "Welcome to MP3 descriptor - $version\n";
  
@@ -559,7 +559,7 @@ criar uma funE<ccedil>E<atilde>o para fazer isso.
 FunE<ccedil>E<otilde>es em Perl sE<atilde>o chamadas de subrotinas e a
 declaraE<ccedil>E<atilde>o dela ficaria da seguinte forma:
 
- # Essa função procura por arquivos mp3 no diretório
+ # Essa funÃ§Ã£o procura por arquivos mp3 no diretÃ³rio
  # passado como argumento e retorna uma lista dos
  # arquivos encontrados
  sub find_mp3 {
@@ -599,10 +599,10 @@ Se vocE<ecirc> achou isso complicado, esse exemplo rE<aacute>pido vai
 ajudar:
 
  my @colors = qw(blue yellow black red);
- print “@colors\n”;
+ print Â“@colors\nÂ”;
  my $first_value = shift (@colors);
- print “@colors\n”;
- print “First value is = $first_value\n”;
+ print Â“@colors\nÂ”;
+ print Â“First value is = $first_value\nÂ”;
 
 Executar o cE<oacute>digo gera como saE<iacute>da:
 
@@ -743,7 +743,7 @@ parte modificada serE<aacute> mostrada, em destaque:
  use Cwd;
  use MP3::Info;
  
- # parte do código foi omitida aqui
+ # parte do cÃ³digo foi omitida aqui
  
  @mp3_list = find_mp3($location);
  
@@ -776,7 +776,7 @@ parte modificada serE<aacute> mostrada, em destaque:
  
  }
  
- # Essa função procura por arquivos mp3 no diretório
+ # Essa funÃ§Ã£o procura por arquivos mp3 no diretÃ³rio
  # passado como argumento e retorna uma lista dos
  # arquivos encontrados
  sub find_mp3 {
@@ -848,9 +848,9 @@ seguido do nome do I<hash>. A declaraE<ccedil>E<atilde>o de seus
 elementos pode ser feita toda de uma vez ou inserida por vez, indicando
 sempre o nome da chave e depois seus respectivo valor:
 
- my %estados = ( 'SP', 'São Paulo','RJ', 'Rio de Janeiro', 'PA', 'Paraná');
+ my %estados = ( 'SP', 'SÃ£o Paulo','RJ', 'Rio de Janeiro', 'PA', 'ParanÃ¡');
  # ou ainda
- my %estados2 = ( SP => 'São Paulo', RJ => 'Rio de Janeiro', PA => 'Paraná');
+ my %estados2 = ( SP => 'SÃ£o Paulo', RJ => 'Rio de Janeiro', PA => 'ParanÃ¡');
  # colocando mais um estado em %estados2
  %estados2{MT} = 'Mato Grosso';
 
@@ -858,8 +858,8 @@ Seus elementos sE<atilde>o acessados da mesma forma que um array, mas
 usando chaves (E<147>{E<147> e E<147>}E<148>) ao invE<eacute>s de
 colchetes.
 
- print “SP é a sigla para $estados{SP}\n”;
- # apaga a entrada “Paraná”
+ print Â“SP Ã© a sigla para $estados{SP}\nÂ”;
+ # apaga a entrada Â“ParanÃ¡Â”
  delete $estados2{PA}
 
 E<Eacute> possE<iacute>vel fazer a iteraE<ccedil>E<atilde>o entre os

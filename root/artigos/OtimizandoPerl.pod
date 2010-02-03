@@ -230,9 +230,9 @@ Analisando o cE<oacute>digo do programa, E<eacute> possE<iacute>vel
 verificar que o programa instancia objetos C<DateTime> mais vezes do
 que seria realmente necessE<aacute>rio:
 
- # trecho do código da subrotina send_warns
+ # trecho do cÃ³digo da subrotina send_warns
  
-             if ( $status eq 'Ação Avisada' ) {
+             if ( $status eq 'AÃ§Ã£o Avisada' ) {
  
                  my $prazo =
                    $sheet->Cells( $row, $columns{PRAZO}->[0] )->{'Value'};

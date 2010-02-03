@@ -105,7 +105,7 @@ Na linha 5 estamos definindo o protocolo, utilizaremos o TCP.
    4                                    PeerPort => "80",
    5                                    Proto => "tcp"   
    6                                   );
-   7 die "Não foi possivel criar a socket\n" unless $socket;
+   7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
 
 Caso nE<atilde>o for possivel criar a socket serE<aacute> exibida uma
 mensagem de erro definida na linha 7, e consequentemente essa
@@ -119,7 +119,7 @@ operaE<ccedil>E<atilde>o sera abandonada.
    4                                    PeerPort => "80",
    5                                    Proto => "tcp"   
    6                                   );
-   7 die "Não foi possivel criar a socket\n" unless $socket;
+   7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    8 if ($socket) {
    9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
   10 }
@@ -141,7 +141,7 @@ simplesmente um:
    4                                    PeerPort => "80",
    5                                    Proto => "tcp"   
    6                                   );
-   7 die "Não foi possivel criar a socket\n" unless $socket;
+   7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    8 if ($socket) {
    9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
   10 while (<$socket>) {    
@@ -162,7 +162,7 @@ do servidor.
    4                                    PeerPort => "80",
    5                                    Proto => "tcp"   
    6                                   );
-   7 die "Não foi possivel criar a socket\n" unless $socket;
+   7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    8 if ($socket) {
    9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
   10 while (<$socket>) {    
@@ -182,7 +182,7 @@ serE<aacute> fechada.
    5                                    PeerPort => "80",
    6                                    Proto => "tcp"   
    7                                   );
-   8 die "Não foi possivel criar a socket\n" unless $socket;
+   8 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    9 if ($socket) {
   10 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
   11 while (<$socket>) {    

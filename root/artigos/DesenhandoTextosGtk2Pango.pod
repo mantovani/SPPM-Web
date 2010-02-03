@@ -107,9 +107,9 @@ voce escreva em japonE<ecirc>s).
          my ($x,$y,$w,$h) = ($event->area->x, $event->area->y, $event->area->width, $event->area->height);
          # Obtendo o Graphic Context do widget.
          my $gc = $draw->style->fg_gc($draw->state);
-         # Limpando a área a ser pintada.
+         # Limpando a Ã¡rea a ser pintada.
          $draw->window->clear_area($x, $y, $w, $h);
-         # Vou mexer só na parte que precisa ser atualizada
+         # Vou mexer sÃ³ na parte que precisa ser atualizada
          $gc->set_clip_rectangle(Gtk2::Gdk::Rectangle->new($x, $y, $w, $h));
  
          # Pintar o fundo de branco.
@@ -126,7 +126,7 @@ voce escreva em japonE<ecirc>s).
          # definir a fonte
          $layout->set_font_description($fontdesc);
          # definir o texto
-         $layout->set_text("Algum Texto áæß");
+         $layout->set_text("Algum Texto Ã¡Ã¦ÃŸ");
          # Desenhar...
          my $rect = Gtk2::Gdk::Rectangle->new(int($canvas_width/2)-75+2,int($canvas_height/2)-100+2,146,20);
          $draw->style->paint_layout($draw->window,$draw->state,1,$rect,undef,undef,$rect->x,$rect->y,$layout);

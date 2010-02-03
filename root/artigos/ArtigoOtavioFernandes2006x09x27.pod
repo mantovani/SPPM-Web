@@ -91,15 +91,15 @@ o nosso script:
  03| use scrict;
  04| use warnings;
  05|
- 06| # fazendo a chamada direta da função escrita no código abaixo
+ 06| # fazendo a chamada direta da funÃ§Ã£o escrita no cÃ³digo abaixo
  07| my $retr = WrapFTest();
  08|
- 09| # imprimindo na stdout o retorno da função WrapFTest
+ 09| # imprimindo na stdout o retorno da funÃ§Ã£o WrapFTest
  10| print $retr, "\n";
  11|
- 12| # declarando a nossa libteste como parâmetro para compilação
+ 12| # declarando a nossa libteste como parÃ¢metro para compilaÃ§Ã£o
  13| use Inline C => Config => ENABLE => AUTOWRAP => LIBS => '-lteste';
- 14| # da próxima linha até a string "END_OF_C_CODE" tudo é código C
+ 14| # da prÃ³xima linha atÃ© a string "END_OF_C_CODE" tudo Ã© cÃ³digo C
  15| use Inline C => << 'END_OF_C_CODE';
  16|
  17| #include <teste.h>
