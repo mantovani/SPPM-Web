@@ -1,0 +1,249 @@
+=pod
+
+r2 - 19 Aug 2006 - JoenioCosta
+
+=head1 Conceitos bE<aacute>sicos sobre Sockets
+
+I<>
+
+NE<atilde>o estou aqui tentando ensinar ningE<uacute>em a programar,
+mas somente tentando auxiliar a todos que tiverem curiosidade a
+aprenderem um pouco mais.
+
+O Perl E<eacute> uma linguagem de programaE<ccedil>E<atilde>o muito
+poderosa e flexivel, e fornece ao usuario uma E<oacute>tima interface
+com o ambiente que iremos estudar, ou seja as sockets.
+
+=head2 1. IntroduE<ccedil>E<atilde>o
+
+Nesse artigo irei explicar os primeiros passos a serem dados para
+alguE<eacute>m entender sockets, apE<oacute>s a leitura do mesmo,
+vocE<ecirc> estara apto a desenvolver clientes, desempenhar pequenas
+tarefas, e com um pouco de imaginaE<ccedil>E<atilde>o poderE<aacute>
+fazer o que bem entender.
+
+B<IMPORTANTE>: E<Eacute> necessario um conhecimento bE<aacute>sico em
+Perl e TCP/IP.
+
+=head2 1.1. Afinal o que sE<atilde>o sockets?
+
+Seria impossivel explicar detalhadamente o que sE<atilde>o sockets
+nesse humilde artigo, mas basicamente elas sE<atilde>o uma forma
+desenvolvida para programas se comunicarem.
+
+Caso vocE<ecirc> tenha mais curiosidade sobre o assunto, seria
+aconselhavel uma leitura sobre TCP/IP. BE<aacute>sicamente sem a
+existencia das sockets, nE<atilde>o existiria comunicacE<atilde>o entre
+computadores ligados em rede, E<eacute> como vocE<ecirc> viver em uma
+sociedade sem fala ou linguagem.
+
+=head2 1.2. Quais as vantagens de se ter um conhecimento sobre isso?
+
+As vantagens vE<atilde>o atE<eacute> aonde sua mente consegue chegar,
+ou seja, nE<atilde>o existem limites definidos. Ao invE<eacute>s de eu
+tentar dizer qual a vantagem de aprender a utilizar sockets, deixarei
+vocE<ecirc> mesmo chegar a essa conclusE<atilde>o atE<eacute> o final
+do artigo.
+
+=head2 2. O mE<oacute>dulo IO::Socket
+
+Esse mE<oacute>dulo foi desenvolvido para que
+implementaE<ccedil>E<otilde>es de sockets sejam mais simples sem
+perderem poder, ou seja, vocE<ecirc> vai para a mesma cidade utilizando
+a estrada mais curta.
+
+=head2 2.1. Carregando o mE<oacute>dulo
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new();
+
+Na linha 1 estamos chamando o mE<oacute>dulo, e na linha 2 estamos
+carregando a socket.
+
+=head2 3. Criando seu primeiro cliente
+
+Agora vamos parar de enrolar, e por um pouco a mE<atilde>o na massa...
+
+=head2 3.1. Definindo o servidor
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new(
+   3                                    PeerAddr => "www.servidor.com.br"
+   4                                   );
+
+Como vocE<ecirc> pode ver, na linha 3 estamos definindo o servidor ou
+seja, PeerAddr = IP/Host do servidor.
+
+=head2 3.2. Definindo a porta
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new(
+   3                                    PeerAddr => "www.servidor.com.br",
+   4                                    PeerPort => "80"
+   5                                   );
+
+Na linha 4 estamos definindo a porta do servidor (podemos
+tambE<eacute>m indicar o serviE<ccedil>o), no caso conectaremos na
+porta 80 (HTTP).
+
+=head2 3.3. Definindo o protocolo de comunicaE<ccedil>E<atilde>o
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new(
+   3                                    PeerAddr => "www.servidor.com.br",
+   4                                    PeerPort => "80",
+   5                                    Proto => "tcp"   
+   6                                   );
+
+Na linha 5 estamos definindo o protocolo, utilizaremos o TCP.
+
+=head2 3.4. Fechando a socket em caso de erro
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new(
+   3                                    PeerAddr => "www.servidor.com.br",
+   4                                    PeerPort => "80",
+   5                                    Proto => "tcp"   
+   6                                   );
+   7 die "Não foi possivel criar a socket\n" unless $socket;
+
+Caso nE<atilde>o for possivel criar a socket serE<aacute> exibida uma
+mensagem de erro definida na linha 7, e consequentemente essa
+operaE<ccedil>E<atilde>o sera abandonada.
+
+=head2 3.5. Enviando alguma mensagem ao servidor
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new(
+   3                                    PeerAddr => "www.servidor.com.br",
+   4                                    PeerPort => "80",
+   5                                    Proto => "tcp"   
+   6                                   );
+   7 die "Não foi possivel criar a socket\n" unless $socket;
+   8 if ($socket) {
+   9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
+  10 }
+
+Como vocE<ecirc> pode ver, criamos a socket, verificamos se estamos
+conectados e apE<oacute>s isso enviamos a mensagem 'GET /index.html'
+para o servidor requisitando o arquivo index.html.
+
+Claro isso E<eacute> sE<oacute> um exemplo vocE<ecirc> poderia enviar
+simplesmente um:
+
+   print $socket "oi \n";
+
+=head2 3.6. Imprimindo as respostas do servidor na tela
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new(
+   3                                    PeerAddr => "www.servidor.com.br",
+   4                                    PeerPort => "80",
+   5                                    Proto => "tcp"   
+   6                                   );
+   7 die "Não foi possivel criar a socket\n" unless $socket;
+   8 if ($socket) {
+   9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
+  10 while (<$socket>) {    
+  11 print "$_";
+  12 }}
+
+Agora utilizaremos um while dentro do if, ou seja caso a socket esteja
+presente, o cliente requisitara o arquivo index.html, e atE<eacute> o
+servidor encerrar a conexE<atilde>o, o cliente estara aguardando e
+imprimindo (graE<ccedil>as a variavel especial $_) todas as respostas
+do servidor.
+
+=head2 3.7. Fechando a socket
+
+   1 use IO::Socket;
+   2 my $socket = IO::Socket::INET->new(
+   3                                    PeerAddr => "www.servidor.com.br",
+   4                                    PeerPort => "80",
+   5                                    Proto => "tcp"   
+   6                                   );
+   7 die "Não foi possivel criar a socket\n" unless $socket;
+   8 if ($socket) {
+   9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
+  10 while (<$socket>) {    
+  11 print "$_";
+  12 }}
+  13 close($socket);
+
+Finalmente, apE<oacute>s a pequena operaE<ccedil>E<atilde>o, a socket
+serE<aacute> fechada.
+
+=head2 4. Resultado final
+
+   1 #!/usr/bin/perl
+   2 use IO::Socket;
+   3 my $socket = IO::Socket::INET->new(
+   4                                    PeerAddr => "www.servidor.com.br",
+   5                                    PeerPort => "80",
+   6                                    Proto => "tcp"   
+   7                                   );
+   8 die "Não foi possivel criar a socket\n" unless $socket;
+   9 if ($socket) {
+  10 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
+  11 while (<$socket>) {    
+  12 print "$_";
+  13 }}
+  14 close($socket);
+  15 exit;
+
+=head2 5. Bibliografia
+
+=over
+
+=item * Online
+
+=over
+
+=item * TE<iacute>tulo: IO::Socket::INET
+
+=item * DescriE<ccedil>E<atilde>o:
+
+=back
+
+=back
+
+=over
+
+=item *
+
+=over
+
+=item * TE<iacute>tulo: Perl, Sockets and TCP/IP Networking
+
+=item * DescriE<ccedil>E<atilde>o:
+
+=back
+
+=back
+
+=over
+
+=item *
+
+=over
+
+=item * TE<iacute>tulo: IO::Socket
+
+=item * DescriE<ccedil>E<atilde>o:
+
+=back
+
+=back
+
+----
+
+Criada por: frighetti E<uacute>ltima modificaE<ccedil>E<atilde>o em:
+TerE<ccedil>a-feira 17 of Janeiro, 2006 [00:34:09 UTC] por frighetti
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 9148 bytes of input
+#Sun Jan 31 01:46:01 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

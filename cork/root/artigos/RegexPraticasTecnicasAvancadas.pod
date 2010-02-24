@@ -1,0 +1,842 @@
+=pod
+
+r4 - 15 Oct 2006 - DavidDias
+
+=head1 ExpressE<otilde>es Regulares - IntroduE<ccedil>E<atilde>o,
+PrE<aacute>ticas e TE<eacute>cnicas AvanE<ccedil>adas
+
+----
+
+=over
+
+=item * 1. IntroduE<ccedil>E<atilde>o
+
+=item * 2. O que sE<atilde>o "ExpressE<otilde>es Regulares"
+
+=item * 3. IntroduE<ccedil>E<atilde>o a REGEXP
+
+=over
+
+=item * 3.1. ParE<acirc>metros
+
+=item * 3.2. Grupo de Caracteres
+
+=item * 3.3. RepetiE<ccedil>E<otilde>es e OcorrE<ecirc>ncias
+
+=item * 3.4. Grupo Fixo
+
+=item * 3.5. NegaE<ccedil>E<atilde>o
+
+=item * 3.6. InE<iacute>cio e Fim
+
+=back
+
+=item * 4. Capturando Dados
+
+=over
+
+=item * 4.1. Utilizando Retorno
+
+=back
+
+=item * 5. SubstituiE<ccedil>E<atilde>o/Replace
+
+=item * 6. ParE<acirc>mentros
+
+=over
+
+=item * 6.1. ParE<acirc>metro 'g' - Global
+
+=item * 6.2. ParE<acirc>metro 'e' - ExecuE<ccedil>E<atilde>o de
+comandos no REGEXP
+
+=item * 6.3. ParE<acirc>metro 'x' - Extendendo espaE<ccedil>os
+
+=back
+
+=item * 7. PrE<aacute>ticas Comuns
+
+=over
+
+=item * 7.1. while e sub-REGEXP
+
+=item * 7.2. split
+
+=item * 7.3. ExecuE<ccedil>E<atilde>o em Busca
+
+=back
+
+=item * 9. TE<eacute>cnicas AvanE<ccedil>adas
+
+=over
+
+=item * 9.1. ME<eacute>todo is_quoted()
+
+=back
+
+=item * 10. ReferE<ecirc>ncias
+
+=back
+
+----
+
+=head2 1. IntroduE<ccedil>E<atilde>o
+
+I<>
+
+Este artigo visa dar uma visE<atilde>o geral sobre ExpressE<otilde>es
+Regulares ("Regular Expressions" ou "REGEXP") e tambE<eacute>m abordar
+algumas tE<eacute>cnicas avanE<ccedil>adas.
+
+=head2 2. O que sE<atilde>o "ExpressE<otilde>es Regulares"
+
+"ExpressE<otilde>es Regulares", em inglE<ecirc>s "Regular Expressions",
+e apelidado de REGEXP, E<eacute> uma das ferramentas mais E<uacute>teis
+em programaE<ccedil>E<atilde>o, e utilizada em Perl a muito tempo.
+Recentemente vE<aacute>rias outras linguagens vE<ecirc>m introduzindo
+tal recurso, sendo a mais recente Java. Ou seja, em Perl REGEXP existe
+a mais de 10 anos, mas em java a apenas 2 anos, o que demonstra como
+REGEXP E<eacute> um recurso importante, poderoso bem desenvolvido em
+Perl.
+
+Com REGEXP pode-se checar o formato de uma string, formata-la,
+substituir dados, capturar dados, ou atE<eacute> mesmo criar um parser.
+
+Mas por que abordar REGEXP?
+
+=over
+
+=item * Porque quando vocE<ecirc> pega o domE<iacute>nio deste recurso
+vocE<ecirc> nE<atilde>o larga mais.
+
+=back
+
+=head2 3. IntroduE<ccedil>E<atilde>o a REGEXP
+
+Uma das maneiras mais simples de utilizar REGEXP E<eacute> checando um
+formato:
+
+  my $var = "Contenho fulano no texto." ;
+  if ( $var =~ /fulano/ ) {
+    print "A variável possui 'fulano'.\n" ;
+  }
+
+Note que o REGEXP E<eacute> indicado por '=~' e E<eacute> delimitado
+por '/'.
+
+Para modificar-se o delimitador utiliza-se o 'm', igual ao 'q' para
+strings:
+
+  if ( $var =~ m~fulano~ ) {
+    print "A variável possui 'fulano'.\n" ;
+  }
+
+=head2 3.1. ParE<acirc>metros
+
+Agora que sabe-se a declaraE<ccedil>E<atilde>o, parE<acirc>metros de
+controle:
+
+  my $var = "Contenho FuLaNo no texto." ;
+  if ( $var =~ /fulano/i ) {
+    print "A variável possui 'fulano'.\n" ;
+  }
+
+Note o 'i' no fim do REGEXP, indicando "Case Insensitive" (nE<atilde>o
+fiferenciar maiE<uacute>sculas e minE<uacute>sculas).
+
+Os demais parE<acirc>metros existentes:
+
+  g => global: todas as ocorrências.
+  s => single line: não parar em \n.
+  x => extend spaces. Extende/ignora espaço no seu REGEXP, permitindo melhor organização.
+  e => execute. Executa comandos quando usado em replace.
+  m => multiline: inverso de 's'.
+
+=over
+
+=item * O uso destes parE<acirc>mentros serE<aacute> visto adiante.
+
+=back
+
+=head2 3.2. Grupo de Caracteres
+
+VocE<ecirc> pode definir um grupo de caracteres:
+
+  my $var = "aluno" ;
+  ## ou: my $var = "aluna" ;
+  if ( $var =~ /alun[oa]/ ) { print "match\n" ;}
+
+Veja que o REGEXP irE<aacute> identificar tanto 'aluno' como 'aluna',
+jE<aacute> que o grupo de caracteres foi definido com ' ao '.
+
+Para definir um grupo sequencial utilize o '-' entre o caracter base e
+o final:
+
+  my $var = "321" ;
+  if ( $var =~ /[1-9]/ ) { print "Possuo um número.\n" ;}
+
+O grupo 1-9 identifica os caracteres: 1 2 3 4 5 6 7 8 9
+
+O mesmo pode ser feito com letras:
+
+  my $var = "ABCdef" ;
+  if ( $var =~ /[a-zA-Z]/ ) { print "Tenho letras maiúsculas ou minúsculas.\n" ;}
+
+=over
+
+=item * Note que no grupo acima foram definidos 2 sequE<ecirc>ncias.
+
+=back
+
+=head2 3.2.1. Grupos PrE<eacute>-Definidos
+
+O uso de grupos de caracteres E<eacute> muito comun, para facilitar o
+uso existem alguns prE<eacute>-definidos:
+
+  \w => [0-9a-zA-Z_]  ## Letras, números e '_'.
+  \d => [0-9]         ## Números.
+  \s => [ \t\r\n]     ## espaço, tab, return, new line. (caracteres brancos).
+
+Inversos:
+
+  \W => inverso de \w ## caracteres diferentes de letras e números.
+  \D => inverso de \d ## caracteres diferentes de números.
+  \S => inverso de \s ## caracteres não brancos.
+
+Exemplo de uso:
+
+  my $var = "321" ;
+  if ( $var =~ /\d/ ) { print "Possuo um número.\n" ;}
+
+ou:
+
+  
+  my $var = "321" ;
+  if ( $var =~ /[\d\.]/ ) { print "Possuo número(s) ou ponto(s).\n" ;}
+
+=over
+
+=item * Note que o ponto dentro do grupo foi definido com uma barra
+antes!
+
+=back
+
+  my $var = "fulano da silva" ;
+  if ( $var =~ /\w+\s+\w+\s+\w+/ ) { print "Texto com 3 palavras!\n" ;}
+
+=head2 3.3. RepetiE<ccedil>E<otilde>es e OcorrE<ecirc>ncias
+
+Para definir mE<uacute>ltiplas ocorrE<ecirc>ncias de um caracter ou um
+grupo utiliza-se:
+
+  +  => 1 ou mais ocorrências: 1*
+  ?  => nenhuma ou 1: 0..1
+  *  => nenhuma ou mais: *
+  .  => 1 ocorrência de qualquer caracter.
+
+Exemplo:
+
+  my $var = "valor: 200" ;
+  if ( $var =~ /\w+: \d+/ ) { print "Valor identificado.\n" ;}
+
+ou:
+
+  my $var = "valor 200" ;
+  if ( $var =~ /\w+:? \d+/ ) { print "Valor identificado com ou sem ':'.\n" ;}
+
+ou:
+
+  my $var = "valor:: 200" ;
+  if ( $var =~ /\w+:* \d+/ ) { print "Valor identificado com 0 ou mais ':'.\n" ;}
+
+=head2 3.3.1. OcorrE<ecirc>ncia Qualquer
+
+O uso de '.*' em REGEXP E<eacute> muito comun, mas sE<atilde>o poucos
+que entendem o seu real significado e derivaE<ccedil>E<otilde>es:
+
+  my $var = "valorxyz" ;
+  if ( $var =~ /valor.*/ ) { print "'valor' identificado.\n" ;}
+
+=over
+
+=item * Identifica a palavra 'valor' seguida ou nE<atilde>o por
+caracteres de qualquer tipo.
+
+=back
+
+  my $var = "valorxyz123" ;
+  if ( $var =~ /valor.*123/ ) { print "'valor' identificado.\n" ;}
+
+=over
+
+=item * Note que o REGEXP acima tem igual siginificado que o 1o, em
+REGEXP ou strings mais complexos '123' serE<aacute> iguinorado por
+'.*'. Para evitar este problema utilize a derivaE<ccedil>E<atilde>o
+'.*?'.
+
+=back
+
+=head2 3.3.1.1. DerivaE<ccedil>E<atilde>o
+
+Um dos cE<oacute>digos mais mal entendidos E<eacute> '.*?'. Tal falta
+de entendimento deve-se ao siginificado de '?' neste caso, que
+nE<atilde>o tem nada de parecido com o significado comun: 0 ou 1
+ocorrE<ecirc>ncia.
+
+O cE<oacute>digo '.*?' significa "qualquer ocorrE<ecirc>ncia"
+atE<eacute> a ocorrE<ecirc>ncia em seguida:
+
+  my $var = "valorxyz123" ;
+  if ( $var =~ /valor.*?123/ ) { print "'valor...123' identificado.\n" ;}
+
+=over
+
+=item * Neste caso 123 nE<atilde>o E<eacute> ignorado por '.*',
+jE<aacute> que '?' (especial) indica a checagem da prE<oacute>xima
+ocorrE<ecirc>ncia primeiro.
+
+=back
+
+Note que '.' que dizer qualquer caracter, entE<atilde>o a regra vale
+para um caracter especE<iacute>fico tambE<eacute>m. Nexte exemplo '.'
+E<eacute> trocado por 'x':
+
+  my $var = "valorxxx123" ;
+  if ( $var =~ /valorx*?123/ ) { print "'valorxxx123' identificado.\n" ;}
+
+Em alguns casos '.*' pode comportar-se como '.*?', especialmente em
+versE<otilde>es anteriores do Perl. EntE<atilde>o sempre procure ser
+especE<iacute>fico, utilizando '.*' e '.*?' nas ocasiE<otilde>es
+certas, evitando enganos ou resultados nE<atilde>o esperados!
+
+=head2 3.4. Grupo Fixo
+
+A definiE<ccedil>E<atilde>o de um grupo de caracteres jE<aacute> foi
+vista, mas note que ela nE<atilde>o funciona como um grupo fixo de
+caracteres:
+
+  [abc]+ => identifica: abc ; acb ; bca ; bac ; cba ; cab
+
+Ou seja, indefica o grupo 'abc' em qualquer ordem e tamanho.
+
+Para identificar uma sequE<ecirc>ncia fixa utiliza-se (?:xxxx), onde
+xxxx E<eacute> a sua sequE<ecirc>ncia (palavras, etc...). Exemplo:
+
+  my $var = "GATACAGATACAGATACA" ;
+  if ( $var =~ /(?:GATACA)+/ ) { print "Sequência 'GATACA' identificada.\n" ;}
+
+=over
+
+=item * O REGEXP acima identificou a ocorrE<ecirc>ncia 'GATACA' 1 ou
+mais vezes.
+
+=back
+
+=head2 3.4.1. AlternE<acirc>ncia
+
+A alternE<acirc>ncia de uma sequE<ecirc>ncia pode ser definida por '|'
+dentro do "grupo fixo":
+
+  my $var = "ACATAGGATACA" ;
+  if ( $var =~ /(?:GATACA|ACATAG)+/ ) { print "Sequência 'GATACA' ou 'ACATAG' identificada.\n" ;}
+
+=over
+
+=item * O REGEXP acima identifica 'GATACA' ou 'ACATAG' em
+sequE<ecirc>ncia.
+
+=back
+
+=head2 3.4.2. RepetiE<ccedil>E<atilde>o
+
+As mesmas regras de repetiE<ccedil>E<atilde>o para grupos de caracteres
+E<eacute> vE<aacute>lida para grupos fixos:
+
+  (?:GATACA|ACATAG)+   => 1 ou mais
+  (?:GATACA|ACATAG)?   => 0 ou 1
+  (?:GATACA|ACATAG)*   => 0 ou mais
+  (?:GATACA|ACATAG)*?  => 0 ou mais até a próxima ocorrência.
+
+=head2 3.5. NegaE<ccedil>E<atilde>o
+
+Em casos especE<iacute>ficos precisamos encontra um texto que
+nE<atilde>o venha depois ou antes de um determinado texto. Para isto
+temos a opE<ccedil>E<atilde>o de utilizarmos (?!xxxx)...., onde 'xxxx'
+E<eacute> o texto que nE<atilde>o queremos e '....':
+
+  my $var = "aaabbb cccBBB" ;
+  my ($capt) = ( $var =~ /(?!a+)...(b+)/i );
+  print "$capt\n" ;
+
+=over
+
+=item * print:
+
+=back
+
+  BBB
+
+=over
+
+=item * Apenas o BBB no final foi capturado, pos ele nE<atilde>o possui
+uma sequE<ecirc>ncia de a+ antes dele.
+
+=back
+
+Note que (?!xxxx) indica apenas que a prE<oacute>xima ocorrE<ecirc>ncia
+nE<atilde>o deve conte xxxx! Por isso que '...' foi especificado.
+
+E<Eacute> muito fE<aacute>cil enganar-se ao trabalhar com (?!xxxx):
+
+  my $var = "aaabbb cccBBB" ;
+  my ($capt) = ( $var =~ /(?!aaa)...(b+)/i );
+  print "$capt\n" ;
+
+=over
+
+=item * print:
+
+=back
+
+  bb
+
+=over
+
+=item * O REGEXP acima apenas indica que deve capturar uma
+sequE<ecirc>ncia de 'b' (de qualquer tamanho) sem 'aaa' na frente. Ou
+seja, 'bb' da 1a sequE<ecirc>ncia E<eacute> vE<aacute>lido, pois antes
+dele existe 'aab' e nE<atilde>o 'aaa'!
+
+=back
+
+=head2 3.6. InE<iacute>cio e Fim
+
+Note que atE<eacute> agora os REGEXP poderiam ocorrem em qualquer parte
+da string:
+
+  my $var = "aaa bbb ccc" ;
+  if ( $var =~ /bbb/ ) { print "'bbb' identificado.\n" ;}
+
+Mas digamos que queremos identificar 'bbb' apenas no inE<iacute>cio:
+
+  my $var = "bbb ccc" ;
+  if ( $var =~ /^bbb/ ) { print "'bbb' identificado no início.\n" ;}
+
+=over
+
+=item * Para tal utiliza-se '^' no inE<iacute>cio do REGEXP.
+
+=back
+
+Para determinar o fim utiliza-se '$':
+
+  my $var = "bbb ccc" ;
+  if ( $var =~ /ccc$/ ) { print "'ccc' identificado no fim.\n" ;}
+
+=head2 4. Capturando Dados
+
+A forma mais E<uacute>til do REGEXP E<eacute> para capturar dados. Para
+tal, utiliza-se mE<atilde>o de parE<ecirc>nteses (), onde as
+ocorrE<ecirc>ncias dentro dos parE<ecirc>nteses serE<atilde>o
+capturadas/retornadas:
+
+  my $var = "aaa BbB ccc" ;
+  if ( $var =~ /(b+)/i ) { print "sequência b: $1\n" ;}
+
+capturas mE<uacute>ltiplas:
+
+  
+  my $var = "aaa BbB ccc" ;
+  if ( $var =~ /(b+)\s*(c+)/i ) { print "capturas: $1 # $2\n" ;}
+
+=over
+
+=item * Note que uma sequE<ecirc>ncia de 'b' foi capturada na
+variE<aacute>vel $1, sem diferenciaE<ccedil>E<atilde>o de
+maiE<uacute>sculas e minE<uacute>sculas. Resultado do print acima:
+
+=back
+
+sequE<ecirc>ncia b: BbB?
+
+=head2 4.1. Utilizando Retorno
+
+  my $var = "aaa BbB ccc" ;
+  my ($bs) = ( $var =~ /(b+)/ ) ;
+  print "sequência b: $bs\n" ;
+
+mE<uacute>ltiplos retornos:
+
+  my $var = "aaa BbB ccc" ;
+  my ($bs_e_cs) = ( $var =~ /(b+)\s*(c+)/ ) ;
+  print "captura: $bs_e_cs\n" ;
+
+=head2 5. SubstituiE<ccedil>E<atilde>o/Replace
+
+Outro uso comun E<eacute> a substituiE<ccedil>E<atilde>o (replace) de
+partes de uma string:
+
+  my $var = "aaa BbB ccc" ;
+  $var =~ s/b+/x/i ;
+
+=over
+
+=item * O REGEXP acima subistitui qualquer ocorrE<ecirc>ncia
+concecutiva de 'b', sem diferenciaE<ccedil>E<atilde>o de
+maiE<uacute>sculas e minE<uacute>sculas.
+
+=back
+
+O recurso de captura tambE<eacute>m pode ser combinado:
+
+  my $var = "aaa BbB ccc" ;
+  $var =~ s/(b+)/<$1>/i ;
+
+=over
+
+=item * O REGEXP acima coloca uma sequE<ecirc>ncia de 'b' entre 'E<lt>'
+e 'E<gt>', sem diferenciaE<ccedil>E<atilde>o de maiE<uacute>sculas e
+minE<uacute>sculas.
+
+=back
+
+=head2 6. ParE<acirc>mentros
+
+=head2 6.1. ParE<acirc>metro 'g' - Global
+
+O parE<acirc>metro 'g' indica para procurar/afetar todas as
+ocorrE<ecirc>ncias da string.
+
+  my $var = "aaa BbB ccc bBb ddd b fff BB" ;
+  $var =~ s/(b+)/<$1>/ig ;
+
+=over
+
+=item * Coloca qualquer sequE<ecirc>ncia de 'b' entre 'E<lt>' e
+'E<gt>'.
+
+=back
+
+=head2 6.2. ParE<acirc>metro 'e' - ExecuE<ccedil>E<atilde>o de comandos
+no REGEXP
+
+Para criar REGEXP mais complexos, ou com uma interaE<ccedil>E<atilde>o
+maior, temos a opE<ccedil>E<atilde>o de executar comandos dentro do
+REGEXP de substituiE<ccedil>E<otilde>es:
+
+  my $var = "aaa 10 ccc" ;
+  $var =~ s/(\d+)/ my $x10 = $1 * 10 ; $x10 /ie ;
+
+=over
+
+=item * O REGEXP acima subistitui qualquer sequE<ecirc>ncia de
+nE<uacute>meros por esta sequE<ecirc>ncia multiplicada por 10. Note a
+variE<aacute>vel $x10 no final, que informa de forma explE<iacute>cita
+qual dado E<eacute> retornado para a substituiE<ccedil>E<atilde>o.
+
+=back
+
+=over
+
+=item * O E<uacute>nico tipo de comando que deve ser evitado dentro do
+REGEXP E<eacute> um outro REGEXP! Isto inclui REGEXP dentro de
+funE<ccedil>E<otilde>es (sub), ou seja, se uma funE<ccedil>E<atilde>o
+E<eacute> chamada dentro do REGEXP ela nE<atilde>o pode ter outros
+REGEXP, ou o REGEXP principal serE<aacute> corrompido!
+
+=back
+
+=head2 6.3. ParE<acirc>metro 'x' - Extendendo espaE<ccedil>os
+
+A escrita de REGEXP pode ficar muito confusa e longa, para contornar
+este problema temos o parE<acirc>metro 'x':
+
+  my $var = "nome: fulano" ;
+  ## ou: my $var = "nome = fulano" ;
+  
+  $var =~ s/
+  (
+    (?:nome|email|tel)
+    \s*
+    [:=]
+    \s*
+  )
+  (\S+)
+  /$1<$2>/xi ;
+  
+  print "$var\n" ;
+
+=over
+
+=item * O REGEXP acima coloca os valores dos campos 'nome', 'email' e
+'tel' entre 'E<lt>' e 'E<gt>', sendo que o separador pode ser ':' ou
+'='.
+
+=back
+
+=over
+
+=item * Note que a indicaE<ccedil>E<atilde>o de espaE<ccedil>os na
+string E<eacute> feita de forma explE<iacute>cita por \s.
+
+=back
+
+=over
+
+=item * Resultado do print acima:
+
+=back
+
+  nome: <fulano>
+
+=head2 7. PrE<aacute>ticas Comuns
+
+=head2 7.1. while e sub-REGEXP
+
+Uma forma especial de passar uma string E<eacute> utilizando REGEXP +
+while:
+
+  my $var = "aaa BbB ccc bBb ddd b fff BB" ;
+  while( $var =~ /(b+)/gi ) {
+    print "$1\n" ;
+  }
+
+=over
+
+=item * Resultados do print:
+
+=back
+
+  BbB
+  bBb
+  b
+  BB
+
+Mas digamos que vocE<ecirc> quer fazer uma busca na string depois da
+sequE<ecirc>ncia de 'b' capturada:
+
+  my $var = "aaa BbB ccc bBb ddd b fff BB" ;
+  while( $var =~ /(b+)/gi ) {
+    my ($subvar) = ( $var =~ /\G\s*(\w+)/ );
+    print "$1: $subvar\n" ;
+  }
+
+=over
+
+=item * Resultados do print:
+
+=back
+
+  BbB: ccc
+  bBb: ddd
+  b: fff
+  BB: 
+
+=over
+
+=item * Note a utilizaE<ccedil>E<atilde>o do \G, que indica que o
+REGEXP irE<aacute> continuar da posiE<ccedil>E<atilde>o do REGEXP
+anterior.
+
+=back
+
+=head2 7.2. split
+
+Algo que poucos percebem E<eacute> que em todo split() existe um
+REGEXP:
+
+  my $var = "nome = fulano" ;
+  my ($start , $end) = split("=" , $var) ;
+
+Na verdade o split acima deve ser escrito como abaixo, jE<aacute> que
+'"="' serE<aacute> sempre tratado como um REGEXP:
+
+  my $var = "nome = fulano" ;
+  my ($start , $end) = split(/=/ , $var) ;
+
+Um split() nE<atilde>o E<eacute> muito diferente de:
+
+  my $var = "nome = fulano" ;
+  my ($start , $end) = ( $var =~ /^(.*?)=(.*)/ );
+
+=head2 7.3. ExecuE<ccedil>E<atilde>o em Busca
+
+CE<oacute>digos podem ser executados nE<atilde>o sE<oacute> em
+substituiE<ccedil>E<otilde>es, mas no prE<oacute>prio REGEXP em si.
+
+  my $var = "aaa BbB ccc bBb ddd b fff BB" ;
+  $var =~ s/(\w+)(?{ print "[$1]\n" ; })/<$1>/g ;
+  print "var: $var\n" ;
+
+=over
+
+=item * Resultados do print:
+
+=back
+
+  [aaa]
+  [BbB]
+  [ccc]
+  [bBb]
+  [ddd]
+  [b]
+  [fff]
+  [BB]
+  var: <aaa> <BbB> <ccc> <bBb> <ddd> <b> <fff> <BB>
+
+=over
+
+=item * O REGEXP acima tem como resultado na variE<aacute>vel $var,
+colocar as sequE<ecirc>ncias de \w entre 'E<lt>' e 'E<gt>'. Mas em cada
+captura executa um print.
+
+=back
+
+=over
+
+=item * O cE<oacute>digo foi definido em (?{xxxx}) onde xxxx E<eacute>
+o cE<oacute>digo. Mas o cE<oacute>digo sE<oacute> serE<aacute>
+executado quando algo for capturado em (\w+). Ou seja, (?{}) deve estar
+depois de uma captura.
+
+=back
+
+=head2 9. TE<eacute>cnicas AvanE<ccedil>adas
+
+Bom, 1o o que E<eacute> avanE<ccedil>ado para uns pode ser simples para
+outros e vice-versa.
+
+Irei abordar 2 situaE<ccedil>E<otilde>es complexas em Perl e que
+vE<aacute>rios programadores jE<aacute> se depararem com ela:
+
+=head2 9.1. ME<eacute>todo is_quoted()
+
+Obejetivo E<eacute> ter um mE<eacute>todo que determina se uma string
+jE<aacute> estE<aacute> delimitada por " ou ', necessE<aacute>rio em
+versE<otilde>es antigas do DBI.
+
+Um dos principais problemas E<eacute> uma string que possui " ou '
+dentro dela:
+
+  "javascript: call(\"xyz\")"
+
+=over
+
+=item * No caso acima \" deve ser identificado, pois o " nE<atilde>o
+indica o fim.
+
+=back
+
+=over
+
+=item * FunE<ccedil>E<atilde>o:
+
+=back
+
+  sub is_quoted {
+    my $data = shift ;
+    
+    $data =~ s/\\\\//gs ;   #1# Ignora \\
+    
+    if (
+    $data =~ /^             #2# Início
+      \s*                   #3# Ignora espaços no início.
+      (?:(?!\\).|)          #4# Aspas sem \ antes.
+      (?:
+        "[^"\\]?"                  #5# Nenhum dado delimitado: ""
+        |
+        "(?:(?:\\")|[^"])+(?!\\)." #6# Dado sem ", ou com \"
+        |
+        '[^'\\]?'                  #7# mesmo que 5, mas para '
+        |
+        '(?:(?:\\')|[^'])+(?!\\).' #8# mesmo que 6, mas para '
+      )
+      \s*                   #9# Ignora espaços no fim.
+    $/sx
+    ) { return( 1 ) ;} ## return true
+    return undef ;     ## return false
+  }
+
+=over
+
+=item * Passos:
+
+=over
+
+=item * 1. Remove \\, para nE<atilde>o atrapalhar em \" ou \', evitando
+a ocorrE<ecirc>ncia de \\" e \\'.
+
+=item * 2. Determina o inE<iacute>cio da string.
+
+=item * 3. Ignora espaE<ccedil>os no inE<iacute>cio. Este passo poderia
+ser removido caso nE<atilde>o se queira ignora-los.
+
+=item * 4. Determina que antes da 1a aspas nE<atilde>o pode existir \,
+ou nE<atilde>o deve existir nada. Note a barra '|' de
+alternE<acirc>ncia.
+
+=back
+
+=back
+
+Os passos 5 e 6 (7 e 8 E<eacute> repetiE<ccedil>E<atilde>o para ')
+sE<atilde>o os mais importantes. Note que eles estE<atilde>o dentro de
+um "grupo fixo" alternado, que deverE<aacute> identificar uma das
+opE<ccedil>E<otilde>es.
+
+=over
+
+=item *
+
+=over
+
+=item * 5. Um dado "quoted" de tamanho 1 ou 0. Sendo que se for de
+tamanho 1 nE<atilde>o deve conter \ ou ".
+
+=item * 6. E<Eacute> composto por 2 partes:
+
+=back
+
+=back
+
+   "(?:(?:\\")|[^"])+
+   ## e:
+   (?!\\)."
+
+A 1a parte E<eacute> dividida em mais 2:
+
+     (?:\\")
+     ## e:
+     [^"]
+
+Indica que deve comeE<ccedil>ar com ", conter um sequE<ecirc>ncia de \"
+ou uma sequE<ecirc>ncia diferente de ".
+
+A 2a parte indica o fim, e que a aspas final nE<atilde>o deve conter \
+antes dela. Esta parte justifica o passo 5.
+
+=head2 10. ReferE<ecirc>ncias
+
+=over
+
+=item * Perldoc.perlrequick? - Perl regular expressions quick start
+
+=item * Perldoc.perlretut? - Perl regular expressions tutorial
+
+=item * Perldoc.perlre? - Perl regular expressions, the rest of the
+story
+
+=back
+
+----
+
+Criada por: frighetti E<uacute>ltima modificaE<ccedil>E<atilde>o em:
+TerE<ccedil>a-feira 17 of Janeiro, 2006 [16:45:51 UTC] por frighetti
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 24999 bytes of input
+#Sun Jan 31 01:45:56 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

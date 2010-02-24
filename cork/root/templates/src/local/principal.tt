@@ -1,0 +1,28 @@
+
+[% META title=" Principal " current_page='home' %]
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <div class="top_left">
+              <div class="widget-sobre-o-que-e-tudo-isso-afinal widget">
+
+<h2>Sobre o que &eacute; tudo isso, afinal?</h2>
+
+<p>Somos um grupo de pessoas dedicadas ao encorajamento de tudo o que estiver relacionado com o Perl em S&atilde;o Paulo. Isto envolve ajudar uns aos outros, discutir qualquer assunto que pare&ccedil;a interessante para algum dos membros, partilhar informa&ccedil;&atilde;es sobre  o Perl, sobre assuntos t&eacute;cnicos, pol&iacute;ticos, culin&aacute;rios, empregos e tudo o mais que parecer partilh&aacute;vel, e ocasionalmente algumas tulipas de boa cerveja.</p>
+
+</div>
+            </div>
+            <div class="top_right">
+              <div class="widget-seja-sociavel widget">
+
+<h2>Seja Soci&aacute;vel!</h2>
+<p>O S&atilde;o Paulo Perl Mongers promove <A href="/encontrosocial">encontros sociais</a> regulares. Informe-se sobre o encontro deste m&ecirc;s em nossa lista de discuss&atilde;o.</p>
+
+</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+

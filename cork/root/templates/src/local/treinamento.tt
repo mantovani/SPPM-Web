@@ -1,0 +1,23 @@
+
+[% META title=" Treinamento " current_page="treinamento" %]
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>Treinamento</h2>
+            <div class="whois">
+            
+
+		<p>A comunidade possui membros que colaboram ministrando treinamentos, cursos ou apresenta&ccedil;&otilde;es em univerdades ou empresas.</p>
+
+		<p>Caso tenha interesse, entre em <a href="/contato">contato</a>!</a>
+		<h2>Conte&uacute;do</h2>
+
+		<p>Perl 101 - <A href="http://github.com/otaviof/SPPM-Perl_101">http://github.com/otaviof/SPPM-Perl_101</a></p>
+
+		</div>
+          </div>
+        </div>
+      </div>
+
+

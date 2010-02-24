@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" href="/static/styles.css" type="text/css" />
+<link rel="stylesheet" href="/static/css/calendar.css" type="text/css" />
+
+
+  <title>S&atilde;o Paulo Perl Mongers :: [% template.title %]</title>
+ </head>
+ <body>
+
+<div id="layout">
+  <div id="inner_layout">
+    <div id="header" class="png_bg">
+      <div id="links">
+        <ul>
+          <li><a href="/contato">Contato</a></li>
+        </ul>
+      </div>
+      <div class="header">
+        <div class="logo">
+
+           <a href="/" accesskey="1">
+           <img src="/static/images/logo.png" alt="Logo" class="png_bg"/>
+           </a>
+        </div>
+      </div>
+      <div id="menu">
+        <ul>
+          <li class="home"><a href="/" [% IF template.current_page == 'home' %] class="current" [% END %]></a></li>
+          <li class="pipe"></li>
+
+          <li class="quem"><a href="/quemsomos" [% IF template.current_page == 'quemsomos' %] class="current" [% END %]></a></li>
+          <li class="pipe"></li>
+          <li class="social"><a href="/encontrosocial" [% IF template.current_page == 'encontrosocial' %] class="current" [% END %]></a></li>
+          <li class="pipe"></li>
+          <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %]></a></li>
+          <li class="pipe"></li>
+          <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %]></a></li>
+          <li class="pipe"></li>
+          <li class="podcast"><a href="/podcast" [% IF template.current_page == 'podcast' %] class="current" [% END %]></a></li>
+
+          <li class="pipe"></li>
+          <li class="tecnico"><a href="/encontrotecnico" [% IF template.current_page == 'encontrotecnico' %] class="current" [% END %]></a></li>
+          <li class="pipe"></li>
+          <li class="treinamento"><a href="/treinamento" [% IF template.current_page == 'treinamento' %] class="current" [% END %]></a></li>
+          <li class="pipe"></li>
+          <li class="lista"><a href="/lista" [% IF template.current_page == 'lista' %] class="current" [% END %]></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="container" class="png_bg">
+
+<br/><br/>
+
+[% content %]
+
+<br/><br/>
+
+    </div>
+    <div id="footer" class="png_bg">
+
+      <div id="inner_footer">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/quemsomos">Quem somos</a></li>
+          <li><a href="/encontrosocial">ENCONTRO SOCIAL</a></li>
+          <li><a href="/artigos">Artigos</a></li>
+          <li><a href="/blogs">BLOGS</a></li>
+
+          <li><a href="/podcast">Podcast</a></li>
+          <li><a href="/encontrotecnico">ENCONTRO T&Eacute;CNICO</a></li>
+          <li><a href="/treinamento">Treinamento</a></li>
+          <li><a href="/lista">Lista</a></li>
+	  <li><a href="/equinocio">Meses do Equin&oacute;cio</a></li>
+       	  <li><a href="/empresas">Empresas</a></li>
+	 </ul>
+        <div class="copyright">
+          <p>Copyright S&atilde;o Paulo Perl Mongers. Todos os diretiros reservados.</p>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-12787073-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+</html>
+

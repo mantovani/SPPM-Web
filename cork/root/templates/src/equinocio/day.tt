@@ -1,0 +1,32 @@
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>[% day %] de Fevereiro de [% year %]</h2>
+            <div class="whois">
+
+[% pod %]
+<ul id="pager">
+[% yesterday = day - 1 %]
+[% tomorrow  = day + 1 %]
+[% TRY %]
+    [% USE File( c.path_to( 'root', year, "${yesterday}.pod" ) ) %]
+    <li class="previous"><a href="[% c.uri_for( '/', year, yesterday ) %]">Anterior</a></li>
+[% CATCH File %]
+    <li class="previous">Anterior</li>
+[% END %]
+[% TRY %]
+    [% USE File( c.path_to( 'root', year, "${tomorrow}.pod" ) ) %]
+    <li class="next"><a href="[% c.uri_for( '/', year, tomorrow ) %]">Pr&oacute;ximo</a></li>
+[% CATCH File %]
+    <li class="next">Pr&oacute;ximo</li>
+[% END %]
+</ul>
+<div style="clear: both"></div>
+
+                </div>
+          </div>
+        </div>
+      </div>
+
+

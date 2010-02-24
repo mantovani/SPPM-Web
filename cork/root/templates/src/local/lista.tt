@@ -1,0 +1,29 @@
+
+[% META title=" Lista " current_page="lista" %]
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>Lista</h2>
+            <div class="whois">
+
+           <h3>Mailman</h3> 
+		<p>Abaixo o link para voc&ecirc; acessar o gerenciador da nossa lista de discuss&atilde;o para se inscrever, cancelar, alterar suas prefer&ecirc;ncias e ver o hist&oacute;rico.
+
+		<p><a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm" target="_blank">http://mail.pm.org/mailman/listinfo/saopaulo-pm</a></p>
+
+		<p>N&oacute;s costumamos a seguir regras de etiquetas comuns utilizada na Internet, uma boa refer&ecirc;ncia &eacute; a <a href="http://www.ietf.org/rfc/rfc1855.txt" target="_blank">rfc 1855</a>.
+
+	<h3>IRC</h3>
+
+		<p>Estamos presentes tamb&eacute;m no IRC, na rede <A href="http://www.irc.perl.org/" target="_blank">irc.perl.org</a> no canal #sao-paulo.pm
+
+	<h3>LinkedIn</h3>
+
+	<p><A href="http://www.linkedin.com/groups?home=&gid=64857" target="_blank">http://www.linkedin.com/groups?home=&gid=64857</a>.</p>
+		</div>
+          </div>
+        </div>
+      </div>
+
+

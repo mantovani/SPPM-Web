@@ -1,0 +1,16 @@
+[% META title=" Contato " %]
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>Contato</h2>
+            <div class="whois">
+<p>            
+O atual mantenedor do website da S&atilde;o Paulo Perl Mongers &eacute; o <i>Thiago Rondon</i> que responde pelo e-mail <i>thiago.rondon</li> em gmail.
+</p>
+		</div>
+          </div>
+        </div>
+      </div>
+
+
