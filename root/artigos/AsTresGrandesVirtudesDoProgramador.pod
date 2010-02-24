@@ -1,0 +1,39 @@
+=pod
+
+r1 - 21 Dec 2006 - NelsonFerraz
+
+=head1 As TrE<ecirc>s Grandes Virtudes do Programador
+
+I<>
+
+De acordo com as Escrituras, as TrE<ecirc>s Grandes Virtudes do
+Programador sE<atilde>o, nessa ordem: a PreguiE<ccedil>a, a
+ImpaciE<ecirc>ncia e o Orgulho.
+
+Randal Schwartz explica, no Livro do Camelo:
+
+PREGUIE<Ccedil>A E<eacute> a qualidade que faz vocE<ecirc> aplicar um
+grande esforE<ccedil>o para reduzir o gasto geral de energia. Isso faz
+com que vocE<ecirc> escreva programas que poupem seu prE<oacute>prio
+trabalho, bem como uma boa documentaE<ccedil>E<atilde>o, para que
+nE<atilde>o precise depois responder perguntas sobre eles. Assim, esta
+E<eacute> a Primeira Grande Virtude do Programador.
+
+IMPACIE<Ecirc>NCIA E<eacute> a raiva que vocE<ecirc> sente quando o
+computador E<eacute> preguiE<ccedil>oso. Isso faz com que vocE<ecirc>
+escreva programas que nE<atilde>o apenas reajam a suas necessidades,
+mas as antecipe. Ou pelo menos finjam fazE<ecirc>-lo. Assim, esta
+E<eacute> a Segunda Grande Virtude do Programador.
+
+ORGULHO, daquele tipo que faria Zeus atirar um raio sobre a sua
+cabeE<ccedil>a, E<eacute> tambE<eacute>m a qualidade que o faz escrever
+programas que outras pessoas nE<atilde>o irE<atilde>o depois criticar.
+Assim, esta E<eacute> a Terceira Grande Virtude do Programador.
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 1443 bytes of input
+#Sun Jan 31 01:45:44 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

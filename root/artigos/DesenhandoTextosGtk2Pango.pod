@@ -1,0 +1,145 @@
+=pod
+
+r3 - 23 Dec 2006 - DanielRuoso
+
+=head1 Desenhando textos ad-hoc com Gtk2 e Pango
+
+I<>
+
+E<Agrave>s vezes E<eacute> necessE<aacute>rio desenhar um texto
+qualquer na tela com Gtk2, como parte de um grE<aacute>fico. Como este
+tema em especial tem pouquE<iacute>ssima documentaE<ccedil>E<atilde>o,
+segue aqui o caminho das pedras para conseguir escrever um texto
+qualquer com Gtk2 e Pango.
+
+O Gtk2 E<eacute> um toolkit poderoso. Muito mais poderoso do que muitos
+julgam, e, justamente por isso, as vezes nE<atilde>o E<eacute>
+tE<atilde>o simples utilizE<aacute>-lo. Por exemplo, eu cheguei na
+questE<atilde>o desse artigo quando estava precisando desenhar um texto
+qualquer utilizando um Gtk2::DrawingArea. Eu poderia ter utilizado o
+draw_text, mas este mE<eacute>todo estE<aacute> obsoleto e nE<atilde>o
+colabora muito com UTF8 e coisas assim. Eu jE<aacute> sabia que o Gtk2
+tem um E<oacute>timo suporte a UTF8 e por isso queria fazer o
+negE<oacute>cio direito.
+
+Pois bem, sabia que o engodo comeE<ccedil>ava no Pango, mas a
+E<uacute>nica documentaE<ccedil>E<atilde>o que existe sE<atilde>o as
+APIs, entE<atilde>o, bem, fui E<agrave> tentativa e erro.
+
+NE<atilde>o pretendo aqui passar todos os passos de erro, mas quero sim
+explicar como ficou o resultado final.
+
+=head2 Pango Context
+
+O Pango Context E<eacute> um elemento chave para tudo funcionar.
+VocE<ecirc> nE<atilde>o consegue fazer praticamente nada sem ter um
+contexto vE<aacute>lido. O segredo E<eacute> saber que qualquer widget
+implementa o mE<eacute>todo get_pango_context. Com esse mE<eacute>todo
+vocE<ecirc> tem o contexto no seu estado ideal, uma vez que vocE<ecirc>
+chama ele do prE<oacute>prio widget onde voce vai pintar alguma coisa.
+
+=head2 Font Description
+
+A outra coisa que voce precisa E<eacute> conseguir um FontDescription,
+ou seja, para definir com qual fonte voce vai escrever. A classe
+Gtk2::Pango::FontDescription tem o mE<eacute>todo from_string que serve
+para construir a fonte a partir de uma descriE<ccedil>E<atilde>o
+amigE<aacute>vel. Algo como "Sans 10".
+
+=head2 Layout
+
+Por fim, o E<uacute>ltimo elemento que voce precisa ter antes de mandar
+pintar o texto E<eacute> o Layout. Como estamos falando em
+internacionalizaE<ccedil>E<atilde>o, UTF-8 e coisa e tal, nE<atilde>o
+existe a noE<ccedil>E<atilde>o de "coloque o texto aqui". Um conjunto
+maior de variE<aacute>veis influencia nisso, mas felizmente o Pango
+cuida disso, a E<uacute>nica coisa que voce precisa E<eacute> criar um
+layout, o resto ele faz. Para criar um layout basta chamar o
+mE<eacute>todo new da classe Gtk2::Pango::Layout, que recebe o Pango
+Context. Depois basta passar a string (em UTF8, mas vocE<ecirc>
+realmente nE<atilde>o precisa se preocupar com isso) utilizando o
+mE<eacute>todo set_text do layout e dizer a fonte usando o
+set_font_description.
+
+=head2 Finalmente, desenhando.
+
+Aqui estE<aacute> a parte ainda mais obscura. Por causa do conjunto
+gigantesco de possibilidades de onde e como o texto vai aparecer, voce
+nE<atilde>o diz tem os mE<eacute>todos de pintura de texto no
+GdkWindow, mas sim, surpreendentemente, no GdkStyle, que E<eacute>
+acessE<iacute>vel em qualquer widget pelo mE<eacute>todo homonimo
+style.
+
+O mE<eacute>todo de pintura do texto E<eacute>, por fim, o
+paint_layout, que vai fazer toda a magia negra necessE<aacute>ria para
+fazer o texto aparecer com os glyphs especE<iacute>ficos (mesmo que
+voce escreva em japonE<ecirc>s).
+
+=head2 CE<oacute>digo de Exemplo
+
+ #!/usr/bin/perl
+ use strict;
+ use warnings;
+ use Gtk2 qw(-init -threads-init);
+ 
+ my $canvas_width = 0;
+ my $canvas_height = 0;
+ 
+ my $mainwindow = Gtk2::Window->new("toplevel");
+ my $draw = Gtk2::DrawingArea->new();
+ $draw->signal_connect(expose_event => \&drawit);
+ $draw->signal_connect(configure_event => \&configureit);
+ $mainwindow->add($draw);
+ $mainwindow->show_all();
+ Gtk2->main();
+ 
+ 
+ sub configureit {
+         my $draw = shift;
+         my $event = shift;
+         $canvas_width = $event->width;
+         $canvas_height = $event->height;
+ }
+ 
+ sub drawit {
+         my $draw = shift;
+         my $event = shift;
+         my ($x,$y,$w,$h) = ($event->area->x, $event->area->y, $event->area->width, $event->area->height);
+         # Obtendo o Graphic Context do widget.
+         my $gc = $draw->style->fg_gc($draw->state);
+         # Limpando a área a ser pintada.
+         $draw->window->clear_area($x, $y, $w, $h);
+         # Vou mexer só na parte que precisa ser atualizada
+         $gc->set_clip_rectangle(Gtk2::Gdk::Rectangle->new($x, $y, $w, $h));
+ 
+         # Pintar o fundo de branco.
+         $gc->set_rgb_fg_color(Gtk2::Gdk::Color->new(255*257,255*257,255*257));
+         $draw->window->draw_rectangle($gc,1,0,0,$canvas_width,$canvas_height);
+         $gc->set_rgb_fg_color(Gtk2::Gdk::Color->new(0,0,0));
+ 
+         # obter o Pango Context
+         my $pangoc = $draw->get_pango_context();
+         # criar o Font Description
+         my $fontdesc = Gtk2::Pango::FontDescription->from_string("Sans 10");
+         # Criar o layout
+         my $layout = Gtk2::Pango::Layout->new($pangoc);
+         # definir a fonte
+         $layout->set_font_description($fontdesc);
+         # definir o texto
+         $layout->set_text("Algum Texto áæß");
+         # Desenhar...
+         my $rect = Gtk2::Gdk::Rectangle->new(int($canvas_width/2)-75+2,int($canvas_height/2)-100+2,146,20);
+         $draw->style->paint_layout($draw->window,$draw->state,1,$rect,undef,undef,$rect->x,$rect->y,$layout);
+ 
+ 
+         # Desfazendo o clip
+         $gc->set_clip_rectangle(undef);
+ }
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 6045 bytes of input
+#Sun Jan 31 01:45:43 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

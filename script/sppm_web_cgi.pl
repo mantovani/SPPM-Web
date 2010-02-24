@@ -1,10 +1,24 @@
 #!/usr/bin/env perl
 
-use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('SPPM::Web', 'CGI');
 
+use lib qw[
+/home/sppm/local/lib/perl5
+/home/sppm/local/share/perl/5.8.8
+/home/sppm/local/lib/perl/5.8.8
+/home/sppm/local/lib
+];
+
+BEGIN { $ENV{CATALYST_ENGINE} ||= 'CGI' }
+ 
+use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use SPPM::Web;
+  
+SPPM::Web->run;
+   
 1;
-
 =head1 NAME
 
 sppm_web_cgi.pl - Catalyst CGI

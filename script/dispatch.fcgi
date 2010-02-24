@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('SPPM::Web', 'FastCGI');
 use lib qw[
     /home/sppm/local/lib/perl5
     /home/sppm/local/share/perl/5.8.8

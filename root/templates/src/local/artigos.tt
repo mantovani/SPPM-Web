@@ -1,4 +1,5 @@
-[% META title=" Artigos " current_page="artigos" %]
+
+[% META title=" Artigos " current_page="blogs" %]
 
       <div id="container_top">
         <div id="container_bottom">
@@ -6,7 +7,7 @@
             <h2>Artigos</h2>
             <div class="whois">
             
-		<p>N&atilde;o h&aacute; registros.</p>
+		<p>Em breve.</p>
 
 		</div>
           </div>
