@@ -26,12 +26,40 @@
 		<div class="bottom_bottom">
 		<div class="left_section">
 		<div class="side">
-			<h2 class="artigos"></h2>
+			<h2 class="documentacao"></h2>
 			<h3>Equin&oacute;cio de Mar&ccedil;o 2010</h3>
 
 			<p>Acompanhe o equin&oacute;cio de mar&ccedil;o que ir&aacute; come&ccedil;ar no primeiro dia do m&ecirc;s!. 
 			Ser&atilde;o produzidos artigos relacionados ao desenvolvimento web, um por dia. Aguarde e participe !
 			</p>
+
+                    <div class="list_heading">
+			<h4>Mais Artigos</h4>
+		</div>
+							                        
+<ul>
+<li><a href="[% c.uri_for('/artigos') %]">Outros</a></li>
+</ul>
+</div>
+
+		<div class="side">
+		<h2 class="comunidade"></h2>
+
+       <h3>Lista de discuss&atilde;o</h3>
+
+    <p>   		Com mais de 200 membros, voc&ecirc; pode acompanhar, discutir e tirar suas d&uacute;vidas com o suporte da comunidade, <a href="/lista">clique aqui</a> e veja como participar !
+</p>
+                    <div class="list_heading">
+			<h4>Mais</h4>
+		</div>
+							                        
+<ul>
+<li><a href="[% c.uri_for('/lista') %]">IRC</a></li>
+<li><a href="http://www.linkedin.com/groups?home=&gid=64857">Linkedin</a></li>
+</ul>
+</div>
+
+		</div>
 
 		</div></div></div></div></div>
 

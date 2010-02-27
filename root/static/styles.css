@@ -735,6 +735,18 @@ a.expand {
     height:40px;
   }
 
+#container .bottom .left_section .side .documentacao {
+    background:url(/static/images/documentacao_heading.png) no-repeat 0px 0px;
+    height:40px;
+  }
+
+
+#container .bottom .left_section .side .comunidade {
+    background:url(/static/images/comunidade_heading.png) no-repeat 0px 0px;
+    height:40px;
+  }
+
+
 
 #container .bottom .left_section .side .blog {
     background:url(/static/images/blog_heading.gif) no-repeat 0px 0px;
