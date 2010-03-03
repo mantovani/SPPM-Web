@@ -291,7 +291,7 @@ span.clear {
   }
 
 
-.box h2 {
+.box h1 {
     background:url(/static/images/square.gif) no-repeat 10px 12px;
     padding:4px 0px 4px 25px;
     font:16px Tahoma, Arial, Helvetica, sans-serif;
@@ -673,7 +673,7 @@ a.expand {
   }
 
 
-#container .top h2 {
+#container .top h1 {
     font:24px Arial, Helvetica, sans-serif;
     color:#bc0108;
     background:url(/static/images/dots.gif) repeat-x 0px 100%;
@@ -682,6 +682,14 @@ a.expand {
     text-transform:uppercase;
   }
 
+
+#container .top h2 {
+    font:20px Arial, Helvetica, sans-serif;
+    color:#bc0108;
+    margin-bottom:10px;
+    padding:5px 0px;
+    text-transform:uppercase;
+  }
 
 #container .top_right {
     width:350px;

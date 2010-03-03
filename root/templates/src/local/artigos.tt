@@ -1,5 +1,5 @@
 
-[% META title=" Artigos " current_page="blogs" %]
+[% META title=" Artigos " current_page="artigos" %]
 
       <div id="container_top">
         <div id="container_bottom">
@@ -10,7 +10,7 @@
 		<h3>2009</h3>
 		<ul>
 		<li><a href="/artigos/ArtigoDanielMantovani2009x12x02">Usando o CPAN <span class="autor">(Daniel Mantovani)</span></a></li>
-		<li><A href="/artigos/ArtigoMarcoAurelioMACAE2009x07x29">Como instsalar, passo a passo: Apache, MySQL e Perl <span class="autor">(Marco Aurelio)</span></a></li>
+		<li><A href="/artigos/ArtigoMarcoAurelioMACAE2009x07x29">Como instalar, passo a passo: Apache, MySQL e Perl <span class="autor">(Marco Aurelio)</span></a></li>
 		<li><a href="/artigos/ArtigoModulosRecomendadosCPAN"> M&oacute;dulos recomendados do CPAN <span class="autor">(Nelson Ferraz)</span></a></li>
 
 
@@ -20,7 +20,7 @@
 
 		<h3>2008</h3>
 		<ul>
-		<li><a href="/artigos/ArtigoModulosCore">M&oacute;los b&aacute;sicos que voc&ecirc; precisa conhecer. <span class="autor">(Joenio Costa)</span></a></li>
+		<li><a href="/artigos/ArtigoModulosCore">M&oacute;dulos b&aacute;sicos que voc&ecirc; precisa conhecer. <span class="autor">(Joenio Costa)</span></a></li>
 		<li><a href="/artigos/ComoEncontrarBonsProgramadores">Como encontrar (e contratar) bons programadores <span class="autor">(Nelson Ferraz)</span></a></li>
 		<li><a href="/artigos/MVCWxPerl">MVC e WxPerl <span class="autor">(Alceu Junior)</span></a></li>
 		

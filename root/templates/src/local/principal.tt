@@ -2,7 +2,12 @@
 [% META title=" Principal " current_page='home' %]
 
       <div id="container_top">
-        <div id="container_bottom">
+       <center>
+       <a href="/equinocio/2010">
+       <img src="/static/images/equinocio_2010_mar.png" border="0">
+       </a>
+       </center> 
+	<div id="container_bottom">
           <div class="top">
             <div class="top_left">
               <div class="widget-sobre-o-que-e-tudo-isso-afinal widget">
@@ -61,9 +66,14 @@
 
 		</div>
 
-		</div></div></div></div></div>
+		</div>
 
-          </div>
+		<center>
+          	<a href="http://www.pm.org"><img src="/static/images/pm.jpg" border="0"></a>
+		<a href="http://www.perl.org"><img src="/static/images/perl.org.png" border="0"></a>
+
+	  	</center>
+	  </div></div></div></div></div>
         </div>
       </div>
 

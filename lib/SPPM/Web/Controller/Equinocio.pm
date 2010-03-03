@@ -51,7 +51,7 @@ controller SPPM::Web::Controller::Equinocio {
         }
 
         action month (Str $month) as '' {
-            unless ($month eq 'mar' || $month eq 'set') {
+            unless (grep {/mar|set|test/} $month) {
                 $ctx->res->redirect( $ctx->uri_for('/') );
                 $ctx->detach;
             }
