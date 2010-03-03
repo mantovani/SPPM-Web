@@ -114,7 +114,7 @@ ainda acesso rápido à extensa documentação online do framework.
 
 =begin pod:xhtml
 
-<img src="/calendar/static/images/2009/padre/menu.png" alt="Menu do Plugin Catalyst para o Padre" />
+<img src="/static/images/equinocio/2010/mar/padre/menu.png" alt="Menu do Plugin Catalyst para o Padre" />
 
 =end pod:xhtml
 
