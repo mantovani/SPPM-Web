@@ -1,6 +1,6 @@
 =pod
 
-r6 - 18 Jul 2007 - AlceuJunior
+r6 - 18 Jul 2007 - Daniel Ruoso
 
 =head1 Iniciando em perlguts, perlapi, perlcall e perlembed
 
