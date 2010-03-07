@@ -1,4 +1,3 @@
-
       <div id="container_top">
         <div id="container_bottom">
           <div class="top">
@@ -14,6 +13,8 @@
 [% CATCH File %]
     <li class="previous">Anterior</li>
 [% END %]
+</ul>
+<ul id="pager">
 [% TRY %]
     [% USE File( c.path_to( 'root', 'equinocio', year, month, "${tomorrow}.pod" ) ) %]
     <li class="next"><a href="[% c.uri_for( '/', 'equinocio', year, month, tomorrow ) %]">Pr&oacute;ximo</a></li>
@@ -22,10 +23,13 @@
 [% END %]
 </ul>
 <div style="clear: both"></div>
+<Br/><br/>
+
+<br/><br/>
+<a href="/lista">Clique aqui</a> e assine nossa lista de discuss&atilde;o para ensinar, aprender, discutir e muito mais!
 
                 </div>
           </div>
         </div>
       </div>
-
 

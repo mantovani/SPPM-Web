@@ -69,10 +69,15 @@
 		</div>
 
 		<center>
-          	<a href="http://www.pm.org"><img src="/static/images/pm.jpg" border="0"></a>
+          	<table valign=top><tr><td>
+		<a href="http://www.pm.org"><img src="/static/images/pm.jpg" border="0"></a>
+		</td><td>
 		<a href="http://www.perl.org"><img src="/static/images/perl.org.png" border="0"></a>
+		</td><td>
+		<a href="http://creativecommons.org/licenses/by/3.0/"><img src="/static/images/cc.png" border="0"></a>
+		</td></tr></table>
 
-	  	</center>
+</center>
 	  </div></div></div></div></div>
         </div>
       </div>

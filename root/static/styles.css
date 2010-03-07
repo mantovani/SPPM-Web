@@ -655,9 +655,11 @@ a.expand {
 
 #container .top ul li {
     color:#00552c;
-    font:12px Tahoma, Arial, Helvetica, sans-serif;
-    list-style:none;
+    font:14px Arial, Helvetica, sans-serif;
+    list-style:disc;
+    margin-bottom:5px;
     padding:0px 0px;
+    margin-left:32px
   }
 
 

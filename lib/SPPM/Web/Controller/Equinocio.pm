@@ -100,8 +100,8 @@ controller SPPM::Web::Controller::Equinocio {
             $ctx->stash(
                 day => $day,
                 pod => $cached_pod,
-                template => 'equinocio/day.tt'
-            );
+                template => 'equinocio/day.tt',
+	    );
             $ctx->forward('View::TT');
 
         }

@@ -1,0 +1,205 @@
+=head1 Captcha com Catalyst
+
+=head2 Por que Captcha ?
+
+O Captcha é uma ferramenta anti-spam/anti-bot, que nada mais é do que um teste para
+saber se você é um ser humano ou não. Também pode ser usado contra ataques de força bruta.
+
+Uma maneira de saber que o usuário é de fato um usuário, é usando captcha na autentificação,
+quando o cliente efetua o logon.
+
+=cut
+
+=head2 Onde é usado ?
+
+Muitos sites usam captcha, se você errar algumas vezes a sua senha do Gmail
+por exemplo,ele vai ativar o captcha. O L<http://registro.br> é outro exemplo,
+bem como o email da Yahoo, que só deixa você enviar email depois de digitar um
+captcha.
+
+Existem técnicas para poder burlar o captcha, não é atoa que encontramos imagens tortas e difíceis de ler.
+Até mesmo perguntas inteligentes, como: "Qual letra não é vogal ?","Qual número não é ímpar ?" e etc.
+Imagens tortas, testes sobre imagens dificultam muito o computador de entender, isso garante ainda mais que não é um robo acessando sua aplicação.
+
+=cut
+
+=head2 reCaptcha
+
+O reCaptcha é um sistema anti-spam gratuito através do qual você ainda ajuda a
+digitalizar livros e jornais.
+
+Pera aí, como assim ?
+
+Existe uma técnica chamada Optical Character Recognition (OCR). Quando se
+escaneia um livro se usa essa técnica para transformar as imagens escaneadas
+em texto.
+
+Algumas palavras por estarem borradas ou "mal escritas", tornam-se difíceis
+para o computador reconhecer. Quando você faz o teste de "humano" precisa
+digitar 2 palavras, uma delas o reCaptcha sabe qual é a outra não, ou seja, você
+pega uma palavra que o ORC não conseguiu ler e diz para a máquina qual é e
+ainda faz o teste de "humano". Mais informações aqui:
+L<http://recaptcha.net/learnmore.html>
+
+=cut
+
+=head2 Preparando o Ambiente
+
+Nesse artigo vou usar o Captcha::reCAPTCHA é uma implementação em Perl do
+reCaptcha API.
+
+O Kieren Diment escreveu um controller para o Catalyst chamado
+Catalyst::Controller::reCAPTCHA, é ele que vamos utilizar.
+
+Antes de tudo, você vai precisar criar uma chave no site do reCaptcha
+L<https://admin.recaptcha.net/accounts/signup?next=/recaptcha/createsite/>.
+Tem duas chaves, uma pública e outra privada, guarde as bem.
+
+=cut
+
+=head2 Instalando
+
+A instalação pode ser feita utilizando os comandos abaixo:
+
+    user@host:~$ cpan -i 'Catalyst::Controller::reCAPTCHA'
+
+Irei criar uma aplicação teste para fazer passa à passo:
+
+    user@host:~$ catalyst.pl MyCaptcha
+    created "MyCaptcha"
+    created "MyCaptcha/script"
+    created "MyCaptcha/lib"
+    created "MyCaptcha/root"
+    created "MyCaptcha/root/static"
+    created "MyCaptcha/root/static/images"
+    created "MyCaptcha/t"
+    created "MyCaptcha/lib/MyCaptcha"
+    ...
+
+Criando o View:
+
+    user@host:~/MyCaptcha$ script/mycaptcha_create.pl view MyTT TT
+
+=cut
+
+=head2 Configurando
+
+O Catalyst::Controller::reCAPTCHA precisa das chaves que você conseguiu se cadastrando no site do reCatpcha como eu disse anteriormente,
+vamos fazer isso setando dois atributos no MyCaptcha.pm.
+Adicione essas duas linhas B<com as suas chaves>:
+
+    user@host:~/MyCaptcha$ vim lib/MyCaptcha.pm
+    __PACKAGE__->config->{recaptcha}->{pub_key}
+        = '6LcsbAAAAAAAAPDSlBaVGXjMo1kJHwUiHzO2TDze';
+    
+    __PACKAGE__->config->{recaptcha}->{priv_key}
+        = '6LcsbAAAAAAAANQQGqwsnkrTd7QTGRBKQQZwBH-L';
+
+=cut
+
+=head2 O View
+
+Vamos começar criando o View. Precisaremos de dois arquivos, um que vai ter o
+form e o outro que vai avisar se o usuário digitou o captcha certo ou não.
+
+No primeiro arquivo, será enviado o captcha para um método que checa se está certo ou não.
+O método que checa o captcha chama "checkcaptcha", veremos mais sobre ele quando estivermos programando.
+
+    user@host:~/MyCaptcha$ vim root/captchaform.tt
+	<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+	
+	<head>
+	<title>Untitled Document</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	
+	<body>
+
+	<form name="meucaptcha" action="[% c.uri_for('checkcaptcha') %]" method="POST">
+
+	[% recaptcha %] <br />
+
+	<input type="submit" value="submit">
+	</form>
+
+	</body>
+	
+	</html>
+
+
+Agora no segundo template, colocaremos uma variável chamada "just_check", se o captcha estiver correto ela será setada para "o usuario digitou certo"
+caso contrário ela será setada para "o usuário digitou errado".
+
+    user@host:~/MyCaptcha$ vim root/checkcaptcha.tt
+	<h1>[% just_check %]</h1>
+
+=cut
+
+=head2 Programando
+
+Agora que as chaves já estão onde devem estar e o view está criado, vamos
+programar. Mas antes vamos entender o que vamos fazer.
+
+O controller tem dois métodos que vamos usar, o primeiro é o que retorna o
+html com o form para enviar o captcha e o segundo é para verificar se o que o
+usuário digitou está correto ou não.
+
+No Root.pm vamos usar o controller: Catalyst::Controller::reCAPTCHA. Substitua
+o:
+
+    BEGIN { extends 'Catalyst::Controller' }
+
+por:
+
+    BEGIN { extends 'Catalyst::Controller::reCAPTCHA' }
+
+Agora estamos usando os métodos adicionais, isso vai dar os dois métodos que
+nós vamos precisar para a nossa aplicação: "captcha_get" e "captcha_check".
+
+Vamos criar um método para obter o captcha:
+
+    sub captchaform : Local {
+        my ( $self, $c ) = @_;
+        $c->forward('captcha_get');
+    }
+
+Quando fazemos $c->forward('captcha_get') o atributo $c->stash->{'recaptcha'}
+vai estar com o que precisamos magicamente (O html que forma o form).
+
+Depois de ter o html com o form, o usuário vai digitar e enviar. Quando ele
+faz isso nós temos um retorno do reCaptcha; esse retorno é 1 se estiver certo.
+
+Quando se faz o $c->forwared('captcha_check') automagicamente o atributo
+$c->stash->{recaptcha_ok} é atribuido para 1 se o usuário digitou o captcha
+corretamente, caso contrário ele não existe.
+
+Vamos criar um método para receber essa informação:
+
+    sub checkcaptcha : Local {
+        my ( $self, $c ) = @_;
+        $c->forwared('captcha_check');
+        if ( $c->stash->{recaptcha_ok} ) {
+	        $c->stash->{'just_check'} = 'O Usuário digitou certo';
+        } else {
+	        $c->stash->{'just_check'} = 'O Usuário digitou errado';
+        }
+    }
+
+=cut
+
+=head2 Conclusão
+
+Usando o grande CPAN e escrevendo pouquíssimo código conseguimos implementar um captcha.
+
+=head2 Agradecimento
+
+Agradeço ao Bablos e ao Thiago Rondon.
+
+=head2 AUTOR
+
+Daniel Mantovani <daniel.oliveira.mantovani@gmail.com>, trabalha atualmente na empresa DND L<http://www.dnd.com.br/>
+
+=cut

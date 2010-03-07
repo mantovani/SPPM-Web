@@ -1,3 +1,4 @@
+=pod
 
 =head1 Desenvolvimento de Aplicativos Catalyst com Padre
 
@@ -133,7 +134,7 @@ criação do novo projeto aparecerão por lá.
 
 =end pod:xhtml
 
-=head3 'Criar um novo...'
+=head3'Criar um novo...'
 
 B<Nota:> As opções abaixo só estarão disponíveis se o documento ativo 
 pertence a um projeto Catalyst.
@@ -147,13 +148,13 @@ L<< Catalyst::Helper::View::TT >> instalado.
 
 Os componentes disponíveis são:
 
-=over 4
+=over 
 
-=item * 'Modelo'
+=item * Modelo
 
-=item * 'Vista'
+=item * Vista
 
-=item * 'Controlador'
+=item * Controlador
 
 =back
 
