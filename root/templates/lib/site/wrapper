@@ -2,11 +2,14 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="author" content="Sao Paulo Perl Mongers" />
+	<meta name="description" content="Grupo de programadores Perl do estado de Sao Paulo." />
+	<meta name="keywords" content="linguagem, computacao, computacional, perl, comunidade, softwarelivre, sao paulo" />
 
-<link rel="stylesheet" href="/static/styles.css" type="text/css" />
-<link rel="stylesheet" href="/static/css/calendar.css" type="text/css" />
-
+	<link rel="stylesheet" href="/static/styles.css" type="text/css" />
+	<link rel="stylesheet" href="/static/css/calendar.css" type="text/css" />
+	<link rel="stylesheet" href="/static/print.css" type="text/css" media="print"  />
 
   <title>S&atilde;o Paulo Perl Mongers :: [% template.title %]</title>
  </head>
@@ -24,31 +27,31 @@
         <div class="logo">
 
            <a href="/" accesskey="1">
-           <img src="/static/images/logo.png" alt="Logo" class="png_bg"/>
+           <img src="/static/images/logo.png" alt="Sao Paulo Perl Mongers" class="png_bg"  width="460" height="64"/>
            </a>
         </div>
       </div>
       <div id="menu">
         <ul>
-          <li class="home"><a href="/" [% IF template.current_page == 'home' %] class="current" [% END %]></a></li>
+          <li class="home"><a href="/" [% IF template.current_page == 'home' %] class="current" [% END %]><img src="/static/images/dot_clear.gif" alt="Principal" /></a></li>
           <li class="pipe"></li>
 
-          <li class="quem"><a href="/quemsomos" [% IF template.current_page == 'quemsomos' %] class="current" [% END %]></a></li>
+          <li class="quem"><a href="/quemsomos" [% IF template.current_page == 'quemsomos' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Quemsomos" width="1" height="1" /></a></li>
           <li class="pipe"></li>
-          <li class="social"><a href="/encontrosocial" [% IF template.current_page == 'encontrosocial' %] class="current" [% END %]></a></li>
+          <li class="social"><a href="/encontrosocial" [% IF template.current_page == 'encontrosocial' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Encontro Social" width="1" height="1" /> </a></li>
           <li class="pipe"></li>
-          <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %]></a></li>
+          <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Artigos" /> </a></li>
           <li class="pipe"></li>
-          <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %]></a></li>
+          <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Blogs" width="1" height="1" /> </a></li>
           <li class="pipe"></li>
-          <li class="podcast"><a href="/podcast" [% IF template.current_page == 'podcast' %] class="current" [% END %]></a></li>
+          <li class="podcast"><a href="/podcast" [% IF template.current_page == 'podcast' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Podcast" width="1" height="1" /> </a></li>
 
           <li class="pipe"></li>
-          <li class="tecnico"><a href="/encontrotecnico" [% IF template.current_page == 'encontrotecnico' %] class="current" [% END %]></a></li>
+          <li class="tecnico"><a href="/encontrotecnico" [% IF template.current_page == 'encontrotecnico' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Encontro Tecnico" width="1" height="1" /> </a></li>
           <li class="pipe"></li>
-          <li class="treinamento"><a href="/treinamento" [% IF template.current_page == 'treinamento' %] class="current" [% END %]></a></li>
+          <li class="treinamento"><a href="/treinamento" [% IF template.current_page == 'treinamento' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Treinamento" width="1" height="1" /> </a></li>
           <li class="pipe"></li>
-          <li class="lista"><a href="/lista" [% IF template.current_page == 'lista' %] class="current" [% END %]></a></li>
+          <li class="lista"><a href="/lista" [% IF template.current_page == 'lista' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Lista" width="1" height="1" /> </a></li>
         </ul>
       </div>
     </div>

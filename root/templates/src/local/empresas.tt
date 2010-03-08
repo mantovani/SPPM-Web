@@ -11,10 +11,10 @@ Abaixo uma rela&ccedil;&atilde;o de empresas que trabalham com Perl no estado de
 
 <table cellspacing=20><tr><td>
 <!-- Responsavel pela inclusao: Otavio Fernandes -->
-<a href="/locaweb"><img src="/static/images/empresas/Locaweb.jpg" border="0"></a>
+<a href="/locaweb"><img src="/static/images/empresas/Locaweb.jpg" alt="Locaweb" border="0"  width="200" height="200"></a>
 </td><td>
 <!-- Responsavel pela inclusao: Andre Carneiro -->
-<img src="/static/images/empresas/Jacotei.gif" border="0">
+<img src="/static/images/empresas/Jacotei.gif" alt="Jacotei" border="0" width="190" height="90">
 
 </td></tr></table>
 

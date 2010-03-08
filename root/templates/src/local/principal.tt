@@ -4,7 +4,7 @@
       <div id="container_top">
        <center>
        <a href="/equinocio/2010">
-       <img src="/static/images/equinocio_2010_mar.png" border="0">
+       <img src="/static/images/equinocio_2010_mar.png" alt="Equinocio 2010 mar" border="0" width="900" height="495" />
        </a>
        </center> 
 	<div id="container_bottom">
@@ -22,7 +22,7 @@
               <div class="widget-seja-sociavel widget">
 
 <h2>Seja Soci&aacute;vel!</h2>
-<p>O S&atilde;o Paulo Perl Mongers promove <A href="/encontrosocial">encontros sociais</a> regulares. Informe-se sobre o encontro deste m&ecirc;s em nossa lista de discuss&atilde;o.</p>
+<p>O S&atilde;o Paulo Perl Mongers promove <a href="/encontrosocial" >encontros sociais</a> regulares. Informe-se sobre o encontro deste m&ecirc;s em nossa lista de discuss&atilde;o.</p>
 
 </div>
 		</div>
@@ -60,7 +60,7 @@
 							                        
 <ul>
 <li><a href="[% c.uri_for('/lista') %]">IRC</a></li>
-<li><a href="http://www.linkedin.com/groups?home=&gid=64857">Linkedin</a></li>
+<li><a href="http://www.linkedin.com/groups?home=&amp;gid=64857">Linkedin</a></li>
 </ul>
 </div>
 
@@ -69,16 +69,14 @@
 		</div>
 
 		<center>
-          	<table valign=top><tr><td>
-		<a href="http://www.pm.org"><img src="/static/images/pm.jpg" border="0"></a>
+          	<table><tr><td>
+		<a href="http://www.pm.org"><img src="/static/images/pm.jpg" border="0" alt="pm"  width="135" height="59" /></a>
 		</td><td>
-		<a href="http://www.perl.org"><img src="/static/images/perl.org.png" border="0"></a>
+		<a href="http://www.perl.org"><img src="/static/images/perl.org.png" border="0" alt="perl.org" width="135" height="82" /></a>
 		</td><td>
-		<a href="http://creativecommons.org/licenses/by/3.0/"><img src="/static/images/cc.png" border="0"></a>
+		<a href="http://creativecommons.org/licenses/by/3.0/"><img src="/static/images/cc.png" border="0" alt="creative commons" width="88" height="31" /></a>
 		</td></tr></table>
 
 </center>
 	  </div></div></div></div></div>
-        </div>
-      </div>
 
