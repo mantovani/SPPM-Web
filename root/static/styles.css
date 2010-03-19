@@ -291,6 +291,26 @@ span.clear {
     line-height:15px;
   }
 
+#container dl {
+    font:14px Tahoma, Arial, Helvetica, sans-serif;
+    margin-bottom:12px;
+    line-height:15px;
+    color:#b80107;
+    font-weight:bold;
+    padding-left:25px;
+  }
+
+
+#container pre {
+    font:14px Tahoma, Arial, Helvetica, sans-serif;
+    margin-bottom:12px;
+    line-height:15px;
+    color:#000000;
+    padding-left:25px;
+    background: #DDDDDD
+  }
+
+
 
 .box h1 {
     background:url(/static/images/square.gif) no-repeat 10px 12px;

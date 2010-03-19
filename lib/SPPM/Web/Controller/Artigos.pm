@@ -46,7 +46,6 @@ controller SPPM::Web::Controller::Artigos {
             $ctx->cache->set("$pod_file $mtime", $cached_pod, '12h' );
         }
 
-
         $ctx->stash(
             pod => $cached_pod,
             template => 'local/artigo_pod.tt' 

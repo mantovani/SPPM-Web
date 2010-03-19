@@ -1,0 +1,329 @@
+
+=pod
+
+=head1 Arquitetura REST e o serviço web 'RESTful'.
+
+REST é um termo definido por Roy Fielding em sua tese de mestrado no qual ele descreve sobre um estilo de arquitetura de software sobre um sistema operado em rede. REST é um acrônimo para "Transferência de Estado Representacional" (Representational State Transfer).
+
+REST vê cada aplicação web como um conjunto de recursos, que representam um estado particular de um aplicativo. Quando você acessa este recurso, você está transferindo o estado (conteúdo), e talvez alterando o seu estado.
+
+Lembra-se: REST não é um padrão, não é um protocolo e sim uma arquitetura, e iremos discutir os seus principios mais importantes abaixo e posteriormente a implementção 'RESTful'.
+
+=head3 Princípios
+
+Iremos descrever aqui três características do REST.
+
+=over
+
+=item Recursos
+
+Os recursos individuais são identificados na requisição, como descrevendo elas nas URIs, um exemplo: http://meu.servidor/usuario/thiago.
+
+=item Ações
+
+Você pode aplicar várias ações sobre um recursos. São oito metódos disponíveis pelo protocolo HTTP, porém os mais utilizados são:
+
+PUT - Cria ou atualiza o conteúdo do recurso, veja o POST também.
+
+GET - Busca o conteúdo do recurso.
+
+DELETE - Apaga o conteúdo do recurso.
+
+=item Conteúdo
+
+MIME TYPES - De modo geral é utilizado por alguns protocolos para identificar que tipo de conteúdo esta sendo negociado. A identificação geralmente é feita no cabeçalho pelo campo cujo o nome é Content-type.
+
+Todo recurso inclui a informação do formato referente ao conteúdo, ou seja quando por exemplo você receber a informação da mensagem que o conteúdo (Content-type) se encontra no formato JSON (application/json) você tera que processar a informaão neste formato.
+
+Normalmente o formato dos arquivos utilizados pelos serviços RESTful são JSON, XML ou YAML.
+
+=back
+
+=head2 Absorvendo a arquitetura REST.
+
+Abaixo irei descrever alguns elementos da arquitetura proposta na sua definição.
+
+=head3 Cliente-Servidor
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig1.png" alt="fig1" /></center>
+
+=end pod:xhtml
+
+Clientes e servidores são separados por uma interface por razões de interesses (SoC), isto significa que o cliente não implica em como os dados são armazenados pois é uma responsabilidade interna do servidor, assim como os servidores não se importam com a interface do usuário. 
+
+Esta caracteristica torna o desenvolvimento independente entre as partes.
+
+=head3 Stateless
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig2.png" alt="fig2" /></center>
+
+=end pod:xhtml
+
+Este é um dos conceitos mais importantes na minha opnião para os desenvolvedores em relação aos elementos do estilo desta arquitetura. 
+
+Iremos adicionar uma restrição as interações entre o cliente e o servidor, a comunicação será cliente-stateless-servidor (CSS) e isto significa que para cada requisição será enviada toda informação necessaria para o entendimento da requisição e não poderá re-utilizar nenhum contexto armazenado no servidor.
+
+Toda requisição deve ser auto-suficiente e você deve manter o estado da sessão no cliente. Com este conceito você tem alguns beneficios, tais eles como:
+
+=over 
+
+=item Visibilidade 
+
+O I<pacote> de requisição de dados contém todas as informações necessarias para responder a solicitação, diminuindo o trabalho do servidor.
+
+=item Confiabilidade 
+
+É melhorada porque facilita a tarefa de recuperação de falhas.
+
+=item Escalabilidade 
+
+Não há necessidade de manter o estado das solicitações, permitindo que o servidor se livre dos recursos alocados rapidamente e ainda simplificando a implementação.
+
+=back
+
+Porém fica um alerta, você deve sempre observar que esta arquitetura pode lhe trazer prejuizos caso seja mal implementada pelo desenvolvedor, por exemplo se você não elaborar um controle de sessão no cliente você pode ter uma sobrecarga de interação. Utilize o controle de sessão no cliente como uma vantagem e não uma desvantagem.
+
+=head3 Cache
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig3.png" alt="fig3" /></center>
+
+=end pod:xhtml
+
+Vamos adicionar mais um elemento na arquitetura do REST, o cache no cliente. Podemos definir até agora que iremos obter um cliente-cache-stateless-servidor.
+
+Para melhorar o desempenho de rede devemos utilizar este mecanismo para eliminar parcialmente as interações, melhorando a eficiência, escalabilidade e desempenho pelo usuário.
+
+Porém isto deve ser muito bem planejado, um cache muito utilizado pode diminuir a confiabilidade dos dados, ou seja eles podem se tornar obsoletos em relação se pedido  fosse feito direramente ao servidor, por isto muito cuidado no formatação da sua estrategia.
+
+=head3 Camadas
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig4.png" alt="fig4" /></center>
+
+=end pod:xhtml
+
+A utilização de camandas tem como finalidade melhorar a escabilidade do processo, isto significa que é permitido uma arquitetura composta por camadas hierárquicas por condicionar o comportamento de componentes de modo que cada componente não pode "ver" além da camada imediata com as quais estão interagindo.
+
+A grande vantagem da imposição desta restrição que a complexidade é restrita, e podemos pensar que estas camadas podem encapsular serviços (ex.: serviços legados) e etc.
+
+Como em todos os aspectos, isto deve ser levado em conta na implementação para evitar sobrecargas entre as camadas, a implementação de cache por dominio é uma estrategia para quem for aproveitar desta caracteristica do REST.
+
+=head2 Usufruindo do REST na web.
+
+RESTful é uma implementação de um "web service" simples utilizando o HTTP e os principios REST. 
+
+Você não necessariamente deve se utilizar de todos os elementos propostos pelo REST, mas o melhor que ele pode te oferecer na resolução do seu trabalho.
+
+=head2 Catalyst
+
+O L<Catalyst::Controller::REST> é um facilitador para implementação de serviços RESTful em Catalyst. Basicamente, isto ocorre com o sistema de I<dispatch> para redirecionar a requisição para o bloco do código especifico dependendo do metódo HTTP utilizado também.
+
+Veja abaixo um exemplo de implementação:
+	
+	package Foo::Controller::Bar;
+	use Moose;
+	use namespace::autoclean;
+
+	BEGIN { extends 'Catalyst::Controller::REST' }
+
+	sub thing : Local : ActionClass('REST') { }
+
+	# Answer GET requests to "thing"
+	sub thing_GET {
+		my ( $self, $c ) = @_;
+
+		# Return a 200 OK, with the data in entity
+		# serialized in the body
+		$self->status_ok(
+			$c,
+			entity => {
+				some => 'data',
+				foo  => 'is real bar-y',
+			},
+		);
+	}
+
+	# Answer PUT requests to "thing"
+	sub thing_PUT {
+		$radiohead = $req->data->{radiohead};
+
+		$self->status_created(
+			$c,
+			location => $c->req->uri->as_string,
+			entity => {
+				radiohead => $radiohead,
+			}
+		);
+	} 
+
+O exemplo acima foi retirado do manual do próprio módulo, porem observe como é muito simples a implementação.
+
+Neste exemplo estamos criando um controlador e declaramos uma "action" em I<sub thing>, no qual é utilizada pela classe REST (ActionClass('REST')). Declarando I<thing_GET> e I<thing_PUT> e a explicação é trivial, qualquer requisição GET é enviado para o bloco de código thing_GET, assim como acontece com PUT.
+
+Todos os metódos não declarados, serão respondidos com uma mensagem "405 Method Not Allowed". 
+
+Todo o conteúdo no $c->stash->{rest} será serializado para você, e o formato irá depender do "content-type" na mensagem de requisição.
+
+A documentação do módulo é boa, compreendendo os conceitos e principios do REST, você não terá dificuldade nenhuma em utilizar os exemplos do módulo, assim como ele. Recomendo a leitura do módulo em questão, para você verificar as opções de configuração, comportamentos e etc. 
+
+=head1 Exemplo de implementação.
+
+Para nosso exemplo, iremos precisar instalar os seguintes módulos:
+
+=over
+
+=item L<Task::Catalyst>
+
+=item L<Catalyst::Action::REST>
+
+=item L<Catalyst::Model::DBIC::Schema>
+
+=item L<DBD::SQLite>
+
+=back
+
+Vamos criar nossa aplicação e um banco de dados, seguem os comandos:
+
+	$ catalyst.pl equinocio
+
+	$ cat db.sql
+
+	CREATE TABLE user (
+		user_id TYPE text NOT NULL PRIMARY KEY,
+		fullname TYPE text NOT NULL,
+		phone TYPE text NOT NULL
+	); 
+
+	$ mkdir db
+	$ sqlite3 db/rest.db < db.sql
+
+	$ cat equinocio.yml
+
+	---
+	name: equinocio
+	Model::DB:
+	    schema_class: equinocio::Schema
+	        connect_info:
+		    - DBI:SQLite:dbname=__path_to(db/rest.db)__
+		    - ""
+		    - ""
+	
+	$ cat lib/equinocio/Schema.pm 
+	package equinocio::Schema;
+	use base qw/DBIx::Class::Schema::Loader/;
+
+	1;
+
+	$ ./script/equinocio_create.pl model DB DBIC::Schema equinocio::Schema
+	$ ./script/equinocio_create.pl controller User
+
+
+Ok, até aqui nada de novo. Criamos nossa aplicação catalyst, veja abaixo um exemplo de um controlador. (lib/Controller/User.pm)
+
+	
+	package equinocio::Controller::User;
+
+	use strict;
+	use warnings;
+	use base 'Catalyst::Controller::REST';
+
+	sub user : Path('/user') : Args(1) : ActionClass('REST') {
+    		my ( $self, $c, $user_id ) = @_;
+    		my $user = $c->stash->{'collection'} = 
+       			$c->model('DB::User')->find($user_id);
+   
+	     	if ($user) {
+		        my %data;
+		        $data{"$_"} = $user->$_ for 
+				grep { defined($user->$_) } 
+				qw(user_id fullname phone);
+        		%{$c->stash->{'data'}} = %data;
+    		}
+	}
+
+	sub user_POST {
+    		my ( $self, $c, $user_id ) = @_;
+		my $data = $c->req->data;
+		$c->model('DB::User')->update_or_create($data);
+
+    		$self->status_created( $c, location => $c->req->uri->as_string,
+			entity   => $data );
+	}
+
+	*user_PUT = *user_POST;
+
+	sub user_GET {
+    		my ( $self, $c, $user_id ) = @_;
+    		if ( defined($c->stash->{'collection'} ) ) {
+        		$self->status_ok( $c, entity => $c->stash->{'data'} );
+    		}
+    		else {
+        		$self->status_not_found( $c, 
+				message => "Not found: $user_id!" );
+    		}
+	}
+
+	sub user_DELETE {
+    		my ( $self, $c, $user_id ) = @_;
+    		my $user = $c->stash->{'collection'};
+    		if ( defined($user) ) {
+        		$user->delete;
+        		$self->status_ok($c, entity => $c->stash->{'data'} );
+    		} else {
+        		$self->status_not_found( $c,
+        		message => "Not found: $user_id!" );
+    		}
+	}
+
+	1;
+
+Pronto ! Agora, vamos testar nossa aplicação.
+
+	$ cat new.yml 
+	user_id: thiago
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+	$ curl -X PUT -H 'Content-Type: text/x-yaml' -T new.yml http://localhost:3000/user/thiago
+	---
+	user_id: thiago        
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+	$ curl -X GET -H 'Content-Type: text/x-yaml' http://localhost:3000/user/thiago
+	---
+	user_id: thiago        
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+	$ curl -X DELETE -H 'Content-Type: text/x-yaml' http://localhost:3000/user/thiago
+	---
+	user_id: thiago        
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+
+=head2 Considerações finais.
+
+Caso tenham alguma dúvida em relação ao conceito, ao módulo ou qualquer implementação relacionada a este artigo entre em contato pelo IRC ou pela lista da São-Paulo Perl Mongers.
+
+=head2 Referências
+
+L<http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>
+
+
+=head2 AUTOR
+
+Thiago Rondon C<< <thiago.rondon@gmail.com> >>, trabalha atualmente na Aware.
+
+=cut
+
+
+
