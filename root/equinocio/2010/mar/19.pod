@@ -35,11 +35,11 @@ Lembre-se: Não utilize o memcached como banco de dados, se quiser um banco de d
 
 Um espaço temporário onde dados acessados frequentemente podem ser armazenados para serem acessados rapidamente, economizando recursos.
 
-O cache é utilizado para sua aplicação ser escalavel, ou seja para manter resultados de querys, objetos que existe uma certa demora para ser calculado, thumbnails ou qualquer coisa que demore para ser gerado.
+O cache é utilizado para sua aplicação ser escalavel, ou seja para manter resultados de querys, objetos que existe uma certa demora para ser calculado, thumbnails, ou seja qualquer coisa que demore para ser gerado.
 
 =item Tabela hash
 
-Memcached se utiliza de uma gigante tabela hash distribuida em múltiplos servidores. Uma visão resumida de uma tabela hash caso você não saiba, ela é implementa uma "matriz (array) com elementos", no qual cada elemento contém uma lista de nós, como cada nó contendo chave e valor. 
+Memcached se utiliza de uma gigante tabela hash distribuida em múltiplos servidores. Uma visão resumida de uma tabela hash caso você não saiba, ela implementa uma "matriz (array) com elementos", no qual cada elemento contém uma lista de nós, com cada nó contendo chave e valor. 
 
 A maioria dos hashes começa pequeno e vão aumentando dinamicamente ao longo do tempo, dependendo da necessidade.
 
@@ -67,7 +67,7 @@ Então a melhor solução seja em vez de liberar a memória de volta a um conjun
 
 =end pod:xhtml
 
-Todo cache contem uma lista de slabs, que podemos dividir os blocos de memória em:
+Todo cache contém uma lista de slabs, que podemos dividir os blocos de memória em:
 
 =over
 
@@ -84,6 +84,8 @@ Parcialmente alocados.
 Vázios, ou não possuiem nenhum objeto alocado.
 
 =back
+
+Dependendo do número de memória disponível, são alocados na inicialização N-slabs.
 
 O algoritimo slab é baseado em um conceito da matemática aritmética, a exponenciação (powers-of-N). Pela espeficação do protocolo memcached, os slabs tem o tamanho de até 1MB e são dividos em pedaços menores, e o primeiro pedaço é a menor e vai aumentando por um fatoral, por exemplo, de 1.20 até que ocupe todo o espaço dedicado ao slab.
 
