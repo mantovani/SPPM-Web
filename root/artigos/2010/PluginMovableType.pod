@@ -1,0 +1,105 @@
+﻿=pod
+
+=head1 Criando um plugin rapido para Movable Type
+
+Movable Type é um cms poderoso porém com uma curva de aprendizagem não linear, onde no começo é um pouco demorado conseguir sair do basico. Porém depois de dominar o basico é muito facil e poderoso fazer plugins. O que vamos fazer agora é um plugin para ler os dados do serviço Tumblr, através da interface XML do site.
+
+O plugin basicamente le o feed dos últimos 10 posts de um site no Tumblr, e mostra seu tipo e um link em uma tag do movable type. Neste artigo vamos percorrer do começo ao fim da criação do plugin, para apresentar o basico ao leitor. Esse artigo e o código fonte do plugin estão no github do projeto em: http://github.com/fredericorecsky/TumblrFeed
+
+=head2 Estrutura do Plugin Tumblr Feed
+
+O manual de plugins do movable type disponível em aqui http://www.movabletype.org/documentation/developer/, é completo e vasto mas um pouco longo, o resumo da opera é basicamente o seguinte:
+
+O plugin fica no diretório mt/plugins/nomedoplugin (no nosso caso TumblrFeed), e dentro dele temos a seguinte estrutura:
+
+config.yaml	# arquivo de configuração
+lib/*   	# arquivos perl
+tmpl/* 		# template
+
+Algumas praticas recomendadas ao se criar um plugin são: utilizar nome com letra inicial maiúscula e caso seja um nome composto separar por espaços, não utilizar MT (de movable type no nome), usar um nome que além de descritivo faça sentido no namespace de plugins. No caso nosso plugin chama-se Tumblr Feed, e utiliza como diretório mt/plugins/TumblrFeed.
+
+Ainda é necessario um Readme que se chama TumblrFeed-README.txt e a licença, que chama-se TumblrFeed-LICENSE.txt. Pode-se notar que o nome também é convencionado em Nome do diretório do plugin -README ou -LICENSE.txt.
+
+Por ultimo ainda temos que o plugin utiliza a mesma forma padrão do perl para construir-se, utilizando o ExtUtils::MakeMaker, assim temos um arquivo para preparar (Makefile.PL) e mais dois para configuração do pacote (MANIFEST e MANIFEST.skip).
+
+O arquivo MANIFEST.SKIP contém as diretivas de empacotamento. No arquivo Makefile.PL, temos as informações do plugin necessárias para a preparação do plugin, com seu nome, diretório e versão. Esse formato é comum a todos modulos "formais" da linguagem, e para mais detalhes deve se consultar a documentação do ExtUtils::MakeMaker. 
+
+=head2 Arquivo de Configuração
+
+O arquivo de configuração do plugin, contém não só a configuração como as diretivas, callbacks e informações do plugin. Pode-se considerar sendo a descrição do funcionamento e o esqueleto do plugin.  Ele tem o formato YAML <yaml.org>. O minimo que ele deve conter é o nome do plugin, uma id unica para ele, alguns dados sobre o autor. Ainda nele temos as chamadas de função, a configuração e as tags usadas nos template.
+
+O primeiro passo é criar uma configuração no plugin, para definir qual vai ser o Tumblr que vamos pegar, assim vamos adicionar ao arquivo config.yaml:
+
+config_settings:
+	TumblrURL:
+		default: http://recsky.tumblr.com
+
+Isso nos da a capacidade de armazenar algum dado, no caso a url do Tumblr que vamos ler o feed.
+
+Depois precisamos criar uma tag especial para mostrar os dados que vamos adquirir no template do Movable Type. Se voce olhar o código de estilos do movable type, vai perceber que o template tem algumas tags como MTEntries ou MTComments, que na verdade são tags para o template interno preencher com os dados necessários, no nosso caso vamos criar uma tag TumblrFeed
+
+
+tags:
+	function:
+		TumblrLast: $TumblrFeed::TumblrFeed::Plugin::retrieve_last_ten_posts
+
+Assim toda vez que voce tiver em seu template do movable type a tag:
+
+	<mt:TumblrLast>
+
+Ele vai executar a chamada <retrieve_last_ten_posts> do código do plugin. Essa altura voce deve estar se perguntando, qual código? O código que está em mt/plugins/TumblrFeed/lib/TumblrFeed/Plugin.pm
+
+Assim toda vez que o template for renderizado o movable type vai ver a tag <mt:TumblrPosts> e vai substituir pelo retorno do código da função "retrieve_last_ten_posts" do Plugin.pm
+
+=head2 Construindo o código do plugin
+
+O movable type chama o plugin com alguns parâmetros especiais, que vem na variável de "contexto" (context em ingles, normalmente abreviado para mt). Assim toda função que é chamada pelo movable type recebe como primeiro argumento o contexto:
+
+
+sub retrieve_last_ten_posts {
+
+	my ($ctx, $args) = @_;
+	...	
+
+}
+
+Toda variável criada na configuração (o config.yaml lembra?) vem como chave do hash $ctx, dessa forma para nós lermos qual Tumblr será lido, basta usar a configuração que vem do $ctx, na forma de uma referencia de hash assim:
+
+my $Tumblr_url = $ctx->{TumblrURL}
+
+=head2 Lazyness
+
+O Tumblr disponibiliza sua API publicamente com acesso total \o/, porém programadores perl são preguiçosos, depois de ler a api em http://www.tumblr.com/docs/en/api, fui no glorioso CPAN ver se alguém já não tinha tentado fazer alguma coisa para conversar com o Tumblr. Então eu fui lá: http://lmctfy.org/Tumblr
+
+Note que temos 3 resultados, eu simplesmente peguei o primeiro e testei, e era exatamente o que eu precisava, WWW::Tumblr. <http://search.cpan.org/~damog/WWW-Tumblr-4.1/lib/WWW/Tumblr.pm>
+
+O modulo WWW::Tumblr retorna o XML da api do Tumblr, que eu processei usando o modulo use XML::Simple. Na pratica mesmo eu não precisei escrever quase nada, deu muito mais trabalho escrever esse longo texto que você está lendo que o plugin per si :).
+
+=head2 Instalando
+
+Apenas copie o plugin para o diretório plugins do movable type. Eventualmente quando seus plugins ficarem mais complexos, pode ser necessario colocar arquivos em outros locais, como mt-static (onde ficam arquivos estáticos, figuras ou css por exemplo). Existe um guia mais detalhado em http://tinyurl.com/easy-plugin-install, que cobre a instalação de plugins mais complexos. 
+
+Eventualmente voce pode estar em um host compartilhado, e não tem controle total sobre os modulos instalados ou só tem acesso via ftp. Nestes casos voce pode colocar as dependencias de modulos em extlib/*. Isso funciona bem para modulos perl puros que voce não tem e não pode instalar no servidor. 
+
+=head2 Usando
+
+O ultimo passo é usar o modulo, para isso basta que voce edite o template de seu blog/site no movable type e insira a tag <MTTumblrLast>, para que voce tenha o dump dos últimos 10 posts do Tumblr que está na configuração do plugin. Toda vez que seu blog for publicado, ou se a pagina for dinamica, ele vai preencher a tag com os dados vindo do plugin. 
+
+=head2 A vida, o universo e tudo mais
+
+Esse plugin está rodando no meu blog, com os dados do meu Tumblr em http://fred.eti.br/beta/, eu o coloquei na sidebar (olhe nos templates) e ele tem um link com o tipo do post que eu fiz no Tumblr (foto, video ou texto). O código fonte é aberto e voce pode usar como base para seu plugin. Ao contrario do wordpress que tem um repositorio de plugins centralizado, o movable type tem seus plugins "espalhados por ai", mas de certa forma eles vem se juntando no github, aqui tem o link de varios plugins que podem ser úteis ou estudados:
+
+http://github.com/byrnereese/mt-plugin-imagecropper
+http://github.com/sixapart/mt-plugin-facebook-connect-commenters
+
+A dica é procurar por mt-plugin. Eu nao coloquei mt-plugin no meu plugin porque ele é mais didático que útil per si. 
+
+Voce pode ainda procurar ajuda na lista dos São Paulo Perl monks, que tem o link em algum lugar dessa pagina :), la na barra de links em cima de todo esse texto :).
+
+=head2 AUTOR
+
+Frederico Recsky <frederico em gmail . com>
+
+=cut 
+
+

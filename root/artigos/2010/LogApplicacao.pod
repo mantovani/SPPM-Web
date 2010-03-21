@@ -1,0 +1,251 @@
+=encoding utf8
+
+
+=head1 LOG SUA APLICAÃÃO
+
+
+Log Ã© um assunto largamente neglicenciado em todos os nÃ­veis responsÃ¡vel pelo 
+design e desenvolvimento da aplicaÃ§Ã£o. SÃ£o raras as aplicaÃ§Ãµes com sistema de 
+log consistente e eficaz. Geralmente, as que possuem algum tipo de log, os 
+possuem para sanar alguma necessidade especÃ­fica do desenvolvedor 
+(normalmente para auxiliar na depuraÃ§Ã£o do cÃ³digo), e utiliza soluÃ§Ãµes caseiras.
+
+A falta de planejamento para um sistema de log consistente, disperdiÃ§a uma 
+excelente oportunidade de utilizar uma ferramenta que trarÃ¡ a aplicaÃ§Ã£o mas 
+seguranÃ§a (atravÃ©s da auditoria) e estabilidade (atravÃ©s de monitoramento do 
+comportamento da apliÃ§Ã£o).
+
+O objetivo deste artigo Ã© incentivar o planejamento de log na aplicaÃ§Ã£o e a 
+utilizaÃ§Ã£o de um framework em detrimento de qualquer soluÃ§Ã£o caseira. 
+
+
+=head2 Desafios para um sistema de log
+
+
+Ao habilitar um log na aplicaÃ§Ã£o, estaremos gerando uma quantidade considerÃ¡vel 
+(quando nÃ£o enorme) de dados que dificilmente serÃ¡ consumido por algum ser humano
+com frequÃªncia. Normalmente os maiores consumidores de log sÃ£o os sysadmin, e 
+somente o faz durante a anÃ¡lize de algum problema na aplicaÃ§Ã£o.
+
+O primeiro desafio de um sistema de log consistente na aplicaÃ§Ã£o Ã© encontrar o 
+verdadeiro consumidor (ou consumidor primÃ¡rio) dos logs. Por mais estranho
+que possa parecer num primeiro instante, o ambiente idÃ©ial Ã© aquele que utiliza
+sistema de monitoramento e anÃ¡lise de log como consumidor primÃ¡rio dos logs de 
+uma aplicaÃ§Ã£o.
+
+Estes sistemas de monitoramento e anÃ¡lise, quando bem configurados e aplicados, 
+permite transformar dados em informaÃ§Ãµes (tal como o log do apache em estatisticas
+de acesso) para usuÃ¡rios finais, dados em alerta de seguranÃ§a e de anormalidade
+do funcionamento dos sistemas para os analistas de seguranÃ§a e sysadmins.
+
+E o quÃª Ã© mais importante para um sistema de monitoramento e anÃ¡lise de log ? A 
+padronizaÃ§Ã£o da mensagem. Estes sistemas sÃ³ conseguem extrair informaÃ§Ãµes
+Ãºteis de logs padronizados.
+
+
+=head2 Analisando uma soluÃ§Ã£o de log caseira
+
+
+Normalmente a habilitaÃ§Ã£o de log na aplicaÃ§Ã£o Ã© uma iniciativa solitÃ¡ria do 
+desenvolvendor e para consumo prÃ³prio, optando por um soluÃ§Ã£o caseira, tal como
+no cÃ³digo abaixo: 
+
+    sub log {
+        my $msg = shift;
+        
+        open my $log, '>>', $log_file or die q/Couldn't open file/;
+        
+        print $log $msg;
+        
+    }
+    
+    ...
+    
+    sub foo {
+        
+        ...
+        
+        log($error_msg);
+        
+        ...
+        
+    }
+
+Este tipo de soluÃ§Ã£o, suficiente ao propÃ³sito exclusivo de um desenvolvendor, 
+apresentarÃ¡ sÃ©rias restriÃ§Ãµes para o crescimento da aplicaÃ§Ã£o. Com dito no FAQ 
+do Log::Log4perl, "... apÃ³s o bÃ¡sico, novas funÃ§Ãµes serÃ£o requisitadas. SerÃ¡
+necessÃ¡rio atribuir horÃ¡rio Ã s mensagens. As mensagens deverÃ£o ser escritas 
+em arquivo ou na tela ... restringir o log a apenas alguma parte do sistema", 
+entre outras funÃ§Ãµes.
+
+A melhor alternativa a um sistema caseira de log Ã© a utilizaÃ§Ã£o de um framework 
+especializada nesta atividade, e o Log::Log4perl Ã© a opÃ§Ã£o mais recomenda 
+atualmente no mundo Perl.
+
+Algumas das vantagens na utilizaÃ§Ã£o do Log::Log4perl sÃ£o :
+
+=over 3
+
+=item * ConfiguraÃ§Ã£o centralizada e flexÃ­vel
+
+Pelo arquivo de configuraÃ§Ã£o, ou pelo cÃ³digo de inicializaÃ§Ã£o do programa,  Ã© 
+possÃ­vel personalizar e definir cada aspecto do sistema de log. Definir formataÃ§Ã£o
+e o nÃ­vel de detalhe da mensagem, ativar/desativar logs.
+
+=item * Vasta, e em expanÃ§Ã£o, lista de plugin para appender
+
+Ã possÃ­vel definir para qual mÃ­dia serÃ¡ direcionado o log apenas habilitando/desabilitando
+o plugin do appender. Desta maneira Ã© possÃ­vel enviar o log para um banco de dados
+ou para algum email.
+
+=item * OtimizaÃ§Ãµes
+
+A inclusÃ£o de um sistema de log invariÃ¡velmente adicionarÃ¡ alguma penalidade no
+cÃ³digo, jÃ¡ que estamos incluÃ­ndo mais cÃ³digo e verificaÃ§Ãµes. O Log::Log4perl estÃ¡
+otimizado para permitir o mÃ¡ximo de desempenho tanto com os logs habilitados, 
+ou nÃ£o (mais informaÃ§Ãµes na documentaÃ§Ã£o do Log::Log4perl, na seÃ§Ã£o Penalties).
+
+=back
+
+
+=head2 Utilizando Log::Log4perl na aplicaÃ§Ã£o
+
+
+Uma das principais vantagens do Log::Log4perl sobre a maioria (senÃ£o a totalidade)
+dos sistemas caseiro Ã© o controle centralizado das aÃ§Ãµes de todo o sistemas de log.
+Este controle ocorre no arquivo de configuraÃ§Ã£o onde Ã© possÃ­vel definir o formato e 
+o nÃ­vel de detalhamento das informaÃ§Ãµes no log; para onde o log serÃ¡ direcionado;
+polÃ­ticas de retenÃ§Ã£o dos logs; etc.
+
+A documentÃ§Ã£o do Log::Log4perl Ã© vasta e detalhada sobre como habilitar e configurar
+todas estas facilidades do Log::Log4perl, por isto nÃ£o entraremos neste detalhes, 
+mas apenas para demostraÃ§Ã£o segue um exemplo de como ficaria uma aplicaÃ§Ã£o com
+o Log::Log4perl.
+
+Abaixo temmos um exemplo de arquivo de configuraÃ§Ã£o que utiliza um plugin para 
+rotacionar o arquivo de log. 
+
+    
+    log4perl.rootLogger=ERROR, Logfile
+    
+    log4perl.appender.Logfile             = Log::Dispatch::FileRotate
+    log4perl.appender.Logfile.filename    = /var/log/myapp/error.log
+    log4perl.appender.Logfile.max         = 7
+    log4perl.appender.Logfile.DatePattern = yyyy-MM-dd
+
+    log4perl.appender.Logfile.layout                   = PatternLayout
+    log4perl.appender.Logfile.layout.ConversionPattern = [%d] %F %L %C - %m%n
+    
+JÃ¡ neste ponto Ã© possÃ­vel observar a flexibilidade do Log::Log4perl, na primeira
+linha acima, eu consigo definir o nÃ­vel log que estÃ¡ habilitado (neste caso somente 
+severidade igual ou maior que ERROR). Na linha seguinte definimos o appender que
+serÃ¡ utilizado e log em seguida as configuraÃ§Ãµes referente ao appender. Fica 
+claro neste ponto o quanto Ã© fÃ¡cil alterar para onde o log serÃ¡ direcionado. No
+PatterLayout vocÃª define as informaÃ§Ãµes que farÃ¡ parte da linha de mensagem, neste
+caso estou incluindo um timestamp, o nome do arquivo, a linha e a classe onde
+a mensagem foi gerada, alÃ©m da mensagem fornecida.
+    
+Este arquivo de configuraÃ§Ã£o dever ser iniciado no teu cÃ³digo da seguinte maneira:
+
+    use Log::Log4perl;
+    Log::Log4perl->init(q[/etc/myapp/log.conf]);
+    
+E em algum ponto do seu cÃ³digo, vocÃª pode carregar o Log::Log4perl e reportar o
+desejado sem preocupar-se sobre qual serÃ¡ o destino da mensagem enviada, da 
+seguinte maneira.
+
+    package My::App::Foo;
+    use Log::Log4perl;
+    
+    sub method {
+        my @params = @_;
+        
+        my $log = Log::Log4perl->get_logger("My::App::Foo");
+        
+        $log->error("Error message");
+        
+        ...
+    }
+
+
+=head2 Log::Log4perl no Catalyst
+
+Habilitar o Log::Log4perl no Catalyst Ã© menos complicado, utilizando o mesmo 
+arquivo de configuraÃ§Ã£o acima, carregamos o mÃ³dulo e a configuraÃ§Ã£o no mÃ³dulo
+de startup do sistema.
+
+    use Log::Log4perl::Catalyst;
+    
+    # agora inicializamos o Log4perl para ser utilizada no Catalyst.
+    __PACKAGE__->log(Log::Log4perl::Catalyst->new(q[/etc/myapp/log.conf]);
+    
+Agora Ã© sÃ³ reportar as informaÃ§Ãµes desejada, tal como :
+
+    sub login : Action {
+        my ( $self, $c ) = @_;
+        my $params = $c->req->body_params;
+        if ( $params->{'username'} && $params->{'password'} ) {
+            if ( $c->authenticate({ map { $_ => $params->{$_} } qw/username password/ }) ) {
+                $c->log->info(qq[Success login for user $params->{'username'} ]);
+                # usuÃ¡rio vÃ¡lido e autenticado
+                # redirecione para algum caminho da sua aplicaÃ§Ã£o
+            } else {
+                $c->log->warn(qq[Invalid access attempt login for user $params->{'username'} ]);
+                # mostrar a pÃ¡gina com o formulÃ¡rio de autenticaÃ§Ã£o e uma mensagem de erro
+            }
+        } else {
+            # mostrar a pÃ¡gina com o formulÃ¡rio de autenticaÃ§Ã£o
+        }
+    }
+    
+    sub requires_user : Action {
+        my ( $self, $c ) = @_;
+        if ( $c->user_exists ) {
+            # usuÃ¡rio "logado"
+        } else {
+            $c->log->warn(qq[Invalid access.])
+            # retorna ao passo de login
+        }
+    }
+
+Agora vocÃª foi informado da necessidade de obter o ip do cliente em todas as 
+mensagens por questÃ£o de auditoria, o que fazer ? Alterar cada linha de cÃ³digo 
+que reporta ao log e incluir o C<< $c->request->address() >> nas mensagens ?
+
+NÃ£o para quem estiver utilizando o Log::Log4perl, neste caso vamos atualizar o 
+arquivo de configuraÃ§Ã£o com a informaÃ§Ã£o necessÃ¡ria e automaticamente passar a 
+obter o ip do cliente no formato desejado, da seguinte maneira :
+
+    log4perl.rootLogger=TRACER, Logfile
+    
+    log4perl.appender.Logfile             = Log::Dispatch::FileRotate
+    log4perl.appender.Logfile.filename    = /var/log/myapp/error.log
+    log4perl.appender.Logfile.max         = 7
+    log4perl.appender.Logfile.DatePattern = yyyy-MM-dd
+
+    log4perl.appender.Logfile.layout                   = PatternLayout
+    log4perl.appender.Logfile.layout.ConversionPattern = [%d] %F %L %C %X{client_ip}- %m%n
+  
+E atualize no mÃ³dulo de startup do sistema o MDC para capturar o ip do cliente
+
+    use Log::Log4perl::Catalyst;
+    
+    # agora inicializamos o Log4perl para ser utilizada no Catalyst.
+    __PACKAGE__->log(Log::Log4perl::Catalyst->new(q[/etc/myapp/log.conf]);
+    
+    Log::Log4perl::MDC->put( "client_ip", $c->req->address() );
+
+
+=head1 CONCLUSÃO
+
+A utilizaÃ§Ã£o do Log::Log4perl acrescenta robustez e flexibilidade ao aplicativo, 
+sem penalizar o desenvolvedor com codificaÃ§Ã£o extra e disvirtuada a lÃ³gica do
+negÃ³cio. Ã na simplicidade que encontramos o maior poder do Log::Log4perl, pois 
+desarma qualquer argumento contra a adoÃ§Ã£o de um sistema de log no aplicativo.
+
+=head1 AUTOR
+
+Solli M. Honorio C<< <shonorio at gmail.com> >>, sysadmin e atualmente trabalha
+na Ãtica Tecnologia Ltda. L<http://www.etica.net>
+
+=cut

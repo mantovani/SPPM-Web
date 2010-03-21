@@ -1,0 +1,204 @@
+=pod
+
+r3 - 27 Feb 2008 - NelsonFerraz
+
+=head1 Como Encontrar (e Contratar) Bons Programadores
+
+I<>
+
+Encontrar bons programadores, em qualquer linguagem E<eacute>
+difE<iacute>cil. PorE<eacute>m um programador realmente bom pode fazer
+o trabalhador de 5 programadores mE<eacute>dios. Este artigo procura
+mostrar como vocE<ecirc> pode identificar e contratar um bom
+programador.
+
+Why is it so hard to find good programmers?
+
+The simplest reason is when a company finds a good developer they do
+more to make sure that person is happy which leads to longer tenures.
+Better salary, more flexible working conditions, good tools,
+interesting projects, and better perks can often keep a programmer
+working for you longer.
+
+Another obvious reason is that experts in any field are small in
+number, so your possible talent pool is limited. This leads managers
+and HR departments to settle for average or even below average
+developers. I believe this is the single biggest mistake a technology
+oriented company can make, regarding developers, just short of not
+using a good version control system.
+
+We're not talking about customer service representatives or sales
+people here. Just having a body to fill the seat is not, I repeat not,
+always a win for the company. Sub-standard programmers drag down the
+efficiency of your other developers with beginner questions, poor
+comments/documentation, and bad code that someone else will later be
+forced to spend time fixing.
+
+Companies need to stop thinking about their developers as cogs in the
+machine. They are more akin to artists, authors, designers, architects,
+scientists, or CEOs. Would your HR department rush to find the first
+person who would willing to take on the role of Chief Scientist, Art
+Director, or CEO in your company? Of course not, they would spend the
+time to do a through talent search for just the right candidate, court
+them, and then compensate them appropriately. They realize that having
+the wrong person in that seat is much worse than having the seat empty.
+It is absolutely the same with programming.
+
+Anyone who has been a developer or managed developers can tell you that
+an expert can accomplish as much as 10 average developers. However,
+companies typically pay only a 10-20% premium for an expert over the
+average programmer. Whether or not their title is Lead, Architect,
+Development Manager, Guru or whatever nomenclature the company uses. I
+am not saying that if your average developer is paid $50k/year that you
+should pony up $500k/year for an expert. The employer/employee
+relationship never works like that, but what employers don't seem to
+realize is that in the end paying more saves them more.
+
+Let's look at an example. One common argument from HR departments is
+that they "can't find any Perl programmers, but they can't swing a cat
+without hitting a Java developer". While this is fairly accurate, they
+are approaching the problem from the wrong direction. If you fill your
+shop with 15 average Java developers, paying an average of $60k per
+developer you have an approximate labor cost of $900k/year for your
+development staff. Not considering any non-salary benefits.
+
+Suppose you instead took the time to find 5 experts, or at least above
+average, Perl developers at $120k each per year. Here is a partial list
+of the pros and cons of such a scenario:
+
+Cons:
+
+=over
+
+=item * You must spend extra time finding, evaluating, and courting
+these more sought after developers.
+
+=item * Your company and what the developer may be asked to build may
+simply not be attractive to this class of developer. Very few people
+want to work for a spammer or a small web design firm that caters
+solely to freelance accountants for example. Smart people find boring
+things even more boring than the masses.
+
+=item * When one of them leaves the company, there is the feeling that
+your company's business objectives are more at risk due to having only
+4/5ths of your normal resources. Or that a larger chunk of your
+corporate knowledge just walked out the door. This is more of a
+perceived problem than an actual one as good developers are better at
+writing readable/maintainable code, commenting their work, and writing
+effective documentation.
+
+=back
+
+Pros:
+
+=over
+
+=item * Each developer will be more content with their job, due in part
+to the higher than average salary, but also because his or her
+co-workers are of a much higher quality which improves anyone's job
+satisfaction.
+
+=item * Development would require less overall communication as there
+are less people to communicate with. This obviously improves efficiency
+as anyone who has been on a 20+ person conference call can attest to.
+Or read the Mythical Man Month if you want a more in-depth analysis of
+this phenomenon.
+
+=item * Experts travel in the same social circles. Having one expert on
+staff makes it much easier to find other experts in the same field, no
+matter what field that may be.
+
+=item * You would save 2/3rds on infrastructure costs. Things like
+cubicles, computers, cell phones, free lunches, training costs, travel,
+office space, air conditioning, electricity, etc, etc. The list is
+essentially endless.
+
+=item * Your HR department would have 1/3rd the number of developers
+that it would need to take care of. Less paper work, less questions,
+less everything, and less turn over because of the lower number of
+employees.
+
+=item * Oh and you'd save $300k/year on your labor costs. Not to
+mention non-salary benefits such as stock options, retirement matches,
+health insurance premiums, perks, etc. You could spend as much as
+$100k/year on your talent searches and still be $200k/year ahead. Hell,
+you could dedicate an entire HR person just to this task.
+
+=back
+
+What is an expert programmer?
+
+Experience is key, but not necessarily in ways you might imagine. Time
+in the saddle, with a particular language is not as important as
+diversity of experience. Someone who has worked in several disparate
+industries, a generalist, is often a much better developer than one who
+has spent years in the same industry. There are exceptions to this, but
+in general I have found this to be the case. Bonus points if your
+developer was a systems administrator in a former life.
+
+Some of the best developers I know were originally trained as
+journalists, mathmaticians, linguists, and other professions not
+normally associated with software development.
+
+Experts use better tools and care deeply about their craft. They aren't
+assembling bits on an assembly line, they are crafting a unique product
+to solve a unique problem. Experts are lazy, they work smarter rather
+than harder. Experts prefer the easiest solution that gets the job
+done. Experts aren't interested in creating complex solutions simply to
+have the complexity, that misguided egoism is the territory of more
+junior developers. They often get it right the first try and almost
+always on the second one.
+
+Simply put, experts write readable code. They comment and document it
+appropriately based on the complexity and criticality of that
+particular piece of code.
+
+All of this pays huge dividends when the next developer has to pick up
+where they left off. Especially if the next person isn't an expert.
+More reasons you want an expert programmer
+
+Is your business technology oriented? Perhaps the software you create
+is even your main product. If nothing else I'm sure we can agree that
+if the software your developers create is to some degree critical to
+your business.
+
+I've worked in many different environments, with people of every skill
+level, and it's very easy to tell whether or not a company has expert
+developers. Do you often find that the software is down? That it has as
+many bugs or even just idiosyncrasies that make no sense to the user as
+it does features? Do the users find it difficult to use? Is the problem
+at hand relatively simple compared to the training or documentation
+necessary to begin using the software?
+
+If you answered yes to any of those questions you more than likely have
+average or below average developers.
+
+When you work in an environment with experts things simply work. They
+are easier to use and require less initial training. The software is
+easier to modify. Requested changes happen more frequently and easily.
+Things just flow. It is the difference between Apple and Microsoft.
+It's the difference between the iPod and a 400 disc CD changer with 50+
+buttons.
+
+As with many things in life, sometimes you get what you pay for. I'd
+love to hear your comments and opinions on the subject.
+
+=over
+
+=item * A Guide to Hiring Programmers: The High Cost of Low Quality
+
+=item * Followup to "A Guide to Hiring Programmers"
+
+=back
+
+=head1 AUTOR
+
+Nelson Ferraz
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 9124 bytes of input
+#Sun Jan 31 01:45:22 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

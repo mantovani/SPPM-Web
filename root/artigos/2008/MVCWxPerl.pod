@@ -1,0 +1,249 @@
+=pod
+
+r9 - 03 Jul 2008 - AlceuJunior
+
+=head1 MVC e WxPerl
+
+I<>
+
+Artigo sobre como utilizar o padrE<atilde>o de projeto
+I<Model-View-Controller> (MVC) com o I<toolkit> WxPerl.
+
+=head1 Sobre o padrE<atilde>o MVC
+
+MVC significa I<Model>, I<View>, I<Controller>. E<Eacute> um
+padrE<atilde>o de desenvolvimento para linguagens orientadas E<agrave>
+objeto muito difundido para criar interfaces grE<aacute>ficas porque
+prega a separaE<ccedil>E<atilde>o de um aplicativo com interface
+grE<aacute>fica em trE<ecirc>s partes: modelo, visE<atilde>o e
+controlador.
+
+Fazendo uso desse conceito de separaE<ccedil>E<atilde>o, E<eacute>
+fE<aacute>cil poder-se alterar qualquer uma das partes do aplicativo
+sem ter de alterar as demais. Basicamente, essas trE<ecirc>s partes
+conceituais tem as seguintes responsabilidades:
+
+=over
+
+=item * Modelo: classe responsE<aacute>vel por aplicar as regras de
+negE<oacute>cio, manter os dados consistentes e cuidar do armazenamento
+dos outros.
+
+=item * VisE<atilde>o: classe responsE<aacute>vel por apresentar uma
+interface grE<aacute>fica para o usuE<aacute>rio, permitindo que a
+interaE<ccedil>E<atilde>o dele com essa interface dispare
+mE<eacute>todos no Modelo ou no Controlador.
+
+=item * Controlador: essa classe irE<aacute> observar
+alteraE<ccedil>E<otilde>es tanto na classe VisE<atilde>o quanto no
+Modelo e disparar mE<eacute>todos de uma classe ou outra dependendo de
+condiE<ccedil>E<otilde>es prE<eacute>-estabelecidas. O Controlador
+funciona como um intermediE<aacute>rio entre a VisE<atilde>o e o
+Modelo, garantindo que a VisE<atilde>o ou o Modelo possam ser alterados
+internamente ou mesmo trocados sem prejudicar a outra classe.
+
+=back
+
+Essa E<eacute> uma explicaE<ccedil>E<atilde>o muito resumida sobre esse
+padrE<atilde>o. Existe documentaE<ccedil>E<atilde>o farta na internet
+sobre o assunto (veja ReferE<ecirc>ncias para algumas), mas antes de
+prosseguir gostaria de deixar mais duas observaE<ccedil>E<otilde>es
+para o leitor:
+
+=over
+
+=item 1. o padrE<atilde>o MVC para aplicaE<ccedil>E<otilde>es
+grE<aacute>ficas nE<atilde>o E<eacute> exatamente igual para o
+padrE<atilde>o MVC utilizado em aplicaE<ccedil>E<otilde>es I<web>.
+
+=item 2. o modelo conceitual de MVC nE<atilde>o E<eacute> simples de
+ser aplicado na prE<aacute>tica, entE<atilde>o dependendo dos recursos
+da linguagem de programaE<ccedil>E<atilde>o, a
+aplicaE<ccedil>E<atilde>o do padrE<atilde>o pode ser ligeiramente
+diferente.
+
+=back
+
+=head1 O que E<eacute> WxPerl
+
+WxPerl E<eacute> um mE<oacute>dulo de extensE<atilde>o que permite a
+criaE<ccedil>E<atilde>o de aplicaE<ccedil>E<otilde>es grE<aacute>ficas
+para Perl. Ela E<eacute> um "embrulho" para o conjunto de ferramentas
+grE<aacute>ficas chamado WxWidgets, escrito originalmente para ser
+utilizado com C++, permitindo que cE<oacute>digo Perl possa ser
+facilmente escrito para usar as funcionalidades dessa biblioteca
+grE<aacute>fica.
+
+Uma das vantagens de se utilizar WxPerl ao invE<eacute>s de outras
+bibliotecas E<eacute> a possibilidade de criar
+aplicaE<ccedil>E<otilde>es multiplaforma, jE<aacute> que o WxWidgets
+estE<aacute> disponE<iacute>vel para vE<aacute>rios sistemas
+operacionais e usa as bibliotecas grE<aacute>ficas do prE<oacute>prio
+sistema, permitindo que usa aplicaE<ccedil>E<atilde>o tenha a mesma
+aparE<ecirc>ncia e usabilidade de aplicativos escritos especificamente
+para o mesmo sistema.
+
+A desvantagem do WxPerl E<eacute> a falta de
+documentaE<ccedil>E<atilde>o da mesma, mesmo considerando que o
+WxWidgets E<eacute> bem documentado.
+
+=head2 Como funciona o WxPerl
+
+O WxPerl funciona basicamente da seguinte forma: o programador cria uma
+(ou mais) janela(s) e dentro dessas definem os elementos que
+irE<atilde>o constituir a interface grE<aacute>fica: quadros
+(I<frames>), botE<otilde>es, campos para entrada de dados, etiquetas,
+etc. Um I<frame> deve extender a classe C<Wx::Frame> e E<eacute> dentro
+dele que serE<atilde>o definidos os elementos grE<aacute>ficos, como
+botE<otilde>es.
+
+O programador irE<aacute> definir como o I<frame> irE<aacute> responder
+E<agrave> interaE<ccedil>E<atilde>o do usuE<aacute>rio com os elementos
+grE<aacute>ficos atravE<eacute>s do uso de eventos. Cada elemento
+grE<aacute>fico do WxPerl irE<aacute> possuir eventos
+prE<eacute>-definidos e eventos nE<atilde>o sE<atilde>o nada mais do
+que funE<ccedil>E<otilde>es. O que programador terE<aacute> de fazer
+E<eacute> relacionar um evento a chamada de uma funE<ccedil>E<atilde>o,
+por exemplo:
+
+ EVT_BUTTON(
+        $self,
+        $self->{salvar}->GetId(),
+        função_qualquer( parâmetro )
+    );
+
+O evento EVT_BUTTON se aplica a todos os botE<otilde>es do I<frame>
+atual, portanto um dos parE<acirc>metros a serem passados para a
+funE<ccedil>E<atilde>o E<eacute> o nE<uacute>mero identificador (ID) do
+botE<atilde>o que capturou o evento (um clique do I<mouse>, por
+exemplo). O E<uacute>ltimo parE<acirc>metro E<eacute> a chamada para
+outra funE<ccedil>E<atilde>o definida (no exemplo,
+C<funE<ccedil>E<atilde>o_qualquer>). Ainda E<eacute> possE<iacute>vel
+definir uma funE<ccedil>E<atilde>o dentro do prE<oacute>prio
+cE<oacute>digo, passando entE<atilde>o uma referE<ecirc>ncia como
+parE<acirc>metro.
+
+ EVT_BUTTON(
+        $self,
+        $self->{salvar}->GetId(),
+        sub { # isso vai gerar algo no terminal!
+                 warn "Exemplo de função";
+               }
+    );
+
+O leitor atento vai perceber logo que o modelo de
+programaE<ccedil>E<atilde>o do WXPerl nE<atilde>o auxilia muito na
+aplicaE<ccedil>E<atilde>o do padrE<atilde>o MVC, visto que o I<frame>
+(VisE<atilde>o) terE<aacute> que saber como alterar o Modelo e
+vice-versa. Com o tempo isso vai acabar gerando cE<oacute>digo
+difE<iacute>cil de manter.
+
+=head1 Adaptando o WxPerl para utilizar o MVC
+
+Para facilitar a aplicaE<ccedil>E<atilde>o do padrE<atilde>o MVC com
+WxPerl eu optei por aplicar outro padrE<atilde>o de projeto conhecido
+como I<Observer>. Esse padrE<atilde>o permite registrar a
+ocorrE<ecirc>ncia de eventos e informar as classes interessadas nesses
+eventos, chamando um mE<eacute>todo das mesmas. Isso funciona num
+esquema muito parecido com o esquema "publicar e monitorar". O uso
+desse padrE<atilde>o permite separar o "publicador" do "monitorador",
+garantindo uma interface genE<eacute>rica para
+publicaE<ccedil>E<atilde>o e inscriE<ccedil>E<atilde>o de eventos.
+
+O padrE<atilde>o de projeto I<Observer> tem uma
+implementaE<ccedil>E<atilde>o disponE<iacute>vel para download no CPAN
+( Class::Publisher) o que me poupou um bom trabalho.
+
+Com certeza existem outras formas de utilizar MVC com WxPerl, mas na
+E<eacute>poca que precisei escrever o aplicativo-exemplo mais abaixo,
+nE<atilde>o existia uma maneira jE<aacute> definida pela
+distribuiE<ccedil>E<atilde>o do WxPerl.
+
+=head1 O aplicativo de exemplo
+
+Como exemplo de utilizaE<ccedil>E<atilde>o, eu desenvolvi um aplicativo
+bastante simples que na realidade teve aplicaE<ccedil>E<atilde>o
+prE<aacute>tica. Participei de um projeto de integraE<ccedil>E<atilde>o
+de sistemas e uma das responsabilidades da equipe era gerar
+documentaE<ccedil>E<atilde>o dos produtos desenvolvidos. Para esse
+tarefa um tanto ingrata arrumaram um trainee que nE<atilde>o sabia
+absolutamente nada de SQL ou banco de dados relacional.
+
+Como ele tinha que documentar interfaces de exportaE<ccedil>E<atilde>o
+de dados e o formato do arquivo e registros exportados, e as I<queries>
+jE<aacute> estava todas prontas, eu desenvolvi esse aplicativo para
+gerar essa informaE<ccedil>E<atilde>o rapidamente para ele.
+
+Basicamente, o aplicativo vai receber como entrada uma I<query> e
+E<agrave> partir da mesma obter os metadados das colunas pesquisas no
+banco, independente da quantidade de tabelas envolvidas na pesquisa.
+Para fazer isso, o aplicativo vai usar uma funE<ccedil>E<atilde>o
+disponE<iacute>vel na biblioteca OBDC chamada C<DescribeCol>. Se a
+implementaE<ccedil>E<atilde>o do banco de dados para ODBC for feita
+corretamente, essa funE<ccedil>E<atilde>o permite obter
+informaE<ccedil>E<otilde>es sobre o tipo de dado retornado por cada
+coluna B<sem> executar a I<query>, o que E<eacute> uma boa pedida se a
+mesma tiver alto custo para ser executada no banco de dados.
+
+=head1 CE<oacute>digo e demais explicaE<ccedil>E<otilde>es
+
+Segue abaixo o diagrama UML das classes utilizadas no programa:
+
+Diagrama_geral.png
+
+=head1 Configurando a aplicaE<ccedil>E<atilde>o
+
+A aplicaE<ccedil>E<atilde>o precisa de um arquivo INI para poder obter
+os dados necessE<aacute>rios para se conectar via ODBC. Segue um
+exemplo de um arquivo INI:
+
+ [Siebel Tools]
+ DSN = data source name
+ user = usuário
+ password = senha
+
+A seE<ccedil>E<atilde>o "Siebel Tools" serE<aacute> exibida no menu
+"ConexE<otilde>es" da aplicaE<ccedil>E<atilde>o.
+
+=over
+
+=item * AplicaE<ccedil>E<atilde>o exibindo uma das conexE<otilde>es
+ODBC disponE<iacute>veis:
+
+exemplo.png
+
+=back
+
+=head1 ReferE<ecirc>ncias
+
+=over
+
+=item * Site oficial do WxPerl (em inglE<ecirc>s):
+http://wxperl.sourceforge.net
+
+=item * PadrE<atilde>o de projeto I<Observer> (em inglE<ecirc>s):
+http://perldesignpatterns.com/?EventListeners
+
+=item * Artigo introdutE<oacute>rio ao WxPerl (em inglE<ecirc>s):
+http://www.perl.com/pub/a/2001/09/12/wxtutorial1.html
+
+=item * IntroduE<ccedil>E<atilde>o ao padrE<atilde>o MVC (em
+inglE<ecirc>s): http://ootips.org/mvc-pattern.html
+
+=item * IntroduE<ccedil>E<atilde>o ao padrE<atilde>o MVC para
+aplicaE<ccedil>E<otilde>es I<web>:
+http://sao-paulo.pm.org/papers/champs/cgi-app-paper/index.html
+
+=back
+
+=head1 AUTOR
+
+Alceu Junior
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 10661 bytes of input
+#Sun Jan 31 01:45:21 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

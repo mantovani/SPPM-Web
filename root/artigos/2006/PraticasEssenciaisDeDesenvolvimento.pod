@@ -1,0 +1,48 @@
+=pod
+
+r1 - 06 Aug 2006 - JoenioCosta
+
+=head1 Praticas Essenciais de Desenvolvimento
+
+Dez dicas essenciais de Damian Conway
+
+=over
+
+=item 1. Projete a interface do modulo antes de mais nada
+
+=item 2. Escreva os testes antes do codigo
+
+=item 3. Escreva documentacao padrao em formato POD para modulos e
+aplicacoes
+
+=item 4. Use um sistema de controle de revisoes
+
+=item 5. Crie interfaces de linha de comando consistentes
+
+=item 6. Estabeleca um estilo de layout coerente, e automatize-o com
+perltidy
+
+=item 7. Comente o codigo a cada paragrafo
+
+=item 8. Use excecoes ao inves de retornar valores especiais ou setar
+flags
+
+=item 9. Inclua novos testes antes de comecar a depurar
+
+=item 10. Nao otimize -- use Benchmark
+
+=back
+
+http://www.perl.com/pub/a/2005/07/14/bestpractices.html
+
+=head1 AUTOR
+
+Joenio Costa
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 960 bytes of input
+#Sun Jan 31 01:45:51 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

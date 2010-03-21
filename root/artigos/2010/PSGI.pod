@@ -1,0 +1,154 @@
+=pod
+
+=encoding utf8
+
+=head1 PSGI, Plack, Bada bing bada boom! 
+
+PSGI é uma especificação, Plack é uma implementação dessa especificação feita em Perl, antes de vermos mais sobre o PSGI e o Plack, vamos voltar um pouco no tempo?
+
+"Great Scott"!
+
+Pronto, antes das pessoas pensarem em padronizarem frameworks webs existia o CGI, que não era um framework, mas todo mundo usava, desenvolvedores de sites escreviam sites usando o bom e velho CGI.pm o tempo foi passando as coisas foram evoluindo, Mod_perl, FastCGI e agora? iremos ter que aprender como funciona esses frontend para escrever sites webs? 
+
+Com a evolução dos frontends CGI->Mod_perl->FastCGI também foi evoluindo a ideia de se fazer sites para a internet, você não precisa mais se preocupar com o frontend, mas só com o backend, acesso a banco, como as classes vão ficar divididas e etc, porém não é porque você não se preocupa mais com os frontends que eles não existem, eles existem, mas agora é quase transparente e você só ouve falar deles na hora de fazer o deploy do seu site.
+
+"Vou usar mod_perl ou FastCGI? ah, já que é só para mostrar a tela principal vou no CGI que é mais rapido pra configurar"
+
+Para isso ser assim , os programadores de framework criaram uma "interface" para ficar transparente para você desenvolvedor, ou seja, você não tem que se preocupar com os headers do http, com o request do http, no maximo você pode querer modificar o content-type do conteudo que você está servindo.
+
+Essa "interface" no Catalyst chama-se L<Catalyst::Engine>, além dele ter varios frontend disponiveis L<http://lmctfy.org/catalyst%20engine> ele melhorou a implementação de alguns, por exemplo, o frontend de CGI, poderia usar o CGI.pm, mas o CGI.pm é um codigo de 1995 que funciona tanto em Perl 5.004 como em Perl 5.10.1,e ele tem 7885 linhas de codigo, o Catalyst::Engine::CGI é escrito em Moose e tem 293 linhas de codigo, e faz a mesma coisa que o CGI.pm, outras otimizações são feitas nessa "inteface" de backend, acessando api's de baixo nivel para aumentar a perfomance do framework, Catalyst faz isso, Jifty, entre outros.
+
+O que estava acontecendo era que existiam esforços paralelos para o mesmo problema, tambem conhecido como codigo duplicado, pois todo framework novo acabava desenvolvendo sua propia "interface".
+
+Pensando nisso foi criado o  HTTP::Engine, que nada mais é que essa "interface" generica o suficiente para ser usada em qualquer framework, mas como o pessoal do Catalyst já tinha o seu C::Engine, eles nem precisaram se preocupar dado que ele já estava bastante estavel.
+
+Então vamos lá, o fluxo de uma aplicação web no Catalyst é mais ou menos assim:
+
+MyApp -> Catalyst::Engine::FastCGI -> Apache servindo FastCGI
+
+Se você fez o seu proprio framework ( usando L<HTTP::Engine> por exemplo ) , o fluxo pode ser
+
+MyApp -> LornLails -> HTTP::Engine::FastCGI -> Apache servindo FastCGI
+
+Agora, "back to the future"
+
+Lembram do Plack? então, esse artigo é sobre ele e o PSGI, lembrando que o PSGI é uma especificação e você não roda codigo em uma especificação, o Plack é a implementação dessa especificação ele implementa varios PSGI Server ( CGI, FastCGI, standalone server ).
+
+O Plack, faz a mesma coisa que o L<HTTP::Engine> 
+
+"De novo esse caras do Perl re-escrevendo coisas que já existem? Alguem pense nas criancinhas elas precisam ser salvas..."
+
+Calma, não é bem por ai a ideia do PSGI veio do Rack ( do Ruby ) e do WSGI ( do Python ), a sigla "GI" significa Gateway Interface, isso te lembra algo? vou dar uma dica a sigla do CGI é Common Gateway Interface, outra definição de PSGI é: uma especificação para webserver se comunicar com aplicaçoes web  ou seja uma interface entre os seus programas Perl, e os WebServers ( Apache, Nginx e afins ) o CGI faz a mesma coisa, só que para CGI scripts.
+
+Mas um fluxo, para ficar claro
+
+Script CGI -> CGI -> Apache
+
+Aplicação Perl PSGI -> PSGI -> Apache
+
+Aplicação Perl PSGI -> PSGI -> NGINX
+ 
+Porque você usaria o PSGI? PSGI é muito rapido, fiquei sabendo essa semana que existe um branch no Catalyst para substituir o Catalyst::Engine pelo PSGI, o criador do PSGI /Plack Tatsuhiko Miyagawa já tinha uma preocupação com "api's não bloqueantes" contribuiu bastente com o L<AnyEvent> e L<POE>.
+
+A ideia dele vou "roubada" do Ruby/Python ( rack e WSGI respectivamente ) e dividir o HTTP::Engine em três partes:
+
+Interface - Implementação - Utilitarios
+
+Não se esquecam que o Plack é apenas UMA implementação dessa especificação existem outras implementações, há a possibilidade de escrever implementações DENTRO dos webservers e já foi feita para NGINX - 'http://github.com/yappo/nginx-psgi-patchs' e Perlbal - 'http://github.com/miyagawa/Perlbal-Plugin-PSGI'
+
+
+=head2 Interface - PSGI
+
+	my $app = sub {
+		my $env = shift;
+		...
+		return [ $status, $header, $body ];
+	};
+
+Uma aplicação PSGI recebe uma referencia para o codigo que será executado, o $env ali o mesmo que era usado no CGI.pm.
+
+O retorno é o status do HTTP ( 200, 302, 500 e etc ), headers do HTTP, e o a resposta em si.
+
+A menos que você vá desenvolver um Framework ou um Middleware com o PSGI, você não precisa se preocupar com isso :)
+
+=head2 Implementação - Plack::Server
+
+Aqui ficam as implementações dos servidores, Standalone HTTP ( o servidor de desenvovlimento que você roda na sua maquina para programar no catalyst é um Standalone HTTP ),FCGI, Apache2, Prefork, AnyEvent, Coro.
+
+De acordo dados do proprio desenvolvedor, os Plack::Server::* são bem rapidos :
+
+5000 - Acessos por segundos 
+
+15000 - Acessos por segundo usando Prefork.
+
+Nessa camada também fica os adaptadores para os frameworks, Catalyst, Maypole, Mojo e afins.
+
+=head2 Utilitarios - Plack::*
+
+Esse namespace, foi reservado somente para aplicações usando Plack, como pode exemplo o L<plackup> usado para rodar seu codigo PSGI na linha de comando inspirado pelo rackup ( do Ruby ) 	
+
+Você pode ver mais utilitarios aqui: L<http://lmctfy.org/plack::>
+	
+=head2 Exemplos praticos
+
+=head2 Rodando o servidor de desenvolvimento do Catalys tem cima do plackup
+
+Vamos começar bem simples, rodando o ambiente de desenvolvimento do Catalyst em PSGI usando o plackup:
+
+Cole o seguinte codigo no scripts/myapp_server.psgi
+
+	use strict;
+	use MyApp;
+
+	MyApp->setup_engine('PSGI');
+	my $app = sub { MyApp->run(@_) };
+
+E vamos rodar ele no plackup:
+
+plackup scripts/myapp_server.psgi
+
+Você verá aquela tela de debug do Catalyst e no final:
+
+Plack::Server::Standalone: Accepting connections at http://0:5000/
+
+=head2 Aplicação usando PSGI/Plack
+
+Crie o arquivo app.psgi com o seguinte conteúdo:
+
+	my $app = sub {
+    my $env = shift;
+    if ($env->{PATH_INFO} eq '/favicon.ico') {
+        open my $fh, "<:raw", "/path/to/favicon.ico" or die $!;
+        return [ 200, ['Content-Type' => 'image/x-icon'], $fh ];
+    } elsif ($env->{PATH_INFO} eq '/') {
+        return [ 200, ['Content-Type' => 'text/plain'], [ "Hello again $env->{REMOTE_ADDR}" ] ];
+    } else {
+        return [ 404, ['Content-Type' => 'text/html'], [ "Sorry $env->{REMOTE_ADDR} -  404 Not Found" ] ];
+    }
+};
+
+Para acessar basta ir no browser e digitar http://localhost:5000 ( porta default do Plack ) esse exemplo pode ser extendido para um Middleware, dado que o servidor roda pelo proprio plackup, e o é muito facil mudar o "Server". Se você quer servir o conteudo, usando FastCGI ao inves de Standalone HTTP, basta digitar:
+
+	plackup -s FCGI --listen /tmp/fcgi.sock app.psgi
+
+E vamos supor que você precisa fazer um Middleware para se comunicar com um software proprietário que só fala no protocolo Tengwar através de um socket, você pode pegar a documentação do protocolo Tengwar e fazer um servidor PSGI para ele Plack::Server::Tengwar
+
+E depois é só iniciar seu Middleware, pode até mudar a porta
+
+	plackup -s Tengwar --port 4242 app.psgi
+
+=head1 Bibliografia
+
+L<http://www.slideshare.net/miyagawa/intro-to-psgi-and-plack>
+
+L<http://www.simon-cozens.org/content/i-finally-get-psgi-and-plack>
+
+L<http://search.cpan.org/~miyagawa/PSGI-1.03/PSGI/FAQ.pod>
+
+L<http://advent.plackperl.org/>
+
+=head1 AUTHOR 
+
+Lindolfo Rodrigues (Lorn)
+
+=cut

@@ -1,0 +1,112 @@
+=pod
+
+=encoding utf8
+
+=head1 Os plugins do Catalyst
+
+O L<Catalyst::Manual::ExtendingCatalyst>, seção "BEST PRACTICES" afirma
+categoricamente:
+
+"Não crie um plugin a não ser que seja realmente necessário."
+
+Um plugin deve ser cuidadoso já que ele mexe com o núcleo do Catalyst.
+Se o seu não precisa necessariamente lidar com isso, considere fazer um
+Controller ou Model base. Ainda assim, se você realmente acha necessário,
+considere antes utilizar o Moose::Role.
+
+Vamos entender como os plugins funcionam para entender a afirmação e saber
+quando usa-los.
+
+Ao criar um plugin, todo método implementado, importado ou sobrescrito
+estará disponível na aplicação poluindo completamente o namespace global.
+Somente casos onde as coisas precisam estar globalmente disponíveis ou
+que precisam estar intimamente ligados ao cliclo da requisição,
+como sessões e autenticação, são candidatos a um plugin.
+
+A implementação é muito simples. Seu plugin será inserido no topo da herança
+da sua aplicação, acima do Catalyst inclusive. Com isso você pode alterar
+o ciclo de vida de uma requisição.
+
+O exemplo a seguir sobrescreve o metodo C<uri_for> para que ele emita um aviso
+toda a vez que for chamado sem um objeto Action como primeiro parâmetro.
+O nome da classe é propositadamente simples:
+
+	package Catalyst::Plugin::UriforUndefWarning;
+	use strict;
+	use Scalar::Util qw/blessed/;
+	use MRO::Compat;
+
+	sub uri_for {
+   		my $c = shift;
+		my $uri = $c->next::method(@_);
+		$c->log->warn('uri_for with non action: ', join(',',@_))
+		if (!blessed($_[0]) || !$_[0]->isa('Catalyst::Action'));
+		return $uri;
+	}
+
+	1;
+
+Como citado acima, sempre antes de criar um plugin, considere outras
+possibilidades. Este exemplo pode ser facilmente (e de forma mais apropriada)
+implementado com L<Moose::Role>:
+
+	package CatalystX::UriforUndefWarning;
+	use Moose::Role;
+	use namespace::autoclean;
+
+	after 'uri_for' => sub {
+		my ($c, $arg) = @_;
+		$c->log->warn( 'uri_for with non action: ', join(', ', @_), )
+		if (!blessed($_[0]) || !$_[0]->isa('Catalyst::Action'));
+		return $uri;
+	}
+
+	1;
+
+Observe que o Catalyst carregara qualquer Moose Role na lista de plugins,
+e ira aplicar elas na sua aplicação.
+
+=head2 Instalação
+
+Os plugins do Catalyst são disponibilizados via B<CPAN> e sua instalação é
+simplificado pelo uso do utilitário C<cpan>. Utilizando o plugin
+Catalyst::Plugin::Session, faríamos:
+
+	cpan Catalyst::Plugin::Session
+
+Para maiores detalhes de como usar o CPAN, consulte o L<http://www.perl.org.br/Artigos/ArtigoDanielMantovani2009x12x02> tutorial criado pelo Daniel Mantovani.
+
+=head2 Configuração
+
+Quando você inicia um projeto Catalyst utilizando os utilitários de linha de
+comando você terá algo como (supondo uma aplicação chamada C<MyApp>)
+C<MyApp/lib/MyApp.pm> além dos demais diretórios e arquivos resultantes.
+Neste MyApp.pm é que você dirá para sua aplicação quais plugins usar e
+também ira configurar o comportamento deles.
+Usando o Catalyst::Plugin::Session como exemplo novamente, edite o MyApp.pm
+e carregue o plugin da seguinte maneira:
+
+	use Catalyst qw/
+                Session
+                Session::Store::FastMap
+                Session::State::Cookie
+               /;
+
+Com isso você terá o esquema de sessões funcionando. Para maiores detalhes
+consulte a documentação do plugin.
+Ainda no MyApp.pm, vamos configurar o parâmetro C<expires>:
+
+	__PACKAGE__->config(
+    		'Plugin::Session' => {
+        	expires => 3600
+   	 }
+	);
+
+=head1 AUTOR
+
+Giuliani D. Sanches. <giulianisanches@gmail.com>
+
+=cut
+
+1;
+

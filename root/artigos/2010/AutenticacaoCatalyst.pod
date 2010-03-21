@@ -1,0 +1,208 @@
+ï»¿=pod
+
+=head1 AutenticaÃ§Ã£o em aplicaÃ§Ãµes usando Catalyst
+
+O objetivo da autenticaÃ§Ã£o Ã© estabelecer ou confirmar a identidade de
+um usuÃ¡rio, o qual pode ser uma pessoa ou grupo de pessoas que usem as mesmas
+credenciais, provendo desta forma, suporte as demais partes do sistema como
+controle de acesso (autorizaÃ§Ã£o) e customizaÃ§Ã£o da interface com o usuÃ¡rio.
+Neste artigo, veremos como realizar autenticaÃ§Ã£o bÃ¡sica em aplicaÃ§Ãµes que usam
+o web I<framework> Catalyst com o I<plugin> padrÃ£o, porÃ©m nÃ£o se Ã© obrigado
+a usar este I<plugin>, o Catalyst Ã© flexÃ­vel suficiente para realizar a autenticaÃ§Ã£o
+e autorizaÃ§Ã£o da forma que se quer implementar.
+
+=head2 Requisitos
+
+Para realizar a autenticaÃ§Ã£o, precisa-se de um conjunto de I<plugins> sendo eles:
+
+=over 4
+
+=item * L<Catalyst::Plugin::Authentication>
+
+Este I<plugin> provÃª a estrutura bÃ¡sica para aplicaÃ§Ãµes com Catalyst realizarem
+autenticaÃ§Ã£o e autorizaÃ§Ã£o, contendo tambÃ©m alguns I<plugins> de C<Credential> e C<Store>.
+
+=item * Um I<plugin> de C<Credential>
+
+=item * Um I<plugin> de C<Store>
+
+=item * I<Plugins> para controle de sessÃ£o
+
+A fim de permitir que teus usuÃ¡rios permaneÃ§am conectados Ã  sua aplicaÃ§Ã£o atravÃ©s
+das pÃ¡ginas, Ã© preciso guardar este estado de alguma forma tanto do lado do servidor
+quanto no cliente. Pode-se usar o recomendado pelo Catalyst para tal fim,
+L<Catalyst::Plugin::Session>, juntamente com um I<plugin> de C<State> e outro de C<Store>.
+
+=back
+
+Antes de prosseguir, lembre-se de carregar os I<plugins> requeridos na classe da aplicaÃ§Ã£o.
+
+    use Catalyst qw/
+        Authentication
+        Session
+        Session::Store::Foo
+        Session::State::Bar
+    /;
+
+=head2 Catalyst::Plugin::Authentication
+
+A autenticaÃ§Ã£o no Catalyst estÃ¡ projetada para ser bem flexÃ­vel aos vÃ¡rios tipos
+de processos que se podem realizar, basicamente dividida em mÃ³dulos de armazenamento
+(C<Store>) e de verificaÃ§Ã£o (C<Credential>). O C<Credential> Ã© responsÃ¡vel por verificar
+a identidade do usuÃ¡rio, geralmente comparando a informaÃ§Ã£o provida por este com a
+informaÃ§Ã£o encontrada no C<Store>.
+Estes mÃ³dulos sÃ£o carregados em conjunto por meio de I<realms>, permitindo assim Ã  aplicaÃ§Ã£o
+ter mÃºltiplos mÃ©todos de autenticaÃ§Ã£o de usuÃ¡rios. Toda aplicaÃ§Ã£o que realize autenticaÃ§Ã£o
+deve ter ao menos um C<realm> que Ã© o C<default>, mas pode-se ter quantos forem necessÃ¡rios. 
+
+=head2 ConfiguraÃ§Ã£o
+
+Os itens da configuraÃ§Ã£o vÃ£o depender dos mÃ³dulos de C<Credential> e C<Store> que se tenha
+decidio usar. A seguir, temos um exemplo de configuraÃ§Ã£o (no formato do L<Config::General>)
+que utiliza dois mÃ©todos de autenticaÃ§Ã£o com o padrÃ£o para o C<realm> de C<password>.
+Consulte a documentaÃ§Ã£o para detalhes sobre a configuraÃ§Ã£o de cada tipo de C<Credential>
+e C<Store>, bem como a do L<Catalyst::Plugin::Authentication>.
+
+    <authentication>
+        default_realm password
+        <password>
+            <credential>
+                class Password
+                password_field passwd
+                password_type crypted
+            </credential>
+            <store>
+                class DBIx::Class
+                user_class DB::LocalAccount
+            </store>
+        </password>
+        <signature>
+            <credential>
+                class Signature
+                signature_field sign
+                session_field session_data
+            </credential>
+            <store>
+                class DBIx::Class
+                user_class DB::LocalAccount
+            </store>
+        </signature>
+    </authentication>
+
+AtÃ© a versÃ£o 0.10008 do I<plugin> de autenticaÃ§Ã£o, vocÃª precisaria colocar toda
+os I<realms> dentro da chave C<realms>.
+
+    <authentication>
+        default_realm password
+        <realms>
+            <password>
+
+            (...)
+
+            </password>
+            <signature>
+
+            (...)
+
+            </signature>
+        </realms>
+    </authentication>
+
+=head2 ImplementaÃ§Ã£o
+
+Existem apenas trÃªs partes que se referem a implementaÃ§Ã£o bÃ¡sica de autenticaÃ§Ã£o.
+
+=over 3
+
+=item * I<Login>
+
+=item * Verificar que um usuÃ¡rio estÃ¡ "logado"
+
+=item * I<Logout>
+
+=back
+
+=head3 I<Login>
+
+Esta parte envolve - geralmente a partir de um formulÃ¡rio - obter as credenciais
+do usuÃ¡rio e verificar que este Ã© valido. Pode-se usar um processador de formulÃ¡rios
+como o L<HTML::FormHandler>, mas nÃ£o Ã© requisito. Para fazer I<login> do usuÃ¡rio,
+usa-se o mÃ©todo C<authenticate> a partir de uma I<action> num I<controller>.
+
+    sub login : Action {
+        my ( $self, $c ) = @_;
+        my $params = $c->req->body_params;
+        if ( $params->{'username'} && $params->{'password'} ) {
+            if ( $c->authenticate({ map { $_ => $params->{$_} } qw/username password/ }) ) {
+                # usuÃ¡rio vÃ¡lido e autenticado
+                # redirecione para algum caminho da sua aplicaÃ§Ã£o
+            } else {
+                # mostrar a pÃ¡gina com o formulÃ¡rio de autenticaÃ§Ã£o e uma mensagem de erro
+            }
+        } else {
+            # mostrar a pÃ¡gina com o formulÃ¡rio de autenticaÃ§Ã£o
+        }
+    }
+
+=head3 Verificar que um usuÃ¡rio estÃ¡ "logado"
+
+Em determinados caminhos da aplicaÃ§Ã£o, Ã© necessÃ¡rio que se tenha um usuÃ¡rio
+"logado", como por exemplo uma pÃ¡gina de preferÃªncias ou se a aplicaÃ§Ã£o utiliza
+dados deste para gerar e mostrar informaÃ§Ãµes numa pÃ¡gina. Deste modo, faz-se
+necessÃ¡rio retornar para o passo de I<login> caso a verificaÃ§Ã£o falhe. Para tal fim,
+pode-se usar alguns mÃ©todos como
+
+=over 3
+
+=item * C<user_exists>
+
+Retorna verdeiro se um usuÃ¡rio estÃ¡ "logado". Se esta for a Ãºnica informaÃ§Ã£o
+necessÃ¡ria, nÃ£o interessando qual usuÃ¡rio especificamente Ã©, a depender do
+mecanismo de armazenamento, este mÃ©todo pode ser muito mais eficiente.
+A diferenÃ§a entre este mÃ©todo e o C<user> Ã© que este retornarÃ¡ verdadeiro,
+mesmo se o usuÃ¡rio "logado" nÃ£o foi ainda recuperado a partir do armazenamento.
+
+=item * C<user_in_realm>
+
+Semelhante ao C<user_exists>, exceto que apenas retorna verdadeiro se o usuÃ¡rio
+estÃ¡ "logado" -e- foi recuperado a partir do C<realm> fornecido.
+
+=item * C<user>
+
+Retorna o atual usuÃ¡rio "logado", ou C<undef> se nÃ£o hÃ¡ algum.
+
+=back
+
+Como por exemplo
+
+    sub requires_user : Action {
+        my ( $self, $c ) = @_;
+        if ( $c->user_exists ) {
+            # usuÃ¡rio "logado"
+        } else {
+            # retorna ao passo de login
+        }
+    }
+
+=head3 I<Logout>
+
+E por Ãºltimo a mais simples, resume-se a apenas chamar o mÃ©todo C<logout>
+e redirecionar o usuÃ¡rio para o caminho de I<login> ou algum outro.
+
+    sub logout : Action {
+        my ( $self, $c ) = @_;
+        $c->logout;
+        # redirecione
+    }
+
+=head2 Veja tambÃ©m
+
+L<Catalyst Advent Calendar 2008-19|http://www.catalystframework.org/calendar/2008/19>, L<CatalystX::SimpleLogin>
+e L<Humane Login Screens|http://www.shadowcat.co.uk/blog/matt-s-trout/humane-login-screens/>.
+
+=head2 AUTOR 
+
+Wallace Reis <wallace@reis.org.br>
+
+=cut
+

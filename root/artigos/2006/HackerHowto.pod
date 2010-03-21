@@ -1,0 +1,452 @@
+=pod
+
+r1 - 09 Mar 2006 - NelsonFerraz
+
+=head1 Como se tornar um hacker
+
+=head2 O que E<eacute> um hacker?
+
+O Jargon File contE<eacute>m um monte de definiE<ccedil>E<otilde>es do
+termo "hacker", a maioria deles tendo a ver com aptidE<atilde>o
+tE<eacute>cnica e um prazer em resolver problemas e superar limites. Se
+vocE<ecirc> quer saber como se tornar um hacker, entretanto, apenas
+duas sE<atilde>o realmente relevantes.
+
+Existe uma comunidade, uma cultura compartilhada, de programadores
+experts e gurus de rede cuja histE<oacute>ria remonta a decadas
+atrE<aacute>s, desde os primeiros minicomputadores de tempo
+compartilhado e os primeiros experimentos na ARPAnet. Os membros dessa
+cultura deram origem ao termo "hacker". Hackers construE<iacute>ram a
+Internet. Hackers fizeram do sistema operacional Unix o que ele
+E<eacute> hoje. Hackers mantE<eacute>m a Usenet. Hackers fazem a World
+Wide Web funcionar. Se vocE<ecirc> E<eacute> parte desta cultura, se
+vocE<ecirc> contribuiu a ela e outras pessoas o chamam de hacker,
+vocE<ecirc> E<eacute> um hacker.
+
+A mentalidade hacker nE<atilde>o E<eacute> confinada a esta cultura do
+hacker-de-software. HE<aacute> pessoas que aplicam a atitude hacker em
+outras coisas, como eletrE<ocirc>nica ou mE<uacute>sica -- na verdade,
+vocE<ecirc> pode encontrE<aacute>-la nos nE<iacute>veis mais altos de
+qualquer ciE<ecirc>ncia ou arte. Hackers de software reconhecem esses
+espE<iacute>ritos aparentados de outros lugares e podem
+chamE<aacute>-los de "hackers" tambE<eacute>m -- e alguns alegam que a
+natureza hacker E<eacute> realmente independente da mE<iacute>dia
+particular em que o hacker trabalha. Mas no restante deste documento,
+nos concentraremos nas habilidades e dos hackers de software, e nas
+tradiE<ccedil>E<otilde>es da cultura compartilhada que deu origem ao
+termo `hacker'.
+
+Existe outro grupo de pessoas que se dizem hackers, mas nE<atilde>o
+sE<atilde>o. SE<atilde>o pessoas (adolescentes do sexo masculino, na
+maioria) que se divertem invadindo computadores e fraudando o sistema
+telefE<ocirc>nico. Hackers de verdade chamam essas pessoas de
+"crackers", e nE<atilde>o tem nada a ver com eles. Hackers de verdade
+consideram os crackers preguiE<ccedil>osos, irresponsE<aacute>veis, e
+nE<atilde>o muito espertos, e alegam que ser capaz de quebrar sistemas
+de seguranE<ccedil>a torna alguE<eacute>m hacker tanto quanto fazer
+ligaE<ccedil>E<atilde>o direta em carros torna alguE<eacute>m um
+engenheiro automobilE<iacute>stico. Infelizmente, muitos jornalistas e
+escritores foram levados a usar, errE<ocirc>neamente, a palavra
+"hacker" para descrever crackers; isso E<eacute> muito irritante para
+os hackers de verdade.
+
+A diferenE<ccedil>a bE<aacute>sica E<eacute> esta: hackers
+constrE<oacute>em coisas, crackes as destrE<oacute>em.
+
+=head2 A Atitude Hacker
+
+Hackers resolvem problemas e constrE<oacute>em coisas, e acreditam na
+liberdade e na ajuda mE<uacute>tua voluntE<aacute>ria. Para ser aceito
+como um hacker, vocE<ecirc> tem que se comportar de acordo com essa
+atitude. E para se comportar de acordo com essa atitude, vocE<ecirc>
+tem que realmente acreditar nessa atitude.
+
+Mas se vocE<ecirc> acha que cultivar a atitude hacker E<eacute> somente
+um meio para ganhar aceitaE<ccedil>E<atilde>o na cultura, estE<aacute>
+enganado. Tornar-se o tipo de pessoa que acredita nessas coisas
+E<eacute> importante para vocE<ecirc> -- para ajudE<aacute>-lo a
+aprender e manter-se motivado. Assim como em todas as artes criativas,
+o modo mais efetivo para se tornar um mestre E<eacute> imitar a
+mentalidade dos mestres -- nE<atilde>o sE<oacute> intelectualmente como
+emocionalmente tambE<eacute>m.
+
+EntE<atilde>o, se vocE<ecirc> quer ser um hacker, repita as seguinte
+coisas atE<eacute> que vocE<ecirc> acredite nelas:
+
+=head2 1. O mundo estE<aacute> repleto de problemas fascinantes
+esperando para serem resolvidos.
+
+Ser hacker E<eacute> muito divertido, mas E<eacute> um tipo de
+diversE<atilde>o que necessita de muito esforE<ccedil>o. Para haver
+esforE<ccedil>o E<eacute> necessE<aacute>rio motivaE<ccedil>E<atilde>o.
+Atletas de sucesso retiram sua motivaE<ccedil>E<atilde>o de uma
+espE<eacute>cie de prazer fE<iacute>sico em trabalhar seus corpos, em
+tentar ultrapassar seus prE<oacute>prios limites fE<iacute>sicos.
+Analogamente, para ser um hacker vocE<ecirc> precisa ter uma
+emoE<ccedil>E<atilde>o bE<aacute>sica em resolver problemas, afiar suas
+habilidades e exercitar sua inteligE<ecirc>ncia.
+
+Se vocE<ecirc> nE<atilde>o E<eacute> o tipo de pessoa que se sente
+assim naturalmente, vocE<ecirc> precisarE<aacute> se tornar uma para
+ser um hacker. SenE<atilde>o, vocE<ecirc> verE<aacute> sua energia para
+"hackear" sendo esvaE<iacute>da por distraE<ccedil>E<otilde>es como
+sexo, dinheiro e aprovaE<ccedil>E<atilde>o social.
+
+(VocE<ecirc> tambE<eacute>m tem que desenvolver uma espE<eacute>cie de
+fE<eacute> na sua prE<oacute>pria capacidade de aprendizado -- crer
+que, mesmo que vocE<ecirc> nE<atilde>o saiba tudo o que precisa para
+resolver um problema, se souber uma parte e aprender a partir disso,
+conseguirE<aacute> aprender o suficiente para resolver a
+prE<oacute>xima parte -- e assim por diante, atE<eacute> que
+vocE<ecirc> termine.)
+
+=head2 2. NE<atilde>o se deve resolver o mesmo problema duas vezes.
+
+Mentes criativas sE<atilde>o um recurso valioso e limitado. NE<atilde>o
+devem ser desperdiE<ccedil>adas reinventando a roda quando hE<aacute>
+tantos problemas novos e fascinantes por aE<iacute>.
+
+Para se comportar como um hacker, vocE<ecirc> tem que acreditar que o
+tempo de pensamento dos outros hackers E<eacute> precioso -- tanto que
+E<eacute> quase um dever moral compartilhar informaE<ccedil>E<atilde>o,
+resolver problemas e depois dar as soluE<ccedil>E<otilde>es, para que
+outros hackers possam resolver novos problemas ao invE<eacute>s de ter
+que se preocupar com os antigos indefinidamente. (VocE<ecirc>
+nE<atilde>o tem que acreditar que E<eacute> obrigado a dar toda a sua
+produE<ccedil>E<atilde>o criativa, ainda que hackers que o fazem sejam
+os mais respeitados pelos outros hackers. NE<atilde>o E<eacute>
+inconsistente com os valores do hacker vender o suficiente da sua
+produE<ccedil>E<atilde>o para mantE<ecirc>-lo alimentado e pagar o
+aluguel e computadores. NE<atilde>o E<eacute> inconsistente usar suas
+habilidades de hacker para sustentar a famE<iacute>lia ou mesmo ficar
+rico, contanto que vocE<ecirc> nE<atilde>o esqueE<ccedil>a que
+E<eacute> um hacker.)
+
+=head2 3. TE<eacute>dio e trabalho repetitivo sE<atilde>o nocivos.
+
+Hackers (e pessoas criativas em geral) nE<atilde>o podem ficar
+entediadas ou ter que fazer trabalho repetitivo, porque quando isso
+acontece significa que eles nE<atilde>o estE<atilde>o fazendo o que
+apenas eles podem fazer -- resolver novos problemas. Esse
+desperdE<iacute>cio prejudica a todos. Portanto, tE<eacute>dio e
+trabalho repetitivo nE<atilde>o sE<atilde>o apenas
+desagradE<aacute>veis, mas nocivos tambE<eacute>m.
+
+Para se comportar como um hacker, vocE<ecirc> tem que acreditar nisso
+de modo a automatizar as partes chatas tanto quanto possE<iacute>vel,
+nE<atilde>o apenas para vocE<ecirc> como para as outras pessoas
+(principalmente outros hackers).
+
+(HE<aacute> uma exceE<ccedil>E<atilde>o aparente a isso. E<Agrave>s
+vezes, hackers fazem coisas que podem parecer repetitivas ou tediosas
+para um observador, como um exercE<iacute>cio de "limpeza mental", ou
+para adquirir uma habilidade ou ter uma espE<eacute>cie particular de
+experiE<ecirc>ncia que nE<atilde>o seria possE<iacute>vel de outro
+modo. Mas isso E<eacute> por opE<ccedil>E<atilde>o -- ninguE<eacute>m
+que consiga pensar deve ser forE<ccedil>ado ao tE<eacute>dio.
+
+=head2 4. Liberdade E<eacute> uma coisa boa.
+
+Hacker sE<atilde>o naturalmente anti-autoritE<aacute>rios. Qualquer
+pessoa que lhe dE<ecirc> ordens pode impedi-lo de resolver qualquer que
+seja o problema pelo qual vocE<ecirc> estE<aacute> fascinado -- e, dado
+o modo em que a mente autoritE<aacute>ria funciona, geralmente
+arranjarE<aacute> alguma desculpa espantosamente idiota isso.
+EntE<atilde>o, a atitude autoritE<aacute>ria deve ser combatida onde
+quer que vocE<ecirc> a encontre, para que nE<atilde>o sufoque a
+vocE<ecirc> e a outros hackers.
+
+(Isso nE<atilde>o E<eacute> a mesma coisa que combater toda e qualquer
+autoridade. CrianE<ccedil>as precisam ser orientadas, e criminosos,
+detidos. Um hacker pode aceitar alguns tipos de autoridade a fim de
+obter algo que ele quer mais que o tempo que ele gasta seguindo ordens.
+Mas isso E<eacute> uma barganha restrita e consciente; nE<atilde>o
+E<eacute> o tipo de sujeiE<ccedil>E<atilde>o pessoal que os
+autoritE<aacute>rios querem.)
+
+Pessoas autoritE<aacute>rias prosperam na censura e no segredo. E
+desconfiam de cooperaE<ccedil>E<atilde>o voluntE<aacute>ria e
+compartilhamento de informaE<ccedil>E<atilde>o -- sE<oacute> gostam de
+"cooperaE<ccedil>E<atilde>o" que eles possam controlar. EntE<atilde>o,
+para se comportar como um hacker, vocE<ecirc> tem que desenvolver uma
+hostilidade instintiva E<agrave> censura, ao segredo, e ao uso da
+forE<ccedil>a ou mentira para compelir adultos responsE<aacute>veis. E
+vocE<ecirc> tem que estar disposto a agir de acordo com esta
+crenE<ccedil>a.
+
+=head2 5. Atitude nE<atilde>o substitui competE<ecirc>ncia.
+
+Para ser um hacker, vocE<ecirc> tem que desenvolver algumas dessas
+atitudes. Mas apenas ter uma atitude nE<atilde>o farE<aacute> de
+vocE<ecirc> um hacker, assim como nE<atilde>o o farE<aacute> um atleta
+campeE<atilde>o ou uma estrela de rock. Para se tornar um hacker
+E<eacute> necessE<aacute>rio inteligE<ecirc>ncia, prE<aacute>tica,
+dedicaE<ccedil>E<atilde>o, e trabalho duro.
+
+Portanto, vocE<ecirc> tem que aprender a desconfiar de atitude e
+respeitar todo tipo de competE<ecirc>ncia. Hackers nE<atilde>o deixam
+posers gastar seu tempo, mas eles idolatram competE<ecirc>ncia --
+especialmente competE<ecirc>ncia em "hackear", mas competE<ecirc>ncia
+em qualquer coisa E<eacute> boa. A competE<ecirc>ncia em habilidades
+que poucos conseguem dominar E<eacute> especialmente boa, e
+competE<ecirc>ncia em habilidades que involvem agudeza mental,
+perE<iacute>cia e concentraE<ccedil>E<atilde>o E<eacute> a melhor.
+
+Se vocE<ecirc> reverenciar competE<ecirc>ncia, gostarE<aacute> de
+desenvolvE<ecirc>-la em si mesmo -- o trabalho duro e
+dedicaE<ccedil>E<atilde>o se tornarE<aacute> uma espE<eacute>cie de um
+intenso jogo, ao invE<eacute>s de trabalho repetitivo. E isso E<eacute>
+vital para se tornar um hacker.
+
+=head2 Habilidades bE<aacute>sicas do hacker
+
+A atitude hacker E<eacute> vital, mas habilidades sE<atilde>o ainda
+mais vitais. Atitude nE<atilde>o substitui competE<ecirc>ncia, e
+hE<aacute> uma certo conjunto de habilidades que vocE<ecirc> precisa
+ter antes que um hacker sonhe em lhe chamar de um.
+
+Esse conjunto muda lentamente com o tempo, de acordo com a
+criaE<ccedil>E<atilde>o de novas habilidades. Por exemplo, costumava
+incluir programaE<ccedil>E<atilde>o em linguagem de mE<aacute>quina, e
+atE<eacute> recentemente nE<atilde>o incluE<iacute>a HTML. Mas agora
+E<eacute> certo que inclui o seguinte:
+
+=head2 1. Aprenda a programar.
+
+Essa E<eacute>, claro, a habilidade bE<aacute>sica do hacker. Em 1997,
+a linguagem que vocE<ecirc> absolutamente precisa aprender E<eacute> C
+(apesar de nE<atilde>o ser a que vocE<ecirc> deve aprender primeiro).
+Mas vocE<ecirc> nE<atilde>o E<eacute> um hacker e nem mesmo um
+programador se vocE<ecirc> souber apenas uma linguagem -- vocE<ecirc>
+tem que aprender a pensar sobre problemas de
+programaE<ccedil>E<atilde>o de um modo geral, independentemente de
+qualquer linguagem. Para ser um hacker de verdade, vocE<ecirc> precisa
+ter chegado ao ponto de conseguir aprender uma nova linguagem em
+questE<atilde>o de dias, relacionando o que estE<aacute> no manual ao
+que vocE<ecirc> jE<aacute> sabe. Isso significa que vocE<ecirc> deve
+aprender vE<aacute>rias linguagens bem diferentes.
+
+AlE<eacute>m de C, vocE<ecirc> tambE<eacute>m deve aprender pelo menos
+LISP e Perl (e Java estE<aacute> tentando pegar um lugar nessa lista).
+AlE<eacute>m de serem as linguagens mais importantes para hackear, cada
+uma delas representa abordagens E<agrave> programaE<ccedil>aE<atilde>o
+bem diferentes, e todas o educarE<atilde>o em pontos importantes.
+
+Eu nao posso lhe dar instruE<ccedil>E<otilde>es completas sobre como
+aprender a programar aqui -- E<eacute> uma habilidade complexa. Mas eu
+posso lhe dizer que livros e cursos tambE<eacute>m nE<atilde>o
+servirE<atilde>o (muitos, talvez a maioria dos melhores hacker
+sE<atilde>o auto-didatas). O que servirE<aacute> E<eacute> (a) ler
+cE<oacute>digo e (b) escrever cE<oacute>digo.
+
+Aprender a programar E<eacute> como aprender a escrever bem em
+linguagem natural. A melhor maneira E<eacute> ler um pouco dos mestres
+da forma, escrever algumas coisas, ler mais um monte, escrever mais um
+monte, ler mais um monte, escrever... e repetir atE<eacute> que seu
+estilo comece a desenvolver o tipo de forE<ccedil>a e economia que
+vocE<ecirc> vE<ecirc> em seus modelos.
+
+Achar bom cE<oacute>digo para ler costumava ser difE<iacute>cil, porque
+havia poucos programas grandes disponE<iacute>veis em
+cE<oacute>digo-fonte para que hackers novatos pudessem ler e mexer.
+Essa situaE<ccedil>E<atilde>o mudou dramaticamente; open-source
+software (software com cE<oacute>digo-fonte aberto), ferramentas de
+programaE<ccedil>E<atilde>o, e sistemas operacionais (todos feitos por
+hackers) estE<atilde>o amplamente disponE<iacute>veis atualmente.
+
+=head2 2. Pegue um dos Unixes livres e aprenda a mexer.
+
+Estou assumindo que vocE<ecirc> tem um computador pessoal ou tem acesso
+a um (essas crianE<ccedil>as de hoje em dia tem tE<atilde>o facilmente
+:-)). O passo mais importante que um novato deve dar para adquirir
+habilidades de hacker E<eacute> pegar uma cE<oacute>pia do Linux ou de
+um dos BSD-Unixes, o instalar em um PC, e rodE<aacute>-lo.
+
+Sim, hE<aacute> outros sistemas operacionais no mundo alE<eacute>m do
+Unix. PorE<eacute>m, eles sE<atilde>o distribuE<iacute>dos em forma
+binE<aacute>ria -- vocE<ecirc> nE<atilde>o consegue ler o
+cE<oacute>digo, e vocE<ecirc> nE<atilde>o consegue modificE<aacute>-lo.
+Tentar aprender a "hackear" em DOS, Windows ou MacOS? E<eacute> como
+tentar aprender a danE<ccedil>ar com o corpo engessado.
+
+AlE<eacute>m disso, Unix E<eacute> o sistema operacional da Internet.
+Embora vocE<ecirc> possa aprender a usar a Internet sem conhecer Unix,
+vocE<ecirc> nE<atilde>o pode ser um hacker sem entendE<ecirc>-lo. Por
+isso, a cultura hacker, atualmente, E<eacute> fortemente centralizada
+no Unix. (NE<atilde>o foi sempre assim, e alguns hackers da velha
+guarda nE<atilde>o gostam da situaE<ccedil>E<atilde>o atual, mas a
+simbiose entre o Unix e a Internet se tornou tE<atilde>o forte que
+atE<eacute> mesmo o mE<uacute>sculo da Microsoft nE<atilde>o parece ser
+capaz de ameacE<aacute>-la seriamente.)
+
+EntE<atilde>o, pegue um Unix -- eu gosto do Linux, mas existem outros
+caminhos. Aprenda. Rode. Mexa. Acesse a Internet atravE<eacute>s dele.
+Leia o cE<oacute>digo. Modifique o cE<oacute>digo. VocE<ecirc>
+terE<aacute> ferramentas de programaE<ccedil>E<atilde>o (incluindo C,
+Lisp e Perl) melhores do qualquer sistema operacional da Microsoft pode
+sonhar em ter, vocE<ecirc> se divertirE<aacute>, e irE<aacute> absorver
+mais conhecimento do que perceber, atE<eacute> que vocE<ecirc>
+olharE<aacute> para trE<aacute>s como um mestre hacker.
+
+=head2 3. Aprenda a usar a World Wide Web e escrever em HTML.
+
+A maioria das coisas que a cultura hacker tem construE<iacute>do
+funciona "invisivelmente", ajudando no funcionamento de
+fE<aacute>bricas, escritE<oacute>rios e universidades sem nenhum
+E<oacute>bvio na vida dos nE<atilde>o-hackers. A Web E<eacute> a grande
+exceE<ccedil>E<atilde>o, o enorme e brilhante brinquedo dos hackers que
+atE<eacute> mesmo polE<iacute>ticos admitem que estE<aacute> mudando o
+mundo. Por esse motivo (e vE<aacute>rios outros tambE<eacute>m)
+vocE<ecirc> precisa a aprender como trabalhar na Web.
+
+Isso nE<atilde>o significa apenas aprender a mexer em um browser
+(qualquer um faz isso), mas aprender a programar em HTML, a linguagem
+de markup da Web. Se vocE<ecirc> nE<atilde>o sabe programar, escrever
+em HTML lhe ensinarE<aacute> alguns hE<aacute>bitos mentais que o
+ajudarE<atilde>o. EntE<atilde>o faE<ccedil>a uma home page.
+
+Mas apenas ter uma home page nE<atilde>o chega nem perto de
+tornE<aacute>-lo um hacker. A Web estE<aacute> repleta de home pages. A
+maioria delas E<eacute> inE<uacute>til, porcaria sem conteE<uacute>do
+-- porcaria muito bem apresentada, note bem, mas porcaria mesmo assim
+(mais sobre esse assunto em The HTML Hell Page).
+
+Para valer a pena, sua pE<aacute>gina deve ter conteE<uacute>do -- deve
+ser interessante e/ou E<uacute>til para outros hackers. E isso nos leva
+ao prE<oacute>ximo assunto...
+
+=head2 Status na Cultura Hacker
+
+Como a maioria das culturas sem economia monetE<aacute>ria, a do hacker
+se baseia em reputaE<ccedil>E<atilde>o. VocE<ecirc> estE<aacute>
+tentando resolver problemas interessantes, mas quE<atilde>o
+interessantes eles sE<atilde>o, e se suas soluE<ccedil>E<otilde>es
+sE<atilde>o realmente boas, E<eacute> algo que somente seus iguais ou
+superiores tecnicamente sE<atilde>o normalmente capazes de julgar.
+
+ConseqE<uuml>entemente, quando vocE<ecirc> joga o jogo do hacker,
+vocE<ecirc> aprende a marcar pontos principalmente pelo que outros
+hackers pensam da sua habilidade (por isso vocE<ecirc> nE<atilde>o
+E<eacute> hacker atE<eacute> que outros hackers lhe chamem assim). Esse
+fato E<eacute> obscurecido pela imagem solitE<aacute>ria que se faz do
+trabalho do hacker; e tambE<eacute>m por um tabu hacker-cultural que
+E<eacute> contra admitir que o ego ou a aprovaE<ccedil>E<atilde>o
+externa estE<atilde>o envolvidas na motivaE<ccedil>E<atilde>o de
+alguE<eacute>m.
+
+Especificamente, a cultura hacker E<eacute> o que os antropologistas
+chamam de cultura de doaE<ccedil>E<atilde>o. VocE<ecirc> ganha status e
+reputaE<ccedil>E<atilde>o nE<atilde>o por dominar outras pessoas, nem
+por ser bonito, nem por ter coisas que as pessoas querem, mas sim por
+doar coisas. Especificamente, por doar seu tempo, sua criatividade, e
+os resultados de sua habilidade.
+
+HE<aacute> basicamente cinco tipos de coisas que vocE<ecirc> pode fazer
+para ser respeitado por hackers:
+
+=head2 1. Escrever Software Livre.
+
+O primeiro (o mais central e mais tradicional) E<eacute> escrever
+programas que outros hackers achem divertidos ou E<uacute>teis, e dar o
+cE<oacute>digo-fonte para que toda a cultura hacker use.
+
+(NE<oacute>s costumE<aacute>vamos chamar isto de "free software", mas
+isso confundia muitas pessoas que nE<atilde>o sabiam ao certo o
+significado de "free". Agora, muitos de nE<oacute>s preferem o termo
+"open-source" software). [nota do tradutor: "free" significa tanto
+"livre" como "gratuito", daE<iacute> a confusE<atilde>o em
+inglE<ecirc>s. O significado que se pretende E<eacute> "livre".]
+
+Os "semi-deuses" mais venerados da cultura hacker sE<atilde>o pessoas
+que escreveram programas grandes, competentes, que encontraram uma
+grande demanda e os distribuE<iacute>ram para que todos pudessem usar.
+
+=head2 2. Ajude a testar e depurar software livres
+
+TambE<eacute>m estE<atilde>o servindo os que depuram open-source
+software. Neste mundo imperfeito, inevitavelmente passamos a maior
+parte do tempo de desenvolvimento na fase de depuraE<ccedil>E<atilde>o.
+Por isso, qualquer autor de open-source software que pense lhe
+dirE<aacute> que bons beta-testers (que saibam descrever sintomas
+claramente, localizar problemas, tolerar bugs em um lanE<ccedil>amento
+apressado, e estejam dispostos a aplicar algumas rotinas de
+diagnE<oacute>stico) valem seu peso em ouro. AtE<eacute> mesmo um
+desses beta-testers pode fazer a diferenE<ccedil>a entre uma fase de
+depuraE<ccedil>E<atilde>o virar um longo e cansativo pesadelo, ou ser
+apenas um aborrecimento saudE<aacute>vel. Se vocE<ecirc> E<eacute> um
+novato, tente achar um programa sob desenvolvimento em que vocE<ecirc>
+esteja interessado e seja um bom beta-tester. HE<aacute> um
+progressE<atilde>o natural de ajudar a testar programas para ajudar a
+depurar e depois ajudar a modificE<aacute>-los. VocE<ecirc>
+aprenderE<aacute> muito assim, e criarE<aacute> um bom karma com
+pessoas que lhe ajudarE<atilde>o depois.
+
+=head2 3. Publique informaE<ccedil>E<atilde>o E<uacute>til.
+
+Outra boa coisa a se fazer E<eacute> coletar e filtrar
+informaE<ccedil>E<otilde>es E<uacute>teis e interessantes em
+pE<aacute>ginas da Web ou documentos como FAQs ("Frequently Asked
+Questions lists", ou listas de perguntas freqE<uuml>entes), e torne-os
+disponE<iacute>veis ao pE<uacute>blico.
+
+Mantenedores de grandes FAQs tE<eacute>cnicos sE<atilde>o quase
+tE<atilde>o respeitados quanto autores de open-source software.
+
+=head2 4. Ajude a manter a infra-estrutura funcionando.
+
+A cultura hacker (e o desenvolvimento da Internet, quanto a isso)
+E<eacute> mantida por voluntE<aacute>rios. Existe muito trabalho sem
+glamour que precisa ser feito para mantE<ecirc>-la viva -- administrar
+listas de email, moderar grupos de discussE<atilde>o, manter grandes
+sites que armazenam software, desenvolver RFCs e outros padrE<otilde>es
+tE<eacute>cnicos.
+
+Pessoas que fazem bem esse tipo de coisa sE<atilde>o muito respeitadas,
+porque todo mundo sabe que esses serviE<ccedil>os tomam muito tempo e
+nE<atilde>o sE<atilde>o tE<atilde>o divertidos como mexer em
+cE<oacute>digo. FazE<ecirc>-los mostra dedicaE<ccedil>E<atilde>o.
+
+=head2 5. Sirva a cultura hacker em si.
+
+Finalmente, vocE<ecirc> pode servir e propagar a cultura em si (por
+exemplo, escrevendo um apurado manual sobre como se tornar um hacker
+:-)). VocE<ecirc> sE<oacute> terE<aacute> condiE<ccedil>E<atilde>o de
+fazer isso depois de ter estado por aE<iacute> por um certo tempo, e
+ter se tornado conhecido por uma das primeiras quatro coisas.
+
+A cultura hacker nE<atilde>o tE<ecirc>m lE<iacute>deres, mas tE<ecirc>m
+seus herE<oacute>is culturais, "chefes tribais", historiadores e
+porta-vozes. Depois de ter passado tempo suficiente nas trincheiras,
+vocE<ecirc> pode ser tornar um desses. Cuidado: hackers desconfiam de
+egos espalhafatosos em seus "chefes tribais", entE<atilde>o procurar
+visivelmente por esse tipo de fama E<eacute> perigoso. Ao invE<eacute>s
+de se esforE<ccedil>ar pela fama, vocE<ecirc> tem que de certo modo se
+posicionar de modo que ela "caia" em vocE<ecirc>, e entE<atilde>o ser
+modesto e cortE<ecirc>s sobre seu status.
+
+=head2 Saiba mais...
+
+Este E<eacute> apenas um resumo de "Como se tornar um hacker", de Eric
+S. Raymond.
+
+Para saber mais, leia o documento completo:
+
+=over
+
+=item * original em inglE<ecirc>s
+
+=item * em portuguE<ecirc>s
+
+=back
+
+=head1 AUTOR
+
+Nelson Ferraz
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 24101 bytes of input
+#Sun Jan 31 01:45:54 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

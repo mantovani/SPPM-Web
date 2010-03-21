@@ -1,0 +1,193 @@
+=pod
+
+r1 - 06 Aug 2006 - JoenioCosta
+
+=head1 Testes de Software em Perl
+
+I<>
+
+Este artigo E<eacute> um resumo sobre programacao de testes.
+
+Algumas liE<ccedil>E<otilde>es da engenharia de software:
+
+=over
+
+=item * Software exige mais tempo de manutenE<ccedil>E<atilde>o do que
+desenvolvimento
+
+=item * Coisas que pareciam E<oacute>bvias, tornam-se obscuras depois
+do desenvolvimento
+
+=item * Corrigir uma falha E<eacute> mais fE<aacute>cil do que
+encontrE<aacute>-la e do que garantir que novos bugs nE<atilde>o sejam
+introduzidos
+
+=back
+
+Por estas razE<otilde>es, as boas prE<aacute>ticas de desenvolvimento
+envolvem a documentaE<ccedil>E<atilde>o adequada do cE<oacute>digo,
+suas premissas, lE<oacute>gica, e testes.
+
+=head2 Como testes funcionam
+
+Se alguma vez vocE<ecirc> instalou um mE<oacute>dulo do CPAN
+manualmente, deve ter passado pelos seguintes passos:
+
+   $ make
+   $ make test
+   $ make install
+
+O que o C<make test> faz E<eacute> executar uma serie de testes, os
+arquivos *.t dentro do diretorio t/. Cada arquivo .t E<eacute> um
+script em perl, que realiza um ou mais testes.
+
+=head2 O que E<eacute> um teste
+
+De uma maneira bem simples, um teste E<eacute> um script em perl, que
+imprime uma das seguintes respostas: "ok" ou "not ok".
+
+Por exemplo:
+
+        print "1..1\n";
+ 
+        if (1 == 1) {
+                print "ok\n";
+        } else {
+                print "not ok\n";
+        }
+
+Este E<eacute> apenas um exemplo simples, que pode ser executado pelo
+metodo runtests do modulo Test::Harness:
+
+        perl -MTest::Harness -e "runtests 'mytest.t'";
+
+Se voce executar este comando, devera' obter uma resposta dizendo que
+os testes foram executados e bem sucedidos.
+
+VocE<ecirc> acaba de concluir o seu primeiro teste de software em Perl!
+
+=head2 Indo um pouco alE<eacute>m
+
+A maioria dos testes nE<atilde>o serE<atilde>o assim tE<atilde>o
+simples. Quando temos uma sE<eacute>rie de testes, nE<oacute>s devemos
+numerar as respostas ("ok 1", "not ok 2", etc), de forma a facilitar a
+identificacao dos testes:
+
+        print "1..2\n";
+ 
+        if (1 == 1) {
+                print "ok 1\n";
+        } else {
+                print "not ok 1\n";
+        }
+ 
+        if ('abc' eq 'abc') {
+                print "ok 2\n";
+        } else {
+                print "not ok 2\n";
+        }
+
+Imagine se vocE<ecirc> tiver que fazer centenas de testes, o trabalho
+que serE<aacute> gerenciar os prE<oacute>prios testes!
+
+Neste ponto entram mE<oacute>dulos de auxE<iacute>lio, como o
+Test::More.
+
+=head2 Test::More
+
+Com o Test::More, muito do trabalho de preparaE<ccedil>E<atilde>o pode
+ser deixado de lado. Por exemplo, nE<atilde>o precisamos nos preocupar
+em contar o numero de testes:
+
+        ok( 1, 'the number 1 should evaluate to true' );
+        is( 2 + "2", 4, 'numeric strings should numerify in addition' );
+        like( 'abc', qr/z*/, '* quantifier should match zero elements' );
+
+        ok 1 - the number 1 should evaluate to true
+        ok 2 - numeric strings should numerify in addition
+        ok 3 - * quantifier should match zero elements
+
+Os comentarios nao sao obrigatorios, mas sao uteis para que o usuario
+final possa saber o que acontece.
+
+=head2 Testando mE<oacute>dulos
+
+Test::More tambem facilita o teste de mE<oacute>dulos. Vamos
+comeE<ccedil>ar escrevendo um teste simples:
+
+        use strict;
+        use Test::More tests => 1;
+        BEGIN {
+            use_ok('My::Module');
+        }
+
+Como o mE<oacute>dulo ainda nE<atilde>o existe, ao executar este teste
+vocE<ecirc> vai obter a seguinte mensagem de erro:
+
+        % perl -w MyModule.t
+        1..1
+        not ok 1 - use My::Module;
+        #     Failed test (MyModule.t at line 4)
+        #     Tried to use 'My::Module'.
+        #     Error:  Can't locate Module.pm in @INC [trimmed]
+        # Looks like you failed 1 tests of 1.
+
+E<Eacute> mais ou menos assim que funciona a
+programaE<ccedil>E<atilde>o orientada a testes: vocE<ecirc> escreve um
+teste, obtE<eacute>m um erro, corrige, e prossegue neste ciclo
+atE<eacute> que seu programa esteja completo.
+
+Prosseguindo o teste de um mE<oacute>dulo com Test::More, podemos
+verificar a criaE<ccedil>E<atilde>o de um objeto e testar algumas de
+suas propriedades:
+
+        use_ok( 'My::Module' );
+ 
+        my $foo = My::Module->new();
+        can_ok( $foo->boo() );
+        isa_ok( $foo, 'My::Module' );
+
+Esta serE<aacute> a resposta quando todos os mE<oacute>dulos forem
+criados corretamente:
+
+        ok 1 - use My::Module;
+        ok 2 - My::Module->can(boo)
+        ok 3 - object->isa('My::Module')
+
+Este E<eacute> o tipo de teste bE<aacute>sico que vocE<ecirc> pode
+comeE<ccedil>ar a usar imediatamente em seus projetos.
+
+=head2 ConclusE<atilde>o
+
+Testes sE<atilde>o uma ferramenta E<uacute>til de
+programaE<ccedil>E<atilde>o, e podem tornar seus softwares ainda mais
+robustos.
+
+Perl oferece boas ferramentas para desenvolvimento de testes, que
+merecem ser aproveitadas.
+
+=head2 Links
+
+=over
+
+=item * http://www.extremeperl.org/bk/test-driven-design
+
+=item * http://www.extremeperl.org/bk/unit-testing
+
+=item * http://www.perl.com/pub/a/2001/12/04/testing.html
+
+=item * http://www.perldesignpatterns.com/?UnitTests
+
+=back
+
+=head1 AUTOR
+
+Joenio Costa
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 6225 bytes of input
+#Sun Jan 31 01:45:49 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

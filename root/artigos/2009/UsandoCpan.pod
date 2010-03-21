@@ -1,0 +1,175 @@
+=pod
+
+r1 - 03 Dec 2009 - DanielMantovani
+
+=head1 Usando o CPAN
+
+I<>
+
+O B<Comprehensive Perl Archive Network> (CPAN), E<eacute> uma grande
+coleE<ccedil>E<atilde>o de software Perl e
+documentaE<ccedil>E<atilde>o,o CPAN nada mais E<eacute> do que mais um
+mE<oacute>dulo Perl. VocE<ecirc> sE<oacute> precisa procurar o que
+vocE<ecirc> quer: http://search.cpan.org Tem mais de 15 mil
+mE<oacute>dulos lE<aacute>, quase tudo o que vocE<ecirc> precisa
+estE<aacute> lE<aacute>, vocE<ecirc> nE<atilde>o precisa ficar perdendo
+seu tempo, o que E<eacute> mais incrE<iacute>vel E<eacute> que a
+cultura Perl E<eacute> fortE<iacute>ssima em testes, isso garante que
+os mE<oacute>dulos funcionem em qualquer lugar, e caso nE<atilde>o
+funcionem vocE<ecirc> vai saber o que estE<aacute> errado.
+
+Imagina que vocE<ecirc> precisa escrever um software que precisa fazer
+um "get" simples em um website, ao invE<eacute>s de escrever um monte
+de cE<oacute>digo, vocE<ecirc> usa um mE<oacute>dulo Perl:
+
+ #!/usr/bin/perl
+ 
+ use strict;
+ use warnings;
+ use LWP::Simple; 
+ 
+ my $html = get('http://www.perl.org.br');
+ 
+ print $html;
+
+FE<aacute>cil e simples, mas como instalar o tal mE<oacute>dulo ?
+Qualquer unix-like jE<aacute> vem com o CPAN instalado(bom, E<eacute>
+isso que eu acredito), sendo assim E<eacute> sE<oacute> digitar:
+
+ $cpan
+
+Pronto agora vocE<ecirc> estE<aacute> na shell do CPAN, digite "h" para
+ajuda:
+
+ cpan[1]> h
+ 
+ Display Information                                                (ver 1.9402)
+  command  argument          description
+  a,b,d,m  WORD or /REGEXP/  about authors, bundles, distributions, modules
+  i        WORD or /REGEXP/  about any of the above
+  ls       AUTHOR or GLOB    about files in the author's directory
+     (with WORD being a module, bundle or author name or a distribution
+     name of the form AUTHOR/DISTRIBUTION)
+ 
+ Download, Test, Make, Install...
+  get      download                     clean    make clean
+  make     make (implies get)           look     open subshell in dist directory
+  test     make test (implies make)     readme   display these README files
+  install  make install (implies test)  perldoc  display POD documentation
+ 
+ Upgrade
+  r        WORDs or /REGEXP/ or NONE    report updates for some/matching/all modules
+  upgrade  WORDs or /REGEXP/ or NONE    upgrade some/matching/all modules
+ 
+ Pragmas
+  force  CMD    try hard to do command  fforce CMD    try harder
+  notest CMD    skip testing
+ 
+ Other
+  h,?           display this menu       ! perl-code   eval a perl command
+  o conf [opt]  set and query options   q             quit the cpan shell
+  reload cpan   load CPAN.pm again      reload index  load newer indices
+  autobundle    Snapshot                recent        latest CPAN uploads
+
+Como a ajuda diz para instalar um mE<oacute>dulo E<eacute> sE<oacute>
+usar o "install", vamos instalar o LWP::Simple
+
+ cpan[2]> install LWP::Simple
+
+Pronto, a mE<aacute>gica estE<aacute> feita.
+
+=head2 Atualizando o CPAN
+
+A primeira coisa que vocE<ecirc> deve fazer antes de instalar qualquer
+coisa E<eacute> atualizar o CPAN:
+
+ $perl -MCPAN -e 'install CPAN'
+
+=head2 Adicionando facilidades
+
+Uma coisa que deixa o CPAN muito mais "legal" E<eacute> instalar o
+Bundle::CPAN: Quando vocE<ecirc> instala esse mE<oacute>dulo,
+vocE<ecirc> pode usar coisas interessantes na shell do CPAN, por
+exemplo vocE<ecirc> pode apertar a sete para cima e ver os
+E<uacute>ltimos comandos que vocE<ecirc> digitou, vocE<ecirc> ganha
+alguns recursos na shell do CPAN.
+
+ $perl -MCPAN -e 'install Bundle::CPAN'
+
+=head2 Usando um host mais rE<aacute>pido
+
+O CPAN por padrE<atilde>o vem com o host: http://cpan.org. O download
+no cpan.org nE<atilde>o E<eacute> muito rE<aacute>pido, as vezes demora
+e nem sempre a velocidade E<eacute> a esperada. A Yahoo tem um mirror
+do CPAN, o mirror da Yahoo E<eacute> muito rE<aacute>pido, E<eacute>
+interessante usa-lo como o padrE<atilde>o:
+
+ $cpan
+ cpan[1]> o conf urllist http://cpan.yahoo.com
+ cpan[2]> o conf commit
+
+Pronto, agora o seu mirror E<eacute> o da Yahoo, vocE<ecirc> pode ver a
+lista completa aqui: http://search.cpan.org/mirror
+
+=head2 Seguindo os prE<eacute>-requisitos
+
+Outra coisa muito chata E<eacute> toda vez que vocE<ecirc> precisa de
+um prE<eacute>-requisito o CPAN pergunta se vocE<ecirc> quer instalar
+ou nE<atilde>o, o Catalyst por exemplo tem muitas dependE<ecirc>ncias
+ficar apertando o enter toda hora enche o saco. Para acabar com isso
+E<eacute> sE<oacute> configurar uma variE<aacute>vel chamada:
+"prerequisites_policy". Vamos ver as opE<ccedil>E<otilde>es que esta
+variE<aacute>vel oferece:
+
+ cpan[1]> o conf init prerequisites_policy 
+ The CPAN module can detect when a module which you are trying to build
+ depends on prerequisites. If this happens, it can build the
+ prerequisites for you automatically ('follow'), ask you for
+ confirmation ('ask'), or just ignore them ('ignore'). Please set your
+ policy to one of the three values.
+ 
+  
+ Policy on building prerequisites (follow, ask or ignore)? [ask]
+
+Escolha a opE<ccedil>E<atilde>o follow:
+
+ Policy on building prerequisites (follow, ask or ignore)? [ask] follow
+
+Pronto agora E<eacute> sE<oacute> fazer o commit para ficar permanente:
+
+ cpan[2]> o conf commit
+
+Agora quando vocE<ecirc> for instalar um mE<oacute>dulo, nE<atilde>o
+precisa mais ficar apertando o enter, E<eacute> sE<oacute> mandar
+instalar e ir tomar um cafE<eacute>.
+
+=head2 Artimanha
+
+Uma outra coias interessante, se vocE<ecirc> nE<atilde>o lembrar o nome
+da variE<aacute>vel, vocE<ecirc> pode usar regexp, E<eacute> isso mesmo
+regexp:
+
+ cpan[1]> o conf /po/
+ 
+ $CPAN::Config options from '/etc/perl/CPAN/Config.pm':
+ 
+     build_requires_install_policy [follow/yes]
+     prerequisites_policy [follow]
+     test_report        [0]
+     trust_test_report_history [0]
+
+Seja inteligente e leia o manual do CPAN:
+http://search.cpan.org/~andk/CPAN-1.9402/lib/CPAN.pm
+
+=head2 AUTOR
+
+Daniel de Oliveira Mantovani, daniel.oliveira.mantovani@gmail.com
+@mantovanidaniel
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 6830 bytes of input
+#Sun Jan 31 01:45:12 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

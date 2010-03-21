@@ -1,0 +1,320 @@
+
+#tag cpan
+
+=pod
+
+r10 - 17 Mar 2009 - NelsonFerraz
+
+=head1 MÃ³dulos Recomendados do CPAN
+
+I<>
+
+O CPAN possui mais de 14 mil mE<oacute>dulos, para as mais diferentes
+finalidades. Este artigo procura listar alguns dos mE<oacute>dulos mais
+importantes, que vocE<ecirc> deve conhecer.
+
+Uma das perguntas mais frequentes, feitas por usuE<aacute>rios
+iniciantes e avanE<ccedil>ados E<eacute>: "qual mE<oacute>dulo eu posso
+usar para fazer X?".
+
+Existem, por exemplo, dezenas de mE<oacute>dulos para manipular datas,
+abrir arquivos de configuraE<ccedil>E<atilde>o, xml, etc.
+
+Este artigo irE<aacute> apresentar uma lista de mE<oacute>dulos
+frequentemente recomendados. Nos casos mais simples, apresentaremos
+exemplos de codigo; quando isto nao for possivel, apresentaremos links
+para outros artigos.
+
+TODO: publicar uma receita para cada mE<oacute>dulo recomendado.
+
+=over
+
+=item * Class::Accessor
+
+=item * Config::General
+
+=item * DateTime
+
+=item * DBI
+
+=item * DBIx::Class
+
+=item * Exception::Class
+
+=item * File::Slurp
+
+=item * JSON
+
+=item * List::MoreUtils
+
+=item * local::lib
+
+=item * Log::Log4perl
+
+=item * MIME::Lite
+
+=item * Module::Starter
+
+=item * Moose
+
+=item * Perl::Critic
+
+=item * Perl::Tidy
+
+=item * Regexp::Common
+
+=item * Template
+
+=item * Text::CSV
+
+=item * XML::Compile::Schema
+
+=item * XML::LibXML
+
+=item * XML::Simple
+
+=item * YAML
+
+=back
+
+=head2 Class::Accessor
+
+O Class::Accessor cria toda a infraestrutura de
+orientaE<ccedil>E<atilde>o a objetos automaticamente, incluindo
+construtor e metodos de acesso (setters e getters).
+
+Um exemplo simples. Ao inves de escrever codigo como este:
+
+ package Dog;
+ 
+ sub new {
+     my $self = shift;
+     bless { @_ }, $self;
+ }
+ 
+ sub name {
+     my $self = shift;
+     if ($@) {
+         $self->{name} = shift;
+     }
+     return $self->{name};
+ }
+
+Escreva apenas o seguinte:
+
+ package Dog;
+ 
+ use base 'Class::Accessor';
+ mk_accessors('name');
+
+E isso e' tudo o que voce precisa para ter uma classe com constructor
+(new) e metodos de acesso (setters e getters).
+
+ use Dog;
+ my $dog = Dog->new( name => 'Tobby' );
+ print $dog->name();
+
+=head2 Config::General
+
+O Config::General faz o parsing de arquivos de
+configuraE<ccedil>E<atilde>o.
+
+ use Config::General;
+ $conf = new Config::General("config.conf");
+ my %config = $conf->getall;
+
+=head2 DateTime?
+
+O melhor mE<oacute>dulo para resolver problemas envolvendo data e hora.
+
+=head2 DBI
+
+O mE<oacute>dulo base para lidar com bases de dados em Perl.
+AlE<eacute>m do DBI vocE<ecirc> tambE<eacute>m precisarE<aacute> de um
+driver especE<iacute>fico para a sua base de dados:
+
+=over
+
+=item * DBD::mysql
+
+=item * DBD::Oracle
+
+=item * DBD::Pg
+
+=item * DBD::SQLite
+
+=item * DBD::Sybase
+
+=back
+
+=head2 DBIx::Class
+
+Um mapeador objeto-relacional, que permite lidar com a base de dados
+usando apenas mE<eacute>todos e estruturas de dados em perl. Ao inves
+de escrever codigo SQL, voce pode usar Perl:
+
+  my @albums = $schema->resultset('Album')->search({
+    artist => { 'like', '%Lamb%' },
+    title  => { 'like', '%Fear of Fours%' },
+  });
+
+(Veja o artigo Introducao ao DBIx::Class? .)
+
+=head2 Exception::Class
+
+Um mE<oacute>dulo que permite a vocE<ecirc> trabalhar com hierarquias
+de exceE<ccedil>E<otilde>es orientadas a objeto. Uma solucao mais
+flexivel e poderosa do que o uso de strings em $@.
+
+  # try
+  eval {
+      MyException->throw( error => 'I feel funny.' );
+  };
+ 
+  if ( my $e = Exception::Class->caught('MyException') ) {
+     warn $e->error, "\n", $e->trace->as_string, "\n";
+     warn join ' ',  $e->euid, $e->egid, $e->uid, $e->gid, $e->pid, $e->time;
+     exit;
+  } elsif ( my $e = Exception::Class->caught() ) {
+     ref $e ? $e->rethrow : die $e;
+  }
+
+=head2 File::Slurp
+
+Leia ou escreva arquivos de texto completos, de maneira eficiente.
+
+  use File::Slurp;
+ 
+  my $text = read_file( 'filename' ) ;
+  my @lines = read_file( 'filename' ) ;
+ 
+  write_file( 'filename', @lines ) ;
+
+=head2 JSON
+
+JSON (Javascript Object Notation) E<eacute> uma linguagem de
+serializaE<ccedil>E<atilde>o de dados, parecida com o formato interno
+de Perl, e compatE<iacute>vel com aplicaE<ccedil>E<otilde>es AJAX.
+
+=head2 List::MoreUtils
+
+Um mE<oacute>dulo que acrescenta funE<ccedil>E<otilde>es E<uacute>teis
+ao List::Util. (Exemplos: any, all, none, notall, ...)
+
+=head2 local::lib
+
+O local::lib altera o local de instalaE<ccedil>E<atilde>o
+padrE<atilde>o dos mE<oacute>dulos, resolvendo problemas de
+permissE<atilde>o e mantendo-os organizados no seu diretE<oacute>rio
+$HOME. (Veja o artigo Usando o local::lib.)
+
+=head2 Log::Log4perl
+
+Crie arquivos de log com vE<aacute>rios nE<iacute>veis de
+depuraE<ccedil>E<atilde>o e categorias, de maneira simples e eficiente.
+
+=head2 MIME::Lite
+
+Um modulo simples para enviar mensagens por email:
+
+    use MIME::Lite;
+ 
+    $msg = MIME::Lite->new(
+        From     =>'me@myhost.com',
+        To       =>'you@yourhost.com',
+        Cc       =>'some@other.com, some@more.com',
+        Subject  =>'Helloooooo, nurse!',
+        Data     =>"How's it goin', eh?"
+    );
+ 
+    $msg->send();
+
+=head2 Module::Starter
+
+Kit de inicializaE<ccedil>E<atilde>o de projetos em Perl. Deixe o
+Module::Starter escrever o esqueleto do seu projeto, incluindo testes
+bE<aacute>sicos e arquivos de instalacE<atilde>o. (Leia o artigo sobre
+o Module::Starter? )
+
+=head2 Moose
+
+Moose E<eacute> uma extensE<atilde>o do sistema de
+orientaE<ccedil>E<atilde>o a objetos de Perl5, ou um "sistema
+pE<oacute>s-moderno de orientaE<ccedil>E<atilde>o de objetos", segundo
+sua prE<oacute>pria definiE<ccedil>E<atilde>o.
+
+  package Point;
+  use Moose; # automatically turns on strict and warnings
+ 
+  has 'x' => (is => 'rw', isa => 'Int');
+  has 'y' => (is => 'rw', isa => 'Int');
+ 
+  package Point3D;
+  use Moose;
+ 
+  extends 'Point';
+ 
+  has 'z' => (is => 'rw', isa => 'Int');
+
+(Veja o artigo Introducao ao Moose? .)
+
+Veja tambE<eacute>m: Mouse? , que se define como o "Moose sem chifres".
+
+=head2 Perl::Critic
+
+Avalie a qualidade do seu cE<oacute>digo de acordo com um conjunto de
+boas prE<aacute>ticas. (Use o perl-critic a partir da linha de
+comando.)
+
+=head2 Perl::Tidy
+
+Limpa e organiza o seu cE<oacute>digo fonte. (Use o perl-tidy a partir
+da linha de comando.)
+
+=head2 Regexp::Common
+
+ExpressE<otilde>es regulares prontas, testadas e aprovadas, para
+diversos usos comuns.
+
+=head2 Template
+
+Sistema de templates flexE<iacute>vel e poderoso.
+
+=head2 Text::CSV
+
+Leia e manipule arquivos separados por vE<iacute>rgula (CSV).
+
+=head2 XML::Compile::Schema
+
+Leia e escreva arquivos xml, de acordo com schemas (xsd).
+
+=head2 XML::LibXML
+
+This module is an interface to libxml2, providing XML and HTML parsers
+with DOM, SAX and XMLReader interfaces, a large subset of DOM Layer 3
+interface and a XML::XPath-like interface to XPath API of libxml2.
+
+=head2 XML::Simple
+
+API simples para abrir e salvar arquivos XML. (Especialmente arquivos
+de configuraE<ccedil>E<atilde>o.)
+
+=head2 YAML
+
+Um formato de serializaE<ccedil>E<atilde>o de dados, otimizada para
+humanos. (Veja tambE<eacute>m: JSON)
+
+=head2 Leia mais
+
+=over
+
+=item * Recommended CPAN Modules
+
+=back
+
+=head1 AUTOR
+
+Nelson Ferraz
+
+=cut
+

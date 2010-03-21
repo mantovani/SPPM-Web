@@ -1,0 +1,184 @@
+=pod
+
+r1 - 09 Mar 2006 - NelsonFerraz
+
+=head1 Como fazer perguntas de forma inteligente
+
+No mundo dos hackers, o tipo de respostas que vocE<ecirc> obtE<eacute>m
+para suas questE<otilde>es tE<eacute>cnicas depende bastante da forma
+que vocE<ecirc> faz as perguntas bem como da dificuldade de desenvolver
+a resposta. Este guia irE<aacute> ensinar vocE<ecirc> como fazer
+perguntas de forma a obter uma resposta satisfatE<oacute>ria.
+
+A primeira coisa a entender E<eacute> que os hacker gostam de problemas
+difE<iacute>ceis e questE<otilde>es boas e provocantes sobre eles. Se
+nE<atilde>o fosse assim, nE<atilde>o estarE<iacute>amos aqui. Se
+vocE<ecirc> nos der uma questE<atilde>o interessante para mastigar
+seremos gratos; boas questE<otilde>es sE<atilde>o um estE<iacute>mulo e
+um presente. Boas perguntas nos ajudam a desenvolver nosso
+entendimento, e geralmente revelam problemas que poderE<iacute>amos
+nE<atilde>o ter percebido ou pensado de outra forma. Entre os hackers,
+"Boa pergunta!" E<eacute> um forte e sincero cumprimento.
+
+Apesar disto, os hackers tem uma reputaE<ccedil>E<atilde>o de abordar
+questE<otilde>es simples com o que se parece com hostilidade ou
+arrogE<acirc>ncia. E<Agrave>s vezes parece que somos hostis aos novatos
+e ingorantes. Mas isto nE<atilde>o E<eacute> verdade.
+
+O que nE<oacute>s somos, sem qualquer desculpa, E<eacute> hostis a
+pessoas que parecem nE<atilde>o estar querendo pensar ou fazer seu
+prE<oacute>prio trabalho de casa antes de fazer perguntas. Pessoas
+assim sE<atilde>o como precipE<iacute>cios -- eles pegam sem dar nada
+em troca, eles desperdiE<ccedil>am um tempo que poderE<iacute>amos ter
+usado em outra questE<atilde>o mais interessante e com outra pessoa que
+valha mais a pena responder. Chamamos este tipo de pessoa de "losers"
+(e por razE<otilde>es histE<oacute>ricas E<agrave>s vezes escrevemos
+"lusers").
+
+Somos, em grande parte, voluntE<aacute>rios. Tomamos tempo de nossas
+vidas ocupadas, e E<agrave>s vezes somos sobrecarregados por ela. Por
+isto filtramos as perguntas de forma rude. Em particular, jogamos fora
+questE<otilde>es de pessoas que pareE<ccedil>am ser losers para gastar
+nosso tempo de responder perguntas de forma mais eficiente, com
+vencedores.
+
+VocE<ecirc> nE<atilde>o quer ser um dos losers. VocE<ecirc> nE<atilde>o
+quer parecer com um, tambE<eacute>m. A melhor forma de conseguir
+respostas rE<aacute>pidas E<eacute> fazer as perguntas como um vencedor
+-- perguntar como uma pessoa esperta, confiante, e com dicas, que
+parece precisar de ajuda apenas em um problema particular.
+
+=head2 Antes de Perguntar
+
+Antes de fazer uma pergunta tE<eacute>cnica por email, ou em um
+newsgroup, ou em um chat-board de um website, faE<ccedil>a o seguinte:
+
+=over
+
+=item 1. Tente encontrar uma resposta lendo o manual
+
+=item 2. Tente encontrar uma resposta lendo o FAQ
+
+=item 3. Tente encontrar uma resposta pesquisando a Web
+
+=item 4. Tente encontrar uma resposta perguntando a algum amigo mais
+preparado
+
+=back
+
+Quando fizer sua pergunta, mostre que vocE<ecirc> fez estas coisas
+primeiro, isto ajuda a estabelecer que vocE<ecirc> nE<atilde>o
+estE<aacute> sendo uma esponja preguiE<ccedil>osa e
+desperdiE<ccedil>ando o tempo de outras pessoas. Melhor ainda, mostre
+que vocE<ecirc> aprendeu alguma coisa tendo feito estas coisas.
+Gostamos de responder perguntas de pessoas que tenham demonstrado que
+podem aprender das respostas.
+
+Prepare sua questE<atilde>o. Pense adiante. Perguntas que
+pareE<ccedil>am precipitadas recebem respostas precipitadas, ou nenhuma
+resposta. Quanto mais vocE<ecirc> demonstrar que dedicou pensamentos e
+esforE<ccedil>os em resolver seu problema antes de pedir por ajuda,
+mais provE<aacute>vel E<eacute> que vocE<ecirc> vE<aacute> conseguir
+ajuda.
+
+Cuidado para nE<atilde>o fazer a pergunta errada. Se vocE<ecirc> fizer
+perguntas baseadas em pressupostos falsos, J. Random Hacker
+provavelmente vai responder com uma resposta literalmente
+inE<uacute>til ao mesmo tempo que pensa "Pergunta estE<uacute>pida...",
+e com a esperanE<ccedil>a de que a experiE<ecirc>ncia de ganhar o que
+vocE<ecirc> pediu em vez do que vocE<ecirc> precisa vE<aacute> lhe
+ensinar uma liE<ccedil>E<atilde>o.
+
+Por outro lado, tornar claro que vocE<ecirc> estE<aacute> apto e pronto
+a ajudar no processo de desenvolver a soluE<ccedil>E<atilde>o E<eacute>
+um bom inE<iacute>cio. "AlguE<eacute>m pode me providenciar uma dica?",
+"O que falta no meu exemplo?" e "Existe algum site que eu deveria ter
+procurado?" sE<atilde>o perguntas que provavelmente vE<atilde>o ter
+respostas, em vez de "Por favor poste o procedimento que devo usar."
+por que neste caso vocE<ecirc> estE<aacute> tornando claro que
+vocE<ecirc> nE<atilde>o estE<aacute> disposto a completar o processo se
+alguE<eacute>m puder simplesmente apontar a direE<ccedil>E<atilde>o
+certa para vocE<ecirc>.
+
+Nunca assuam que vocE<ecirc> tem direito a uma resposta. VocE<ecirc>
+nE<atilde>o tem. VocE<ecirc> vai conquistar uma resposta se puder
+conquistar a mesma, fazendo uma pergunta que seja substancial,
+interessante, estimulante -- uma que implicitamente contribua E<agrave>
+experiE<ecirc>ncia da comunidade em vez de meramente exigir
+passivamente por conhecimentos dos outros.
+
+=head2 Como Interpretar as Respostas
+
+=head2 RTFM e STFW: Como Saber que VocE<ecirc> "se Ferrou"
+
+HE<aacute> uma tradiE<ccedil>E<atilde>o antiga e respeitada: se
+vocE<ecirc> recebe uma resposta escrita "RTFM", a pessoa que enviou
+pensa que vocE<ecirc> deve Ler O Maldito Manual ("Read The F*cking
+Manual" - a expressE<atilde>o E<eacute> mais "colorida" no original). E
+ele provavelmente estE<aacute> certo sobre isto. VE<aacute> ler o
+manual.
+
+RTFM tem um parente mais jovem. Se vocE<ecirc> receber uma resposta
+"STFW", a pessoa que mandou ela pensa que vocE<ecirc> deveria Procurar
+na Maldita Web ("Serch The F*cking Web"). E ele provavelmente
+estE<aacute> certo sobre isto. VE<aacute> fazer uma pesquisa.
+
+Geralmente, a pessoa que envia um destas respostas tem o manual ou a
+pE<aacute>gina com a informaE<ccedil>E<atilde>o que vocE<ecirc> precisa
+aberta, e estE<aacute> olhando para ela enquanto escreve. Estas
+respostas significam que (a) a informaE<ccedil>E<atilde>o a ler
+E<eacute> fE<aacute>cil de encontrar, e (b) vocE<ecirc> vai aprender
+mais se procurar por conta prE<oacute>pria do que se vocE<ecirc> ganhar
+a mesma de mE<atilde>o beijada.
+
+VocE<ecirc> nE<atilde>o deve se sentir ofendido por estas respostas -
+pelos padrE<otilde>es dos hackers, ele estE<aacute> te mostrando um
+pouco de respeito simplesmente por nE<atilde>o ter te ignorado.
+VocE<ecirc> deveria, ao invE<eacute>s, ficar agradecido pela sua
+bondade de vovE<oacute>zinha.
+
+=head2 Se vocE<ecirc> nE<atilde>o entendeu...
+
+Se vocE<ecirc> nE<atilde>o entendeu a resposta, nE<atilde>o devolva
+imediatamente um pedido de esclarecimento. Use as mesmas ferramentas
+que vocE<ecirc> usou para encontrar uma resposta para sua pergunta
+original (manuais, FAQ, a Web, um amigo que saiba mais) para entender a
+resposta. Se vocE<ecirc> precisar mais esclarecimentos, mostre o que
+vocE<ecirc> aprendeu.
+
+Por exemplo, suponha que eu tenha dito: "Parece que vocE<ecirc> tem uma
+zentry presa, vocE<ecirc> precisa limpar ela." EntE<atilde>o:
+
+Eis uma pergunta ruim: "O que E<eacute> uma zentry?"
+
+Eis uma pergunta boa: "OK, eu li a pE<aacute>gina man e as zentries
+sE<atilde>o mencionadas somente sob as opE<ccedil>E<otilde>es -z e -p.
+Nenhuma delas esclarece nada sobre zentries. E<Eacute> sE<oacute> isto
+ou eu estou deixando passar alguma coisa aqui?"
+
+=head2 Saiba mais...
+
+Este E<eacute> apenas um resumo do documento "Como Fazer Perguntas de
+Forma Inteligente", de Eric S. Raymond.
+
+Leia o documento completo:
+
+=over
+
+=item * original em inglE<ecirc>s
+
+=item * traduE<ccedil>E<atilde>o para o portuguE<ecirc>s
+
+=back
+
+=head1 AUTOR
+
+Nelson Ferraz
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 8461 bytes of input
+#Sun Jan 31 01:45:52 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

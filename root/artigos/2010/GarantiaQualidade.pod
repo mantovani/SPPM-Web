@@ -1,0 +1,399 @@
+=pod
+
+=head1 Testes, uma garantia de qualidade
+
+Teste de I<software> é um processo de validação e verificação dos requisitos
+técnicos e das regras de negócio afim de obter informações sobre a qualidade
+de um produto ou serviço, como também com a intenção de encontrar falhas de
+implementação, garantindo assim que o I<software> funcione como esperado.
+
+Os diversos processos de desenvolvimento discorrem diferentemente sobre quem, quando
+e como produzir os casos de teste, porém todos ressaltam a sua importância no
+desenvolvimento de I<software>.
+
+=head3 E o que Perl nos fornece?
+
+O L<CPAN|http://www.cpan.org/> contém algumas centenas de módulos,
+I<frameworks> e ferramentas para serem usados no desenvolvimento de
+testes. Encontra-se algumas sugestões neste artigo.
+
+=head2 Métodos de teste
+
+Os métodos de testes são tradicionalmente divididos em testes de caixa preta
+e caixa branca, os quais referem-se ao ponto de visão do engenheiro quando este
+está desenvolvendo os casos de teste.
+
+=head3 Caixa preta
+
+Testes de caixa preta compreendem o conjunto de casos onde não se tem
+conhecimento (ou não é tomado em consideração) os detalhes internos de I<design>
+e implementação. Este método é aplicável à todos os níves de teste,
+porém é mais utilizado nos de integração e aceitação.
+
+Exemplo:
+
+    use strict;
+    use warnings;
+    use Test::More;
+    use Test::WWW:::Mechanize;
+
+    my $foo_data = {
+        name => 'MyFoo',
+        description => 'MyFoo é uma...',
+    };
+
+    my $mech = Test::WWW::Mechanize->new;
+
+    $mech->get_ok('/foo');
+    # entrada de dados
+    $mech->submit_form_ok({
+        with_fields => $foo_data,
+        button => 'submit',
+    }, 'form submit...');
+    # verificação após processamento
+    $mech->content_contains($foo->{$_}) for qw/name description/;
+
+    # ...
+
+    done_testing;
+
+=head3 Caixa branca
+
+Testes de caixa branca (ou testes de estrutura) usam a pespectiva interna
+do I<software> para projetar os casos de teste baseado nas estruturas de dados
+e implementação. Este pode ser usado nos níveis de unidade, integração e
+regressão.
+
+Neste exemplo, vamos testar o controller Foo que supostamente responderia pelo
+caminho acessado no exemplo anterior:
+
+    use strict;
+    use warnings;
+    use Test::More;
+    use MooseX::Declare;
+    BEGIN { use_ok 'MyApp::Controller::Foo' }
+
+    my $app_class = class {
+
+        has stash => (is => 'rw', default => sub { {} });
+
+        around stash => sub {
+            my $orig = shift;
+            my $c = shift;
+            my $stash = $orig->($c);
+            if (@_) {
+                my $new_stash = @_ > 1 ? {@_} : $_[0];
+                confess('stash takes a hash or hashref') unless ref $new_stash;
+                foreach my $key ( keys %$new_stash ) {
+                    $stash->{$key} = $new_stash->{$key};
+                }
+            }
+            return $stash;
+        };
+
+    };
+    my $ctx = $app_class->name->new;
+    my $foo_controller = MyApp::Controller::Foo->COMPONENT($ctx);
+
+    $foo_controller->foo($ctx);
+    is($ctx->stash->{'template'}, 'foo.tt');
+
+    # ...
+
+    done_testing;
+
+=head2 Níveis de teste
+
+Testes são agrupados por onde e quando eles são adicionados no processo de
+desenvolvimento, ou pelo grau de responsabilidade. Os diversos autores sobre
+testes definem diferentes níveis de teste (alguns mais, outros menos), dentre
+eles, cito:
+
+=over 10
+
+=item * unidade
+
+=item * integração
+
+=item * sistema
+
+=item * integração de sistemas
+
+=item * regressão
+
+=item * aceitação
+
+=item * aceitação do usuário
+
+=item * I<alpha>
+
+=item * I<beta>
+
+=item * plataforma
+
+=back
+
+=head3 Unidade
+
+Testes de unidade são geralmente usados para garantir que os vários componentes
+que compõem o I<software> funcionam corretamente de forma isolada uns dos outros.
+Estes correspondem a seções do código, geralmente funções ou classes (ou um conjunto
+de classes) num sistema orientado a objetos.
+
+Técnicas muito usadas neste nível são I<mock object> e I<method stub>.
+
+A primeira consiste basicamente em simular objetos que tenham a interface requerida
+e o comportamento desejado pelo componente testado.
+
+Exemplo:
+
+    package MyApp::Web::Form::Login;
+
+    use HTML::FormHandler::Moose;
+    use namespace::autoclean;
+
+    extends 'HTML::FormHandler';
+
+    has '_authenticate' => (
+        isa => 'CodeRef', is => 'ro',
+        required => '1', init_arg => 'authenticate',
+    );
+
+    has_field 'username' => (
+        type => 'Text', required => '1', label => 'Username',
+    );
+
+    has_field 'password' => (
+        type => 'Password', required => '1', label => 'Password',
+    );
+
+    has 'user_agent' => (
+        isa => 'Str', is => 'ro', required => 1
+    );
+
+    around process => sub {
+        my $orig = shift;
+        my $self = shift;
+        if ( $self->$orig(@_) ) {
+            if ( my $user = $self->_authenticate->($self->values) ) {
+                my $account = $user->obj;
+                $account->log_last_access($self->user_agent);
+                return $user;
+            } else {
+                return;
+            }
+        }
+        return $self->validated(0);
+    };
+
+    1;
+
+
+    use strict;
+    use warnings;
+    use Test::More;
+    use MooseX::Declare;
+    use MyApp::Web::Form::Login;
+
+    my $user_data = {
+        map { $_ => $_ } qw/username password/
+    };
+    my $user_class = class {
+
+        has [qw/username password/] => (
+            isa => 'Str', is => 'ro', required => 1
+        );
+
+        method obj { return shift }
+
+        method log_last_access { return }
+
+    };
+
+    my $form = MyApp::Web::Form::Login->new(
+        authenticate => sub {
+            my $credentials = shift;
+            my $check_creds = $credentials->{'username'} eq $user_data->{'username'}
+                && $credentials->{'password'} eq $user_data->{'password'};
+            return $check_creds ?
+                $user_class->name->new(%$user_data)
+                : undef;
+        },
+        user_agent => 'MyUserAgent',
+    );
+    ok($form->field($_), "has a $_ field")
+        for qw(username password);
+    my $u_field = $form->field('username');
+    is($u_field->label, 'Username', 'check label for username field');
+    my $p_field = $form->field('password');
+    is($p_field->label, 'Password', 'check label for password field');
+
+    ok(!$form->process(params => {}), 'authentication failed for empty dataset');
+    ok(!$form->validated, 'form validation failed');
+
+    ok(!$form->process(params => {
+        map { $_ => q{} } qw/username password/
+    }), 'authentication failed for empty form');
+    ok(!$form->validated, 'form validation failed');
+
+    ok(!$form->process(params => {
+        username => 'foo',
+        password => 'bar',
+    }), 'authentication failed for wrong credentials');
+    ok($form->validated, 'form validation pass');
+
+    ok($form->process(params => $user_data), 'authentication pass');
+    ok($form->validated, 'form validation pass');
+
+    done_testing;
+
+Veja também L<Test::MockObject>.
+
+A segunda (também chamada de apenas I<stub>) é um pedaço de código usado para
+garantir presença de alguma outra funcionalidade programada.
+
+Exemplo:
+
+    # uma função "foo" utiliza uma outra, chamada "get_session_id"
+    sub foo {
+        # ...
+        my $session_id = get_session_id();
+    }
+
+    # podemos então definir "get_session_id" com um valor de retorno válido
+    # sem se preocupar agora com sua real implementação
+    sub get_session_id { return 'm0y1i2d3' }
+
+=over 3
+
+=item * L<Test::Simple>
+
+=item * L<Test::More>
+
+=item * L<Test::Pod>
+
+=item * L<MooseX::Declare>
+
+=back
+
+=head3 Integração
+
+O nível de integração pode ser granularizado para se adequar ao conjunto de
+componentes, sistemas ou subsistemas que se deseja testar, com o objetivo de
+validar a interface e a interação entre eles.
+
+=over 2
+
+=item * L<Test::WWW::Mechanize>
+
+=item * Aplicações desenvolvidas em L<Catalyst|http://catalyst.perl.org/>: L<Test::WWW::Mechanize::Catalyst> e L<Catalyst::Test>
+
+Algumas vezes se faz necessário obter acesso ao objeto contexto do Catalyst
+- durante o desenvolvimento dos testes de aplicações que usam este I<web framework>.
+Diferente do Test::WWW::Mechanize::Catalyst, o Catalyst::Test já nos fornece
+este recurso por padrão através do método C<ctx_request>. Então, se a aplicação
+usar L<Class::MOP> ou for desenvolvida em Catalyst a partir da versão 5.8, pode-se
+contornar tal carência da seguinte forma:
+
+    use strict;
+    use warnings;
+    use Test::More;
+    use Test::WWW::Mechanize::Catalyst 'MyApp';
+
+    my $ctx;
+    my $app_meta = MyApp->meta;
+    my %immutable_opts = $app_meta->immutable_options;
+    $app_meta->make_mutable;
+    $app_meta->add_after_method_modifier(
+        dispatch => sub { $ctx = shift }
+    );
+    $app_meta->make_immutable(%immutable_opts);
+
+    # ...
+
+    done_testing;
+
+=back
+
+=head3 Regressão
+
+Um teste é classificado como de regressão quando se tem por objetivo encontrar
+falhas após uma mudança no código que já estava funcionando ou defeitos conhecidos
+e resolvidos que voltaram a aparecer.
+
+=head3 Aceitação
+
+Este nível compreende o conjunto de testes produzidos para execução antes da entrega
+do software ao usuário final ou logo após o termino de um ciclo de desenvolvimento
+conhecidos como I<smoke tests>, ou executados pelo consumidor em ambiente de laboratório
+então conhecidos como aceitação do usuário.
+
+=head3 Plataforma
+
+Os testes de plataforma envolvem a verificação e validação do I<software> nos
+diversos tipos de I<hardware>, sistema operacional e SGBD (Sistema Gerenciador
+de Banco de Dados), e geralmente são conduzidos após o nível I<beta>.
+
+Caso a aplicação seja desenvolvida usando o Catalyst, os casos de testes obtidos
+durante o processo de desenvolvimento podem ser usados em conjunto aos novos específicos
+deste nível, modificando apenas a variável de ambiente C<CATALYST_SERVER>:
+
+    $ CATALYST_SERVER='http://localhost:3000/' prove -lr t
+
+ou
+
+    $ CATALYST_SERVER='http://www.myapp.com/' prove -lr t
+
+deste modo, os testes executarão no servidor externo.
+
+=head2 I<Coverage>
+
+I<Code coverage> é uma medida usada em teste de I<software>, a qual é obtida
+através da analise de todas as partes do código fonte que foram percorridas
+durante a execução dos testes, sabendo-se quão testado está o I<software>.
+
+=over 2
+
+=item * L<Devel::Cover>
+
+=item * L<Test::Pod::Coverage>
+
+=back
+
+=head2 Considerações finais
+
+Teste de software é um assunto tão extenso quanto importante, assim não é possível
+abranger toda sua dimensão aqui, mas espero ter feito uma boa introdução ao tema.
+
+Agradecimentos a Thiago Rondon, pela insistência comigo para escrever este artigo e
+ajuda na revisão.
+
+Por fim, lembre-se, desenvolva testes "antes tarde do que nunca"!
+
+=head2 Leia mais
+
+=over 7
+
+=item * L<Perl Testing: A Developer's Notebook|http://www.oreilly.com/catalog/perltestingadn>
+
+=item * L<Test::Tutorial>
+
+=item * L<LWP::UserAgent>
+
+=item * L<WWW::Mechanize>
+
+=item * L<Test::Harness>
+
+=item * L<Test::Exception>
+
+=item * L<Test::Differences>
+
+=back
+
+=head2 AUTOR
+
+Wallace Reis <wallace@reis.org.br>
+
+=cut
+
+

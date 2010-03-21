@@ -1,0 +1,324 @@
+
+=head1 HTML::FormHandler
+
+L<HTML::FormHandler> é um módulo de processamento de formulários web feito
+em Moose, suas origens remontam ao L<Form::Processor> e destaca-se pela 
+automatização das trabalhosas e repetitivas etapas intrínsecas ao processamento
+de formulários. A renderização do formulário em HTML, validação e tratamento dos
+dados submetidos são excutados convenientemente e sem complicações pelo
+L<HTML::FormHandler>
+
+Ao extender o L<HTML::FormHandle::Model::DBIC> torna-se possível usar o L<DBIx::Class>
+como modelo para o formulário mapeando os métodos acessores e relacionamentos 
+do DBIC em campos HTML no formulário. 
+Por exemplo, um relacionamento do tipo C<belongs_to> pode se transformar num
+I<<<select>> onde cada linha da tabela relacionada seria usada pra compor a lista
+de I<<option>>.
+
+Os formulários do L<HTML::FormHandler> são classes de Perl, portanto, a mesma
+flexibilidade e extensibilidade da linguagem estão presentes na construção de
+seus formulários. Você pode compor suas classes de formulários com unidades
+lógicas reponsáveis por tarefas específicas como validação, transformações ou
+processamento do formulário.
+
+=head1 Montado no alce
+
+Por ter sido escrito usando L<Moose>, o L<HTML::FormHandler> nos permite lançar 
+mão de seus recursos simplificando o processo de criação dos formulários. 
+A validação dos campos pode ser feita através da aplicação de I<type constraints>,
+e usando a sintaxe intuitiva provida pelo L<Moose> é possível criar novos 
+formulários a partir de herança ou composição de I<roles> além do uso dos 
+I<method modifiers> (C<before>, C<after>, C<around>), que são uma mão na roda quando 
+é necessária uma certa customização no comportamento de certas classes de 
+formulários.
+
+A seguir o exemplo de um formulário usando HTML::FormHandler:
+
+   package MyApp::Form::Foo;
+   use HTML::FormHandler::Moose;
+   extends 'HTML::FormHandler';
+
+   use Moose::Util::TypeConstraints;
+   
+   subtype 'Maioridade'
+     => as 'Int'
+     => where { $_ >= 18 }
+     => message { "$_ !? Não é permitido menores aqui. Meia volta, Mantovani!"};
+
+   no Moose::Util::TypeConstraints;
+   
+   has_field 'nome' => ( 
+     type => 'Text', 
+     label => 'Nome do usuário',
+   );
+   
+   has_field 'idade' => ( 
+     type => 'Integer', 
+     label => 'Idade',
+     apply => ['Maioridade']
+   );
+
+   has_field submit => ( type => 'Submit' );
+
+   around 'update_model' => sub {...};
+
+   no HTML::FormHandler::Moose;
+
+   #
+   #
+
+   package MyApp::Bar;
+
+   use MyApp::Form::Foo;
+
+   my $form = MyApp::Form::Foo->new;
+
+   $form->render; # Renderizando form em html
+
+   $form->process(params => \%params);
+
+   if ($form->validated){
+      ...
+   }
+
+Nessa classe estão presentes os atributos e palavras-chave mais comumente utilizadas
+na criação de um formulário.
+
+A palavra-chave C<has_field> é usada para declarar os campos dos formulários, 
+já o atributo C<type> define o tipo do campo. C<label> define o rótulo que
+deve aparecer em cada campo no formulário HTML.
+
+O L<HTML::FormHandler> já traz consigo uma série de tipos pré-definidos que
+especificam qual deve ser carregado para renderizar e processar cada campo. 
+Dentre eles destacam-se o I<Text> e I<Integer< para I<strings> simples e inteiros,
+respectivamente, I<Select> para I<<input>> do tipo I<<select>> e I<Email> para 
+validação de endereços de emails, dentre outros como I<Money>, I<Password>, 
+I<Date>, etc. Toda essa gama de opções não impede que você possa criar seus 
+próprios tipos para servir aos seus propósitos mais particulares, que por sinal
+é uma tarefa bem simples, instruções mais detalhadas podem ser encontradas nos 
+manuais do L<HTML::FormHandler>.
+
+Além da validação I<default> presente nos campos você implementar a sua própria
+de diversas maneiras, uma delas é ilustrada nesse exemplo onde é passado ao
+atributo C<apply> uma lista de I<TypeConstraints> que será aplicada aos valores
+submetidos no formulário. Nesse exemplo, a mensagem definida em C<Maioriadde>
+será mostrada no formulário caso os valores não "passem" na validação.
+
+
+=head1 Mão na massa com o HTML::FormHandler
+
+Vamos agora fazer alguma coisa útil com esse maravilhoso módulo. Nosso exemplo
+constitui parte de uma aplicação web fictícia em L<Catalyst> e L<DBIx::Class> que
+estará usando o L<HTML::FormHandler> para lidar com os formulários de postagem
+de notícias no Equinócio.
+
+=head3 Nosso I<Schema>
+
+  # Usando PostgreSQL como RDBMS
+
+  package Equinocio::Web::Schema::Result::Noticia;
+  use Moose;
+  extends 'DBIx::Class::Core';
+  __PACKAGE__->table("noticia");
+  __PACKAGE__->add_columns(
+    "id",
+    {
+      data_type     => "integer",
+      default_value => "nextval('noticia_id_seq'::regclass)",
+      is_nullable   => 0,
+      size          => 4,
+    },
+    "titulo",
+    {
+      data_type     => "character varying",
+      default_value => undef,
+      is_nullable   => 0,
+      size          => 255,
+    },
+    "categoria",
+    {
+      data_type     => "integer",
+      default_value => undef,
+      is_nullable   => 0,
+      size          => 4
+    },
+    "conteudo",
+    {
+      data_type     => "text",
+      default_value => undef,
+      is_nullable   => 0,
+      size          => undef,
+    }
+    );
+    __PACKAGE__->set_primary_key("id");
+    __PACKAGE__->add_unique_constraint( "noticia_pkey", ["id"] );
+
+    __PACKAGE__->belongs_to(
+      "categoria",
+      "Equinocio::Web::Schema::Result::Categoria",
+      { id => "categoria" },
+    );
+    
+    __PACKAGE__->many_to_many( tags => 'noticia_tags', 'tag' );
+    
+    #
+    #
+
+    package Equinocio::Web::Schema::Result::Categoria;
+    use Moose;
+    extends 'DBIx::Class::Core';
+    __PACKAGE__->table("noticia");
+    __PACKAGE__->add_columns(
+      "id",
+      {
+        data_type     => "integer",
+        default_value => "nextval('noticia_id_seq'::regclass)",
+        is_nullable   => 0,
+        size          => 4,
+      },
+      "nome",
+      {
+        data_type     => "character varying",
+        default_value => undef,
+        is_nullable   => 0,
+        size          => 255,
+      }
+    );
+      
+=head3 Nossa classe de formulário
+
+  package Equinocio::Web::Form::Noticia;
+  use HTML::FormHandler::Moose;
+  extends 'HTML::FormHandler::Model::DBIC';
+
+  use utf8;
+  use namespace::autoclean;
+  use Moose::Util::TypeConstraints;
+
+  subtype 'TextoCurto' 
+    => as 'Str' 
+    => where { length $_ < 1000 } 
+    => message { 'Texto muito longo' };
+
+  has '+item_class' => ( default => 'DB::Noticia' );
+
+  has_field titulo => (
+    type           => 'Text',
+    label          => 'Título',
+    unique         => 1,
+    unique_message => 'Opa! Já existe uma entrada com esse título.'
+  );
+
+  has_field categoria => (
+    type         => 'Select',
+    label        => 'Categoria',
+    column_label => 'name'
+  );
+
+  has_field conteudo => (
+    type             => 'TextArea',
+    label            => 'Conteúdo',
+    required         => 1,
+    required_message => 'Não acha que está esquecendo de alguma coisa?',
+    apply            => ['TextoCurto']
+  );
+
+  has_field enviar => ( type => 'Submit' );
+
+  1;
+
+
+
+=head3 O que é que tá acontecendo aqui??
+    
+Como extende L<HTML::FormHandler::Model::DBIC> e por ter definido o atributo 
+C<+item_class>, o nosso form ao fim de uma validação com suceso, vai inserir
+ou atualizar uma I<Row> de I<Noticia> em nosso banco de dados. Percebam a restrição
+de unicidade explicitada pelo atributo C<unique> no campo C<titulo>. Antes de
+inserir/atualizar os dados o L<HTML::FormHandler::Model::DBIC> verifica se já 
+existe outra notícia com o mesmo título, caso exista, a mensagem definida 
+em C<unique_message> será exibida.
+
+No campo I<categoria> definimos através do atributo C<column_label> qual coluna
+do registro será usada como I<label> no I<<select>> do formulário.
+
+Já o campo C<conteudo> possui o atributo C<required> setado, que faz com que o
+L<HTML::FormHandler> exiba a mensagem definida em C<required_message> se o campo for
+submetido vazio. Uma I<constraint> denominada C<TextoCurto> é declarada e aplicada
+ao valor submetido no campo, C<TextoCurto> é usado para restringir o tamanho do 
+texto a 1000 caracteres.
+
+Por fim um campo do tipo C<Submit> que renderizará o nosso botão para submeter o
+formulário.
+
+
+
+=head3 Enquanto isso... num I<Controller> qualquer.
+
+  package Equinocio::Web::Controller::Noticia;
+  use Moose;
+
+  BEGIN { extends 'Catalyst::Controller'}
+  
+  use aliased 'Equinocio::Web::Form::Noticia' => 'FormNoticia';
+
+  sub base :Chained('/') :PathParth('noticia'): CaptureArgs(0) {
+    my ($self, $c) = @_;
+    $c->stash->{collection} = $c->model('DB::Noticia');
+  }
+
+  sub create :Chained('base') :PathPart('nova') :Args(0){
+    my ($self, $c) = @_;
+
+    $nova_noticia = $c->stash->{collection}->new_result({});
+    my $form = FormNoticia->new( item => $nova_noticia );
+    $c->stash( form => $form , template => 'noticia/nova.tt');
+    
+    return unless $c->req->method eq 'POST');
+
+    $form->process(params => $c->req->params);
+    
+    return unless $form->validated;
+
+    $c->res->redirect(
+      $c->uri_for_action( $c->controller->action_for('list') )
+    );
+  }
+
+
+=head3 Por fim, nossa template
+
+  [% form.render %]
+
+Exatamente, só isso. Em nossa I<Action> C<create> criamos o formulário passando
+como parâmetro o novo registro onde iremos persistir os dados. Ao ser invocado
+em nossa template o método C<render> vai fazer com que todos os campos do nosso
+fomulário sejam renderizados e apresentados na página. Na próxima vez em que o
+formulário for preenchido e submetido, ou seja, quando o método da requisição HTTP
+for um c<POST>, os parâmetros serão processados no formulário. Caso algum erro de
+validação ocorra o formulário é retornado ao usuário agora contendo as mensagens
+de erro em seus respectivos campos inválidos, caso contrário o fluxo de
+execução prossegue e, nesse caso, somos redirecionados para a página de listagem
+de notícias.
+
+=head3 O formulário renderizado
+
+=begin pod:xhtml
+
+<p><img src="/static/images/equinocio/2010/mar/formhandler/equinocio-perl-hfh.png"></p>
+
+<p><img src="/static/images/equinocio/2010/mar/formhandler/equinocio-perl-hfh2.png"></p>
+
+=end pod:xhtml
+
+Viu só como foi fácil construir um formulário? Rápido, simples, sem tocar em 
+simplesmente uma única linha de HTML e acima de tudo usando os recursos mais
+avançados de Perl.
+
+Até a próxima, e aproveitem o Equinócio!
+
+
+=head1 AUTOR
+
+Gabriel Andrade Santana <gabiruh  gmail • com> é desenvolvedor Perl na Aware TI (www.aware.com.br). 
+

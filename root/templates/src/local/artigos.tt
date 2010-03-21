@@ -6,83 +6,8 @@
           <div class="top">
             <h2>Artigos</h2>
             <div class="whois">
-          
-		<h3>2009</h3>
-		<ul>
-		<li><a href="/artigos/ArtigoDanielMantovani2009x12x02">Usando o CPAN <span class="autor">(Daniel Mantovani)</span></a></li>
-		<li><A href="/artigos/ArtigoMarcoAurelioMACAE2009x07x29">Como instalar, passo a passo: Apache, MySQL e Perl <span class="autor">(Marco Aurelio)</span></a></li>
-		<li><a href="/artigos/ArtigoModulosRecomendadosCPAN"> M&oacute;dulos recomendados do CPAN <span class="autor">(Nelson Ferraz)</span></a></li>
-
-
-
-		</ul>
-
-
-		<h3>2008</h3>
-		<ul>
-		<li><a href="/artigos/ArtigoModulosCore">M&oacute;dulos b&aacute;sicos que voc&ecirc; precisa conhecer. <span class="autor">(Joenio Costa)</span></a></li>
-		<li><a href="/artigos/ComoEncontrarBonsProgramadores">Como encontrar (e contratar) bons programadores <span class="autor">(Nelson Ferraz)</span></a></li>
-		<li><a href="/artigos/MVCWxPerl">MVC e WxPerl <span class="autor">(Alceu Junior)</span></a></li>
-		
-		<li><a href="/artigos/PrimeirosPassosEmPerl">Primeiros passos em Perl <span class="autor">(Nelson Ferraz)</span></a></li>
-
-		</ul>
-
-		<h3>2007</h3>
-		<ul>
-		<li><a href="/artigos/AdventuresInPerl6">Adventures in Perl 6</a> <span class="autor">(Nelson Ferraz)</a></li>
-
-		<li><a href="/artigos/CodigoDeEtica">C&oacute;digo de Etica</a> <span class="autor">(Nelson Ferraz)</a></li>
-
-		<li><a href="/artigos/CriandoWebLogCatalyst">Criando um WebLog com Catalyst <span class="autor">(Eden Cardim)</span></a></li>
-
-		<li><a href="/artigos/ExperimentandoInternals">Iniciando em perlguts, perlapi, perlcall e perlembed <span class="autor">(Daniel Ruoso)</span></a></li>
-		<li><a href="/artigos/IntroduoPerl">Uma introducao ao Perl <span class="autor">(Alceu Junior)</span></a></li>
-
-		<li><a href="/artigos/OtimizandoPerl">Otimizando codigo Perl <span class="autor">(Alceu Junior)</span></a></li>
-
-		<li><a href="/artigos/ParsePortuguesComPCR">Usando Perl6 Rules para fazer parse de portugues <span class="autor">(Daniel Ruoso)</span></a></li>
-
-		<li><a href="/artigos/PorQueEsconderOCodigoEMaIdeia">Por que tentar obstruir a leitura do seu codigo e uma ma ideia <span class="autor">(Nelson Ferraz)</span></a></li>
-
-		<li><a href="/artigos/ProgramaoSegura">Criando programas em Perl de forma segura <span class="autor">(Alceu Junior)</span></a></li>
-
-		</ul>
-		
-		<h3>2006</h3>
-		<ul>
-		<li><a href="/artigos/AdicionandoRepositoriosPPM">Adicionando repositorios em modulos em seu PPM</a> <span class="autor">(Joenio Costa)</span></li>
-		<li><a href="/artigos/ArtigoOtavioFernandes2006x09x27">Introducao ao Inline::C <span class="autor">(Ot&aacute;vio Fernandes)</span></a></li>
-
-		<li><a href="/artigos/AsTresGrandesVirtudesDoProgramador"> As tr&ecirc;s grandes virtudes do programador <span class="autor">(Nelson Ferraz)</span></a></li>
-
-		<li><a href="/artigos/ConceitosBasicosSockets">Conceitos basicos sobre sockets <span class="autor">(Joenio Costa)</span></a></li>
-
-
-		<li><a href="/artigos/DesenhandoTextosGtk2Pango">Desenhando textos ad-hoc com Gtk2 e Pango <span class="autor">(Daniel Ruoso)</a></li>
-
-		<li><a href="/artigos/ExpressoesRegulares">Express&otilde;es regulares <span class="autor">(Joenio Costa)</a></li>
-
-		<li><a href="/artigos/HackerHowto">Como se tornar um hacker ? <span class="autor">(Nelson Ferraz)</a></li>
-
-		<li><a href="/artigos/IntroduzindoPerlNoSeuTrabalho">Introduzindo a linguagem perl no seu trabalho <span class="autor">(Joenio Costa)</a></li>
-
-		<li><a href="/artigos/PraticasEssenciaisDeDesenvolvimento">Praticas Essenciais de Desenvolvimento <span class="autor">(Joenio Costa)</a></li>
-
-		<li><a href="/artigos/ProgramacaoWEBComPerl">Programacao Web com Perl <span class="autor">(Joenio Costa)</span></a></li>
-
-		<li><a href="/artigos/RecomendacoesProgramacaoEmPerl">Recomendacoes para programacao em Perl <span class="autor">(Joenio Costa)</span></a></li>
-
-		<li><a href="/artigos/RegexPraticasTecnicasAvancadas">Expressoes regulares - Introducao, Praticas e Tecnicas avancadas <span class="autor">(David Dias)</span></a></li>
-
-		<li><a href="/artigos/SmartQuestionsHowTo">Como fazer perguntas de forma inteligente. <span class="autor">(Nelson Ferraz)</span></a></li>
-
-		<li><a href="/artigos/TecnicasManipulacaoEstruturas">Tecnicas de manipulacao <span class="autor">(Joenio Costa)</span></a></li>
-
-		<li><a href="/artigos/TestandoSoftwaresEmPerl">Testes de software em Perl <span class="autor">(Joenio Costa)</span></a></li>
-		
-		<li><a href="/artigos/VariaveisEspeciais">Variaveis especiais em Perl <span class="autor">(Joenio Costa)</span></a></li>
-		</ul>
+   
+    [% INCLUDE site/listar_artigos.tt %]
 
 		</div>
           </div>

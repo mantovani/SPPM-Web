@@ -1,0 +1,77 @@
+=pod
+
+r7 - 15 Oct 2007 - NelsonFerraz
+
+=head1 Adventures in Perl 6
+
+I<>
+
+This presentation shows how to create a text-based adventure game in
+Perl 6.
+
+=over
+
+=item * Nordic Perl Workshop: Adventures in Perl6 - slides from the
+Nordic Perl Workshop 2007 - Copenhagen.
+
+=back
+
+=over
+
+=item * Oslo.pm: Adventures in Perl6 - slides from the Oslo.pm
+techmeeting, held a few days after the NPW. In this presentation, I
+started to implement a world similar to the one presented in
+Games::ScottAdams::Tutorial, which uses a specialized language for
+adventures. Remember that my goal was not to write the Ultimate
+Adventure Engine, but to learn a bit more of Perl 6 by writing one.
+
+=back
+
+=over
+
+=item * Lisbon.pm: the same presentation for Lisbon.pm techmeeting, on
+2007-07-10.
+
+=back
+
+=over
+
+=item * Adventures in Perl6 was presented at YAPC::Europe::2007, by
+Flavio Glock, on 2007-08-28 (Vienna)
+
+=back
+
+=over
+
+=item * Forum de Software Livre de Lisboa, 2007-10-13 (Lisbon)
+
+=back
+
+=over
+
+=item * See the source code.
+
+=back
+
+=head2 Next steps
+
+=over
+
+=item * Use Perl 6 classes and roles to define objects and what they
+can do
+
+=back
+
+Let me know if you have any ideas! : )
+
+=head1 AUTOR
+
+Nelson Ferraz
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 1710 bytes of input
+#Sun Jan 31 01:45:24 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

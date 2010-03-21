@@ -1,0 +1,90 @@
+=head1 Time-lapse e Catalyst
+
+=head2 O que é?
+
+I<< "Time-lapse é uma técnica fotográfica usada no cinema na qual o objeto em foco é fotografado em determinados períodos de tempo. Para ser mais preciso, é quando se capta cada frame." >> (L<< http://pt.wikipedia.org/wiki/Time-lapse >>)
+
+Vamos criar uma interface em Catalyst para demontrar o conceito.
+
+=head2 Por quê?
+
+Estava lendo um artigo do Stephen B. Jenkins, L<< "Automatic Generation of Time-lapse Animations"| http://www.erudil.com/pdf/yapc2003.pdf >>, e achei a solução apresentada muito interessante. Durante a construção de um prédio, foi sugerido que imagens continuas da construção fossem colocadas em uma página web. Ele tirava 2 fotos por minuto, 12 horas por dia, totalizando 1440 imagens por dia. Um segundo de vídeo tem 25 frames, então na prática ele tinha um vídeo de 57,6 segundos. Isso é muito significativo se, por exemplo, você precisa monitorar uma loja 24H por dia com 5 câmeras.
+
+=head2 O que precisamos?
+
+O primeiro passo é ter acesso à imagem da cena atual. Para nosso exemplo, estou usando um iPhone com o aplicativo WifiCam, que cria um servidor web na porta 8080, então basta conectar-se a I<< http://meu_ip_aqui:8080/wificam.jpg >> e ver a imagem atual que a câmera está filmando. Caso você não tenha webcam, celular ou coisa que o valha, você pode usar L<< essa URL|http://parliamenthill.gc.ca/text/newhillcam.jpg >> para entender e testar o conceito.
+
+=head2 Como vai ser?
+
+Há duas formas de exibir a imagem I<< time-lapse >> em nossa aplicação web. A primeira é através de um script que, a cada 60 segundos, substitui uma foto em nosso servidor pela foto atual obtida do servidor da câmera. A segunda é obtendo e retornando a foto diretamente pela action de nossa aplicação, sob demanda.
+
+=head2 Método 1 - Via Script
+
+A cada 60 segundos, este script pega a imagem atual da sua câmera e a salva em I<< /var/www/MyApp/root/static/imagem.jpg >>. Lembre-se de ajustar o endereço IP do servidor da câmera (utilizamos C<< 192.168.1.2 >> abaixo, como exemplo) e o caminho para sua aplicação Catalyst:
+
+    use strict;
+    use warnings;
+
+    use LWP::Simple;
+
+    while (1) {
+        mirror( 'http://192.168.1.2:8080/wificam.jpg', 
+                '/var/www/MyApp/root/static/imagem.jpg' 
+              ) or warn $!;
+        sleep(60);
+    }
+
+
+Naturalmente, podemos simplificar o script para apenas fazer a cópia do endereço remoto para o caminho local, e executar através de um agendador de tarefas como cron. Por exemplo, a seguinte entrada em nossa crontab daria o mesmo resultado, sem a necessidade de ter que deixar o script rodando em background:
+
+  00 * * * * wget -q -O /var/www/MyApp/root/static/imagem.jpg http://192.168.1.2:8080/wificam.jpg
+
+
+=head2 Método 2 - Via Controller
+
+Usando isso no controller vai ter quase o mesmo efeito. A principal diferença é que não temos uma cópia estática da imagem, atualizada a cada 60 segundos. Em vez disso, pegamos uma nova imagem do vídeo a cada atualização da página (reload, refresh, ou o habitual atalho "F5") feita pelo usuário.
+
+   sub imagem : Local {
+        my ( $self, $c ) = @_;
+        my $content = get('http://192.168.1.2:8080/wificam.jpg');
+        $c->res->header( 'Content-Type', 'image/jpeg' ); 
+        $c->res->body($content);
+    }
+
+
+=head2 O Template
+
+Independente do método escolhido, a exibição é extremamente simples, com alguns meta-comandos HTML - para evitar cache, por exemplo.
+    
+    <html>
+     <head>
+	<meta http-equiv="Refresh" content="60">
+      	<meta http-equiv="Expires" content="0">
+      	<meta http-equiv="Pragma" content="no-cache">
+      	<meta http-equiv="Cache-Control" content="no-cache">
+     </head>
+     <body> 
+     	<img src="imagem.jpg" />
+     </body>
+    </html>
+
+Caso tenha usado o segundo método (controller), altere a tag "img" para:
+
+    <img src="[% c.uri_for('imagem') %]" />
+
+Pronto, agora você tem um site que exibe a imagem do que está acontecendo nesse momento pela sua câmera.
+
+
+=head2 Conclusão
+
+Adicionar I<< time-lapse >> à sua aplicação web é muito fácil com Perl e Catalyst. Cada um dos métodos apresentados possui vantagens e desvantagens. O primeiro faz apenas uma requisição à câmera por intervalo de tempo desejado (em nosso exemplo, 60 segundos), enquanto o segundo atua sob demanda. Escolher um ou outro depende de quantos acessos você espera, e quão atualizadas precisam ser as imagens.
+
+=head2 Agradecimento
+
+Agradeço ao Breno que revisou e estruturou o artigo.
+
+=head2 AUTOR
+
+Daniel Mantovani <daniel.oliveira.mantovani@gmail.com>, trabalho atualmente na empresa JaCotei L<http:://www.jacotei.com.br>
+
+=cut

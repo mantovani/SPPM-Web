@@ -1,0 +1,530 @@
+=pod
+
+r7 - 19 Nov 2008 - NelsonFerraz
+
+=head1 Primeiros Passos em Perl
+
+I<>
+
+Este E<eacute> um pequeno tutorial de Perl, destinado a quem nao tem
+experiencia em programacao.
+
+=head2 Escrevendo coisas na tela
+
+Inicie o seu editor de textos favorito, e digite o seguinte programa.
+Salve-o como "print.pl":
+
+ print "Olá, mundo!!!";
+
+O programa E<eacute> realmente simples: utiliza o comando C<print> para
+imprimir um texto na tela do computador.
+
+=head2 Execute o programa
+
+VocE<ecirc> pode executar o script invocando o interpretador C<perl>
+manualmente:
+
+ perl print.pl
+
+VocE<ecirc> deverE<aacute> ver a mensagem na tela.
+
+Experimente agora digitar o seguinte programa (print2.pl):
+
+ print "Olá, 
+ mundo!!!"; 
+
+Execute o programa (perl print2.pl) e veja o resultado.
+
+Como vocE<ecirc> pode ver, a linguagem Perl E<eacute> bastante
+flexE<iacute>vel, e se vocE<ecirc> digitar ENTER no meio de uma linha
+de texto, o interpretador saberE<aacute> exatamente o que fazer.
+
+(Um dos lemas da linguagem Perl E<eacute> I<There's More Than One Way
+To Do It>, ou seja, existe mais de uma maneira de se fazer o que
+vocE<ecirc> deseja.)
+
+Este terceiro programa faz a mesma coisa:
+
+ print "Olá,\nmundo!!!"; 
+
+O sE<iacute>mbolo C<\n> indica uma quebra de linha, o equivalente a
+digitar C<enter>. Sempre que vocE<ecirc> quiser imprimir um texto em
+mais de uma linha, pode utilizar o sE<iacute>mbolo C<\n>.
+
+=head2 Conversando com o usuE<aacute>rio
+
+No tE<oacute>pico anterior nE<oacute>s vimos como imprimir coisas na
+tela, utilizando o comando C<print>.
+
+Na maioria das vezes, porE<eacute>m, seu programa precisarE<aacute>
+interagir com o usuE<aacute>rio.
+
+Neste tE<oacute>pico nE<oacute>s veremos quais sE<atilde>o os comandos
+em Perl que podem ser usados para ler o teclado, e como guardar as
+informaE<ccedil>E<otilde>es na memE<oacute>ria.
+
+Antes de mais nada, digite o seguinte programa e salve-o como
+"nome.pl":
+
+ print "Digite o seu nome: ";
+ my $nome = <>;
+ print "Olá, $nome!!!";
+
+Se o programa nE<atilde>o contiver erros, a mensagem "Digite o seu
+nome:" serE<aacute> impressa na tela, com o cursor piscando ao lado.
+
+A execuE<ccedil>E<atilde>o E<eacute> interrompida na segunda linha, que
+faz o programa esperar que o usuE<aacute>rio digite algo pelo teclado.
+Quem faz isso E<eacute> o C<E<lt>E<gt>>, conhecido em Perl como
+"operador diamante", que lE<ecirc> uma linha digitada pelo
+usuE<aacute>rio. (Na verdade, o operador diamante faz muito mais do que
+isso, como nE<oacute>s veremos adiante.)
+
+Quando o usuE<aacute>rio pressiona ENTER, a informaE<ccedil>E<atilde>o
+digitada E<eacute> associada E<agrave> variE<aacute>vel C<$nome>, e
+pode entE<atilde>o ser usada no resto do programa.
+
+A essa altura vocE<ecirc> pode estar se perguntando: por que a
+variE<aacute>vel C<$nome> comeE<ccedil>a com um cifrE<atilde>o?
+
+=head2 VariE<aacute>veis Escalares
+
+Antes de responder essa pergunta, digite mais esse programa:
+
+ print "Digite um numero: ";
+ my $x = <>;
+ chomp $x;
+ print "$x vezes 2 é igual a ", ($x * 2), "\n";
+ print "Agora digite uma palavra: ";
+ $x = <>;
+ chomp $x;
+ print "A palavra é '$x'!!!";
+
+Este programa mostra que a mesma variE<aacute>vel, $x, pode conter
+letras ou nE<uacute>meros.
+
+Chamamos de variE<aacute>veis de "escalares", aquelas que podem estar
+associadas a um valor qualquer, numE<eacute>rico ou
+alfanumE<eacute>rico.
+
+Isto significa que variE<aacute>veis escalares podem ser usadas para
+armazenar nE<uacute>meros (e com eles fazer contas) ou letras
+(tambE<eacute>m conhecidos como strings).
+
+=head2 Evitando erros
+
+Imagine que, ao digitar o programa nome.pl, vocE<ecirc> cometeu um erro
+de digitaE<ccedil>E<atilde>o:
+
+ print "Digite o seu nome: ";
+ my $nome = <>;
+ print "Olá, $name!!!";
+
+VocE<ecirc> consegue enxergar o erro?
+
+A variE<aacute>vel onde guardamos o nome chama-se "$nome". Mas quando
+vamos imprimir seu valor, digitamos, por engano "$name".
+
+E quando vocE<ecirc> executar o programa, ele nE<atilde>o vai funcionar
+-- sem que vocE<ecirc> saiba porquE<ecirc>.
+
+Felizmente perl pode te ajudar a encontrar estes erros automaticamente.
+Para isso, vocE<ecirc> sE<oacute> precisa incluir a seguinte linha no
+inE<iacute>cio do seu programa:
+
+ use strict;
+
+A diretiva C<use strict> E<eacute> muito importante, e vocE<ecirc> deve
+usE<aacute>-la sempre, em todos os seus programas.
+
+Quando perl encontra essa instruE<ccedil>E<atilde>o, passa a exigir que
+todas as variE<aacute>veis sejam declaradas; caso contrE<aacute>rio ele
+apontarE<aacute> um erro. E isso E<eacute> muito importante, pois, de
+outra forma, o erro de digitaE<ccedil>E<atilde>o se propagaria de
+maneira silenciosa.
+
+Por isso, E<eacute> importante repetir: C<use strict> em todos os seus
+programas, sempre!
+
+=head2 Voltas e mais voltas
+
+No tE<oacute>pico anterior, vimos como ler uma
+informaE<ccedil>E<atilde>o digitada pelo usuE<aacute>rio,
+atravE<eacute>s da entrada padrE<atilde>o.
+
+Agora nE<oacute>s vamos ver que a entrada padrE<atilde>o tambE<eacute>m
+pode ser usada para ler a resposta de outros programas.
+
+Em primeiro lugar, porE<eacute>m, precisamos ver como realizar
+repetiE<ccedil>E<otilde>es em Perl.
+
+=head2 LaE<ccedil>o "foreach"
+
+Digite o seguinte programa e salve-o como "foreach.pl":
+
+ use strict;
+ 
+ for my $i (1..10) {
+   print "$i\n";
+ }
+
+Ao executE<aacute>-lo vocE<ecirc> deverE<aacute> obter o seguinte
+resultado:
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+ 10
+
+O que aconteceu?
+
+O comando C<for> (ou C<foreach>) E<eacute> comum em muitas linguagens
+de programaE<ccedil>E<atilde>o. Ele simplesmente efetua um determinado
+nE<uacute>mero de repetiE<ccedil>E<otilde>es, colocando os valores numa
+variE<aacute>vel ($i).
+
+E<Eacute> claro que existem maneiras diferente de obter o mesmo
+resultado. VocE<ecirc> pode omitir a variE<aacute>vel $i:
+
+ for (1..10) {
+     print "$_\n";
+ }
+
+Opa! De onde surgiu essa variE<aacute>vel "$_"???
+
+A variE<aacute>vel $_ E<eacute> a chamada "variE<aacute>vel
+padrE<atilde>o", que surge magicamente dentro de um loop, quando
+nE<atilde>o especificamos uma variE<aacute>vel.
+
+VocE<ecirc> tambE<eacute>m pode inverter a ordem da expressE<atilde>o:
+
+ print "$_\n" for (1..10);
+
+=head2 Listas
+
+No tE<oacute>pico anterior, nE<oacute>s vimos que variE<aacute>veis
+escalares podem armazenar qualquer valor, nE<uacute>merico ou
+alfanumE<eacute>rico. Mas, e se quisermos armazenar uma lista de
+valores?
+
+Uma possibilidade seria utilizar diversas variE<aacute>veis escalares:
+
+ my $nome1 = "Kepler";
+ my $nome2 = "Newton";
+ my $nome3 = "Gauss";
+ my $nome4 = "Maxwell";
+ 
+ print "$nome1\n";
+ print "$nome2\n";
+ print "$nome3\n";
+ print "$nome4\n";
+
+Mas existe uma maneira mais inteligente, utilizando listas (ou
+I<arrays>, em inglE<ecirc>s).
+
+Digite o seguinte programa:
+
+ use strict;
+ 
+ @nomes = ("Kepler","Newton","Gauss","Maxwell");
+ 
+ print "$_\n" for @nomes;
+
+Assim como as variE<aacute>veis escalares comeE<ccedil>am com C<$>, as
+listas comeE<ccedil>am sempre com C<@>.
+
+E, da mesma forma como nas variE<aacute>veis escalares, uma lista pode
+misturar itens numE<eacute>ricos e alfanumE<eacute>ricos:
+
+ @lista = ("palavra", "007", 42);
+
+Digite agora o seguinte programa, e salve-o como "csv.pl":
+
+ use strict;
+ 
+ @lista = <>;
+ print join (",",@lista);
+
+Ao executE<aacute>-lo, o programa ficarE<aacute> esperando que
+vocE<ecirc> digite alguma coisa. Digite uma palavra e pressione ENTER.
+Nada aconteceu?
+
+Na verdade o programa ficarE<aacute> esperando que vocE<ecirc> digite
+vE<aacute>rias palavras, para colocE<aacute>-las em uma lista (a
+variE<aacute>vel C<@lista>). Digite mais algumas palavras e pressione
+C<Ctrl+D> para indicar o tE<eacute>rmino. A lista de palavras
+serE<aacute> impressa, sE<oacute> que separada por vE<iacute>rgulas.
+
+Isto E<eacute> feito pelo comando C<join>, que serve para I<unir> os
+itens de uma lista utilizando um determinado separador. Neste exemplo,
+os itens sE<atilde>o separados por uma vE<iacute>rgula (C<",">).
+
+Mas por que tivemos que digitar C<Ctrl+D>?
+
+Como a variE<aacute>vel C<@lista> esperava uma lista de itens separados
+por ENTER, o C<Ctrl+D> foi usado para indicar quando a lista termina.
+No Linux, nE<oacute>s podemos gerar um sinal de fim de arquivo
+(tambE<eacute>m conhecido como "EOF", ou end of file) atravE<eacute>s
+da combinaE<ccedil>E<atilde>o C<Ctrl+D>. (No MS-DOS e no Windows,
+vocE<ecirc> usaria C<Ctrl+Z>.)
+
+Isto sE<oacute> E<eacute> necessE<aacute>rio quando digitamos uma lista
+manualmente. Felizmente, na maioria das vezes as listas serE<atilde>o
+"digitadas" automaticamente. A saE<iacute>da de um programa pode ser
+usada como entrada de outro. Por exemplo:
+
+ $ ls | perl csv.pl
+
+Neste exemplo, o comando C<ls> simplesmente lista o conteE<uacute>do de
+um diretE<oacute>rio, que E<eacute> redirecionado para o nosso
+programa. Assim, temos uma lista de arquivos separados por
+vE<iacute>rgula!
+
+Veja mais este exemplo:
+
+ $ ls | sort -r | perl csv.pl
+
+Dessa vez nE<oacute>s encadeamos trE<ecirc>s comandos: o C<ls> lista os
+arquivos, o C<sort -r> coloca-os em ordem reversa, e o nosso script
+imprime a lista separada por vE<iacute>gulas.
+
+Esta E<eacute> uma importante liE<ccedil>E<atilde>o da "filosofia
+Unix":
+
+=over
+
+=item * Escreva programas que faE<ccedil>am apenas uma coisa mas que
+faE<ccedil>am bem feito.
+
+=item * Escreva programas que trabalhem juntos.
+
+=item * Escreva programas que manipulem texto, pois esta E<eacute> uma
+interface universal.
+
+=back
+
+No prE<oacute>ximo tE<oacute>pico veremos como um programa pode
+modificar seu rumo de acordo com certas condiE<ccedil>E<otilde>es.
+
+=head2 DecisE<otilde>es
+
+A maioria dos programas nE<atilde>o vai simplesmente repetir os dados
+que foram digitados pelo usuE<aacute>rio. Muitas vezes E<eacute>
+necessE<aacute>rio fazer algumas comparaE<ccedil>E<otilde>es e,
+dependendo dos resultados, tomar algumas decisE<otilde>es.
+
+O comando C<if> faz uma comparaE<ccedil>E<atilde>o e, dependendo do
+resultado, executa uma sequE<ecirc>ncia de comandos. Ele funciona mais
+ou menos assim:
+
+ 
+   se (expressão é verdadeira) {
+      execute uma série de comandos
+   }
+
+Um exemplo simples, em Perl:
+
+ 
+   if ($idade < 18) {
+      die "Este programa é proibido para menores de 18 anos!";
+   }
+   # o programa continua...
+
+O comando C<if> nE<atilde>o apenas pode executar uma sE<eacute>rie de
+comandos quando uma expressE<atilde>o for verdadeira, mas
+tambE<eacute>m quando a expressE<atilde>o for falsa. Para isso, usamos
+a expressE<atilde>o C<else> ("caso contrE<aacute>rio", em
+inglE<ecirc>s):
+
+ 
+   if ($saldo > 0) {
+      print "Saldo positivo!";
+   } else {
+      print "Saldo negativo!";
+   }
+
+=head2 Tipos de comparaE<ccedil>E<atilde>o
+
+Como vocE<ecirc> deve se lembrar, em Perl nE<atilde>o existem
+diferenE<ccedil>as entre variE<aacute>veis numE<eacute>ricas e
+alfanumE<eacute>ricas: as mesmas variE<aacute>veis podem armazenar
+letras e nE<uacute>meros.
+
+E se nE<oacute>s quisermos comparar, por exemplo, B<$a=7> com
+B<$b="007">? As duas variE<aacute>veis tE<ecirc>m ou nE<atilde>o
+tE<ecirc>m o mesmo valor?
+
+A resposta E<eacute>: depende. Se compararmos literalmente, $a e $b
+sE<atilde>o diferentes; se compararmos numericamente, sE<atilde>o
+iguais.
+
+Por isso, existe a distinE<ccedil>E<atilde>o entre
+comparaE<ccedil>E<otilde>es numE<eacute>ricas e literais em Perl.
+Quando estivermos trabalhando com nE<uacute>meros, utilizaremos as
+comparaE<ccedil>E<otilde>es numE<eacute>ricas, e quando estivermos
+trabalhando com strings, utilizaremos as comparaE<ccedil>E<otilde>es
+literais:
+
+ 
+   # Comparações numéricas
+   if ($idade == 18) { ... }
+   if ($idade > 100) { ... }
+ 
+   # Comparações literais
+   if ($resposta eq "s") { ... }
+   if ($nome ne "Larry") { ... }
+
+=head2 Uma questE<atilde>o de estilo
+
+Assim como na LE<iacute>ngua Portuguesa, a linguagem Perl permite
+inverter a ordem de uma frase.
+
+Veja o seguinte exemplo:
+
+   # Confirma
+   print "Você deseja continuar? (s/n) ";
+   my $resposta = getc();
+ 
+   die "O programa termina aqui.\n" if $resposta ne "s";
+ 
+   print "Vamos continuar...";
+
+Mas lembre-se: apenas por que vocE<ecirc> I<pode> fazer algo,
+nE<atilde>o significa que deva fazer isto sempre. Por exemplo:
+
+   print "Saldo positivo!" if $saldo > 0;
+   print "Saldo negativo!" if $saldo < 0;
+
+Como vocE<ecirc> pode ver, o cE<oacute>digo ficou repetitivo. Assim
+como em qualquer linguagem natural, a redundE<acirc>ncia deve ser
+evitada.
+
+Apenas para concluir, vamos ver uma outra forma de se escrever uma
+condiE<ccedil>E<atilde>o, sem utilizar C<if>, C<else> ou C<unless>:
+
+   print "Saldo ", $saldo < 0 ? "negativo" : "positivo";
+
+Com o tempo vocE<ecirc> aprenderE<aacute> a usar todos estes recursos
+da linguagem Perl...
+
+=head2 Hashes
+
+Nos tE<oacute>picos anteriores, nE<oacute>s vimos dois tipos de
+variE<aacute>veis de Perl:
+
+=over
+
+=item * Escalares - ex: $valor = 123;
+
+=item * Arrays - ex: @lista = ('a', 'b', 'c');
+
+=back
+
+O E<uacute>ltimo tipo de variE<aacute>vel E<eacute> o "hash".
+
+Um hash E<eacute> semelhante a um dicionE<aacute>rio: para cada item
+(ou "chave"), temos um valor correspondente.
+
+Digite o seguinte programa:
+
+ use strict;
+ 
+ my %birthday = (
+          "Johannes Kepler" => "27/12/1571",
+             "Isaac Newton" => "25/12/1642",
+     "Carl Friedrich Gauss" => "30/04/1777",
+      "James Clerk Maxwell" => "13/06/1831"
+ );
+ 
+ foreach (sort keys %birthday) {
+   print "$_ nasceu em $birthday{$_}.\n";
+ }
+
+Ao executar este programa, vocE<ecirc> verE<aacute> a resposta:
+
+ Carl Friedrich Gauss nasceu em 30/04/1777.
+ Isaac Newton nasceu em 25/12/1642.
+ James Clerk Maxwell nasceu em 13/06/1831.
+ Johannes Kepler nasceu em 27/12/1571.
+
+O hash B<%birthday> guarda chaves e valores de acordo com a seguinte
+estrutura:
+
+Chave
+
+Valor
+
+Carl Friedrich Gauss
+
+30/04/1777
+
+Isaac Newton
+
+25/12/1642
+
+James Clerk Maxwell
+
+13/06/1831
+
+Johannes Kepler
+
+27/12/1571
+
+Para se referir a um E<uacute>nico item, basta utilizar a sintaxe
+B<$hash{key}>, como por exemplo:
+
+ print $birthday{"Isaac Newton"};
+
+Dentro do laE<ccedil>o B<foreach>, a variE<aacute>vel B<$_> guarda cada
+um dos nomes, e B<$birthday{$_}>, a data de nascimento.
+
+=head2 Expressoes Regulares
+
+ExpressE<otilde>es regulares sE<atilde>o expressE<otilde>es usadas para
+analisar e manipular textos.
+
+Em sua forma mais simples, uma expressE<atilde>o regular pode ser usada
+para verificar se um texto contE<eacute>m uma determinada letra,
+palavra, ou padrE<atilde>o.
+
+=head2 Manipulando arquivos
+
+Existem inE<uacute>meras formas de se ler arquivos em Perl.
+
+Se vocE<ecirc> estiver escrevendo um script simples, para realizar uma
+tarefa rE<aacute>pida, pode utilizar o operador diamante (E<lt>E<gt>).
+Digite o programa a seguir, e salve-o com o nome de "diamond.pl":
+
+ while ( <> ) {
+     print uc($_);
+ }
+
+Experimente executar o programa, passando um arquivo-texto:
+
+ perl diamond.pl texto.txt
+
+Se vocE<ecirc> nE<atilde>o tiver um arquivo texto, pode usar o
+prE<oacute>prio arquivo do programa:
+
+ perl diamond.pl diamond.pl
+
+O que aconteceu? O programa percorreu cada uma das linhas do arquivo, e
+imprimiu a linha em maiE<uacute>sculas usando o comando C<uc>.
+
+=head1 AUTOR
+
+Nelson Ferraz
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 19203 bytes of input
+#Sun Jan 31 01:45:19 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

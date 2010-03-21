@@ -8,9 +8,9 @@ controller SPPM::Web::Controller::Artigos {
     use DateTime;
     use SPPM::Web::Pod;
 
-    action base as 'artigos' under '/base';
+    action base as 'artigo' under '/base';
 
-    final action article (Str $article) as '' under base {
+    final action article (Int $year, Str $article) as '' under base {
         my $legal_chars = quotemeta('.-_/');
 
         if ($article =~ /\.\./ || $article =~ /[^\w$legal_chars]/ ) {
@@ -18,7 +18,7 @@ controller SPPM::Web::Controller::Artigos {
             $ctx->detach;
         }
 
-        my $pod_file = $ctx->path_to('root','artigos',"$article.pod");
+        my $pod_file = $ctx->path_to('root','artigos',$year,"$article.pod");
             
         if (! -e $pod_file) {
             $ctx->res->redirect('/');

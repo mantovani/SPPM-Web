@@ -1,0 +1,736 @@
+=pod
+
+r10 - 05 Jan 2007 - EdenCardim
+
+=head1 Criando um WebLog com Catalyst
+
+I<>
+
+Como criar, rapidamente, uma aplicaE<ccedil>E<atilde>o de WebLog usando
+Catalyst
+
+=head2 SumE<aacute>rio
+
+=over
+
+=item * Instalando o Catalyst
+
+=item * Criando o Esqueleto da AplicaE<ccedil>E<atilde>o
+
+=item * Executando o Servidor de Testes
+
+=item * Uma Breve IntroduE<ccedil>E<atilde>o a MVC
+
+=item * Criando um Model
+
+=item * Criando uma View
+
+=item * Criando um Controller
+
+=item * Catalyst Controller Actions
+
+=item * Plugins
+
+=item * Criando posts
+
+=item * Listando os Posts
+
+=item * Deletando posts
+
+=item * Editando posts
+
+=item * Posts hierE<aacute>rquicos
+
+=item * ConsideraE<ccedil>E<otilde>es Finais
+
+=back
+
+=head2 Instalando o Catalyst
+
+Para instalar o catalyst vocE<ecirc> deve ter privilE<eacute>gios de
+super-usuE<aacute>rio.
+
+ eden@anubis:/opt/eden/workspace$ su -
+ password:
+ anubis:~# cpan
+ cpan[1]> install Catalyst
+ cpan[2]> install Catalyst::Devel
+ cpan[3]> exit
+ anubis:~# exit
+
+=head2 Criando o Esqueleto da AplicaE<ccedil>E<atilde>o
+
+ eden@anubis:/opt/eden/workspace$ catalyst.pl WebLog
+ created "WebLog"
+ created "WebLog/script"
+ created "WebLog/lib"
+ created "WebLog/root"
+ created "WebLog/root/static"
+ created "WebLog/root/static/images"
+ created "WebLog/t"
+ created "WebLog/lib/WebLog"
+ created "WebLog/lib/WebLog/Model"
+ created "WebLog/lib/WebLog/View"
+ created "WebLog/lib/WebLog/Controller"
+ created "WebLog/weblog.yml"
+ created "WebLog/lib/WebLog.pm"
+ created "WebLog/lib/WebLog/Controller/Root.pm"
+ created "WebLog/README"
+ created "WebLog/Changes"
+ created "WebLog/t/01app.t"
+ created "WebLog/t/02pod.t"
+ created "WebLog/t/03podcoverage.t"
+ created "WebLog/root/static/images/catalyst_logo.png"
+ created "WebLog/root/static/images/btn_120x50_built.png"
+ created "WebLog/root/static/images/btn_120x50_built_shadow.png"
+ created "WebLog/root/static/images/btn_120x50_powered.png"
+ created "WebLog/root/static/images/btn_120x50_powered_shadow.png"
+ created "WebLog/root/static/images/btn_88x31_built.png"
+ created "WebLog/root/static/images/btn_88x31_built_shadow.png"
+ created "WebLog/root/static/images/btn_88x31_powered.png"
+ created "WebLog/root/static/images/btn_88x31_powered_shadow.png"
+ created "WebLog/root/favicon.ico"
+ created "WebLog/Makefile.PL"
+ created "WebLog/script/weblog_cgi.pl"
+ created "WebLog/script/weblog_fastcgi.pl"
+ created "WebLog/script/weblog_server.pl"
+ created "WebLog/script/weblog_test.pl"
+ created "WebLog/script/weblog_create.pl"
+
+=head2 Executando o Servidor de Testes
+
+O Catalyst vem com um servidor HTTP lightweight para testes
+
+ eden@anubis:/opt/eden/workspace$ cd WebLog
+ eden@anubis:/opt/eden/workspace$ script/weblog_server.pl
+ [debug] Debug messages enabled
+ [debug] Loaded plugins:
+ .----------------------------------------------------------------------------.
+ | Catalyst::Plugin::ConfigLoader  0.13                                       |
+ | Catalyst::Plugin::Static::Simple  0.14                                     |
+ '----------------------------------------------------------------------------'
+ 
+ [debug] Loaded dispatcher "Catalyst::Dispatcher"
+ [debug] Loaded engine "Catalyst::Engine::HTTP"
+ [debug] Found home "/opt/eden/workspace/WebLog"
+ [debug] Loaded Config "/opt/eden/workspace/WebLog/weblog.yml"
+ [debug] Loaded components:
+ .-----------------------------------------------------------------+----------.
+ | Class                                                           | Type     |
+ +-----------------------------------------------------------------+----------+
+ | WebLog::Controller::Root                                        | instance |
+ '-----------------------------------------------------------------+----------'
+ 
+ [debug] Loaded Private actions:
+ .----------------------+--------------------------------------+--------------.
+ | Private              | Class                                | Method       |
+ +----------------------+--------------------------------------+--------------+
+ | /default             | WebLog::Controller::Root             | default      |
+ | /end                 | WebLog::Controller::Root             | end          |
+ '----------------------+--------------------------------------+--------------'
+ 
+ [info] WebLog powered by Catalyst 5.7006
+ You can connect to your server at http://anubis:3000
+
+Agora, abra seu browser predileto no endereE<ccedil>o localhost:3000
+
+=head2 Uma Breve IntroduE<ccedil>E<atilde>o a MVC
+
+MVC (Model/View/Controller) E<eacute> um conceito de interface com o
+usuE<aacute>rio que divide a aplicaE<ccedil>E<atilde>o em 3 camadas:
+
+=over
+
+=item * Modelos - Camada contendo os dados e lE<oacute>gica de
+negE<oacute>cio da aplicaE<ccedil>E<atilde>o.
+
+=item * VisE<otilde>es - Camada de que exibe os Modelos ao
+usuE<aacute>rio
+
+=item * Controller - Camada que controla o intercE<acirc>mbio de dados
+entre os Modelos e as VisE<otilde>es
+
+=back
+
+=head2 Criando um Model
+
+Nosso Model serE<aacute> baseado em DBIx::Class, um mapeador objeto
+relacional. Por motivos de praticidade, iremos utilizar o banco de
+dados SQLite.
+
+Agora E<eacute> uma boa hora para instalar o DBIx::Class e o
+DBD::SQLite:
+
+ eden@anubis:/opt/eden/workspace/WebLog$ su -
+ password:
+ anubis:~# cpan
+ cpan[1]> install Catalyst::Helper::Model::DBIC
+ cpan[2]> install DBD::SQLite
+ cpan[3]> exit
+ anubis:~# exit
+
+Se o servidor de testes ainda estiver rodando, encerre-o teclando
+Ctrl-C.
+
+ eden@anubis:/opt/eden/workspace/WebLog$ script/weblog_create.pl model DB DBIC::Schema WebLog::Schema create=static 'dbi:SQLite:dbname=weblog.db' '' ''
+  exists "/opt/eden/workspace/WebLog/script/../lib/WebLog/Model"
+  exists "/opt/eden/workspace/WebLog/script/../t"
+ No tables found in database, nothing to load at /usr/share/perl5/DBIx/Class/Schema/Loader/Base.pm line 443.
+ Dumping manual schema for WebLog::Schema to directory /opt/eden/workspace/WebLog/script/../lib ...
+ Schema dump completed.
+ created "/opt/eden/workspace/WebLog/script/../lib/WebLog/Model/DB.pm"
+ created "/opt/eden/workspace/WebLog/script/../t/model_DB.t"
+
+Observe que o assitente reclamou por nE<atilde>o encontrar tabelas no
+banco de dados, isso E<eacute> porque nE<atilde>o criamos o esquema do
+banco ainda, E<eacute> o que iremos fazer agora.
+
+ eden@anubis:/opt/eden/workspace/WebLog$ mkdir lib/WebLog/Schema
+
+Dentro da pasta recE<eacute>m-criada, crie um arquivo chamado Post.pm
+com seu editor de cE<oacute>digo predileto:
+
+ package WebLog::Schema::Post;
+ use base qw/DBIx::Class/;
+ 
+ __PACKAGE__->load_components(qw/PK::Auto Core/);
+ __PACKAGE__->table('post');
+ __PACKAGE__->add_columns(
+     id => {
+         data_type         => 'integer',
+         is_auto_increment => 1,
+         is_nullable       => 0
+     },
+     title => {
+         data_type => 'text',
+         size      => 64
+     },
+     body => {
+         data_type => 'text',
+         size      => 1024
+     },
+     date      => { data_type => 'datetime', default_value => 'CURRENT_TIMESTAMP' },
+     parent_id => {
+         data_type   => 'integer',
+         is_nullable => 1
+     }
+ );
+ __PACKAGE__->set_primary_key('id');
+ __PACKAGE__->has_many( 'replies', 'WebLog::Schema::Post', 'parent_id' );
+ __PACKAGE__->might_have('parent', 'WebLog::Schema::Post', 'parent_id');
+ 
+ 1;
+
+Obs.: Deve haver um esquema melhor de banco de dados para este tipo de
+aplicaE<ccedil>E<atilde>o, consulte o DBA mais prE<oacute>ximo... wink
+
+Para inicializar o arquivo que o DBD::SQLite irE<aacute> usar para
+armazenar seus dados:
+
+ eden@anubis:/opt/eden/workspace/WebLog$ perl -Ilib -MWebLog::Schema -e "WebLog::Schema->connect('dbi:SQLite:dbname=weblog.db', '', '')->deploy"
+
+Observe que foi criado um arquivo chamado weblog.db na pasta
+raE<iacute>z do aplicativo.
+
+=head2 Criando uma View
+
+Nossa View serE<aacute> baseada no mE<oacute>dulo Template, um
+front-end Perl para o Template Toolkit.
+
+ eden@anubis:/opt/eden/workspace/WebLog$ script/weblog_create.pl view TT TT
+  exists "/opt/eden/workspace/WebLog/script/../lib/WebLog/View"
+  exists "/opt/eden/workspace/WebLog/script/../t"
+ created "/opt/eden/workspace/WebLog/script/../lib/WebLog/View/TT.pm"
+ created "/opt/eden/workspace/WebLog/script/../t/view_TT.t"
+
+=head2 Criando um Controller
+
+Vamos criar um controller para gerenciar os posts do WebLog.
+
+ eden@anubis:/opt/eden/workspace/WebLog$ script/weblog_create.pl controller Post
+  exists "/opt/eden/workspace/WebLog/script/../lib/WebLog/Controller"
+  exists "/opt/eden/workspace/WebLog/script/../t"
+ created "/opt/eden/workspace/WebLog/script/../lib/WebLog/Controller/Post.pm"
+ created "/opt/eden/workspace/WebLog/script/../t/controller_Post.t"
+
+=head2 Catalyst Controller Actions
+
+Quando E<eacute> feita uma requisiE<ccedil>E<atilde>o HTTP ao sistema,
+o Catalyst automaticamente mapeia o endereE<ccedil>o requisitado a uma
+chamada de subrotina dentro de algum Controller. Para evitar que
+usuE<aacute>rios executem subrotinas arbitrariamente, precisamos
+especificar quais subrotinas podem ser executadas e a qual URL elas
+estE<atilde>o associadas. Uma Action E<eacute> uma subrotina associada
+a um endereE<ccedil>o no domE<iacute>nio da aplicaE<ccedil>E<atilde>o.
+
+=head2 Plugins
+
+As funcionalidades bE<aacute>sicas do Catalyst podem ser extendidas
+atravE<eacute>s de plugins, neste exemplo em particular, iremos
+utilizar um plugin para construE<ccedil>E<atilde>o e
+validaE<ccedil>E<atilde>o prE<aacute>tica de formulE<aacute>rios:
+
+ eden@anubis:/opt/eden/workspace/WebLog$ su -
+ password:
+ anubis:~# cpan
+ cpan[1]> install Catalyst::Plugin::FormBuilder
+ cpan[2]> exit
+ anubis:~# exit
+
+No arquivo lib/WebLog.pm substitua a linha
+
+ use Catalyst qw/-Debug ConfigLoader Static::Simple/;
+
+por
+
+ use Catalyst qw/-Debug ConfigLoader Static::Simple FormBuilder/;
+
+Esta E<eacute> a lista de plugins que o Catalyst irE<aacute> carregar
+junto com sua aplicaE<ccedil>E<atilde>o. Observe que -Debug nE<atilde>o
+E<eacute> um plugin e sim uma opE<ccedil>E<atilde>o que ativa a
+exibiE<ccedil>E<atilde>o das mensagens de depuraE<ccedil>E<atilde>o que
+sE<atilde>o mostradas na STDERR enquanto sua aplicaE<ccedil>E<atilde>o
+estiver rodando.
+
+=head2 Criando posts
+
+Abra o arquivo lib/WebLog/Controller/Post.pm no seu editor predileto e
+inclua a seguinte Action:
+
+ sub add : Local Form {
+     my ( $self, $c, $parent_id ) = @_;
+ 
+     if ( $c->form->submitted && $c->form->validate ) {
+         my %args = (
+             title => $c->req->param('title'),
+             body  => $c->req->param('body')
+         );
+         if ($parent_id) {
+             $args{parent_id} = $parent_id;
+         }
+         $c->model('DB::Post')->create( \%args );
+     }
+ }
+
+O atributo Local estE<aacute> caracterizando a subrotina add como uma
+Action que responde dentro do namespace do pacote atual. Resumindo, o
+Catalyst irE<aacute> mapear a URL
+
+ host-da-aplicacao/post/add
+
+para
+
+ WebLog::Controller::Post->add
+
+Observe que foi usado o nome do controller, seguido do nome da
+subrotina para criar o endereE<ccedil>o que serE<aacute> utilizado na
+web.
+
+O Atributo Form indica ao FormBuilder que esta action tem um
+formulE<aacute>rio associado a ela. Para especificar como serE<aacute>
+o formulE<aacute>rio:
+
+ eden@anubis:/opt/eden/workspace/WebLog$ mkdir root/forms
+ eden@anubis:/opt/eden/workspace/WebLog$ mkdir root/forms/post
+
+Dentro da pasta root/forms/post crie um arquivo chamado add.fb com o
+seguinte conteE<uacute>do:
+
+ name: add_post
+ method: post
+ fields:
+     title:
+         label: Post Title
+         type: text
+         size: 40
+         required: 1
+     body:
+         type: textarea
+         cols: 40
+         required: 1
+         rows: 5
+ submit: Post
+
+Agora iremos criar o template da pE<aacute>gina onde serE<aacute>
+exibido o form:
+
+ eden@anubis:/opt/eden/workspace/WebLog$ mkdir root/post
+
+Na pasta recE<eacute>m-criada, crie um arquivo chamado add.tt contendo:
+
+ [% form.render %]
+
+Reinicie o servidor de testes novamente, para atualizar o
+cE<oacute>digo.
+
+ eden@anubis:/opt/eden/workspace/WebLog$ script/weblog_server.pl
+ [debug] Debug messages enabled
+ [debug] Loaded plugins:
+ .----------------------------------------------------------------------------.
+ | Catalyst::Plugin::ConfigLoader  0.13                                       |
+ | Catalyst::Plugin::Static::Simple  0.14                                     |
+ '----------------------------------------------------------------------------'
+ 
+ [debug] Loaded dispatcher "Catalyst::Dispatcher"
+ [debug] Loaded engine "Catalyst::Engine::HTTP"
+ [debug] Found home "/opt/eden/workspace/WebLog"
+ [debug] Loaded Config "/opt/eden/workspace/WebLog/weblog.yml"
+ [debug] Loaded components:
+ .-----------------------------------------------------------------+----------.
+ | Class                                                           | Type     |
+ +-----------------------------------------------------------------+----------+
+ | WebLog::Controller::Post                                        | instance |
+ | WebLog::Controller::Root                                        | instance |
+ | WebLog::Model::DB                                               | instance |
+ | WebLog::Model::DB::Post                                         | class    |
+ | WebLog::View::TT                                                | instance |
+ '-----------------------------------------------------------------+----------'
+ 
+ [debug] Loaded Private actions:
+ .----------------------+--------------------------------------+--------------.
+ | Private              | Class                                | Method       |
+ +----------------------+--------------------------------------+--------------+
+ | /default             | WebLog::Controller::Root             | default      |
+ | /end                 | WebLog::Controller::Root             | end          |
+ | /post/index          | WebLog::Controller::Post             | index        |
+ | /post/add            | WebLog::Controller::Post             | add          |
+ '----------------------+--------------------------------------+--------------'
+ 
+ [debug] Loaded Path actions:
+ .-------------------------------------+--------------------------------------.
+ | Path                                | Private                              |
+ +-------------------------------------+--------------------------------------+
+ | /post/add                           | /post/add                            |
+ '-------------------------------------+--------------------------------------'
+ 
+ [info] WebLog powered by Catalyst 5.7006
+ You can connect to your server at http://anubis:3000
+
+Agora acesse o endereE<ccedil>o localhost:3000/post/add no seu browser
+predileto, preencha e submeta o formulE<aacute>rio
+
+Observe a saE<iacute>da na STDERR
+
+ [snip...]
+ [debug] Body Parameters are:
+ .-------------------------------------+--------------------------------------.
+ | Parameter                           | Value                                |
+ +-------------------------------------+--------------------------------------+
+ | _submit                             | Post                                 |
+ | _submitted_add_post                 | 1                                    |
+ | body                                | test                                 |
+ | title                               | test                                 |
+ '-------------------------------------+--------------------------------------'
+ [debug] "POST" request for "post/add" from "127.0.0.1"
+ [debug] Path is "post/add"
+ [debug] Form (post/add): Set action to /post/add
+ [debug] Form (post/add): Looking for config file post/add.fb
+ [debug] Form (post/add): Found form config /opt/eden/workspace/WebLog/root/forms/post/add.fb
+ [debug] Form (post/add): Calling FormBuilder->new to create form
+ [debug] Rendering template "post/add.tt"
+ [info] Request took 0.120552s (8.295/s)
+ .----------------------------------------------------------------+-----------.
+ | Action                                                         | Time      |
+ +----------------------------------------------------------------+-----------+
+ | /post/add                                                      | 0.088585s |
+ | /end                                                           | 0.013087s |
+ |  -> WebLog::View::TT->process                                  | 0.011510s |
+ '----------------------------------------------------------------+-----------'
+
+JE<aacute> deu pra perceber que vai ser chato ficar reiniciando
+manualmente o servidor de testes sempre que modificarmos o
+cE<oacute>digo. Por isso o servidor de testes tem uma funcionalidade
+interessante que faz com que ele se reinicie sempre que houver uma
+alteraE<ccedil>E<atilde>o no cE<oacute>digo. Basta ativar o switch -r:
+
+ eden@anubis:/opt/eden/workspace/WebLog$ script/weblog_server.pl -r
+
+Apesar disso ser bom para acelerar o inE<iacute>cio de um projeto, a
+medida que a aplicaE<ccedil>E<atilde>o for crescendo, o processo de
+reinicio vai ficar cada vez mais lento (principalmente se seu Schema
+for carregado dinamicamente).
+
+=head2 Listando os Posts
+
+A aplicaE<ccedil>E<atilde>o jE<aacute> estE<aacute> criando os posts no
+banco de dados, porE<eacute>m ainda nE<atilde>o hE<aacute> como
+visualiza-los. Abra o arquivo lib/WebLog/Controller/Post.pm no seu
+editor predileto e inclua a seguinte Action:
+
+ sub list : Local {
+     my ( $self, $c ) = @_;
+ 
+     my $posts = $c->model('DB::Post');
+ 
+     $c->stash->{posts} =
+         $posts->search( undef, { where => { parent_id => undef } } );
+ }
+
+A funE<ccedil>E<atilde>o $c-E<gt>stash retorna uma referE<ecirc>ncia
+para um hash para armazenamento global durante uma
+requisiE<ccedil>E<atilde>o. Isso significa que todos os componentes da
+sua aplicaE<ccedil>E<atilde>o terE<atilde>o acesso E<agrave>s
+informaE<ccedil>E<otilde>es armazenadas no stash. No nosso caso, ao
+final de cada requisiE<ccedil>E<atilde>o, o stash E<eacute> passado
+para o template que iremos usar para gerar o HTML que serE<aacute>
+exibido no browser.
+
+Agora, altere a Action add para:
+
+ sub add : Local Form {
+     my ( $self, $c, $parent_id ) = @_;
+ 
+     if ( $c->form->submitted && $c->form->validate ) {
+         my %args = (
+             title => $c->req->param('title'),
+             body  => $c->req->param('body')
+         );
+         if ($parent_id) {
+             $args{parent_id} = $parent_id;
+         }
+         $c->model('DB::Post')->create( \%args );
+         $c->res->redirect('/post/list');
+     }
+ }
+
+Observe que apenas a E<uacute>ltima linha dentro do if mudou,
+redirecionando para a lista de posts assim que for adicionado um post.
+
+Quando criamos nosso Controller, o Catalyst automaticamente incluiu a
+Action index, ela E<eacute> chamada caso seja requisitado o
+endereE<ccedil>o que equivale a um nome de controller sem ser seguido
+de um nome de subrotina. Substitua a Action index que o Catalyst gerou
+por esta:
+
+ sub index : Private {
+     my ( $self, $c ) = @_;
+ 
+     $c->res->redirect('/post/list');
+ }
+
+E no arquivo lib/WebLog/Controller/Root.pm, substitua a action default
+por esta:
+
+ sub default : Private {
+     my ( $self, $c ) = @_;
+ 
+     $c->res->redirect('/post/list');
+ }
+
+Isto faz com que estas Actions redirecionem o processamento para
+mostrar a lista de posts.
+
+Agora vamos criar o template para exibir a lista de posts. Crie o
+arquivo root/post/list.tt com o seguinte conteE<uacute>do:
+
+ [% FOREACH post IN posts.all %]
+     <h2>[% post.title %]</h2>
+     [% post.date %]
+     <br>
+     <p>[% post.body %]</p>
+     <br>
+ [% END %]
+ <a href="[% c.uri_for('/post/add') %]">Post</a>
+
+Reinicie o servidor e abra o endereE<ccedil>o localhost:3000 no
+browser. Clique em 'Post' para acrescentar mais posts.
+
+=head2 Deletando posts
+
+Crie as seguintes Actions no arquivo lib/WebLog/Controller/Post.pm:
+
+ sub get : PathPart('post') Chained CaptureArgs(1) {
+     my ( $self, $c, $post_id ) = @_;
+     $c->stash->{post} = $c->model('DB::Post')->find($post_id);
+ }
+ 
+ sub delete : Chained('get') {
+     my($self, $c) = @_;
+     $c->stash->{post}->delete;
+     $c->res->redirect('/post/list');
+ }
+
+Aqui, estamos criando Actions encadeadas. O atributo Chained sem
+argumentos indica o inE<iacute>cio da cadeia, o argumento
+PathPart('post'), indica que esta action serE<aacute> associada a uma
+URL comeE<ccedil>ando com 'post' e o atributo CaptureArgs(1) indica que
+um pedaE<ccedil>o da URL serE<aacute> passada como argumento para a
+action. O atributo Chained('get'), significa que a Action serE<aacute>
+invocada depois da Action get.
+
+Resumindo, quando for solicitada a URL /post/3/delete, serE<atilde>o
+invocadas as seguintes Actions, nesta ordem:
+
+=over
+
+=item * WebLog::Controller::Post-E<gt>get(3) - O argumento '3' foi
+capturado da URL por causa do atributo CaptureArgs
+
+=item * WebLog::Controller::Post-E<gt>delete
+
+=back
+
+Reinicie o servidor. Observe que a lista de Actions encadeadas
+E<eacute> exibida separadamente:
+
+ [debug] Loaded Chained actions:
+ .-------------------------------------+--------------------------------------.
+ | Path Spec                           | Private                              |
+ +-------------------------------------+--------------------------------------+
+ | /post/*/delete/...                  | /post/get (1)                        |
+ |                                     | => /post/delete                      |
+ '-------------------------------------+--------------------------------------'
+
+Agora, faE<ccedil>a a seguinte alteraE<ccedil>E<atilde>o no arquivo
+root/post/list.tt:
+
+ [% FOREACH post IN posts.all %]
+     <h2>[% post.title %]</h2>
+     [% post.date %]
+     (<a href="[% c.uri_for('/post') _ '/' _ post.id _ '/delete' %]">delete</a>)
+     <br>
+     <p>[% post.body %]</p>
+     <br>
+ [% END %]
+ <a href="[% c.uri_for('/post/add') %]">Post</a>
+
+Abra o browser no endereE<ccedil>o localhost:3000 e experimente criar e
+apagar posts.
+
+=head2 Editando posts
+
+Crie essa Action no arquivo lib/WebLog/Controller/Post.pm:
+
+ sub edit : Chained('get') Args(0) Form {
+     my ( $self, $c ) = @_;
+ 
+     if ( $c->form->submitted && $c->form->validate ) {
+         $c->stash->{post}->title( $c->req->param('title') );
+         $c->stash->{post}->body( $c->req->param('body') );
+         $c->stash->{post}->update;
+         $c->res->redirect('/post/list');
+     }
+     $c->form->values(
+         title => $c->stash->{post}->title,
+         body  => $c->stash->{post}->body
+     );
+ }
+
+Observe que o formulE<aacute>rio de ediE<ccedil>E<atilde>o E<eacute> o
+mesmo do formulE<aacute>rio de adiE<ccedil>E<atilde>o, porE<eacute>m
+vem com valores jE<aacute> preenchidos por uma consulta ao banco.
+Iremos reaproveitar o formulE<aacute>rio utilizado na action add para
+manter a consistE<ecirc>ncia da aplicaE<ccedil>E<atilde>o:
+
+ eden@anubis:/opt/eden/workspace/WebLog$ mv root/forms/post/add.fb root/forms/post/edit.fb
+
+Agora, altere a declaraE<ccedil>E<atilde>o da Action add para:
+
+ sub add : Local Form('/post/edit')
+
+No template root/post/list.tt:
+
+ [% FOREACH post IN posts.all %]
+     <h2>[% post.title %]</h2>
+     [% post.date %]
+     (<a href="[% c.uri_for('/post') _ '/' _ post.id _ '/edit' %]">edit</a>)
+     (<a href="[% c.uri_for('/post') _ '/' _ post.id _ '/delete' %]">delete</a>)
+     <br>
+     <p>[% post.body %]</p>
+     <br>
+ [% END %]
+ <a href="[% c.uri_for('/post/add') %]">Post</a>
+
+Crie um template em root/post/edit.tt:
+
+ [% form.render %]
+
+=head2 Posts hierE<aacute>rquicos
+
+Enfim, a funcionalidade mais interessante da aplicaE<ccedil>E<atilde>o,
+a criaE<ccedil>E<atilde>o de posts hierE<aacute>rquicos. Cada post deve
+ser capaz de ser associado com uma lista de respostas (que
+tambE<eacute>m sE<atilde>o posts) e estas respostas, por sua vez,
+sE<atilde>o "respondE<iacute>veis" e assim por diante, recursivamente.
+
+Crie a seguinte Action no controller lib/WebLog/Controller/Post.pm:
+
+ sub reply : Chained('get') Form('/post/edit') {
+     my ( $self, $c ) = @_;
+ 
+     $c->res->redirect( '/post/add/' . $c->stash->{post}->id );
+ }
+
+AtE<eacute> agora, o atributo parent_id estava sem uso, agora ele
+E<eacute> utilizado para indicar a qual post a resposta pertence.
+
+Agora, precisamos 'ensinar' o template root/post/list.tt a permitir a
+criaE<ccedil>E<atilde>o de respostas e exibir a hierarquia. Para isso,
+usamos uma macro recursiva:
+
+ [% MACRO show(posts) BLOCK %]
+ [% FOREACH post IN posts %]
+     <h2>[% post.title %]</h2>
+     [% post.date %]
+     (<a href="[% c.uri_for('/post') _ '/' _ post.id _ '/edit' %]">edit</a>)
+     (<a href="[% c.uri_for('/post') _ '/' _ post.id _ '/reply' %]">reply</a>)
+     (<a href="[% c.uri_for('/post') _ '/' _ post.id _ '/delete' %]">delete</a>)
+     <br>
+     <p>[% post.body %]</p>
+     [% IF (replies = post.replies) %]
+         [% count = 0 %]
+         [% FOREACH reply IN replies %][% count = count + 1 %][% END %]
+        <h3>[% count %]
+        Repl[% IF count > 1 %]ies[% ELSE %]y[% END %]:</h3>
+     [% show(replies) %]
+     [% END %]
+     <br>
+ [% END %]
+ [% END %]
+ [% show(posts.all) %]
+ <br>
+ <a href="[% c.uri_for('/post/add') %]">Post</a>
+
+=head2 ConsideraE<ccedil>E<otilde>es Finais
+
+VoilE<aacute>! Temos um Web Log simples, rE<aacute>pido e funcional com
+apenas 195 linhas de cE<oacute>digo (sem contar os templates HTML).
+Vale ressaltar que boa parte das linhas de cE<oacute>digo existentes
+foram geradas pelos bootstrappers do Catalyst. O uso de um esquema de
+banco de dados prE<eacute>-definido reduziria 28 linhas. O uso de
+alguma IDE fornecendo templates de cE<oacute>digo poderiam reduzir mais
+ainda a quantidade de trabalho.
+
+Obviamente, hE<aacute> vE<aacute>rias melhorias a serem feitas, mas
+estas serE<atilde>o deixadas como exercE<iacute>cio ao leitor. Eis
+algumas sugestE<otilde>es para acrE<eacute>scimo de funcionalidades:
+
+=over
+
+=item * Taint-checks e verificaE<ccedil>E<atilde>o de sanidade de
+argumentos.
+
+=item * Permitir ordenaE<ccedil>E<atilde>o dos posts por data ou nome.
+
+=item * PaginaE<ccedil>E<atilde>o da exibiE<ccedil>E<atilde>o dos
+posts.
+
+=item * Busca.
+
+=back
+
+A respeito de quaisquer erros encontrados neste artigo, dE<uacute>vidas
+e consideraE<ccedil>E<otilde>es adicionais, nE<atilde>o hesite em
+contatar o autor.
+
+=head1 AUTOR
+
+Eden Cardim
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 29428 bytes of input
+#Sun Jan 31 01:45:37 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

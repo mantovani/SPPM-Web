@@ -1,0 +1,171 @@
+=pod
+
+r2 - 19 Aug 2006 - JoenioCosta
+
+=head1 Introduzindo a Linguagem Perl no seu trabalho
+
+I<>
+
+Neste artigo, vou mostrar como eu fiz e minhas sugestE<otilde>es para a
+introduE<ccedil>E<atilde>o da linguagem no seu trabalho, tanto pra
+programadores, como para administradores que querem automatizar tarefas
+usando perl.
+
+=head2 1. IntroduE<ccedil>E<atilde>o
+
+Atualmente, em grandes empresas, diretrizes de uso de computadores e
+seus softwares sE<atilde>o determinados pelo departamento de TI, e
+normalmente a introduE<ccedil>E<atilde>o de novos programas e
+ferramentas de desenvolvimento sE<atilde>o muito complexas ou envolvem
+muita burocracia. Durante o texto, vou mostrar maneiras de introduzir a
+perl sem assustar seus superiores imediatos e ainda deixa-los felizes.
+
+=head2 1.1. Todos sE<atilde>o leigos
+
+Essa E<eacute> uma verdade universal, raros casos sE<atilde>o empresas
+onde os gerentes e supervisores tem a mente aberta para softwares. A
+natureza dinamica do software assusta o alto escalE<atilde>o de
+empresas cujo a formaE<ccedil>E<atilde>o E<eacute> de maneira classica
+e ortodoxa. Nessa filosofia, os meritos tecnicos da linguagem
+nE<atilde>o irE<atilde>o convencer ninguem a adota-la. Falar como eles
+E<eacute> importante, e linguagem da admnistrativo E<eacute> custo,
+retorno e vantagens competitivas. Mas existe uma coisa ainda mais
+poderosa que essas sugestE<otilde>es, que E<eacute> o "simplesmente
+funciona".
+
+=head2 2. Mostrar o programa pronto E<eacute> a chave
+
+MInha experiencia pessoal diz que ao se iniciar um dialogo, "pedindo"
+para se utilizar uma ferramenta pode ser um erro, a menos que
+vocE<ecirc> precise instalar a perl no computador e nE<atilde>o tenha
+meios. Gerentes e Diretores sE<atilde>o regidos para dar valor a
+soluE<ccedil>E<atilde>o dos problemas e nE<atilde>o muito como foi
+feito, a maioria E<eacute> assim. EntE<atilde>o a melhor alternativa
+para mostrar a Perl para eles E<eacute> resolver um problema inicial
+utilizando a perl. Simplesmente faE<ccedil>a e mostre funcionando e
+diga que usou a perl. E que foi rapido. Isso funcionou comigo, pois
+aticei a curiosidade de todos do meu setor quando resolvia pequenos
+problemas utilizando um laE<ccedil>o e um pequeno filtro com regex e
+gerando a saida na tela. Assim foi com um pequeno programa para
+diferenciar dois arquivos ".ini" do windows.
+
+O Problema:
+
+Tinhamos varios arquivos ".ini" e precisavamos compara-los, mas as tags
+eram totalmente desordenadas, assim dois arquivos sE<atilde>o
+diferentes, mas o conteudo logico E<eacute> o mesmo, pois as
+seE<ccedil>E<otilde>es estE<atilde>o desorganizadas.
+
+Por exemplo:
+
+conteudo do arquivo 1
+
+ 980c552b154bc7844e9489ebf912bbb4
+ bbb
+ ccc
+
+conteudo do arquivo 2
+
+ bbb
+ ccc
+ 980c552b154bc7844e9489ebf912bbb4
+
+Para nE<oacute>s, os arquivos sE<atilde>o iguais, mas todos os diffs
+testados apontam como sendo diferentes. Pois o conteudo interno das
+seE<ccedil>E<otilde>es tambE<eacute>m nE<atilde>o E<eacute> ordenado,
+pois sE<atilde>o gerados por processos automaticos.
+
+EntE<atilde>o eu recebi a ordem para fazer o programa, em C, C++ ou
+java, padrE<otilde>es da empresa. Resolvi usar a linguagem Perl, pois
+seria relativamene simples de implementar usando poucas linhas.
+
+O algoritmo inicial consistia em:
+
+ler do arquivo, usando as funE<ccedil>E<otilde>es open, e em um
+laE<ccedil>o while com operador diamante, eu criava um vetor com todas
+as tags entre colchetes. e as ordenava com sort. Comparava se os dois
+vetores tinham o mesmo tamanho, e caso afirmativo comparava cada tag,
+com seu correspondente. Lia os valores internos das tags em outros dois
+vetores, ordenava efazia a mesma comparaE<ccedil>E<atilde>o.
+
+colar o codigo comentado
+
+nota, na epoca nE<atilde>o usava hash, nem referencias, coisa que
+tornaria a tarefa muito mais simples. reescrever o programa comentar
+com relaE<ccedil>E<atilde>o a primeira versE<atilde>o.
+
+expandir o texto abaixo com mais detalhes
+
+O detalhe, eu fiz em um dia, e o programa rodou em linux, aix, e
+windows nt sem adaptaE<ccedil>E<atilde>o nenhuma, visto nossa
+dificuldade com o java e o aix. Mostrei ao meu gerente, que torceu o
+nariz, mas quando viu o resultado perdeu a defensiva em
+relaE<ccedil>E<atilde>o a linguagem.
+
+...
+
+=head2 3. Bibliografia
+
+=over
+
+=item * Online
+
+=over
+
+=item * TE<iacute>tulo: PE<aacute>gina de referE<ecirc>ncia
+
+=item * DescriE<ccedil>E<atilde>o: Uma breve descriE<ccedil>E<atilde>o
+do conteE<uacute>do da pE<aacute>gina.
+
+=back
+
+=back
+
+=over
+
+=item *
+
+=over
+
+=item * TE<iacute>tulo: Outra pE<aacute>gina de referE<ecirc>ncia
+
+=item * DescriE<ccedil>E<atilde>o: Uma breve descriE<ccedil>E<atilde>o
+do conteE<uacute>do da pE<aacute>gina.
+
+=back
+
+=back
+
+=over
+
+=item * Livros
+
+=over
+
+=item * TE<iacute>tulo: TE<iacute>tulo do livro - Seus autores
+
+=item * Dados: Editora, EdiE<ccedil>E<atilde>o, PE<aacute>ginas
+interessantes
+
+=item * DescriE<ccedil>E<atilde>o: Sua opiniE<atilde>o sobre o livro.
+
+=back
+
+=back
+
+----
+
+Criada por: f.recsky E<uacute>ltima modificaE<ccedil>E<atilde>o em:
+Sexta-feira 20 of Janeiro, 2006 [02:09:36 UTC] por f.recsky
+
+=head1 AUTOR
+
+Joenio Costa
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 5437 bytes of input
+#Sun Jan 31 01:46:06 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

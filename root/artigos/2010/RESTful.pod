@@ -1,0 +1,329 @@
+
+=pod
+
+=head1 Arquitetura REST e o serviÃ§o web 'RESTful'.
+
+REST Ã© um termo definido por Roy Fielding em sua tese de mestrado no qual ele descreve sobre um estilo de arquitetura de software sobre um sistema operado em rede. REST Ã© um acrÃ´nimo para "TransferÃªncia de Estado Representacional" (Representational State Transfer).
+
+REST vÃª cada aplicaÃ§Ã£o web como um conjunto de recursos, que representam um estado particular de um aplicativo. Quando vocÃª acessa este recurso, vocÃª estÃ¡ transferindo o estado (conteÃºdo), e talvez alterando o seu estado.
+
+Lembra-se: REST nÃ£o Ã© um padrÃ£o, nÃ£o Ã© um protocolo e sim uma arquitetura, e iremos discutir os seus principios mais importantes abaixo e posteriormente a implementÃ§Ã£o 'RESTful'.
+
+=head3 PrincÃ­pios
+
+Iremos descrever aqui trÃªs caracterÃ­sticas do REST.
+
+=over
+
+=item Recursos
+
+Os recursos individuais sÃ£o identificados na requisiÃ§Ã£o, como descrevendo elas nas URIs, um exemplo: http://meu.servidor/usuario/thiago.
+
+=item AÃ§Ãµes
+
+VocÃª pode aplicar vÃ¡rias aÃ§Ãµes sobre um recursos. SÃ£o oito metÃ³dos disponÃ­veis pelo protocolo HTTP, porÃ©m os mais utilizados sÃ£o:
+
+PUT - Cria ou atualiza o conteÃºdo do recurso, veja o POST tambÃ©m.
+
+GET - Busca o conteÃºdo do recurso.
+
+DELETE - Apaga o conteÃºdo do recurso.
+
+=item ConteÃºdo
+
+MIME TYPES - De modo geral Ã© utilizado por alguns protocolos para identificar que tipo de conteÃºdo esta sendo negociado. A identificaÃ§Ã£o geralmente Ã© feita no cabeÃ§alho pelo campo cujo o nome Ã© Content-type.
+
+Todo recurso inclui a informaÃ§Ã£o do formato referente ao conteÃºdo, ou seja quando por exemplo vocÃª receber a informaÃ§Ã£o da mensagem que o conteÃºdo (Content-type) se encontra no formato JSON (application/json) vocÃª tera que processar a informaÃ£o neste formato.
+
+Normalmente o formato dos arquivos utilizados pelos serviÃ§os RESTful sÃ£o JSON, XML ou YAML.
+
+=back
+
+=head2 Absorvendo a arquitetura REST.
+
+Abaixo irei descrever alguns elementos da arquitetura proposta na sua definiÃ§Ã£o.
+
+=head3 Cliente-Servidor
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig1.png" alt="fig1" /></center>
+
+=end pod:xhtml
+
+Clientes e servidores sÃ£o separados por uma interface por razÃµes de interesses (SoC), isto significa que o cliente nÃ£o implica em como os dados sÃ£o armazenados pois Ã© uma responsabilidade interna do servidor, assim como os servidores nÃ£o se importam com a interface do usuÃ¡rio. 
+
+Esta caracteristica torna o desenvolvimento independente entre as partes.
+
+=head3 Stateless
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig2.png" alt="fig2" /></center>
+
+=end pod:xhtml
+
+Este Ã© um dos conceitos mais importantes na minha opniÃ£o para os desenvolvedores em relaÃ§Ã£o aos elementos do estilo desta arquitetura. 
+
+Iremos adicionar uma restriÃ§Ã£o as interaÃ§Ãµes entre o cliente e o servidor, a comunicaÃ§Ã£o serÃ¡ cliente-stateless-servidor (CSS) e isto significa que para cada requisiÃ§Ã£o serÃ¡ enviada toda informaÃ§Ã£o necessaria para o entendimento da requisiÃ§Ã£o e nÃ£o poderÃ¡ re-utilizar nenhum contexto armazenado no servidor.
+
+Toda requisiÃ§Ã£o deve ser auto-suficiente e vocÃª deve manter o estado da sessÃ£o no cliente. Com este conceito vocÃª tem alguns beneficios, tais eles como:
+
+=over 
+
+=item Visibilidade 
+
+O I<pacote> de requisiÃ§Ã£o de dados contÃ©m todas as informaÃ§Ãµes necessarias para responder a solicitaÃ§Ã£o, diminuindo o trabalho do servidor.
+
+=item Confiabilidade 
+
+Ã melhorada porque facilita a tarefa de recuperaÃ§Ã£o de falhas.
+
+=item Escalabilidade 
+
+NÃ£o hÃ¡ necessidade de manter o estado das solicitaÃ§Ãµes, permitindo que o servidor se livre dos recursos alocados rapidamente e ainda simplificando a implementaÃ§Ã£o.
+
+=back
+
+PorÃ©m fica um alerta, vocÃª deve sempre observar que esta arquitetura pode lhe trazer prejuizos caso seja mal implementada pelo desenvolvedor, por exemplo se vocÃª nÃ£o elaborar um controle de sessÃ£o no cliente vocÃª pode ter uma sobrecarga de interaÃ§Ã£o. Utilize o controle de sessÃ£o no cliente como uma vantagem e nÃ£o uma desvantagem.
+
+=head3 Cache
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig3.png" alt="fig3" /></center>
+
+=end pod:xhtml
+
+Vamos adicionar mais um elemento na arquitetura do REST, o cache no cliente. Podemos definir atÃ© agora que iremos obter um cliente-cache-stateless-servidor.
+
+Para melhorar o desempenho de rede devemos utilizar este mecanismo para eliminar parcialmente as interaÃ§Ãµes, melhorando a eficiÃªncia, escalabilidade e desempenho pelo usuÃ¡rio.
+
+PorÃ©m isto deve ser muito bem planejado, um cache muito utilizado pode diminuir a confiabilidade dos dados, ou seja eles podem se tornar obsoletos em relaÃ§Ã£o se pedido  fosse feito direramente ao servidor, por isto muito cuidado no formataÃ§Ã£o da sua estrategia.
+
+=head3 Camadas
+
+=begin pod:xhtml
+
+<center><img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/rest/fig4.png" alt="fig4" /></center>
+
+=end pod:xhtml
+
+A utilizaÃ§Ã£o de camandas tem como finalidade melhorar a escabilidade do processo, isto significa que Ã© permitido uma arquitetura composta por camadas hierÃ¡rquicas por condicionar o comportamento de componentes de modo que cada componente nÃ£o pode "ver" alÃ©m da camada imediata com as quais estÃ£o interagindo.
+
+A grande vantagem da imposiÃ§Ã£o desta restriÃ§Ã£o que a complexidade Ã© restrita, e podemos pensar que estas camadas podem encapsular serviÃ§os (ex.: serviÃ§os legados) e etc.
+
+Como em todos os aspectos, isto deve ser levado em conta na implementaÃ§Ã£o para evitar sobrecargas entre as camadas, a implementaÃ§Ã£o de cache por dominio Ã© uma estrategia para quem for aproveitar desta caracteristica do REST.
+
+=head2 Usufruindo do REST na web.
+
+RESTful Ã© uma implementaÃ§Ã£o de um "web service" simples utilizando o HTTP e os principios REST. 
+
+VocÃª nÃ£o necessariamente deve se utilizar de todos os elementos propostos pelo REST, mas o melhor que ele pode te oferecer na resoluÃ§Ã£o do seu trabalho.
+
+=head2 Catalyst
+
+O L<Catalyst::Controller::REST> Ã© um facilitador para implementaÃ§Ã£o de serviÃ§os RESTful em Catalyst. Basicamente, isto ocorre com o sistema de I<dispatch> para redirecionar a requisiÃ§Ã£o para o bloco do cÃ³digo especifico dependendo do metÃ³do HTTP utilizado tambÃ©m.
+
+Veja abaixo um exemplo de implementaÃ§Ã£o:
+	
+	package Foo::Controller::Bar;
+	use Moose;
+	use namespace::autoclean;
+
+	BEGIN { extends 'Catalyst::Controller::REST' }
+
+	sub thing : Local : ActionClass('REST') { }
+
+	# Answer GET requests to "thing"
+	sub thing_GET {
+		my ( $self, $c ) = @_;
+
+		# Return a 200 OK, with the data in entity
+		# serialized in the body
+		$self->status_ok(
+			$c,
+			entity => {
+				some => 'data',
+				foo  => 'is real bar-y',
+			},
+		);
+	}
+
+	# Answer PUT requests to "thing"
+	sub thing_PUT {
+		$radiohead = $req->data->{radiohead};
+
+		$self->status_created(
+			$c,
+			location => $c->req->uri->as_string,
+			entity => {
+				radiohead => $radiohead,
+			}
+		);
+	} 
+
+O exemplo acima foi retirado do manual do prÃ³prio mÃ³dulo, porem observe como Ã© muito simples a implementaÃ§Ã£o.
+
+Neste exemplo estamos criando um controlador e declaramos uma "action" em I<sub thing>, no qual Ã© utilizada pela classe REST (ActionClass('REST')). Declarando I<thing_GET> e I<thing_PUT> e a explicaÃ§Ã£o Ã© trivial, qualquer requisiÃ§Ã£o GET Ã© enviado para o bloco de cÃ³digo thing_GET, assim como acontece com PUT.
+
+Todos os metÃ³dos nÃ£o declarados, serÃ£o respondidos com uma mensagem "405 Method Not Allowed". 
+
+Todo o conteÃºdo no $c->stash->{rest} serÃ¡ serializado para vocÃª, e o formato irÃ¡ depender do "content-type" na mensagem de requisiÃ§Ã£o.
+
+A documentaÃ§Ã£o do mÃ³dulo Ã© boa, compreendendo os conceitos e principios do REST, vocÃª nÃ£o terÃ¡ dificuldade nenhuma em utilizar os exemplos do mÃ³dulo, assim como ele. Recomendo a leitura do mÃ³dulo em questÃ£o, para vocÃª verificar as opÃ§Ãµes de configuraÃ§Ã£o, comportamentos e etc. 
+
+=head1 Exemplo de implementaÃ§Ã£o.
+
+Para nosso exemplo, iremos precisar instalar os seguintes mÃ³dulos:
+
+=over
+
+=item L<Task::Catalyst>
+
+=item L<Catalyst::Action::REST>
+
+=item L<Catalyst::Model::DBIC::Schema>
+
+=item L<DBD::SQLite>
+
+=back
+
+Vamos criar nossa aplicaÃ§Ã£o e um banco de dados, seguem os comandos:
+
+	$ catalyst.pl equinocio
+
+	$ cat db.sql
+
+	CREATE TABLE user (
+		user_id TYPE text NOT NULL PRIMARY KEY,
+		fullname TYPE text NOT NULL,
+		phone TYPE text NOT NULL
+	); 
+
+	$ mkdir db
+	$ sqlite3 db/rest.db < db.sql
+
+	$ cat equinocio.yml
+
+	---
+	name: equinocio
+	Model::DB:
+	    schema_class: equinocio::Schema
+	        connect_info:
+		    - DBI:SQLite:dbname=__path_to(db/rest.db)__
+		    - ""
+		    - ""
+	
+	$ cat lib/equinocio/Schema.pm 
+	package equinocio::Schema;
+	use base qw/DBIx::Class::Schema::Loader/;
+
+	1;
+
+	$ ./script/equinocio_create.pl model DB DBIC::Schema equinocio::Schema
+	$ ./script/equinocio_create.pl controller User
+
+
+Ok, atÃ© aqui nada de novo. Criamos nossa aplicaÃ§Ã£o catalyst, veja abaixo um exemplo de um controlador. (lib/Controller/User.pm)
+
+	
+	package equinocio::Controller::User;
+
+	use strict;
+	use warnings;
+	use base 'Catalyst::Controller::REST';
+
+	sub user : Path('/user') : Args(1) : ActionClass('REST') {
+    		my ( $self, $c, $user_id ) = @_;
+    		my $user = $c->stash->{'collection'} = 
+       			$c->model('DB::User')->find($user_id);
+   
+	     	if ($user) {
+		        my %data;
+		        $data{"$_"} = $user->$_ for 
+				grep { defined($user->$_) } 
+				qw(user_id fullname phone);
+        		%{$c->stash->{'data'}} = %data;
+    		}
+	}
+
+	sub user_POST {
+    		my ( $self, $c, $user_id ) = @_;
+		my $data = $c->req->data;
+		$c->model('DB::User')->update_or_create($data);
+
+    		$self->status_created( $c, location => $c->req->uri->as_string,
+			entity   => $data );
+	}
+
+	*user_PUT = *user_POST;
+
+	sub user_GET {
+    		my ( $self, $c, $user_id ) = @_;
+    		if ( defined($c->stash->{'collection'} ) ) {
+        		$self->status_ok( $c, entity => $c->stash->{'data'} );
+    		}
+    		else {
+        		$self->status_not_found( $c, 
+				message => "Not found: $user_id!" );
+    		}
+	}
+
+	sub user_DELETE {
+    		my ( $self, $c, $user_id ) = @_;
+    		my $user = $c->stash->{'collection'};
+    		if ( defined($user) ) {
+        		$user->delete;
+        		$self->status_ok($c, entity => $c->stash->{'data'} );
+    		} else {
+        		$self->status_not_found( $c,
+        		message => "Not found: $user_id!" );
+    		}
+	}
+
+	1;
+
+Pronto ! Agora, vamos testar nossa aplicaÃ§Ã£o.
+
+	$ cat new.yml 
+	user_id: thiago
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+	$ curl -X PUT -H 'Content-Type: text/x-yaml' -T new.yml http://localhost:3000/user/thiago
+	---
+	user_id: thiago        
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+	$ curl -X GET -H 'Content-Type: text/x-yaml' http://localhost:3000/user/thiago
+	---
+	user_id: thiago        
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+	$ curl -X DELETE -H 'Content-Type: text/x-yaml' http://localhost:3000/user/thiago
+	---
+	user_id: thiago        
+	fullname: Thiago Rondon
+	phone: 1111-44444
+
+
+=head2 ConsideraÃ§Ãµes finais.
+
+Caso tenham alguma dÃºvida em relaÃ§Ã£o ao conceito, ao mÃ³dulo ou qualquer implementaÃ§Ã£o relacionada a este artigo entre em contato pelo IRC ou pela lista da SÃ£o-Paulo Perl Mongers.
+
+=head2 ReferÃªncias
+
+L<http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>
+
+
+=head2 AUTOR
+
+Thiago Rondon C<< <thiago.rondon@gmail.com> >>, trabalha atualmente na Aware.
+
+=cut
+
+
+

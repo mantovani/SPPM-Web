@@ -1,0 +1,38 @@
+=pod
+
+r2 - 12 Feb 2007 - DanielRuoso
+
+=head1 Usando Perl6 Rules para Fazer parse de Portugues
+
+I<>
+
+ExperiE<ecirc>ncia utilizando Pugs::Compiler::Rule para fazer um parser
+de LE<iacute>ngua Portuguesa, analisando sintaticamente os elementos do
+texto.
+
+Por enquanto, sem muito texto, apenas os cE<oacute>digos fonte em:
+
+parse.pl
+
+Portugues.pm
+
+=head2 Changelog
+
+=over
+
+=item * 2007-01-12 - Agora reconhece palavras desconhecidas como
+substantivo.
+
+=back
+
+=head1 AUTOR
+
+Daniel Ruoso
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 783 bytes of input
+#Sun Jan 31 01:45:34 2010 mantovani
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

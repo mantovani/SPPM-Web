@@ -4,7 +4,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="author" content="Sao Paulo Perl Mongers" />
-	<meta name="description" content="Grupo de programadores Perl do estado de Sao Paulo." />
+	
+	[% IF template.current_page == 'home' %]
+	<meta name="description" content="Grupo de programadores Perl do estado de São Paulo." />
+	[% END %]
+
 	<meta name="keywords" content="linguagem, computacao, computacional, perl, comunidade, softwarelivre, sao paulo" />
 
 	<link rel="stylesheet" href="/static/styles.css" type="text/css" />

@@ -1,0 +1,899 @@
+=head1 Mojolicious - A Web Divertida!
+
+Nos primórdios da Web, sites dinâmicos eram feitos com esse maravilhoso
+módulo chamado L<CGI.pm|http://search.cpan.org/perldoc?CGI>. O tempo foi
+passando, o uso da Web aumentando, novos padrões surgiram, a tecnologia 
+evoluiu e a abordagem CGI tradicional já não era suficiente para atender
+as novas demandas dos sites populares. A era de ouro do CGI havia acabado.
+
+Hoje a Web é um dos veículos de comunicação mais utilizados no mundo. Sites
+dinâmicos são a regra, com Web Services, REST, bibliotecas JavaScript, e
+tudo que você possa imaginar. Frameworks robustos e poderosos como o 
+L<Catalyst|http://www.catalystframework.org/> oferecem soluções escaláveis
+e elegantes para seu site, compartimentando seus aplicativos no melhor 
+estilo MVC.
+
+Infelizmente, no entanto, a curva de aprendizado para tais frameworks 
+é relativamente alta e exige certo comprometimento. O I<"programador casual">
+pode se sentir inibido a experimentar algo com configurações complexas
+ou muitos pré-requisitos. O que fazer?
+
+Mojolicious é um framework Web moderno focado em minimalismo e simplicidade. 
+Foi desenvolvido por L<< Sebastian Riedel|http://kraih.com/ >>, criador do
+Catalyst, baseado em anos de experiência em desenvolvimento Web. Além dos
+tradicionais - e essenciais - controles de sessão e gerenciamento de 
+cookies, Mojolicious traz o estado da arte em tecnologia de uma forma 
+elegante e escalável, com suporte completo a HTTP 1.1, IPv6, TLS, Web 
+Sockets, E/S assíncrona, templates, internacionalização (i18n), logging, 
+Web Services e muito mais, tudo isso sem nenhum requisito não-core do Perl!
+     
+E o melhor: B<< Mojolicious é um framework web simples o suficiente para 
+você experimentar sem precisar de grandes conhecimentos de Perl 5, e 
+ao mesmo tempo poderoso e flexível para mantê-lo empolgado durante todo 
+o processo! >>
+
+Mas chega de falatório: vamos aprender fazendo!
+
+
+=head1 Instalação
+
+Instalar Mojolicious direto do CPAN é uma moleza:
+
+  cpan> install Mojolicious
+
+Opcionalmente, você pode baixar a última versão 
+L<< aqui|http://mojolicious.org/Mojo-latest.tar.gz >> e instalar manualmente:
+
+  perl Makefile.PL
+  make && make test && sudo make install
+
+Como não depende de nenhum módulo não-core do Perl 5, a instalação é 
+rápida e não deve trazer nenhuma surpresa.
+
+
+=head1 Mojolicious::Lite
+
+A melhor maneira de experimentar Mojolicious é através do Mojolicious::Lite,
+uma interface simples construída em torno do Mojolicious e muito fácil de
+usar. Vamos chamar nossa aplicação de C<myapp.pl>:
+
+  #!/usr/bin/perl
+  use Mojolicious::Lite;
+
+  get '/' => 'index';
+
+  shagadelic;
+
+Pronto!
+
+
+=head1 Pronto?!
+
+Sim, isso mesmo, pronto! A declaração "C<< use Mojolicious::Lite >>"
+ativa I<strict> e I<warnings> automaticamente, evitando erros comuns 
+de programação. Ela também importa as funções que usaremos em nossa 
+aplicação Web.
+
+Nosso primeiro exemplo, claro, é muito simples, composto apenas pela
+linha que diz "C<< get '/' => 'index' >>". Trata-se de uma indicação
+de que, se alguém fizer uma requisição do tipo I<get> para a raiz
+de nossa aplicação ('I<< / >>'), devemos renderizar o template 
+'I<index>', localizado no diretório 'C<templates>. 'I<index>' aqui
+é o nome que demos a essa rota específica, e poderemos referenciá-la
+a qualquer momento em outras rotas para redirecionamento, obtenção de
+url correspondente, etc.
+
+Finalmente, o comando 'C<shagadelic>' inicia sua aplicação Mojolicious.
+
+Executar então é mais fácil ainda:
+
+   myapp.pl daemon
+
+Isso vai ativar um servidor de desenvolvimento na máquina local, para 
+que você possa testar sua aplicação diretamente do navegador web sem 
+se preocupar em instalar/configurar servidores complexos. Rode sem 
+argumentos para ver diferentes modos de execução, ou digite 
+C<myapp.pl help COMANDO> para saber como personalizar a execução ainda
+mais. Você pode, por exemplo, executar o modo C<daemon> com a opção 
+C<--reload>, que vai reiniciar o servidor de desenvolvimento 
+automaticamente sempre que você fizer modificações no arquivo!
+
+Mas não se preocupe: na hora de botar seu aplicativo em produção num
+servidor web robusto como Apache ou lighttp, o ambiente costuma ser 
+detectado automaticamente, facilitando ainda mais o processo. Caso 
+contrário, você pode sempre passar o modo de execução diretamente
+para a função C<shagadelic> (por exemplo, C<< shagadelic('fastcgi') >>).
+
+Vamos deixar nossa aplicação em execução no modo C<daemon> e abrir
+nosso navegador Web em http://localhost:3000. Uma mensagem simples
+dizendo I<'File Not Found'> ("Arquivo Não Encontrado") é exibida.
+Claro, não criamos nosso template!
+
+
+=head1 Template integrado: ep (Embedded Perl)
+
+Vamos criar rapidamente o arquivo C<< templates/index.html.ep >> com
+o seguinte conteúdo:
+
+  <html><body>
+     <h1>Feliz Equin&oacute;cio!!</h1>
+  </body></html>
+
+Recarregando a página em nosso navegador, vemos que o site agora
+encontra e renderiza nosso arquivo de template corretamente. Mas
+o conteúdo é estático, e queremos adicionar elementos dinamicamente.
+Sem problemas! Mojolicious vem com um 
+L<< sistema de templates minimalista|http://search.cpan.org/perldoc?Mojo::Template >> 
+integrado e pronto para ser usado, basta utilizar os seguintes 'escapes':
+
+=over 4
+
+=item * Coloque qualquer código Perl dentro de tags <% %> e ele será processado
+na hora (sem exibir nada):
+
+   <% my $var = 'foo' %>
+
+=item * Colocando um '=' na frente da tag, o valor retornado pelo código Perl 
+aparecerá no lugar da tag:
+
+   Olá, <%= $var %> !!
+
+=item * Para fazer comentários, basta começar a tag com '#':
+
+   <%# isso eh um comentário %>
+
+=back
+
+Ah, outra coisa. Se a linha tiver apenas Perl, basta que o primeiro
+caractere (da linha) seja '%'. As mesmas regras de retornar
+valor (=) e comentários (#) se aplicam, mas você não precisa das tags:
+
+   % foreach my $num ( 1..10 ) {
+        <p>essa eh uma linha normal dentro do loop.<br />
+        essa tambem, e agora temos o numero ao quadrado:<br />
+   %=     $num ** 2
+   %#   (essa linha eh um comentário e nao serah exibida)
+        </p>
+   % }  # <-- fim do foreach
+
+E você não precisa nem sair do código para fazer seus templates. 
+Com o Mojolicious, você pode escrevê-los direto no código! Vejamos 
+como fica nosso exemplo original:
+
+   #!/usr/bin/perl
+   use Mojolicious::Lite;
+   
+   get '/' => 'index';
+   
+   shagadelic;
+   __DATA__
+   @@ index.html.ep
+   <html><body>
+     <h1>Feliz Equin&oacute;cio!!</h1>
+   </body></html>
+
+Usamos o campo C<< __DATA__ >> do Perl para embutir nosso template.
+Repare que a única diferença é a linha que diz C<< @@ index.html.ep >>,
+indicando o início do template. De fato, podemos incluir quantos templates
+quisermos, basta demarcá-los com C<< @@ >>!
+
+Embora fazer seus templates dentro do programa em si seja ótimo para 
+desenvolvimento rápido, é fácil notar que não escala bem. Uma aplicação
+complexa pode conter dezenas (ou mesmo centenas) de templates, e em
+pouco tempo navegar por todos eles em apenas um arquivo torna-se 
+impraticável. Além disso, muitas vezes os responsáveis pelo 
+html/css/javascript são diferentes dos que mexem na aplicação em si,
+então separar seus templates em arquivos é particularmente importante.
+Mas pra que se preocupar com isso antes do tempo? B<< Com um simples 
+comando você pode mandar o Mojolicious extrair todos os templates para 
+uma estrutura de diretórios e arquivos a qualquer momento! >> Assim,
+você pode desenvolver seus templates no próprio arquivo da aplicação e,
+quando achar que é hora, basta digitar:
+
+   myapp.pl inflate
+
+Pronto! Todos os templates foram duplicados em arquivos independentes,
+tudo no lugar certo. Os originais continuam lá no campo C<< __DATA__ >>,
+mas o Mojolicious dará sempre preferência ao que estiver do lado de fora.
+
+
+=head1 Peraí, e o Controller?!
+
+Já vimos como é fácil criar rotas e apontá-las para nossos templates, mas a
+graça toda é obter dados no controller e repassá-los à view (os templates).
+Com C<< Mojolicious::Lite >> isso também é muito fácil - basta definir o
+método entre a rota e o destino! Em nosso exemplo, em vez de:
+
+   get '/' => 'index';
+    
+poderiamos ter algo como:
+
+   get '/' => sub {
+       my $self = shift;
+       $self->stash->{linguagem} = 'Perl 5';
+   } => 'index';
+
+Caso esteja começando no mundo Perl, a primeira linha, 
+C<< my $self = shift >>, obtém o objeto principal de nossa aplicação e 
+coloca na variável C<< $self >>. Através desse objeto, podemos manipular 
+a aplicação como quisermos! No exemplo acima, utilizamos 
+C<< $self->stash >>, um método do Mojolicious para armazenar valores de 
+forma não persistente, definindo que 'linguagem' aponta para a string 
+'Perl 5'. Você pode colocar qualquer coisa no I<stash>, e depois acessar os 
+elementos diretamente do template C<< index.html.ep >>:
+
+   __DATA__
+   @@ index.html.ep
+   <html><body>
+     <h1>Feliz Equin&oacute;cio de <%= $linguagem %>!!</h1>
+   </body></html>
+
+
+I<< Gostou? O melhor vem agora ;-) >>
+
+
+=head1 Extendendo nossa Aplicação: Rotas!
+
+Até agora vimos rotas com nomes estáticos:
+
+   get '/'    => 'index';
+   get '/foo' => 'bar';
+
+Mas aplicações Web modernas recebem seus parâmetros diretamente da url.
+Com Mojolicious, você pode capturar parâmetros e manipular rotas  
+como quiser!
+
+Parâmetros são capturados da seguinte forma:
+
+=over 4
+
+=item * C<< :var >>   - captura apenas o que está naquela posição até achar '.' ou '/'
+
+=item * C<< (.var) >> - captura apenas o que está naquela posição até achar '/'
+
+=item * C<< (*var) >> - captura tudo, daquela posição em diante
+
+=back
+
+Você pode ter em sua rota tantas capturas quanto quiser. Os valores 
+capturados estarão disponíveis tanto em C<< $self->param('var') >>,
+para serem usados em seu controller, quanto em C<< $self->stash('var') >>,
+para acesso direto em seu template. Experimente o seguinte programa:
+
+    #!/usr/bin/env perl
+    use Mojolicious::Lite;
+
+    # captura /item/123, /item/abc, etc
+    get '/item/:id' => 'item';
+
+    # captura /item/123/editar, /item/abc/editar, etc
+    get '/item/:id/editar' => 'editar';
+
+    # captura 2 argumentos, 'nome' e 'quantidade'. Você 
+    # pode fazer isso quantas vezes quiser!
+    get '/item/:nome/:quantidade' => 'vender';
+
+    # Podemos até criar rotas com capturas no meio de um parâmetro
+    # estático. Essa abaixo casa com /iniciomeiofim, /iniciosemfim, etc.
+    get '/inicio(:meio)fim' => 'teste';
+
+    # qualquer url que termine com '/fim'
+    get '(*url)/fim' => 'fim';
+
+    shagadelic;
+
+    __DATA__
+    @@ item.html.ep
+    detalhes do item com id <%= $id %>
+
+    @@ editar.html.ep
+    vamos editar o item <%= $id %> ?
+
+    @@ vender.html.ep
+    temos <%= $quantidade %> do item <%= $nome %>, quer?
+
+    @@ teste.html.ep
+    o elemento do meio foi '<%= $meio %>'
+
+    @@ fim.html.ep
+    antes de 'fim', tivemos <%= $url %>
+
+
+Rode e veja como rotas são divertidas! Experimente criar suas próprias 
+rotas e testá-las em seu navegador. Uma coisa que vai reparar rapidamente
+é que o Mojolicious escolhe sempre a I<primeira> rota que casar com a URL
+digitada pelo usuário. Em nosso exemplo, digitar no navegador o caminho
+C<< /item/foo/fim >> vai apontar para C<vender>, não para C<fim>. Dessa
+forma, podemos organizar nossas rotas na estrutura que acharmos melhor.
+
+Existem outras formas bacanas de personalizar rotas. Suponha a seguinte
+rota, por exemplo:
+
+    get '/item/:id' => sub {
+        # ... conteudo qualquer
+    } => 'item';
+
+Podemos garantir que o parâmetro capturado case I<apenas> com valores 
+numéricos, adicionando a seguinte expressão regular:
+
+    get '/item/:id' => [ id => qr/\d+/ ] => sub {
+        # ...
+    } => 'item';
+
+Podemos ainda tornar o parâmetro completamente opcional, adicionando
+um valor padrão:
+
+    get '/item/:id' => { id => 42 } => sub {
+        # ...
+    } => 'item';
+
+
+=head1 Parte II - Métodos Auxiliares
+
+Além do I<stash>, o objeto principal nos dá várias formas de manipular 
+nossa aplicação Web. Descrevemos as principais a seguir (clique no nome
+para abrir a descrição, clique de novo para fechá-la):
+
+=begin pod:xhtml
+
+<script type="text/javascript">
+<!--
+function switchExpand(obj) {
+    var el = document.getElementById(obj);
+    if ( el.style.display != 'none' ) {
+        el.style.display = 'none';
+    }
+    else {
+        el.style.display = '';
+    }
+}
+//-->
+</script>
+
+<style type="text/css">
+<!--
+a.hover {
+    text-decoration:none; 
+    font-weight:bold; 
+    color:#FF1111;
+}
+-->
+</style>
+
+<p><a class="hover" onclick="switchExpand('mRedirect');" title="clique para expandir">$self-&gt;redirect_to('nome')</a></p>
+<div id="mRedirect">
+
+=end pod:xhtml
+
+Redireciona para a rota C<'nome'>, que pode ser o nome da rota, o caminho
+para ela, ou mesmo uma url externa:
+
+    get '/teste' => sub {
+        my $self = shift;
+        # ... nosso codigo ...
+
+        $self->redirect_to('index');
+    } => 'shazam';
+
+Repare que demos o nome 'I<shazam>' à nossa rota, mas aqui é apenas uma
+forma de referenciá-la. Afinal, nossa última linha acima faz com que ela 
+seja sempre redirecionada para a rota 'I<index>', de modo que nunca teremos 
+necessidade de um template próprio.
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mCookie');" title="clique para expandir">$self-&gt;cookie</a></p>
+<div id="mCookie">
+
+=end pod:xhtml
+
+Cria ou obtém cookies rapidamente:
+
+    get '/um' => sub {
+        my $self = shift;
+        $self->cookie( nome => 'Mojolicious' );
+    } => 'um';
+
+    get '/dois' => sub {
+        my $self = shift;
+        my $nome = $self->cookie('nome') || '';
+    } => 'dois';
+
+No exemplo acima, ao visitar C<< /dois >> no navegador, $nome será 
+preenchido com 'Mojolicious' apenas se você visitar C<< /um >> antes. 
+Senão, ficará com ''.
+
+Cookies possuem alguns atributos (não se preocupe com isso se você não
+sabe o que significam) que podem ser personalizados numa referência de
+hash passada como segundo argumento:
+
+   $self->cookie( calendario => 'Maia', 
+                  { path    => '/', 
+                    domain  => '.example.com',
+                    secure  => 1,
+                    expires => 'Fri, 21 Dec 2012 00:00:00 GMT',
+                    comment => 'adeus, mundo cruel!',
+                  }
+                );
+
+Quer fazer um cookie expirar em alguns segundos? Fácil:
+
+   $self->cookie( foo => 'bar', { max_age => 60 } );
+
+Para segurança extra, você pode criar cookies assinados simplesmente
+trocando C<< ->cookie() >> por C<< ->signed_cookie() >>. Os dados continuam
+armazenados no cliente como um cookie normal, mas a aplicação descarta
+automaticamente todos os cookies que falharem a verificação de assinatura!
+Para criar uma assinatura, basta colocar a seguinte chamada no início de sua
+aplicação:
+
+    app->secret('minha senha secreta');
+
+A "senha secreta" padrão é 'mojolicious', então se for usar cookies 
+assinados não esqueça de criar uma senha diferente.
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mSession');" title="clique para expandir">$self-&gt;session</a></p>
+<div id="mSession">
+
+=end pod:xhtml
+
+
+Criar e manipular sessões é tão fácil quanto cookies. :
+
+   # preencha dados de sessoes como quiser
+   $self->session( nome => 'Mojolicious' );
+
+   # ... e depois leia cada elemento facilmente
+   my $nome = $self->session('nome');
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mFlash');" title="clique para expandir">$self-&gt;flash</a></p>
+<div id="mFlash">
+
+=end pod:xhtml
+
+A I<flash> é uma forma prática de criar valores que ficarão disponíveis
+por exatamente uma requisição. É muito útil para passar valores em um
+redirecionamento:
+
+    get '/' => sub {
+        my $self = shift;
+        $self->flash->{mensagem} = 'mooooooooo';
+        $self->redirect_to('moo');
+    } => 'index';
+
+    get '/moo' => sub {
+        my $self = shift;
+        my $mensagem = $self->flash('mensagem');
+        if ( $mensagem ) {
+            # usuário veio de 'index'!
+        }
+    } => 'moo';
+
+Aqui, se você abrir o navegador e for para 'C<< / >>', será redirecionado
+para 'C<< /moo >>' e C<$mensagem> será definida. Assim que for consumida,
+a variável na flash é removida. Assim, se você recarregar a página em
+'C<< /moo >>', a variável C<$mensagem> não terá nada.
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mParam');" title="clique para expandir">$self-&gt;param('nome')</a></p>
+<div id="mParam">
+
+=end pod:xhtml
+
+Essa é uma forma rápida de acessar parâmetros passados para sua rota,
+ou elementos de um formulário. Vejamos um exemplo simples:
+
+    any '/linguagem' => sub {
+        my $self = shift;
+
+        if ( $self->param('escolha') eq 'Perl' ) {
+            $self->stash->{mensagem} = 'Legal!!';
+        }
+        else {
+            $self->stash->{mensagem} = 'Experimente Perl!';
+        }
+    } => 'linguagem';
+
+e, no campo C<< __DATA__ >>:
+
+    @@ linguagem.html.ep
+    <html><body>
+      <form method="POST">
+        Qual a sua linguagem favorita? <input type="text" name="escolha" />
+        <input type="submit" value="ok" />
+      </form>
+    </body></html>
+
+Note que dessa vez usamos C<< any >> em vez de C<< get >> para nossa rota.
+Isso porque estamos usando um form que submete via POST, então queremos que
+essa rota aceite tanto "I<gets>" (página carregada normalmente) quanto 
+"I<posts>" (página carregada através da submissão do form). Se quiséssemos 
+uma rota aceitando apenas "I<posts>", usaríamos... 'post' :)
+
+Ah! O C<< $self->param() >> também captura parâmetros de query, ou seja, 
+poderíamos pedir a URL C<< /linguagem?escolha=Perl >> e tudo funciona 
+de forma transparente.
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mRender');" title="clique para expandir">$self-&gt;render</a></p>
+<div id="mRender">
+
+=end pod:xhtml
+
+Podemos usar esse método para renderizar um template qualquer, independente
+do nome da sua rota atual.
+
+   get '/' => sub {
+       my $self = shift;
+       $self->render('outra');
+   } => 'index';
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mRes');" title="clique para expandir">$self-&gt;res</a></p>
+<div id="mRes">
+
+=end pod:xhtml
+
+Esse método nos oferece Acesso rápido ao L<< objeto de resposta HTTP 1.1|http://search.cpan.org/perldoc?Mojo::Message::Response >>. 
+Com ele você pode definir explicitamente o código da sua resposta:
+
+   $self->res->code(200); # ok
+   $self->res->code(404); # not found
+
+o tipo de conteúdo:
+
+   $self->res->headers->content_type('image/png');
+
+ou mesmo o conteúdo em si:
+
+   $self->res->body('Alo, mundo!');
+
+se você não sabe o que essas coisas significam, você não precisa delas.
+Deixe que o Mojolicious faça todo o trabalho pra você!
+
+=begin pod:xhtml
+
+</div>
+
+=end pod:xhtml
+
+
+=head1 Robustez e Escalabilidade
+
+Sua aplicação Web precisa de recursos complexos? Não se preocupe! 
+Mojolicious vem com uma série de recursos avançados direto da caixa :)
+
+=begin pod:xhtml
+
+<p><a class="hover" onclick="switchExpand('mLogging');" title="clique para expandir">Logging</a></p>
+<div id="mLogging">
+
+=end pod:xhtml
+
+Mojolicious possui por padrão um L<< sistema de logs|http://search.cpan.org/perldoc?Mojo::Log >> 
+dividido em 5 níveis: C<debug>, C<info>, C<warn>, C<error> e C<fatal>.
+
+    # nivel de log padrão eh 'debug'
+    app->log->level('warn');
+
+    # logs vao pro STDERR por padrao
+    app->log->path('myapp.log');
+
+    get '/' => sub {
+        my $self = shift;
+        $self->app->log->warn('entramos em index!');
+    } => 'index';
+
+Note que, dentro da sub, podemos tanto chamar C<app> diretamente
+quanto via C<< $self->app >>.
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mI18n');" title="clique para expandir">Internacionaliza&ccedil;&atilde;o (I18n)</a></p>
+<div id="mI18n">
+
+=end pod:xhtml
+
+Para exibir conteúdo em mais de um idioma, basta usar o plugin 'C<i18n>',
+L<< nativo do Mojolicious|http://search.cpan.org/perldoc?Mojolicious::Plugin::I18n >>. 
+No início de sua aplicação, invoque o plugin indicando o nome raiz
+('namespace') de seus pacotes de idiomas:
+
+    plugin 'i18n' => { namespace => 'MyApp::I18n' };
+
+depois crie um pacote de idioma para cada língua alternativa. Para
+o inglês ('en'), poderíamos ter algo assim:
+
+    package MyApp::I18n::en
+    use base 'MyApp::I18n';
+
+    our %Lexicon = (
+            'minha página bilíngue' => 'my bilingual website',
+            'alo, mundo' => 'hello, world',
+    );
+
+    1;
+
+finalmente, use a função 'C<l>' (um 'L' minúsculo) em seus templates
+para que a mensagem seja traduzida se o navegador do usuário estiver
+definido para dar preferência ao outro idioma:
+
+    <div> <%=l 'alo, mundo' %> </div>
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mUnicode');" title="clique para expandir">Unicode</a></p>
+<div id="mUnicode">
+
+=end pod:xhtml
+
+Quando trabalhamos com idiomas acentuados ou com caracteres não-ASCII,
+podemos carregar o módulo auxiliar L<< Mojo::ByteStream|http://search.cpan.org/perldoc?Mojo::ByteStream >>:
+
+   use Mojo::ByteStream 'b';
+
+Com isso, nosso aplicativo ganha a função C<< b() >>, que pode ser usada
+para codificar/decodificar diferentes I<charsets>:
+
+   my $mensagem = $self->param('mensagem');
+
+   # queremos guardar 'mensagem' em utf-8
+   $mensagem = b($mensagem)->encode('UTF-8')->to_string;
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mLadder');" title="clique para expandir">Compartilhamento de C&oacute;digo</a></p>
+<div id="mLadder">
+
+=end pod:xhtml
+
+Rotas podem compartilhar código facilmente através da função C<ladder>.
+Todas as rotas definidas I<depois> de uma C<ladder> passarão por ela
+primeiro, e só serão testadas se a C<ladder> retornar um valor verdadeiro:
+
+    # essa rota nao passa pela ladder
+    get '/' => 'index';
+
+    # nossa ladder só deixa passar se o parâmetro 'linguagem'
+    # contém o valor 'Perl' :)
+    ladder sub {
+        my $self = shift;
+
+        my $linguagem = $self->param('linguagem') || '';
+
+        if ($linguagem eq 'Perl') {
+
+            # podemos colocar valores no stash para
+            # serem acessados pelas outras rotas!
+            $self->stash->{mensagem} = 'boa escolha!';
+
+            return 1;
+        }
+        return;
+    };
+
+    # essa rota veio depois, então só será aceita 
+    # se nossa ladder 'autorizar'
+    get '/teste' => 'teste';
+
+Ladders são ideais para compartilhar código entre rotas, e você pode
+definir tantas quanto quiser - basta lembrar que apenas rotas definidas
+depois da C<ladder> serão influenciadas por ela.
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mWS');" title="clique para expandir">Web Services? &Eacute; pra j&aacute;</a></p>
+<div id="mWS">
+
+=end pod:xhtml
+
+Com o uso de rotas e do renderizador JSON nativo do Mojolicious, criar
+Web Services é imediato:
+
+    get '/dados' => sub {
+        my $self = shift;
+        $self->stash->{dados} = [ 'foo', 'bar' ];
+        
+        $self->render_json($self->stash('dados'))
+            if $self->stash('format') eq 'json';
+    } => 'dados';
+
+O exemplo acima cria a rota C<< /dados >> e coloca em nosso I<stash>
+a estrutura de dados que queremos exibir. Agora vem a parte legal: o
+Mojolicious é capaz de detectar automaticamente pedidos por formatos 
+específicos através de extensões. Se, por exemplo, o usuário acessar 
+a URL C<< /dados >>, verá o conteúdo do template C<< dados.html.ep >>. 
+Mas se acessar a URL C<< /dados.json >>, o valor de 
+C<< $self->stash('format') >> será 'json', e nosso comando 
+C<< $self->render_json >> entrará em ação, exibindo os dados em formato 
+JSON sem chamar o template.
+
+Falando em detecção automática de extensão, podemos fazer melhor ainda.
+Crie uma rota normal, colocando seus dados no I<stash> e renderizando via
+template:
+
+    get '/dados' => sub {
+        my $self = shift;
+        $self->stash->{dados} = [ 'foo', 'bar' ];
+    } => 'dados';
+
+    shagadelic;
+
+    __DATA__
+    @@ dados.html.ep
+    <html><body>
+    % foreach my $item (@{$dados}) {
+      <div> exibindo item '<%= $item %>' </div>
+    % }
+    </body></html>
+
+
+Reparou que ao longo deste artigo você sempre definiu a extensão C<.html>
+para seus templates? Isso porque C<html> é o formato padrão, mas
+podemos tirar vantagem da detecção automática de formatos do Mojolicious
+e criar versões diferentes de exibição da mesma rota:
+
+    @@ dados.json.ep
+    % include json => $dados
+
+Em outras palavras, B<< é possível adicionar suporte a Web Services em suas
+aplicações Mojolicious com apenas duas linhas >>! E tudo isso sem qualquer
+modificação na lógica do seu programa. Quer retirar o Web Service daquela
+rota? Basta apagar o template C<dados.json.ep>. Quer renderizar outra 
+variável, ou embutir outras informações, é só editá-lo!
+
+Outra forma bacana é obter os dados através de uma I<ladder> (lembra dela?
+Logo acima!) e criar uma rota para o conteúdo normal e outra apenas para o
+WebService:
+
+    # essa 'ladder' obtem os dados comuns
+    # para as rotas abaixo
+    ladder sub {
+        my $self = shift;
+        $self->stash->{dados} = [ 'foo', 'bar' ];
+        return 1;
+    };
+
+    # rota do nosso webservice
+    # repare que não precisamos nem dar um nome pra ela, já que
+    # não temos template pra ela, nem precisamos referenciá-la
+    get '/service/dados' => sub {
+        my $self = shift;
+        $self->render_json( $self->stash('dados') );
+    };
+
+    # rota normal
+    get '/dados' => 'dados';
+
+Aqui, se o usuário acessar a rota C<< /dados >>, receberá o template 
+C<< dados.html.ep >>. Mas se acessar C<< /service/dados >>, receberá
+a estrutura em formato JSON :-)
+
+=begin pod:xhtml
+
+</div>
+
+<p><a class="hover" onclick="switchExpand('mTestes');" title="clique para expandir">Testes</a></p>
+<div id="mTestes">
+
+=end pod:xhtml
+
+Não podemos garantir que a aplicação faz o que queremos sem testes.
+Felizmente, Mojolicious traz o módulo
+L<< Test::Mojo|http://search.cpan.org/perldoc?Test::Mojo >>, que permite
+a criação rápida e eficiente de testes. Basta criar um diretório C<t> e
+colocar seus testes, como numa aplicação Perl tradicional:
+
+    use Test::More;
+    use Test::Mojo;
+    require '../myapp.pl';
+
+    my $t = Test::Mojo->new;
+    $t->get_ok('/');
+    $t->status_is(200);
+
+    $t->post_form_ok( '/busca', { nome => 'Mojolicious' } );
+    $t->content_like( qr/The Web in a Box!/ );
+
+    # podemos também encadear testes!
+    $t->get_ok('/livros/lista.json')->status_is(200)->content_type_is('text/json');
+
+    done_testing;
+
+=begin pod:xhtml
+
+</div>
+
+<script type="text/javascript">
+<!--
+function collapseAll(objs) {
+    var i;
+    for (i=0;i<objs.length;i++ ) {
+        var element = document.getElementById(objs[i]);
+        element.style.display = 'none';
+    }
+}
+
+collapseAll(['mRedirect','mCookie','mSession','mFlash','mParam','mRender','mRes','mLogging','mI18n','mUnicode','mLadder','mWS','mTestes']);
+//-->
+</script>
+
+=end pod:xhtml
+
+
+=head1 Mojolicious x Catalyst
+
+Catalyst é sem dúvida um framework muito mais maduro e estável, usado em 
+sites de grande porte e atendendo a literalmente milhões de requisições 
+por dia. Possui excelente documentação e uma comunidade ativa e engajada. 
+
+Mojolicious é um framework novo e excitante, com uma curva de aprendizado
+mínima e nenhum pré-requisito além de módulos que vêm no próprio Perl, o
+que torna sua instalação muito simples e auto-contida. Ainda não é 
+considerado estável, mas mesmo assim já é usado em produção em diversos 
+sites.
+
+Se você é um iniciante em Perl e quer desenvolver aplicações Web já, sem
+se preocupar com complexidades adicionais e sintaxes específicas, 
+Mojolicious foi feito para você. Se, por outro lado, você tem uma 
+aplicação complexa planejada, está acostumado com Perl 5, preza por 
+estabilidade e robustez, sabe e quer usufruir do poder do CPAN, 
+não pense duas vezes - Catalyst é o seu framework.
+
+Mas não tome o parágrafo anterior como verdade absoluta. No final, a 
+escolha perfeita resume-se ao seu gosto pessoal. Há sempre mais de uma
+forma de se fazer as coisas em Perl, e a melhor solução é aquela que
+mais se adequa ao seu modo de pensar e estilo de programar. O importante
+é que, independente da escolha, desenvolvimento Web seja divertido 
+e recompensador!
+
+=head1 Veja Também
+
+=over 4
+
+=item * L<< site oficial do mojolicious|http://mojolicious.org >>
+
+=item * Informações sobre o Framework: L<< Mojolicious|http://search.cpan.org/perldoc?Mojolicious >>,
+L<< Mojolicious::Lite|http://search.cpan.org/perldoc?Mojolicious::Lite >>
+
+=item * Documentação (em andamento): L<< The Mojolicious Guide to The Galaxy|http://search.cpan.org/perldoc?Mojolicious::Guides >>
+
+=item * Documentação dos Templates: L<< Mojo::Template|http://search.cpan.org/perldoc?Mojo::Template >>, L<< Funções auxiliares|http://search.cpan.org/perldoc?Mojolicious::Plugin::DefaultHelpers >>
+
+=item * Documentações internas úteis: L<< Controller|http://search.cpan.org/perldoc?Mojolicious::Controller >>, L<< Request|http://search.cpan.org/perldoc?Mojo::Message::Request >>, L<< Response|http://search.cpan.org/perldoc?Mojo::Message::Response >>
+
+=back
+
+=head1 AUTOR
+
+Breno G. de Oliveira
+
+=cut
+
