@@ -1,0 +1,88 @@
+=head1 Catalyst::ScriptRunner
+
+=head2 Descrição
+
+Catalyst::ScriptRunner é a classe responsável por rodar os scripts que te
+ajudam muito no desenvolvimento, abaixo você poderá ver como.
+
+=head2 O Primeiro Parâmetro
+
+O Catalyst::ScriptRunner tem um método chamado "run" que recebe dois
+parâmetros, a classe da aplicação e o segundo é o script que você quer:
+(Server/FastCGI/CGI/Create/Test).
+
+    #!/usr/bin/env perl
+
+    use strict;
+    use warnings;
+    
+    use Catalyst::ScriptRunner;
+    Catalyst::ScriptRunner->run('MyAPP', 'Create');
+
+    1;
+
+=head2 O Segundo Parâmetro
+
+Quando você cria uma uma aplicação:
+Automaticamente dentro da pasta /script tem todos os scripts necessários
+para o desenvolvimento. O segundo parâmetro diz o helper que você quer.
+
+=head2 Inicializando o servidor de desenvolvimento
+
+Usando o Server você tem na sua mão o servidor de desenvolvimento, que
+vai te ajudar a fazer o debug da sua aplicação:
+perl script/MyAPP_server.pl
+
+=head2 Criando os Helpers
+
+O Create vai te ajudar a criar o model, view e o controller.
+Abaixo você poderá ver os exemplos do help:
+
+    mantovani@mantovani-desktop:~/Perl/Web/MyAPP$ script/myapp_create.pl --help
+    myapp_create.pl [options] model|view|controller name [helper] [options]
+
+ Options:
+   --forcedon't create a .new file where a file to be created exists
+   --mechanizeuse Test::WWW::Mechanize::Catalyst for tests if available
+   --help display this help and exits
+
+ Examples:
+   myapp_create.pl controller My::Controller
+   myapp_create.pl -mechanize controller My::Controller
+   myapp_create.pl view My::View
+   myapp_create.pl view MyView TT
+   myapp_create.pl view TT TT
+   myapp_create.pl model My::Model
+   myapp_create.pl model SomeDB DBIC::Schema MyApp::Schema create=dynamic\
+   dbi:SQLite:/tmp/my.db
+   myapp_create.pl model AnotherDB DBIC::Schema MyApp::Schema create=static\
+   dbi:Pg:dbname=foo root 4321
+
+ See also:
+   perldoc Catalyst::Manual
+   perldoc Catalyst::Manual::Intro
+ 
+
+=head2 Testando
+
+O "Test" fornece para você rodar uma "ação" por linha de comando, ou seja
+Você pode passar um "parâmetro" da sua app, e ela será executada:
+
+ perl MyAPP_test.pl http://localhost/minhaacao
+
+=head2 O Engine CGI
+
+É responsável por carregar sua aplicação no ambiente CGI.
+L<Catalyst::Engine::CGI>
+
+=head2 O Engine FastCGI
+
+Também é responsável por carregar só que no ambiente FastCGI
+L<Catalyst::Engine::FastCGI> 
+
+=head2 AUTOR
+
+Daniel Mantovani <daniel.oliveira.mantovani@gmail.com, trabalho atualmente na emprsa JaCotei L<http:://www.jacotei.com.br>
+
+=cut
+

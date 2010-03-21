@@ -1,125 +1,126 @@
 <h3>2010</h3>
-<ul><li><a href="/artigo/2010/AutenticacaoCatalyst">Autenticação em aplicações usando Catalyst por Wallace Reis </a></li>
-<li><a href="/artigo/2010/CaptchaCatalyst">Captcha com Catalyst por Daniel Mantovani </a></li>
-<li><a href="/artigo/2010/CatalystLocalLib">Catalyst com local::lib por Blabos de Blebe </a></li>
-<li><a href="/artigo/2010/ConceitosAntesCatalyst">Conceitos e conhecimentos para começar no Catalyst.</a></li>
-<li><a href="/artigo/2010/DBIC">BANCOS DE DADOS RELACIONAIS, ORIENTAÇÃO A OBJETOS E DBIx::Class por Eden Cardim </a></li>
-<li><a href="/artigo/2010/DBIC2">BANCOS DE DADOS RELACIONAIS, ORIENTAÇÃO A OBJETOS e DBIX::CLASS, PARTE 2 por Eden Cardim </a></li>
-<li><a href="/artigo/2010/DesenvolvimentoCatalystPadre">Desenvolvimento de Aplicativos Catalyst com Padre por Breno G. de Oliveira </a></li>
-<li><a href="/artigo/2010/EmailAlemDoEnviarReceber">O email além do enviar e receber por Otavio Fernandes </a></li>
-<li><a href="/artigo/2010/GarantiaQualidade">Testes, uma garantia de qualidade por Wallace Reis </a></li>
-<li><a href="/artigo/2010/GraficosAppCatalyst">Gráficos de sua Aplicação Catalyst por Breno G. de Oliveira </a></li>
-<li><a href="/artigo/2010/HTMLFormHandler">HTML::FormHandler por Gabriel Andrade Santana </a></li>
-<li><a href="/artigo/2010/LogApplicacao">LOG SUA APLICAÇÃO por Solli M. Honorio </a></li>
-<li><a href="/artigo/2010/Memcached">Memcached por Thiago Rondon </a></li>
+<ul><li><a href="/artigo/2010/AutenticacaoCatalyst">Autenticação em aplicações usando Catalyst por Wallace Reis.</a></li>
+<li><a href="/artigo/2010/CaptchaCatalyst">Captcha com Catalyst por Daniel Mantovani.</a></li>
+<li><a href="/artigo/2010/CatalystLocalLib">Catalyst com local::lib por Blabos de Blebe.</a></li>
+<li><a href="/artigo/2010/CatalystScriptRunner">Catalyst::ScriptRunner por Daniel Mantovani.</a></li>
+<li><a href="/artigo/2010/ConceitosAntesCatalyst">Conceitos e conhecimentos para começar no Catalyst. por Thiago Rondon.</a></li>
+<li><a href="/artigo/2010/DBIC">BANCOS DE DADOS RELACIONAIS, ORIENTAÇÃO A OBJETOS E DBIx::Class por Eden Cardim.</a></li>
+<li><a href="/artigo/2010/DBIC2">BANCOS DE DADOS RELACIONAIS, ORIENTAÇÃO A OBJETOS e DBIX::CLASS, PARTE 2 por Eden Cardim.</a></li>
+<li><a href="/artigo/2010/DesenvolvimentoCatalystPadre">Desenvolvimento de Aplicativos Catalyst com Padre por Breno G. de Oliveira.</a></li>
+<li><a href="/artigo/2010/EmailAlemDoEnviarReceber">O email além do enviar e receber por Otavio Fernandes.</a></li>
+<li><a href="/artigo/2010/GarantiaQualidade">Testes, uma garantia de qualidade por Wallace Reis.</a></li>
+<li><a href="/artigo/2010/GraficosAppCatalyst">Gráficos de sua Aplicação Catalyst por Breno G. de Oliveira.</a></li>
+<li><a href="/artigo/2010/HTMLFormHandler">HTML::FormHandler por Gabriel Andrade Santana.</a></li>
+<li><a href="/artigo/2010/LogApplicacao">LOG SUA APLICAÇÃO por Solli M. Honorio.</a></li>
+<li><a href="/artigo/2010/Memcached">Memcached por Thiago Rondon.</a></li>
 <li><a href="/artigo/2010/Mojolicious">Mojolicious - A Web Divertida! por Breno G. de Oliveira
 
-</a></li>
-<li><a href="/artigo/2010/PSGI">PSGI, Plack, Bada bing bada boom!  por Lindolfo Rodrigues </a></li>
-<li><a href="/artigo/2010/PluginMovableType">Criando um plugin rapido para Movable Type por Frederico Recsky </a></li>
-<li><a href="/artigo/2010/PluginsCatalyst">Os plugins do Catalyst por Giuliani D. Sanches. </a></li>
-<li><a href="/artigo/2010/RESTful">Arquitetura REST e o serviço web 'RESTful'. por Thiago Rondon </a></li>
-<li><a href="/artigo/2010/TimeLapseCatalyst">Time-lapse e Catalyst por Daniel Mantovani </a></li>
+.</a></li>
+<li><a href="/artigo/2010/PSGI">PSGI, Plack, Bada bing bada boom!  por Lindolfo Rodrigues.</a></li>
+<li><a href="/artigo/2010/PluginMovableType">Criando um plugin rapido para Movable Type por Frederico Recsky.</a></li>
+<li><a href="/artigo/2010/PluginsCatalyst">Os plugins do Catalyst por Giuliani D. Sanches..</a></li>
+<li><a href="/artigo/2010/RESTful">Arquitetura REST e o serviço web 'RESTful'. por Thiago Rondon.</a></li>
+<li><a href="/artigo/2010/TimeLapseCatalyst">Time-lapse e Catalyst por Daniel Mantovani.</a></li>
 </ul>
 <h3>2009</h3>
 <ul><li><a href="/artigo/2009/ComoInstalarApacheMysqlPerl">Como instalar, passo a passo o: Apache, Mysql, Perl e módulos necessários do CPAN no Windows por Marco Aurelio
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2009/ModulosRecomendadosCPAN">Módulos Recomendados do CPAN por Nelson Ferraz
 
-</a></li>
-<li><a href="/artigo/2009/UsandoCpan">Usando o CPAN por Daniel de Oliveira </a></li>
+.</a></li>
+<li><a href="/artigo/2009/UsandoCpan">Usando o CPAN por Daniel de Oliveira.</a></li>
 </ul>
 <h3>2008</h3>
 <ul><li><a href="/artigo/2008/ComoEncontrarBonsProgramadores">Como Encontrar (e Contratar) Bons Programadores por Nelson Ferraz
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2008/MVCWxPerl">MVC e WxPerl por Alceu Junior
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2008/ModulosCore">Módulos básicos que você precisa conhecer por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2008/PrimeirosPassosEmPerl">Primeiros Passos em Perl por Nelson Ferraz
 
-</a></li>
+.</a></li>
 </ul>
 <h3>2007</h3>
 <ul><li><a href="/artigo/2007/AdventuresInPerl6">Adventures in Perl 6 por Nelson Ferraz
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/CodigoDeEtica">Código de ética por Nelson Ferraz
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/CriandoWebLogCatalyst">Criando um WebLog com Catalyst por Eden Cardim
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/ExperimentandoInternals">Iniciando em perlguts, perlapi, perlcall e perlembed por Daniel Ruoso
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/IntroducaoPerl">Uma introdução ao Perl por Alceu Junior
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/OtimizandoPerl">Otimizando código Perl por Alceu Junior
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/ParsePortuguesComPCR">Usando Perl6 Rules para Fazer parse de Portugues por Daniel Ruoso
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/PorQueEsconderOCodigoEMaIdeia">Por que tentar obstruir a leitura do seu código é uma má idéia por Nelson Ferraz
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2007/ProgramacaoSegura">Criando programas em Perl de forma segura por Alceu Junior
 
-</a></li>
+.</a></li>
 </ul>
 <h3>2006</h3>
 <ul><li><a href="/artigo/2006/AdicionandoRepositoriosPPM">Adicionano repositório de modulos em seu PPM por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/AsTresGrandesVirtudesDoProgramador">As Três Grandes Virtudes do Programador por Nelson Ferraz
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/ConceitosBasicosSockets">Conceitos básicos sobre Sockets por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/DesenhandoTextosGtk2Pango">Desenhando textos ad-hoc com Gtk2 e Pango por Daniel Ruoso
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/ExpressoesRegulares">Expressões Regulares por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/HackerHowto">Como se tornar um hacker por Nelson Ferraz
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/InlineC">Introdução ao Inline::C por Otavio Fernandes
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/IntroduzindoPerlNoSeuTrabalho">Introduzindo a Linguagem Perl no seu trabalho por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/PraticasEssenciaisDeDesenvolvimento">Praticas Essenciais de Desenvolvimento por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/ProgramacaoWEBComPerl">ProgramaE<ccedil>E<atilde>o WEB com Perl por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/RecomendacoesProgramacaoEmPerl">Recomendações para programação em Perl por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/RegexPraticasTecnicasAvancadas">Expressões Regulares - Introdução, Práticas e Técnicas Avançadas por David Dias
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/SmartQuestionsHowTo">Como fazer perguntas de forma inteligente por Nelson Ferraz
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/TecnicasManipulacaoEstruturas">Técnicas de manipulação por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/TestandoSoftwaresEmPerl">Testes de Software em Perl por Joenio Costa
 
-</a></li>
+.</a></li>
 <li><a href="/artigo/2006/VariaveisEspeciais">Variáveis Especiais em Perl por Breno de Oliveira
 
-</a></li>
+.</a></li>
 </ul>

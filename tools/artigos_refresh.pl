@@ -133,6 +133,7 @@ sub main {
             my $author = $parser->author;
             $author =~ s/,.*//;
             $f->{author} = $author ? " por " . $author : '';
+            $f->{author} =~ s/\ $//;
 
             push(@files, $f);
         }
@@ -140,7 +141,7 @@ sub main {
         print $html->ul( [map { 
                 $html->li(
                 $html->a( { href=> $_->{uri} },  
-                join('', $_->{title},  $_->{author})  )
+                join('', $_->{title},  $_->{author}, ".")  )
             )
                 , "\n" }  @files ] ), "\n";
     }

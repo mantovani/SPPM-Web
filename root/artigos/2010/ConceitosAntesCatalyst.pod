@@ -243,7 +243,7 @@ O alvo deste documento E<eacute> oferecer conhecimento para que vocE<ecirc> poss
 
 * L<http://dev.catalystframework.org/>
 
-=head1 Autor
+=head1 AUTOR
 
 Thiago Rondon , trabalha atualmente na Aware TI. L<http://www.aware.com.br/>
 
