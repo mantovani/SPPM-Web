@@ -2,68 +2,77 @@
 
 =head2 Por que Captcha ?
 
-O Captcha é uma ferramenta anti-spam/anti-bot, que nada mais é do que um teste para
-saber se você é um ser humano ou não. Também pode ser usado contra ataques de força bruta.
+O Captcha E<eacute> uma ferramenta anti-spam/anti-bot, que nada mais E<eacute>
+do que um teste para saber se vocE<ecirc> E<eacute> um ser humano ou
+nE<atilde>o. TambE<eacute>m pode ser usado contra ataques de forE<ccedil>a
+bruta.
 
-Uma maneira de saber que o usuário é de fato um usuário, é usando captcha na autentificação,
+Uma maneira de saber que o usuE<aacute>rio E<eacute> de fato um
+usuE<aacute>rio, E<eacute> usando captcha na autentificaE<ccedil>E<atilde>o,
 quando o cliente efetua o logon.
 
 =cut
 
-=head2 Onde é usado ?
+=head2 Onde E<eacute> usado ?
 
-Muitos sites usam captcha, se você errar algumas vezes a sua senha do Gmail
-por exemplo,ele vai ativar o captcha. O L<http://registro.br> é outro exemplo,
-bem como o email da Yahoo, que só deixa você enviar email depois de digitar um
-captcha.
+Muitos sites usam captcha, se vocE<ecirc> errar algumas vezes a sua senha do
+Gmail por exemplo,ele vai ativar o captcha. O L<http://registro.br> E<eacute>
+outro exemplo, bem como o email da Yahoo, que sE<oacute> deixa vocE<ecirc>
+enviar email depois de digitar um captcha.
 
-Existem técnicas para poder burlar o captcha, não é atoa que encontramos imagens tortas e difíceis de ler.
-Até mesmo perguntas inteligentes, como: "Qual letra não é vogal ?","Qual número não é ímpar ?" e etc.
-Imagens tortas, testes sobre imagens dificultam muito o computador de entender, isso garante ainda mais que não é um robo acessando sua aplicação.
+Existem tE<eacute>cnicas para poder burlar o captcha, nE<atilde>o E<eacute>
+atoa que encontramos imagens tortas e difE<iacute>ceis de ler. AtE<eacute>
+mesmo perguntas inteligentes, como: "Qual letra nE<atilde>o E<eacute> vogal
+?","Qual nE<uacute>mero nE<atilde>o E<eacute> E<iacute>mpar ?" e etc. Imagens
+tortas, testes sobre imagens dificultam muito o computador de entender, isso
+garante ainda mais que nE<atilde>o E<eacute> um robE<ocirc> acessando sua
+aplicaE<ccedil>E<atilde>o.
 
 =cut
 
 =head2 reCaptcha
 
-O reCaptcha é um sistema anti-spam gratuito através do qual você ainda ajuda a
-digitalizar livros e jornais.
+O reCaptcha E<eacute> um sistema anti-spam gratuito atravE<eacute>s do qual
+vocE<ecirc> ainda ajuda a digitalizar livros e jornais.
 
-Pera aí, como assim ?
+Pera aE<iacute>, como assim ?
 
-Existe uma técnica chamada Optical Character Recognition (OCR). Quando se
-escaneia um livro se usa essa técnica para transformar as imagens escaneadas
-em texto.
+Existe uma tE<eacute>cnica chamada Optical Character Recognition (OCR). Quando
+se escaneia um livro se usa essa tE<eacute>cnica para transformar as imagens
+escaneadas em texto.
 
-Algumas palavras por estarem borradas ou "mal escritas", tornam-se difíceis
-para o computador reconhecer. Quando você faz o teste de "humano" precisa
-digitar 2 palavras, uma delas o reCaptcha sabe qual é a outra não, ou seja, você
-pega uma palavra que o ORC não conseguiu ler e diz para a máquina qual é e
-ainda faz o teste de "humano". Mais informações aqui:
+Algumas palavras por estarem borradas ou "mal escritas", tornam-se
+difE<iacute>ceis para o computador reconhecer. Quando vocE<ecirc> faz o teste
+de "humano" precisa digitar 2 palavras, uma delas o reCaptcha sabe qual
+E<eacute> a outra nE<atilde>o, ou seja, vocE<ecirc> pega uma palavra que o OCR
+nE<atilde>o conseguiu ler e diz para a mE<aacute>quina qual E<eacute> e ainda
+faz o teste de "humano". Mais informaE<ccedil>E<otilde>es aqui:
 L<http://recaptcha.net/learnmore.html>
 
 =cut
 
 =head2 Preparando o Ambiente
 
-Nesse artigo vou usar o Captcha::reCAPTCHA é uma implementação em Perl do
-reCaptcha API.
+Nesse artigo vou usar o Captcha::reCAPTCHA E<eacute> uma
+implementaE<ccedil>E<atilde>o em Perl do reCaptcha API.
 
 O Kieren Diment escreveu um controller para o Catalyst chamado
-Catalyst::Controller::reCAPTCHA, é ele que vamos utilizar.
+Catalyst::Controller::reCAPTCHA, E<eacute> ele que vamos utilizar.
 
-Antes de tudo, você vai precisar criar uma chave no site do reCaptcha
+Antes de tudo, vocE<ecirc> vai precisar criar uma chave no site do reCaptcha
 L<https://admin.recaptcha.net/accounts/signup?next=/recaptcha/createsite/>.
-Tem duas chaves, uma pública e outra privada, guarde as bem.
+Tem duas chaves, uma pE<uacute>blica e outra privada, guarde as bem.
 
 =cut
 
 =head2 Instalando
 
-A instalação pode ser feita utilizando os comandos abaixo:
+A instalaE<ccedil>E<atilde>o pode ser feita utilizando os comandos abaixo:
 
-    user@host:~$ cpan -i 'Catalyst::Controller::reCAPTCHA'
+	user@host:~$ cpan -i 'Catalyst::Controller::reCAPTCHA'
 
-Irei criar uma aplicação teste para fazer passa à passo:
+Irei criar uma aplicaE<ccedil>E<atilde>o teste para fazer passa E<agrave>
+passo:
 
     user@host:~$ catalyst.pl MyCaptcha
     created "MyCaptcha"
@@ -84,9 +93,10 @@ Criando o View:
 
 =head2 Configurando
 
-O Catalyst::Controller::reCAPTCHA precisa das chaves que você conseguiu se cadastrando no site do reCatpcha como eu disse anteriormente,
-vamos fazer isso setando dois atributos no MyCaptcha.pm.
-Adicione essas duas linhas B<com as suas chaves>:
+O Catalyst::Controller::reCAPTCHA precisa das chaves que vocE<ecirc> conseguiu
+se cadastrando no site do reCaptcha como eu disse anteriormente, vamos fazer
+isso setando dois atributos no MyCaptcha.pm. Adicione essas duas linhas B<com
+as suas chaves>:
 
     user@host:~/MyCaptcha$ vim lib/MyCaptcha.pm
     __PACKAGE__->config->{recaptcha}->{pub_key}
@@ -99,11 +109,14 @@ Adicione essas duas linhas B<com as suas chaves>:
 
 =head2 O View
 
-Vamos começar criando o View. Precisaremos de dois arquivos, um que vai ter o
-form e o outro que vai avisar se o usuário digitou o captcha certo ou não.
+Vamos comeE<ccedil>ar criando o View. Precisaremos de dois arquivos, um que
+vai ter o form e o outro que vai avisar se o usuE<aacute>rio digitou o captcha
+certo ou nE<atilde>o.
 
-No primeiro arquivo, será enviado o captcha para um método que checa se está certo ou não.
-O método que checa o captcha chama "checkcaptcha", veremos mais sobre ele quando estivermos programando.
+No primeiro arquivo, serE<aacute> enviado o captcha para um mE<eacute>todo que
+checa se estE<aacute> certo ou nE<atilde>o. O mE<eacute>todo que checa o
+captcha chama "checkcaptcha", veremos mais sobre ele quando estivermos
+programando.
 
     user@host:~/MyCaptcha$ vim root/captchaform.tt
 	<!DOCTYPE html
@@ -130,8 +143,10 @@ O método que checa o captcha chama "checkcaptcha", veremos mais sobre ele quand
 	</html>
 
 
-Agora no segundo template, colocaremos uma variável chamada "just_check", se o captcha estiver correto ela será setada para "o usuario digitou certo"
-caso contrário ela será setada para "o usuário digitou errado".
+Agora no segundo template, colocaremos uma variE<aacute>vel chamada
+"just_check", se o captcha estiver correto ela serE<aacute> setada para "o
+usuE<aacute>rio digitou certo" caso contrE<aacute>rio ela serE<aacute> setada
+para "o usuE<aacute>rio digitou errado".
 
     user@host:~/MyCaptcha$ vim root/checkcaptcha.tt
 	<h1>[% just_check %]</h1>
@@ -140,26 +155,29 @@ caso contrário ela será setada para "o usuário digitou errado".
 
 =head2 Programando
 
-Agora que as chaves já estão onde devem estar e o view está criado, vamos
-programar. Mas antes vamos entender o que vamos fazer.
+Agora que as chaves jE<aacute> estE<atilde>o onde devem estar e o view
+estE<aacute> criado, vamos programar. Mas antes vamos entender o que vamos
+fazer.
 
-O controller tem dois métodos que vamos usar, o primeiro é o que retorna o
-html com o form para enviar o captcha e o segundo é para verificar se o que o
-usuário digitou está correto ou não.
+O controller tem dois mE<eacute>todos que vamos usar, o primeiro E<eacute> o
+que retorna o html com o form para enviar o captcha e o segundo E<eacute> para
+verificar se o que o usuE<aacute>rio digitou estE<aacute> correto ou
+nE<atilde>o.
 
 No Root.pm vamos usar o controller: Catalyst::Controller::reCAPTCHA. Substitua
 o:
 
-    BEGIN { extends 'Catalyst::Controller' }
+	BEGIN { extends 'Catalyst::Controller' }
 
 por:
 
-    BEGIN { extends 'Catalyst::Controller::reCAPTCHA' }
+	BEGIN { extends 'Catalyst::Controller::reCAPTCHA' }
 
-Agora estamos usando os métodos adicionais, isso vai dar os dois métodos que
-nós vamos precisar para a nossa aplicação: "captcha_get" e "captcha_check".
+Agora estamos usando os mE<eacute>todos adicionais, isso vai dar os dois
+mE<eacute>todos que nE<oacute>s vamos precisar para a nossa
+aplicaE<ccedil>E<atilde>o: "captcha_get" e "captcha_check".
 
-Vamos criar um método para obter o captcha:
+Vamos criar um mE<eacute>todo para obter o captcha:
 
     sub captchaform : Local {
         my ( $self, $c ) = @_;
@@ -169,37 +187,41 @@ Vamos criar um método para obter o captcha:
 Quando fazemos $c->forward('captcha_get') o atributo $c->stash->{'recaptcha'}
 vai estar com o que precisamos magicamente (O html que forma o form).
 
-Depois de ter o html com o form, o usuário vai digitar e enviar. Quando ele
-faz isso nós temos um retorno do reCaptcha; esse retorno é 1 se estiver certo.
+Depois de ter o html com o form, o usuE<aacute>rio vai digitar e enviar.
+Quando ele faz isso nE<oacute>s temos um retorno do reCaptcha; esse retorno
+E<eacute> 1 se estiver certo.
 
 Quando se faz o $c->forwared('captcha_check') automagicamente o atributo
-$c->stash->{recaptcha_ok} é atribuido para 1 se o usuário digitou o captcha
-corretamente, caso contrário ele não existe.
+$c->stash->{recaptcha_ok} E<eacute> atribuE<iacute>do para 1 se o
+usuE<aacute>rio digitou o captcha corretamente, caso contrE<aacute>rio ele
+nE<atilde>o existe.
 
-Vamos criar um método para receber essa informação:
+Vamos criar um mE<eacute>todo para receber essa informaE<ccedil>E<atilde>o:
 
     sub checkcaptcha : Local {
         my ( $self, $c ) = @_;
         $c->forwared('captcha_check');
         if ( $c->stash->{recaptcha_ok} ) {
-	        $c->stash->{'just_check'} = 'O Usuário digitou certo';
+	        $c->stash->{'just_check'} = 'O UsuE<aacute>rio digitou certo';
         } else {
-	        $c->stash->{'just_check'} = 'O Usuário digitou errado';
+	        $c->stash->{'just_check'} = 'O UsuE<aacute>rio digitou errado';
         }
     }
 
 =cut
 
-=head2 Conclusão
+=head2 ConclusE<atilde>o
 
-Usando o grande CPAN e escrevendo pouquíssimo código conseguimos implementar um captcha.
+Usando o grande CPAN e escrevendo pouquE<iacute>ssimo cE<oacute>digo
+conseguimos implementar um captcha.
 
 =head2 Agradecimento
 
-Agradeço ao Bablos e ao Thiago Rondon.
+AgradeE<ccedil>o ao Bablos e ao Thiago Rondon.
 
 =head2 AUTOR
 
-Daniel Mantovani <daniel.oliveira.mantovani@gmail.com>, trabalha atualmente na empresa DND L<http://www.dnd.com.br/>
+Daniel Mantovani <daniel.oliveira.mantovani@gmail.com>, trabalha atualmente na
+empresa DND L<http://www.dnd.com.br/>
 
 =cut

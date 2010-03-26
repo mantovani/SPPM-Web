@@ -5,23 +5,36 @@
 
 =head1 EquinE<oacute>cio 2010 de MarE<ccedil>o !
 
-E<Eacute> com o maior prazer que a B<SE<atilde>o Paulo Perl Mongers> organiza um evento com o objetivo de gerar conteE<uacute>do, agregar seus membros e compartilhar conhecimentos.
+E<Eacute> com o maior prazer que a B<SE<atilde>o Paulo Perl Mongers> organiza
+um evento com o objetivo de gerar conteE<uacute>do, agregar seus membros e
+compartilhar conhecimentos.
 
-A ideia surgiu baseado nos objetivos descritos acima, e procuramos uma desculpa para justificar nossas metas de forma divertida, a soluE<ccedil>E<atilde>o surgiu e ela foi baseada em um movimento do planeta terra com a estrela sol.
+A ideia surgiu baseado nos objetivos descritos acima, e procuramos uma
+desculpa para justificar nossas metas de forma divertida, a
+soluE<ccedil>E<atilde>o surgiu e ela foi baseada em um movimento do planeta
+terra com a estrela sol.
 
-EquinE<oacute>cio E<eacute> uma palavra derivada do latim, que significa "noite igual", no qual E<eacute> basicamente aos dois momentos do ano em que a duraE<ccedil>E<atilde>o do dia E<eacute> igual da noite sobre toda terra. (vide wikipedia, L<http://pt.wikipedia.org/wiki/Equin%C3%B3cio>)
+EquinE<oacute>cio E<eacute> uma palavra derivada do latim, que significa
+"noite igual", no qual E<eacute> basicamente aos dois momentos do ano em que a
+duraE<ccedil>E<atilde>o do dia E<eacute> igual da noite sobre toda terra.
+(vide wikipedia, L<http://pt.wikipedia.org/wiki/Equin%C3%B3cio>)
 
-Ao longo da histE<oacute>ria, os equinE<oacute>cios foram fenE<ocirc>menos festejados e ligados aos costumes de muitos povos. Um exemplo E<eacute> a pE<aacute>scoa, uma das principais celebraE<ccedil>E<otilde>es cristE<atilde>s que se iniciava com a mudanE<ccedil>a de estaE<ccedil>E<atilde>o. E esperamos que este movimento em relaE<ccedil>E<atilde>o a esta grande estrela seja um bom motivo para produzirmos conteE<uacute>do!
+Ao longo da histE<oacute>ria, os equinE<oacute>cios foram fenE<ocirc>menos
+festejados e ligados aos costumes de muitos povos. Um exemplo E<eacute> a
+pE<aacute>scoa, uma das principais celebraE<ccedil>E<otilde>es cristE<atilde>s
+que se iniciava com a mudanE<ccedil>a de estaE<ccedil>E<atilde>o. E esperamos
+que este movimento em relaE<ccedil>E<atilde>o a esta grande estrela seja um
+bom motivo para produzirmos conteE<uacute>do!
 
-Para este equinE<oacute>cio o tema escolhido foi desenvolvimento web utilizando a linguagem Perl. Gostaria de agradecer aos autores dos artigos, aos membros da comunidade da SE<atilde>o Paulo Mongers e outros grupos, como a Rio-PM e Brasil-PM.
+Para este equinE<oacute>cio o tema escolhido foi desenvolvimento web
+utilizando a linguagem Perl. Gostaria de agradecer aos autores dos artigos,
+aos membros da comunidade da SE<atilde>o Paulo Mongers e outros grupos, como a
+Rio-PM e Brasil-PM.
 
 Boa diversE<atilde>o, e aproveitem !
 
 I<Thiago Rondon>, B<SE<atilde>o Paulo Perl Mongers>.
 
 
-=cut
-
-
-
+=cut 
 

@@ -3,12 +3,30 @@
 
 =head1 Conceitos e conhecimentos para comeE<ccedil>ar no Catalyst.
 
-Este ensaio E<eacute> uma forma objetiva de explicar os conhecimentos necessE<aacute>rios para comeE<ccedil>ar a programar utilizando o elegante framework de programaE<ccedil>E<atilde>o para web. Este texto tende a nE<atilde>o ser exaustivo e nem autoritE<aacute>rio em nenhum dos tE<oacute>picos que serE<aacute> abordado. A missE<atilde>o aqui E<eacute> provocar a curiosidade de conceitos e "ferramentas" para que vocE<ecirc> possa aproveitar melhor o L<Catalyst>.
+Este ensaio E<eacute> uma forma objetiva de explicar os conhecimentos
+necessE<aacute>rios para comeE<ccedil>ar a programar utilizando o elegante
+framework de programaE<ccedil>E<atilde>o para web. Este texto tende a
+nE<atilde>o ser exaustivo e nem autoritE<aacute>rio em nenhum dos
+tE<oacute>picos que serE<aacute> abordado. A missE<atilde>o aqui E<eacute>
+provocar a curiosidade de conceitos e "ferramentas" para que vocE<ecirc> possa
+aproveitar melhor o L<Catalyst>.
 
-A arquitetura definida para elaboraE<ccedil>E<atilde>o da sua aplicaE<ccedil>E<atilde>o E<eacute> sempre um passo importante na construE<ccedil>E<atilde>o. Normalmente misturar o cE<oacute>digo do I<controlador> , apresentaE<ccedil>E<atilde>o de interface do usE<uacute>ario, acesso aos dados e a regras
-de negE<oacute>cio podem gerar vE<aacute>rias interdependE<ecirc>ncias, ou seja uma alteraE<ccedil>E<atilde>o em alguma destas partes pode gerar efeitos colaterais e a manutenE<ccedil>E<atilde>o ficar extramamente complexa, para isto E<eacute> interessante definir uma arquitetura padrE<atilde>o ao desenvolvimento para evitar ao mE<aacute>ximo este tipo de dificuldade. O MVC E<eacute> uma boa arquitetura para reduzir estes problemas e tornar a manutenE<ccedil>E<atilde>o do software mais E<aacute>gil.
+A arquitetura definida para elaboraE<ccedil>E<atilde>o da sua
+aplicaE<ccedil>E<atilde>o E<eacute> sempre um passo importante na
+construE<ccedil>E<atilde>o. Normalmente misturar o cE<oacute>digo do
+I<controlador> , apresentaE<ccedil>E<atilde>o de interface do usuE<aacute>rio,
+acesso aos dados e a regras de negE<oacute>cio podem gerar vE<aacute>rias
+interdependE<ecirc>ncias, ou seja uma alteraE<ccedil>E<atilde>o em alguma
+destas partes pode gerar efeitos colaterais e a manutenE<ccedil>E<atilde>o
+ficar extremamente complexa, para isto E<eacute> interessante definir uma
+arquitetura padrE<atilde>o ao desenvolvimento para evitar ao mE<aacute>ximo
+este tipo de dificuldade. O MVC E<eacute> uma boa arquitetura para reduzir
+estes problemas e tornar a manutenE<ccedil>E<atilde>o do software mais
+E<aacute>gil.
 
-O L<Catalyst> E<eacute> um framework desenhado para trabalhar com o este tipo de modelo, por isto E<eacute> muito importante o entendimento da abordagem sobre o conceito antes de comeE<ccedil>ar.
+O L<Catalyst> E<eacute> um framework desenhado para trabalhar com o este tipo
+de modelo, por isto E<eacute> muito importante o entendimento da abordagem
+sobre o conceito antes de comeE<ccedil>ar.
 
 	"Podemos enfrentar o nosso problema.
 	Podemos organizar os fatos como este que temos
@@ -18,7 +36,10 @@ O L<Catalyst> E<eacute> um framework desenhado para trabalhar com o este tipo de
 
 =head2 MVC
 
-"Model-View-Controller" E<eacute> um modelo para separar as I<partes> do seu aplicativo, basicamente tentando efetuar uma ponte entre o modelo mental humano e ao modelo digital para os computadores. Tradicionalmente, esta questE<atilde>o E<eacute> resolvida de forma separada em:
+"Model-View-Controller" E<eacute> um modelo para separar as I<partes> do seu
+aplicativo, basicamente tentando efetuar uma ponte entre o modelo mental
+humano e ao modelo digital para os computadores. Tradicionalmente, esta
+questE<atilde>o E<eacute> resolvida de forma separada em:
 
 =over
 
@@ -36,9 +57,12 @@ Mostrar os dados. (View)
 
 =back
 
-Veja, este modelo diz quem sE<atilde>o estes componentes e como eles interagem de forma simplificada, sugiro fortemente a leitura das referencias deste artigo para melhorar a E<oacute>tica sobre este cE<eacute>nario.
+Veja, este modelo diz quem sE<atilde>o estes componentes e como eles interagem
+de forma simplificada, sugiro fortemente a leitura das referencias deste
+artigo para melhorar a E<oacute>tica sobre este cenE<aacute>rio.
 
-Existem duas escolas sobre como realmente deve funcionar este trabalho, mas as duas concordam:
+Existem duas escolas sobre como realmente deve funcionar este trabalho, mas as
+duas concordam:
 
 =over
 
@@ -48,62 +72,100 @@ Existem trE<ecirc>s objetos envolvidos: Model, View a Controller.
 
 =item *
 
-InformaE<ccedil>E<otilde>es quando preciso, normalmente E<eacute> usado um banco de dados.
+InformaE<ccedil>E<otilde>es quando preciso, normalmente E<eacute> usado um
+banco de dados.
 
 =item *
 
-O objeto view gerencia a apresentaE<ccedil>E<atilde>o das informaE<ccedil>E<otilde>es para o usuE<aacute>rio.
+O objeto view gerencia a apresentaE<ccedil>E<atilde>o das
+informaE<ccedil>E<otilde>es para o usuE<aacute>rio.
 
 =item *
 
-O objeto controlador gerencia o processo da requisiE<ccedil>E<atilde>o, incluindo autenticaE<ccedil>E<atilde>o e autorizaE<ccedil>E<atilde>o.
+O objeto controlador gerencia o processo da requisiE<ccedil>E<atilde>o,
+incluindo autenticaE<ccedil>E<atilde>o e autorizaE<ccedil>E<atilde>o.
 
 =item *
 
-As regras de negE<oacute>cio, a especificaE<ccedil>E<atilde>o do seu aplicativo nE<atilde>o deve estar no objeto view.
+As regras de negE<oacute>cio, a especificaE<ccedil>E<atilde>o do seu
+aplicativo nE<atilde>o deve estar no objeto view.
 
-=item * 
+=item *
 
-Model nE<atilde>o deve realizar nenhuma tarrefa "web".
+Model nE<atilde>o deve realizar nenhuma tarefa "web".
 
-=item * 
+=item *
 
-VocE<ecirc> deve separar as tarrefas de web e de outros componentes reutilizados em serviE<ccedil>os como o 'cron jobs' e etc.
+VocE<ecirc> deve separar as tarefas de web e de outros componentes
+reutilizados em serviE<ccedil>os como o 'cron jobs' e etc.
 
 =back
 
-Aqui E<eacute> que as duas escolas divergem. A escola antiga (popularizada pela
-linguagem Smalltalk) diz que as regras de negE<oacute>cio estejam no Model, e a nova escola (popularizada pelos novos frameworks de web) no qual acredita que o melhor lugar E<eacute> no objeto Controlador. Ambos trabalham bem, e cada um tem seus prE<oacute>s e contras. Na realidade, esta escolha fica ao seu critE<eacute>rio, como sua mente trabalhar melhor e de acordo com suas preferE<ecirc>ncias. Mas, fica a pergunta: E<Eacute> Melhor pensar em um objeto I<controlador> gerenciado a sua conexE<atilde>o com o banco de dados ou um objeto I<modelo> monitorando o estado dos seus pedidos e dizendo ao manipulador como processar os pedidos ?
+Aqui E<eacute> que as duas escolas divergem. A escola antiga (popularizada
+pela linguagem Smalltalk) diz que as regras de negE<oacute>cio estejam no
+Model, e a nova escola (popularizada pelos novos frameworks de web) no qual
+acredita que o melhor lugar E<eacute> no objeto Controlador. Ambos trabalham
+bem, e cada um tem seus prE<oacute>s e contras. Na realidade, esta escolha
+fica ao seu critE<eacute>rio, como sua mente trabalhar melhor e de acordo com
+suas preferE<ecirc>ncias. Mas, fica a pergunta: E<Eacute> Melhor pensar em um
+objeto I<controlador> gerenciado a sua conexE<atilde>o com o banco de dados ou
+um objeto I<modelo> monitorando o estado dos seus pedidos e dizendo ao
+manipulador como processar os pedidos ?
 
-Sim, esta E<eacute> a principal pergunta que vocE<ecirc> deve responder a si prE<oacute>prio sempre que inicializar uma nova construE<ccedil>E<atilde>o utilizando o modelo MVC.
+Sim, esta E<eacute> a principal pergunta que vocE<ecirc> deve responder a si
+prE<oacute>prio sempre que inicializar uma nova construE<ccedil>E<atilde>o
+utilizando o modelo MVC.
 
 =head2 Servidores web
 
-Para executar qualquer aplicativo web, devemos pensar em como vamos servir nossos usuE<aacute>rios, iremos discutir algumas estratE<eacute>gias aqui.
+Para executar qualquer aplicativo web, devemos pensar em como vamos servir
+nossos usuE<aacute>rios, iremos discutir algumas estratE<eacute>gias aqui.
 
-O servidor Apache E<eacute> um dos mais utilizados pelo movimento de software-livre, ele E<eacute> executado por mais de 60% dos servidores web disponiveis na Internet. Vide L<http://www.apache.org>
+O servidor Apache E<eacute> um dos mais utilizados pelo movimento de software
+livre, ele E<eacute> executado por mais de 60% dos servidores web
+disponE<iacute>veis na Internet. Vide L<http://www.apache.org>
 
-Com ele podemos pensar em executar nossa aplicaE<ccedil>E<atilde>o dos seguintes modos:
+Com ele podemos pensar em executar nossa aplicaE<ccedil>E<atilde>o dos
+seguintes modos:
 
 =head3 CGI
 
-E<Eacute> uma tecnologia que consiste em permitir que o usuE<aacute>rio repasse  parE<acirc>metros para o seu aplicativo e assim gerar pE<aacute>ginas dinamicamente.
+E<Eacute> uma tecnologia que consiste em permitir que o usuE<aacute>rio
+repasse parE<acirc>metros para o seu aplicativo e assim gerar pE<aacute>ginas
+dinamicamente.
 
-PorE<eacute>m ela E<eacute> lenta e requer que o desenvolvedor "faE<ccedil>a tudo". Com as novas tecnologias desenvolvidas e utilizadas nos E<uacute>ltimos anos ela passou a nE<atilde>o ser mais recomendada.
+PorE<eacute>m ela E<eacute> lenta e requer que o desenvolvedor "faE<ccedil>a
+tudo". Com as novas tecnologias desenvolvidas e utilizadas nos E<uacute>ltimos
+anos ela passou a nE<atilde>o ser mais recomendada.
 
 =head3 mod_perl
 
-Ele E<eacute> um mE<oacute>dulo opcional do Apache, no qual consiste em embutir o interpretador Perl no servidor, alE<eacute>m de prover acesso completo a API do servidor Apache, permitindo escrever cE<oacute>digos que interagem entre as requisiE<ccedil>E<otilde>es.
+Ele E<eacute> um mE<oacute>dulo opcional do Apache, no qual consiste em
+embutir o interpretador Perl no servidor, alE<eacute>m de prover acesso
+completo a API do servidor Apache, permitindo escrever cE<oacute>digos que
+interagem entre as requisiE<ccedil>E<otilde>es.
 
 =head3 FastCGI
 
-FastCGI E<eacute> um protocolo variante do CGI. 
+FastCGI E<eacute> um protocolo variante do CGI.
 
-A diferenE<ccedil>a bE<aacute>sica E<eacute> que os processos no protocolo CGI sE<atilde>o executados separadamente, ou seja um "processo para cada requisiE<ccedil>E<atilde>o", alE<eacute>m de que existem outros limitadores no processo como reutilizaE<ccedil>E<atilde>o de conexE<otilde>es ao banco de dados, cache de memE<oacute>ria e etc. FastCGI pode utilizar um processo persistente para cada processo que pode manipular muitas conexE<otilde>es em seu ciclo (multiplexing).
+A diferenE<ccedil>a bE<aacute>sica E<eacute> que os processos no protocolo CGI
+sE<atilde>o executados separadamente, ou seja um "processo para cada
+requisiE<ccedil>E<atilde>o", alE<eacute>m de que existem outros limitadores no
+processo como reutilizaE<ccedil>E<atilde>o de conexE<otilde>es ao banco de
+dados, cache de memE<oacute>ria e etc. FastCGI pode utilizar um processo
+persistente para cada processo que pode manipular muitas conexE<otilde>es em
+seu ciclo (multiplexing).
 
-Existem variantes da implementaE<ccedil>E<atilde>o do protocolo FastCGI. Eu vou resumir a questE<atilde>o entre duas implementaE<ccedil>E<otilde>es em relaE<ccedil>E<atilde>o ao servidor web Apache. FCGID L<http://httpd.apache.org/mod_fcgid/> no qual E<eacute> interessante para servidores compartilhados e o fastcgi L<http://www.fastcgi.com/> que tem um arquitetura direcionada o servidor dedicado para a aplicaE<ccedil>E<atilde>o.
+Existem variantes da implementaE<ccedil>E<atilde>o do protocolo FastCGI. Eu
+vou resumir a questE<atilde>o entre duas implementaE<ccedil>E<otilde>es em
+relaE<ccedil>E<atilde>o ao servidor web Apache. FCGID
+L<http://httpd.apache.org/mod_fcgid/> no qual E<eacute> interessante para
+servidores compartilhados e o fastcgi L<http://www.fastcgi.com/> que tem um
+arquitetura direcionada o servidor dedicado para a aplicaE<ccedil>E<atilde>o.
 
-Abaixo um exemplo de configuraE<ccedil>E<atilde>o no servidor web Apache para o fastcgi:
+Abaixo um exemplo de configuraE<ccedil>E<atilde>o no servidor web Apache para
+o fastcgi:
 
 	FastCgiIpcDir /var/tmp
 	FastCgiServer /opt/catalyst-app/script/www_fastcgi.pl -processes 3
@@ -118,23 +180,23 @@ Abaixo um exemplo de configuraE<ccedil>E<atilde>o no servidor web Apache para o 
 
 =head3 Outros servidores.
 
-AlE<eacute>m do conhecido Apache, existem outras soluE<ccedil>E<otilde>s dependendo da sua necessidade.
+AlE<eacute>m do conhecido Apache, existem outras soluE<ccedil>E<otilde>es dependendo da sua necessidade.
 
-O lighttpd E<eacute> um servidor projetado para otimizar ambientes de alta perfomance. Caso vocE<eacute> esteja projetando uma aplicaE<ccedil>E<atilde>o para um nE<uacute>mero significativo de acessos, recomendo o estudo desta implementaE<ccedil>E<atilde>o.
+O lighttpd E<eacute> um servidor projetado para otimizar ambientes de alta performance. Caso vocE<ecirc> esteja projetando uma aplicaE<ccedil>E<atilde>o para um nE<uacute>mero significativo de acessos, recomendo o estudo desta implementaE<ccedil>E<atilde>o.
 
 Veja tambE<eacute>m o Nginx, L<http://nginx.org/>.
 
 =head2 Template Toolkit
 
-Um sistema de templates possui uma missE<atilde>o simples, o objetivo maior com
-ele E<eacute> "marcar" algumas sessE<otilde>es do arquivo (com nome de variE<aacute>veis por exemplo) e o sistema substituir por seus valores.
+Um sistema de templates possui uma missE<atilde>o simples, o objetivo maior
+com ele E<eacute> "marcar" algumas sessE<otilde>es do arquivo (com nome de
+variE<aacute>veis por exemplo) e o sistema substituir por seus valores.
 
 Existem algumas soluE<ccedil>E<otilde>es dentro do Perl para isto e as mais
-conhecidas sE<atilde>o
-L<Template::Toolkit>, L<Mason>, L<HTML::Template> e algumas outras. A maioria dos exemplos que vocE<ecirc>
-irE<aacute> encontrar nos
-documentos espalhados pela rede provavelmente estarE<atilde>o utilizando a Template
-Toolkit (TT).
+conhecidas sE<atilde>o L<Template::Toolkit>, L<Mason>, L<HTML::Template> e
+algumas outras. A maioria dos exemplos que vocE<ecirc> irE<aacute> encontrar
+nos documentos espalhados pela rede provavelmente estarE<atilde>o utilizando a
+Template Toolkit (TT).
 
 Na TT, a template E<eacute> um arquivo texto que contE<eacute>m diretrizes
 especiais com demarcaE<ccedil>E<otilde>es, como por exemplo:
@@ -157,7 +219,8 @@ Abaixo um pequeno script Perl que utiliza a TT:
     $template->process($file, $vars) 
     || die 'Template process failed ', $template->error, "\n";
 
-Agora, um exemplo para demonstrar a utilizaE<ccedil>E<atilde>o das diretrizes da template:
+Agora, um exemplo para demonstrar a utilizaE<ccedil>E<atilde>o das diretrizes
+da template:
 
     [% fruit %]
 
@@ -174,15 +237,24 @@ Agora, um exemplo para demonstrar a utilizaE<ccedil>E<atilde>o das diretrizes da
 
 =head2 Banco de dados
 
-Tudo o que se refere ao banco de dados, ou seja suas informaE<ccedil>E<otilde>es estE<atilde>o no objeto "Model".
+Tudo o que se refere ao banco de dados, ou seja suas
+informaE<ccedil>E<otilde>es estE<atilde>o no objeto "Model".
 
-E<Eacute> uma recomendaE<ccedil>E<atilde>o utilizar um mapeador de objeto-relacional (ORM) no qual vocE<ecirc> irE<aacute> facilitar a programaE<ccedil>E<atilde>o orientada aos objetos utilizando um banco de dados relacional.
+E<Eacute> uma recomendaE<ccedil>E<atilde>o utilizar um mapeador de
+objeto-relacional (ORM) no qual vocE<ecirc> irE<aacute> facilitar a
+programaE<ccedil>E<atilde>o orientada aos objetos utilizando um banco de dados
+relacional.
 
-Uma estratE<eacute>gia boa no desenvolvimento do objeto "Model" E<eacute> representar as I<tabelas> em classes, uma "biblioteca compartilhada" no qual a sua manutenE<ccedil>E<atilde>o do cE<oacute>digo serE<aacute> mais eficiE<ecirc>nte.
+Uma estratE<eacute>gia boa no desenvolvimento do objeto "Model" E<eacute>
+representar as I<tabelas> em classes, uma "biblioteca compartilhada" no qual a
+sua manutenE<ccedil>E<atilde>o do cE<oacute>digo serE<aacute> mais eficiente.
 
-Utilizando esta tE<eacute>cnica vocE<ecirc> nE<atilde>o irE<aacute> se preocupar com os I<comandos> da linguagem SQL, pois vocE<ecirc> irE<aacute> usar uma interface de programaE<ccedil>E<atilde>o.
+Utilizando esta tE<eacute>cnica vocE<ecirc> nE<atilde>o irE<aacute> se
+preocupar com os I<comandos> da linguagem SQL, pois vocE<ecirc> irE<aacute>
+usar uma interface de programaE<ccedil>E<atilde>o.
 
-Minha recomendaE<ccedil>E<atilde>o E<eacute> a leitura de alguns mE<oacute>dulos como o L<DBIx::Class> e L<Rose::DB>.
+Minha recomendaE<ccedil>E<atilde>o E<eacute> a leitura de alguns
+mE<oacute>dulos como o L<DBIx::Class> e L<Rose::DB>.
 
 Abaixo um exemplo de utilizaE<ccedil>E<atilde>o do L<DBIx::Class>:
 
@@ -203,37 +275,54 @@ Abaixo um exemplo de utilizaE<ccedil>E<atilde>o do L<DBIx::Class>:
   		{ year => 2000 }
 	)	
 
-Observe que nE<atilde>o foi utilizada a linguagem SQL. 
+Observe que nE<atilde>o foi utilizada a linguagem SQL.
 
 =head2 Catalyst
 
-Catalyst E<eacute> um framework de desenvolvimento web elegante, no qual encoraja o programador a reutilizaE<ccedil>E<atilde>o de cE<oacute>digo.
+Catalyst E<eacute> um framework de desenvolvimento web elegante, no qual
+encoraja o programador a reutilizaE<ccedil>E<atilde>o de cE<oacute>digo.
 
 =head3 Dispatching
 
-O cerne do framework E<eacute> um sistema de I<dispatching>, ou seja obtendo uma URI ele seleciona o bloco do cE<oacute>digo a ser executado, esta tE<eacute>cnica E<eacute> muito poderosa.
+O cerne do framework E<eacute> um sistema de I<dispatching>, ou seja obtendo
+uma URI ele seleciona o bloco do cE<oacute>digo a ser executado, esta
+tE<eacute>cnica E<eacute> muito poderosa.
 
-Recomendo a leitura de um excelente mE<eacute>todo para o I<dispatching>, 'Chained' (vide L<Catalyst::DispatchType::Chained >).
+Recomendo a leitura de um excelente mE<eacute>todo para o I<dispatching>,
+'Chained' (vide L<Catalyst::DispatchType::Chained >).
 
-Por exemplo, vocE<ecirc> requisitando I<http://myserver.com/acao>, basicamente ele irE<aacute> te encaminhar para o cE<oacute>digo responsE<aacute>vel pela URI I<acao>.
+Por exemplo, vocE<ecirc> requisitando I<http://myserver.com/acao>, basicamente
+ele irE<aacute> te encaminhar para o cE<oacute>digo responsE<aacute>vel pela
+URI I<acao>.
 
 =head3 Solicitar e responder. (Resquest/Response)
 
-Esta abstraE<ccedil>E<atilde>o E<eacute> a maneira com a qual a aplicaE<ccedil>E<atilde>o irE<aacute> solicitar dados (ex. POST, cabeE<ccedil>alhos, ..) e responder de alguma maneira (ex. HTML, JSON, ...).
+Esta abstraE<ccedil>E<atilde>o E<eacute> a maneira com a qual a
+aplicaE<ccedil>E<atilde>o irE<aacute> solicitar dados (ex. POST,
+cabeE<ccedil>alhos, ..) e responder de alguma maneira (ex. HTML, JSON, ...).
 
 =head3 Motores (engines)
 
-E<Eacute> oferecido um nE<uacute>mero de adaptadores para os diversos ambientes, como CGI, mod_perl, FastCGI e etc. Eles que sE<atilde>o responsE<aacute>veis por solicitar e responder aos eventos por uma API, assim sE<atilde>o tratados da mesma maneira na construE<ccedil>E<atilde>o do aplicativo.
+E<Eacute> oferecido um nE<uacute>mero de adaptadores para os diversos
+ambientes, como CGI, mod_perl, FastCGI e etc. Eles que sE<atilde>o
+responsE<aacute>veis por solicitar e responder aos eventos por uma API, assim
+sE<atilde>o tratados da mesma maneira na construE<ccedil>E<atilde>o do
+aplicativo.
 
 =head3 Catalyst-Devel
 
-L<Catalyst::Devel> E<eacute> um pacote para auxiliar o programador, no qual inclui um servidor para desenvolvimento para facilitar o desenvolvimento.
+L<Catalyst::Devel> E<eacute> um pacote para auxiliar o programador, no qual
+inclui um servidor para desenvolvimento para facilitar o desenvolvimento.
 
 =head3 ConclusE<atilde>o
 
-Catalyst E<eacute> um sistema que oferece um sistema de I<dispatching>, uma abstraE<ccedil>E<atilde>o para o ciclo de I<Request/Response> com os motores se utilizando do modelo MVC.
+Catalyst E<eacute> um sistema que oferece um sistema de I<dispatching>, uma
+abstraE<ccedil>E<atilde>o para o ciclo de I<Request/Response> com os motores
+se utilizando do modelo MVC.
 
-O alvo deste documento E<eacute> oferecer conhecimento para que vocE<ecirc> possa entender melhor o modelo e sua arquitetura, alE<eacute>m de I<ferramentas> que cercam este poderoso framework.
+O alvo deste documento E<eacute> oferecer conhecimento para que vocE<ecirc>
+possa entender melhor o modelo e sua arquitetura, alE<eacute>m de
+I<ferramentas> que cercam este poderoso framework.
 
 =head1 ReferE<ecirc>ncias
 
@@ -248,12 +337,3 @@ O alvo deste documento E<eacute> oferecer conhecimento para que vocE<ecirc> poss
 Thiago Rondon, trabalha atualmente na Aware TI. L<http://www.aware.com.br/>
 
 =cut
-
-
-
-
-
-
-
-
-

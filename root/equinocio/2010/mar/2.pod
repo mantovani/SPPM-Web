@@ -4,55 +4,65 @@
 
 =head1 Catalyst com local::lib
 
-=head1 INTRODUÇÃO
+=head1 INTRODUE<Ccedil>E<Atilde>O
 
-Uma das grandes forças do Perl é o incrível repositório CPAN. Nele encontramos
-uma grande quantidade de componentes para resolver os mais cabulosos
-problemas. Bastam alguns comandos simples para que os mais produtivos e
-eficazes frameworks estejam disponíveis.
+Uma das grandes forE<ccedil>as do Perl E<eacute> o incrE<iacute>vel
+repositE<oacute>rio CPAN. Nele encontramos uma grande quantidade de
+componentes para resolver os mais cabulosos problemas. Bastam alguns comandos
+simples para que os mais produtivos e eficazes frameworks estejam
+disponE<iacute>veis.
 
-Infelizmente, em ambientes onde não possuimos permissões de administrador,
-instalar um componente externo no sistema pode ser na melhor das hipóteses uma
-grande dor de cabeça.
+Infelizmente, em ambientes onde nE<atilde>o possuE<iacute>mos
+permissE<otilde>es de administrador, instalar um componente externo no sistema
+pode ser na melhor das hipE<oacute>teses uma grande dor de cabeE<ccedil>a.
 
-Entretanto, quando falamos de Perl isso não é um problema, pois utilizando o
-módulo local::lib podemos instalar nossos componentes em um diretório
-arbitrário, como nosso diretório pessoal, por exemplo.
+Entretanto, quando falamos de Perl isso nE<atilde>o E<eacute> um problema,
+pois utilizando o mE<oacute>dulo local::lib podemos instalar nossos
+componentes em um diretE<oacute>rio arbitrE<aacute>rio, como nosso
+diretE<oacute>rio pessoal, por exemplo.
 
-O principal requisito é ter disponível um compilador C e os pacotes de
-desenvolvimento da libc (quando aplicável), pois alguns módulos preciam
-compilar código escrito em C.
+O principal requisito E<eacute> ter disponE<iacute>vel um compilador C e os
+pacotes de desenvolvimento da libc (quando aplicE<aacute>vel), pois alguns
+mE<oacute>dulos precisam compilar cE<oacute>digo escrito em C.
 
-Neste texto mostraremos como configurar o Perl para instalar os módulos do
-cpan localmente via local::lib em uma máquina na qual não possuimos permissões
-administrativas. Em seguida abordaremos também a instalação do Catalyst, bem
-como alguns tópicos opcionais.
+Neste texto mostraremos como configurar o Perl para instalar os
+mE<oacute>dulos do cpan localmente via local::lib em uma mE<aacute>quina na
+qual nE<atilde>o possuE<iacute>mos permissE<otilde>es administrativas. Em
+seguida abordaremos tambE<eacute>m a instalaE<ccedil>E<atilde>o do Catalyst,
+bem como alguns tE<oacute>picos opcionais.
 
 =cut
 
 =head1 CPAN COM LOCAL::LIB
 
-A configuração do módulo local::lib é extremamente simples e rápida. Vamos
-tomar como exemplo uma instalação "virgem" do Perl em uma máquina com Ubuntu.
+A configuraE<ccedil>E<atilde>o do mE<oacute>dulo local::lib E<eacute>
+extremamente simples e rE<aacute>pida. Vamos tomar como exemplo uma
+instalaE<ccedil>E<atilde>o "virgem" do Perl em uma mE<aacute>quina com Ubuntu.
 
-O primeiro passo é configurar o aplicativo cpan, que já vem com a a instalação
-padrão do Perl, e o qual será usado para instalar todos os módulos a seguir.
+O primeiro passo E<eacute> configurar o aplicativo cpan, que jE<aacute> vem
+com a instalaE<ccedil>E<atilde>o padrE<atilde>o do Perl, e o qual
+serE<aacute> usado para instalar todos os mE<oacute>dulos a seguir.
 
 Para isso, basta chamar um terminal e digitar o comando cpan. Ele vai mostrar
-uma pequena mensagem de apresentação e perguntar se você gostaria de deixá-lo
-configurar tudo automaticamente. Para a maioria dos casos a configuração
-automática é suficiente, no entanto vamos configurar algumas opções um pouco
-diferentes do default, então respondemos ‘no’.
+uma pequena mensagem de apresentaE<ccedil>E<atilde>o e perguntar se
+vocE<ecirc> gostaria de deixE<aacute>-lo configurar tudo automaticamente. Para
+a maioria dos casos a configuraE<ccedil>E<atilde>o automE<aacute>tica
+E<eacute> suficiente, no entanto vamos configurar algumas
+opE<ccedil>E<otilde>es um pouco diferentes do default, entE<atilde>o
+respondemos 'no'.
 
     Would you like me to configure as much as possible automatically? [yes] no
 
-A primeira opção diferente da default que vamos alterar é a que define como o
-cpan vai persistir as variáveis configuradas em seu shell. Isso será
-necessário mais à frente. Normalmente quando configuramos uma variável do cpan
-no seu shell ele a mantém em memória e não grava em as alterações no disco.
-A principal razão disso é para evitar que você faça algo desastroso e isso
-seja salvo automaticamente. Como depois de ler este pequeno texto, você não
-fará mais essas besteiras, vamos modificar a opção de auto_commit para 'yes'.
+A primeira opE<ccedil>E<atilde>o diferente da default que vamos alterar
+E<eacute> a que define como o cpan vai persistir as variE<aacute>veis
+configuradas em seu shell. Isso serE<aacute> necessE<aacute>rio mais E<agrave>
+frente. Normalmente quando configuramos uma variE<aacute>vel do cpan no seu
+shell ele a mantE<eacute>m em memE<oacute>ria e nE<atilde>o grava em as
+alteraE<ccedil>E<otilde>es no disco. A principal razE<atilde>o disso E<eacute>
+para evitar que vocE<ecirc> faE<ccedil>a algo desastroso e isso seja salvo
+automaticamente. Como depois de ler este pequeno texto, vocE<ecirc>
+nE<atilde>o farE<aacute> mais essas besteiras, vamos modificar a
+opE<ccedil>E<atilde>o de auto_commit para 'yes'.
 
     Normally CPAN.pm keeps config variables in memory and changes need to
     be saved in a separate 'o conf commit' command to make them permanent
@@ -62,39 +72,45 @@ fará mais essas besteiras, vamos modificar a opção de auto_commit para 'yes'.
      <auto_commit>
     Always commit changes to config variables to disk? [no] yes
 
-A segunda é a que define a política de pré-requisitos. Ela define o que o cpan
-deve fazer ao se deparar com um módulo que possui uma dependência. O default é
-‘ask’ (perguntar). Vamos modificar para ‘follow’ (seguir). Assim, quando o
-cpan encontrar um módulo que possui alguma dependência, ao invés de me
-perguntar o que fazer , ele vai tentar instalá-la automaticamente. Isso é
-extremamente útil durante instalações longas com uma árvore de dependências
-grande como a do Catalyst.
+A segunda E<eacute> a que define a polE<iacute>tica de prE<eacute>-requisitos.
+Ela define o que o cpan deve fazer ao se deparar com um mE<oacute>dulo que
+possui uma dependE<ecirc>ncia. O default E<eacute> 'ask' (perguntar). Vamos
+modificar para 'follow' (seguir). Assim, quando o cpan encontrar um
+mE<oacute>dulo que possui alguma dependE<ecirc>ncia, ao invE<eacute>s de me
+perguntar o que fazer , ele vai tentar instalE<aacute>-la automaticamente.
+Isso E<eacute> extremamente E<uacute>til durante instalaE<ccedil>E<otilde>es
+longas com uma E<aacute>rvore de dependE<ecirc>ncias grande como a do
+Catalyst.
 
     <prerequisites_policy>
     Policy on building prerequisites (follow, ask or ignore)? [ask] follow
 
-Na sequência vem a pergunta sobre a instalação de dependências de build dos
-módulos. As dependências de build são componentes que são necessários durante
-o processo de compilação/testes/instalação. Vamos alterar de ‘ask/yes’ para
-‘yes’ de forma que as dependências de build também sejam instaladas. Assim se
-durante o build algum módulo precisar de outro que ainda não está instalado,
-este será automaticamente baixado e instalado para você. O default era
-perguntar e sugerir sim como resposta.
+Na sequE<ecirc>ncia vem a pergunta sobre a instalaE<ccedil>E<atilde>o de
+dependE<ecirc>ncias de build dos mE<oacute>dulos. As dependE<ecirc>ncias de
+build sE<atilde>o componentes que sE<atilde>o necessE<aacute>rios durante o
+processo de compilaE<ccedil>E<atilde>o/testes/instalaE<ccedil>E<atilde>o.
+Vamos alterar de 'ask/yes' para 'yes' de forma que as dependE<ecirc>ncias de
+build tambE<eacute>m sejam instaladas. Assim se durante o build algum
+mE<oacute>dulo precisar de outro que ainda nE<atilde>o estE<aacute> instalado,
+este serE<aacute> automaticamente baixado e instalado para vocE<ecirc>. O
+default era perguntar e sugerir sim como resposta.
 
     <build_requires_install_policy>
     Policy on installing 'build_requires' modules (yes, no, ask/yes,
     ask/no)? [ask/yes] yes
 
-ATENCÃO: Um bug conhecido de alguns sistemas instaladores mais antigos faz com
-que estas escolhas nem sempre sejam obedecidas. Mais à frente quando falarmos
-da configuração de variáveis de ambiente para uso do módulo local::lib, vamos
-mostrar como suprimir este erro.
+ATENE<Ccedil>E<Atilde>O: Um bug conhecido de alguns sistemas instaladores mais
+antigos faz com que estas escolhas nem sempre sejam obedecidas. Mais E<agrave>
+frente quando falarmos da configuraE<ccedil>E<atilde>o de variE<aacute>veis de
+ambiente para uso do mE<oacute>dulo local::lib, vamos mostrar como suprimir
+este erro.
 
-A seguir vem uma sequência de perguntas sobre ferramentas que o cpan
+A seguir vem uma sequE<ecirc>ncia de perguntas sobre ferramentas que o cpan
 normalmente usa. Note que o cpan automaticamente descobre o PATH das
 ferramentas instaladas mas permite que esse PATH seja alterado. Com isso, caso
-alguma das ferramentas não esteja disponível, é possível instalá-las em um
-diretório qualquer e apontar para elas.
+alguma das ferramentas nE<atilde>o esteja disponE<iacute>vel, E<eacute>
+possE<iacute>vel instalE<aacute>-las em um diretE<oacute>rio qualquer e
+apontar para elas.
 
     <bzip2>
     Where is your bzip2 program? [/bin/bzip2]
@@ -103,14 +119,15 @@ diretório qualquer e apontar para elas.
     Where is your gzip program? [/bin/gzip]
     ...
 
-Várias opções depois, a próxima razoavelmente relevante para se modificar é o
-charset utilizado. Se o seu terminal suportar UTF-8, essa opção é preferível.
-Na maioria dos sistemas que usa o inglês como idioma padrão charset default é
-o ISO-8859-1. Respondendo 'yes' a essa pergunta, utilizaremos o padrão
-ISO-8859-1. Assim como todo o resto do universo que possui mais de 7 bits de
-alfabeto, vamos responder 'no' e utilizar UTF-8.
+VE<aacute>rias opE<ccedil>E<otilde>es depois, a prE<oacute>xima razoavelmente
+relevante para se modificar E<eacute> o charset utilizado. Se o seu terminal
+suportar UTF-8, essa opE<ccedil>E<atilde>o E<eacute> preferE<iacute>vel. Na
+maioria dos sistemas que usa o inglE<ecirc>s como idioma padrE<atilde>o
+charset default E<eacute> o ISO-8859-1. Respondendo 'yes' a essa pergunta,
+utilizaremos o padrE<atilde>o ISO-8859-1. Assim como todo o resto do universo
+que possui mais de 7 bits de alfabeto, vamos responder 'no' e utilizar UTF-8.
 
-UTF-8 é o charset default dos últimos Ubuntus que instalei.
+UTF-8 E<eacute> o charset default dos E<uacute>ltimos Ubuntus que instalei.
 
     The next option deals with the charset (aka character set) your
     terminal supports. In general, CPAN is English speaking territory, so
@@ -124,63 +141,68 @@ UTF-8 é o charset default dos últimos Ubuntus que instalei.
     <term_is_latin>
     Your terminal expects ISO-8859-1 (yes/no)? [yes] no
 
-O cpan vai perguntar se ele pode se conectar à internet para baixar a lista de
-repositórios. Ele é bem educado quanto às coisas que ele precisa fazer, por
-isso estamos configurando opções que o deixem mais independente. Responda
-'yes' e aguarde ele baixar a lista de servidores.
+O cpan vai perguntar se ele pode se conectar E<agrave> internet para baixar a
+lista de repositE<oacute>rios. Ele E<eacute> bem educado quanto E<agrave>s
+coisas que ele precisa fazer, por isso estamos configurando
+opE<ccedil>E<otilde>es que o deixem mais independente. Responda 'yes' e
+aguarde ele baixar a lista de servidores.
 
 Depois de se comunicar com os servidores default, ele pergunta quais
-repositórios você quer configurar em três etapas. Primeiro pergunta o
-continente, depois o país e por último o próprio repositório. É possível
-escolher mais de uma opção simultaneamente. Eu escolhi para continentes
-América do Sul e América do Norte, para países Brasil, Chile e Estados Unidos
-e por último alguns repositórios em cada país. Fique à vontade para escolher
-quantos e quais quiser.
+repositE<oacute>rios vocE<ecirc> quer configurar em trE<ecirc>s etapas.
+Primeiro pergunta o continente, depois o paE<iacute>s e por E<uacute>ltimo o
+prE<oacute>prio repositE<oacute>rio. E<Eacute> possE<iacute>vel escolher mais
+de uma opE<ccedil>E<atilde>o simultaneamente. Eu escolhi para continentes
+AmE<eacute>rica do Sul e AmE<eacute>rica do Norte, para paE<iacute>ses Brasil,
+Chile e Estados Unidos e por E<uacute>ltimo alguns repositE<oacute>rios em
+cada paE<iacute>s. Fique E<agrave> vontade para escolher quantos e quais
+quiser.
 
-Pronto. Agora você está no lendário shell do cpan.
+Pronto. Agora vocE<ecirc> estE<aacute> no lendE<aacute>rio shell do cpan.
 
     cpan[1]>
 
-O próximo passo é instalar e configurar o módulo local::lib. Para isso digite
-no shell do cpan o comando:
+O prE<oacute>ximo passo E<eacute> instalar e configurar o mE<oacute>dulo
+local::lib. Para isso digite no shell do cpan o comando:
 
     cpan[1]> look local::lib
 
-Isso vai fazer com o que o cpan baixe o módulo mas não instale-o
-automaticamente. Ao invés disso ele vai abrir um novo shell no diretório local
-onde ele desempacotou o módulo local::lib.
+Isso vai fazer com o que o cpan baixe o mE<oacute>dulo mas nE<atilde>o
+instale-o automaticamente. Ao invE<eacute>s disso ele vai abrir um novo shell
+no diretE<oacute>rio local onde ele desempacotou o mE<oacute>dulo local::lib.
 
-Neste shell, faça o bootstrap com os seguintes comandos:
+Neste shell, faE<ccedil>a o bootstrap com os seguintes comandos:
 
     user@host:~/.cpan/build/local-lib-1.004003-UyX2wf$ perl Makefile.PL \
     --bootstrap && make test && make install
 
-Por último mas não menos importante é preciso exportar algumas variáveis de
-ambiente. Para isso saia do shell atual (Ctrl+D), saia do shell do cpan (bye
-ou quit) e execute no bash o seguinte comando:
+Por E<uacute>ltimo mas nE<atilde>o menos importante E<eacute> preciso exportar
+algumas variE<aacute>veis de ambiente. Para isso saia do shell atual (Ctrl+D),
+saia do shell do cpan (bye ou quit) e execute no bash o seguinte comando:
 
     echo 'eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)' >> ~/.bashrc
 
-Com isso configuramos algumas variáveis de ambiente necessárias para o bom
-funcionamento do cpan com o módulo local::lib, mas ainda não acabou. Lembra do
-bug que falamos anteriormente sobre perguntas durante a instalação? Ele pode
-ser contornado configurando-se a variável de ambiente PERL_MM_USE_DEFAULT, que
-pode ser facilmente resolvido com o comando abaixo:
+Com isso configuramos algumas variE<aacute>veis de ambiente
+necessE<aacute>rias para o bom funcionamento do cpan com o mE<oacute>dulo
+local::lib, mas ainda nE<atilde>o acabou. Lembra do bug que falamos
+anteriormente sobre perguntas durante a instalaE<ccedil>E<atilde>o? Ele pode
+ser contornado configurando-se a variE<aacute>vel de ambiente
+PERL_MM_USE_DEFAULT, que pode ser facilmente resolvido com o comando abaixo:
 
     echo 'export PERL_MM_USE_DEFAULT=1' >> ~/.bashrc
 
-Isso vai adicionar os comandos que exportam as variáveis de ambiente ao final
-do seu arquivo .bashrc, e então a cada login elas serão automagicamente
-exportadas.
+Isso vai adicionar os comandos que exportam as variE<aacute>veis de ambiente
+ao final do seu arquivo .bashrc, e entE<atilde>o a cada login elas
+serE<atilde>o automagicamente exportadas.
 
-Force a re-execução do seu bashrc ou faça logout e login novamente
+Force a re-execuE<ccedil>E<atilde>o do seu bashrc ou faE<ccedil>a logout e
+login novamente
 
     user@host:~$ . ~/.bashrc
 
-IMPORTANTE: Certifique-se que as variáveis de ambiente foram configuradas ou
-coisas estranhas podem acontecer. Entenda por "coisas estranhas" qualquer
-coisa diferente do funcionamento correto, e algumas podem ser realmente muito
-bizarras.
+IMPORTANTE: Certifique-se que as variE<aacute>veis de ambiente foram
+configuradas ou coisas estranhas podem acontecer. Entenda por "coisas
+estranhas" qualquer coisa diferente do funcionamento correto, e algumas podem
+ser realmente muito bizarras.
 
     user@host:~$ env | grep perl
     PERL5LIB=/home/catalyst/perl5/lib/perl5:/home/catalyst/perl5/lib/perl5...
@@ -190,18 +212,20 @@ bizarras.
     PERL_MM_OPT=INSTALL_BASE=/home/catalyst/perl5
     user@host:~$
 
-Caso você obtenha uma saída semelhante à mostrada acima significa que
-aparentemente está tudo ok. Caso contrário tente reiniciar o processo do
-começo. Para isso basta remover os diretórios .cpan e perl5 que foram criados
-durante o processo, comentar as últimas linhas do ~/.bashrc que foram
-adicionadas durante o tutorial e recomeçar.
+Caso vocE<ecirc> obtenha uma saE<iacute>da semelhante E<agrave> mostrada acima
+significa que aparentemente estE<aacute> tudo ok. Caso contrE<aacute>rio tente
+reiniciar o processo do comeE<ccedil>o. Para isso basta remover os
+diretE<oacute>rios .cpan e perl5 que foram criados durante o processo,
+comentar as E<uacute>ltimas linhas do ~/.bashrc que foram adicionadas durante
+o tutorial e recomeE<ccedil>ar.
 
-Caso você ainda tenha problemas, pode ser que exista alguma anomalia mais
-grave com a distribuição Perl em seu sistema. Neste caso entre em contato com
-o admistrador ou com o monge mais próximo!
+Caso vocE<ecirc> ainda tenha problemas, pode ser que exista alguma anomalia
+mais grave com a distribuiE<ccedil>E<atilde>o Perl em seu sistema. Neste caso
+entre em contato com o administrador ou com o monge mais prE<oacute>ximo!
 
-Agora, antes de começar a instalar módulos, é uma boa atualizar o próprio
-módulo CPAN.pm. Atente para as maiúsculas e minúsculas.
+Agora, antes de comeE<ccedil>ar a instalar mE<oacute>dulos, E<eacute> uma boa
+atualizar o prE<oacute>prio mE<oacute>dulo CPAN.pm. Atente para as
+maiE<uacute>sculas e minE<uacute>sculas.
     
     user@host:~$ cpan CPAN
     ...
@@ -213,9 +237,10 @@ módulo CPAN.pm. Atente para as maiúsculas e minúsculas.
     Warning (usually harmless): 'YAML' not installed, will not store persist...
     user@host:~$
 
-Depois da instalação da nova versão do CPAN.pm, note que ele está avisando que
-o módulo YAML não está instalado. Para deixar tudo redondinho vamos intalá-lo
-também.
+Depois da instalaE<ccedil>E<atilde>o da nova versE<atilde>o do CPAN.pm, note
+que ele estE<aacute> avisando que o mE<oacute>dulo YAML nE<atilde>o
+estE<aacute> instalado. Para deixar tudo redondinho vamos instalE<aacute>-lo
+tambE<eacute>m.
 
     user@host:~$ cpan YAML
     ...
@@ -229,54 +254,59 @@ também.
     Restored the state of none (in 0.0265 secs)
     user@host:~$
 
-Agora sim. Vamos dar uma conferida onde foi parar o módulo YAML recém
-instalado:
+Agora sim. Vamos dar uma conferida onde foi parar o mE<oacute>dulo YAML
+recE<eacute>m instalado:
 
     user@host:~$ ls ~/perl5/lib/perl5
     CPAN  CPAN.pm  i486-linux-gnu-thread-multi  local  Test  YAML  YAML.pm
     user@host:~$
 
-Ele foi instalado dentro de uma árvore de diretórios criada no home do usuário
-corrente, conforme planejávamos e tudo isso sem pedir a senha de root uma
-única vez.
+Ele foi instalado dentro de uma E<aacute>rvore de diretE<oacute>rios criada no
+home do usuE<aacute>rio corrente, conforme planejE<aacute>vamos e tudo isso
+sem pedir a senha de root uma E<uacute>nica vez.
 
 =cut
 
 =head1 MINICPAN (OPCIONAL)
 
-Já vimos como instalar módulos do cpan localmente sem necessitar de
-privilégios administrativos. Entretanto, a dependência de uma conexão com a
-internet para a instalação de novos módulos, é por vezes um empecilho para a
-utilização desta poderosa ferramenta. Como em Perl sempre há mais de uma forma
-de se fazer, neste texto também mostraremos como criar um mini-mirror do cpan
-que possa ser utilizado em ambientes onde uma conexão com a internet nem
-sempre é possível.
+JE<aacute> vimos como instalar mE<oacute>dulos do cpan localmente sem
+necessitar de privilE<eacute>gios administrativos. Entretanto, a
+dependE<ecirc>ncia de uma conexE<atilde>o com a internet para a
+instalaE<ccedil>E<atilde>o de novos mE<oacute>dulos, E<eacute> por vezes um
+empecilho para a utilizaE<ccedil>E<atilde>o desta poderosa ferramenta. Como em
+Perl sempre hE<aacute> mais de uma forma de se fazer, neste texto
+tambE<eacute>m mostraremos como criar um mini-mirror do cpan que possa ser
+utilizado em ambientes onde uma conexE<atilde>o com a internet nem sempre
+E<eacute> possE<iacute>vel.
 
-Depois de configurar o aplicativo cpan para instalar módulos localmente com a
-local::lib, o primeiro passo para configurar o mirror é instalar e configurar
-o módulo CPAN::Mini e seus aplicativos.
+Depois de configurar o aplicativo cpan para instalar mE<oacute>dulos
+localmente com a local::lib, o primeiro passo para configurar o mirror
+E<eacute> instalar e configurar o mE<oacute>dulo CPAN::Mini e seus
+aplicativos.
 
-Existem várias formas de se configurar o minicpan. A que eu mais uso é a que é
-feita através de um arquivo de configuração chamado .minicpanrc que deve ser
-criado no diretório home do usuário corrente. Ele possui somente duas linhas
-conforme abaixo:
+Existem vE<aacute>rias formas de se configurar o minicpan. A que eu mais uso
+E<eacute> a que E<eacute> feita atravE<eacute>s de um arquivo de
+configuraE<ccedil>E<atilde>o chamado .minicpanrc que deve ser criado no
+diretE<oacute>rio home do usuE<aacute>rio corrente. Ele possui somente duas
+linhas conforme abaixo:
 
     local: ~/minicpan
     remote: http://www.cpan.org
 
-A primeira linha indica em qual diretório ficarão os arquivos do mirror,
-enquanto que a segunda indica de onde as informações sobre os pacotes serão
-baixadas.
+A primeira linha indica em qual diretE<oacute>rio ficarE<atilde>o os arquivos
+do mirror, enquanto que a segunda indica de onde as
+informaE<ccedil>E<otilde>es sobre os pacotes serE<atilde>o baixadas.
 
-Feito isso, podemos instalar o módulo CPAN::Mini com o comando:
+Feito isso, podemos instalar o mE<oacute>dulo CPAN::Mini com o comando:
 
     user@host:~$ cpan CPAN::Mini
 
-Depois de instalar o módulo, executamos o comando minicpan que vai sincronizar
-o repositório local (diretório ~/minicpan, atualmente vazio) com o repositório
-indicado no ‘remote’ do .minicpanrc na internet. Esta parte pode demorar entre
-alguns minutos e várias horas, dependendo da velocidade do seu link, pois ele
-vai baixar cerca de 1.2 GB de arquivos.
+Depois de instalar o mE<oacute>dulo, executamos o comando minicpan que vai
+sincronizar o repositE<oacute>rio local (diretE<oacute>rio ~/minicpan,
+atualmente vazio) com o repositE<oacute>rio indicado no 'remote' do
+.minicpanrc na internet. Esta parte pode demorar entre alguns minutos e
+vE<aacute>rias horas, dependendo da velocidade do seu link, pois ele vai
+baixar cerca de 1.2 GB de arquivos.
 
     user@host:~$ minicpan
     authors/01mailrc.txt.gz ... updated
@@ -286,31 +316,34 @@ vai baixar cerca de 1.2 GB de arquivos.
     authors/id/A/AA/AAYARS/CHECKSUMS ... updated
     ...
 
-A última etapa é configurar o aplicativo cpan para utilizar o nosso mirror
-local como primeira opção de download. Isso é feito através do próprio prompt
-do cpan:
+A E<uacute>ltima etapa E<eacute> configurar o aplicativo cpan para utilizar o
+nosso mirror local como primeira opE<ccedil>E<atilde>o de download. Isso
+E<eacute> feito atravE<eacute>s do prE<oacute>prio prompt do cpan:
 
-    cpan> o conf urllist unshift file:///home/blabos/minicpan
+	cpan> o conf urllist unshift file:///home/blabos/minicpan
 
-Onde /home/blabos é o diretório home do usuário, no meu caso, blabos; e
-minicpan é o diretório que configuramos na opção ‘local’ do .minicpanrc.
+Onde /home/blabos E<eacute> o diretE<oacute>rio home do usuE<aacute>rio, no
+meu caso, blabos; e minicpan E<eacute> o diretE<oacute>rio que configuramos na
+opE<ccedil>E<atilde>o 'local' do .minicpanrc.
 
-Lembra-se da primeira opção configurada no cpan? Ela serve exatamente para que
-a configuração feita acima seja automaticamente persistida nos arquivo de
-configuração do cpan.
+Lembra-se da primeira opE<ccedil>E<atilde>o configurada no cpan? Ela serve
+exatamente para que a configuraE<ccedil>E<atilde>o feita acima seja
+automaticamente persistida nos arquivo de configuraE<ccedil>E<atilde>o do
+cpan.
 
 Com esses passos simples, conseguimos construir um mini-mirror do cpan para
-ser utilizado em ambientes com pouco ou nenhum acesso à internet.
-Adicionalmente, para replicar o mirror em outras máquinas, basta copiar o
-diretório minicpan e adicioná-lo como opção de download para o comando cpan
-(última etapa descrita anteriormente).
+ser utilizado em ambientes com pouco ou nenhum acesso E<agrave> internet.
+Adicionalmente, para replicar o mirror em outras mE<aacute>quinas, basta
+copiar o diretE<oacute>rio minicpan e adicionE<aacute>-lo como
+opE<ccedil>E<atilde>o de download para o comando cpan (E<uacute>ltima etapa
+descrita anteriormente).
 
 =cut
 
 =head1 INSTALANDO O CATALYST
 
-Antes de instalar o Catalyst, certifique-se que você possui pelo menos a
-versão 5.8.1 do Perl instalada:
+Antes de instalar o Catalyst, certifique-se que vocE<ecirc> possui pelo menos
+a versE<atilde>o 5.8.1 do Perl instalada:
 
     user@host:$ perl --version
 
@@ -327,27 +360,31 @@ versão 5.8.1 do Perl instalada:
 
     user@host:$
 
-O Catalyst é um framework MVC bastante sofisticado e usa o que há de mais
-moderno em Perl. Ele depende de vários outros componentes que fazem dele uma
-das mais completas ferramentas de desenvolvimento de aplicações. Portanto não
-se assute com a quantidade de módulos que será instalada junto com ele, nem
-tão pouco com a quantidade de opcionais disponíveis.
+O Catalyst E<eacute> um framework MVC bastante sofisticado e usa o que
+hE<aacute> de mais moderno em Perl. Ele depende de vE<aacute>rios outros
+componentes que fazem dele uma das mais completas ferramentas de
+desenvolvimento de aplicaE<ccedil>E<otilde>es. Portanto nE<atilde>o se assuste
+com a quantidade de mE<oacute>dulos que serE<aacute> instalada junto com ele,
+nem tE<atilde>o pouco com a quantidade de opcionais disponE<iacute>veis.
 
-A instalação do Catalyst é bastante flexível e customizável, você instala o
-Runtime que é a plataforma base e a combina com vários outros módulos da forma
-que fizer mais sentido para a sua aplicação.
+A instalaE<ccedil>E<atilde>o do Catalyst E<eacute> bastante flexE<iacute>vel e
+customizE<aacute>vel, vocE<ecirc> instala o Runtime que E<eacute> a plataforma
+base e a combina com vE<aacute>rios outros mE<oacute>dulos da forma que fizer
+mais sentido para a sua aplicaE<ccedil>E<atilde>o.
 
-Dentre as várias opções possíveis, podemos destacar dois sabores mais comuns o
-'Devel' e o 'Deploy'. A diferença básica entre os dois é que na instalação
-'Devel' são instaladas algumas ferramentas de desenvolvimento enquanto na
-'Deploy' hum... não!
+Dentre as vE<aacute>rias opE<ccedil>E<otilde>es possE<iacute>veis, podemos
+destacar dois sabores mais comuns o 'Devel' e o 'Deploy'. A diferenE<ccedil>a
+bE<aacute>sica entre os dois E<eacute> que na instalaE<ccedil>E<atilde>o
+'Devel' sE<atilde>o instaladas algumas ferramentas de desenvolvimento enquanto
+na 'Deploy' hum... nE<atilde>o!
 
-Primeiramente mostraremos como realizar uma instalação 'Devel' e depois
-falaremos sober a instalação 'Deploy'.
+Primeiramente mostraremos como realizar uma instalaE<ccedil>E<atilde>o 'Devel'
+e depois falaremos sober a instalaE<ccedil>E<atilde>o 'Deploy'.
 
-=head2 Instalação 'Devel'
+=head2 InstalaE<ccedil>E<atilde>o 'Devel'
 
-A instalação 'Devel' é a mais simples de todas e é feita com o comando:
+A instalaE<ccedil>E<atilde>o 'Devel' E<eacute> a mais simples de todas e
+E<eacute> feita com o comando:
 
     user@host:$~ cpan Catalyst::Devel
     ...
@@ -359,38 +396,43 @@ A instalação 'Devel' é a mais simples de todas e é feita com o comando:
      /usr/bin/make install  -- OK
     user@host:~$
 
-Atente para os caracteres maiúsculos e minúsculos. Feito isso, vá tomar um bom
-café, porque dependendo da sua conexão, a instalação vai demorar alguns
-minutos; normalmente vários, nos quais serão instalados quase 20 MB de módulos
-(18.9 para ser mas preciso). Sorte sua se já instalou e configurou o minicpan.
+Atente para os caracteres maiE<uacute>sculos e minE<uacute>sculos. Feito isso,
+vE<aacute> tomar um bom cafE<eacute>, porque dependendo da sua
+conexE<atilde>o, a instalaE<ccedil>E<atilde>o vai demorar alguns minutos;
+normalmente vE<aacute>rios, nos quais serE<atilde>o instalados quase 20 MB de
+mE<oacute>dulos (18.9 para ser mas preciso). Sorte sua se jE<aacute> instalou
+e configurou o minicpan.
 
-A partir desse ponto é possível criar uma aplicação Catalyst mínima com o
-comando:
+A partir desse ponto E<eacute> possE<iacute>vel criar uma
+aplicaE<ccedil>E<atilde>o Catalyst mE<iacute>nima com o comando:
 
-    user@host:~$ catalyst.pl MyApp
+	user@host:~$ catalyst.pl MyApp
 
-E executá-la com os comandos:
+E executE<aacute>-la com os comandos:
 
-    user@host:~$ cd MyApp
-    user@host:~/MyApp$ ./script/myapp_server.pl
+	user@host:~$ cd MyApp
+	user@host:~/MyApp$ ./script/myapp_server.pl
 
-Com isso temos instalado o ambiente de desenvolvimento mínimo, ou seja,
-Runtime e algumas ferramentas de desenvolvimento. Como o Catalyst não faz
-muitas suposições sobre que tipo de aplicação você irá fazer, módulos de
-acesso a banco de dados ou templates não são automaticamente instalados. A
-instalação desses módulos será abordada nas próximas seções.
+Com isso temos instalado o ambiente de desenvolvimento mE<iacute>nimo, ou
+seja, Runtime e algumas ferramentas de desenvolvimento. Como o Catalyst
+nE<atilde>o faz muitas suposiE<ccedil>E<otilde>es sobre que tipo de
+aplicaE<ccedil>E<atilde>o vocE<ecirc> irE<aacute> fazer, mE<oacute>dulos de
+acesso a banco de dados ou templates nE<atilde>o sE<atilde>o automaticamente
+instalados. A instalaE<ccedil>E<atilde>o desses mE<oacute>dulos serE<aacute>
+abordada nas prE<oacute>ximas seE<ccedil>E<otilde>es.
 
 =cut
 
-=head2 Instalação 'Deploy'
+=head2 InstalaE<ccedil>E<atilde>o 'Deploy'
 
-A instalação 'Deploy' é utilizada quando queremos implantar uma aplicação
-pronta numa determinada máquina, mas não queremos instalar todos os pacotes de
-desenvolvimento. Ela é um pouco mais sensível que a 'Devel', pois depende da
-sua aplicação.
+A instalaE<ccedil>E<atilde>o 'Deploy' E<eacute> utilizada quando queremos
+implantar uma aplicaE<ccedil>E<atilde>o pronta numa determinada
+mE<aacute>quina, mas nE<atilde>o queremos instalar todos os pacotes de
+desenvolvimento. Ela E<eacute> um pouco mais sensE<iacute>vel que a 'Devel',
+pois depende da sua aplicaE<ccedil>E<atilde>o.
 
-Podemos dividi-la em duas etapas: instalação do Runtime e instalação da
-aplicação em si.
+Podemos dividi-la em duas etapas: instalaE<ccedil>E<atilde>o do Runtime e
+instalaE<ccedil>E<atilde>o da aplicaE<ccedil>E<atilde>o em si.
 
 Para instalar o Runtime do catalyst, basta executar o comando:
 
@@ -404,177 +446,179 @@ Para instalar o Runtime do catalyst, basta executar o comando:
      /usr/bin/make install  -- OK
     user@host:~$
 
-Isso instala o Runtime do Catalyst, mas não as dependências da sua aplicação.
-Para finalizar você vai querer instalar a sua aplicação e dependências, as
-quais você acrescentou no arquivo Makefile.PL durante o desenvolvimento. Esta
-etapa da instalação é feita com os comandos:
+Isso instala o Runtime do Catalyst, mas nE<atilde>o as dependE<ecirc>ncias da
+sua aplicaE<ccedil>E<atilde>o. Para finalizar vocE<ecirc> vai querer instalar
+a sua aplicaE<ccedil>E<atilde>o e dependE<ecirc>ncias, as quais vocE<ecirc>
+acrescentou no arquivo Makefile.PL durante o desenvolvimento. Esta etapa da
+instalaE<ccedil>E<atilde>o E<eacute> feita com os comandos:
 
-    user@host:$~ perl Makefile.PL && make test && make install
+	user@host:$~ perl Makefile.PL && make test && make install
 
-A aplicação e suas dependências serão instaladas junto com os outros módulos
-no mesmo diretório que foi configurado com local::lib, /home/blabos/perl5 no
-meu caso.
+A aplicaE<ccedil>E<atilde>o e suas dependE<ecirc>ncias serE<atilde>o
+instaladas junto com os outros mE<oacute>dulos no mesmo diretE<oacute>rio que
+foi configurado com local::lib, /home/blabos/perl5 no meu caso.
 
-Desta forma, para replicar a instalação da aplicação em máquinas que
-compartilhem a mesma arquitetura, basta copiar o diretório perl5, criado pelo
-local:lib e configurar as variáveis de ambiente adequadamente.
+Desta forma, para replicar a instalaE<ccedil>E<atilde>o da
+aplicaE<ccedil>E<atilde>o em mE<aacute>quinas que compartilhem a mesma
+arquitetura, basta copiar o diretE<oacute>rio perl5, criado pelo local:lib e
+configurar as variE<aacute>veis de ambiente adequadamente.
 
 =cut
 
-=cut
+=head1 ME<Oacute>DULOS ADICIONAIS (OPCIONAL)
 
-=head1 MÓDULOS ADICIONAIS (OPCIONAL)
+Uma das grandes vantagens do Catalyst E<eacute> ser um framework bastante
+customizE<aacute>vel, bastando juntar o conjunto certo do mE<oacute>dulos para
+que ele torne simples o desenvolvimento de vE<aacute>rios tipos de
+aplicaE<ccedil>E<otilde>es diferentes.
 
-Uma das grandes vantagens do Catalyst é ser um framework bastante
-customizável, bastando juntar o conjunto certo do módulos para que ele torne
-simples o desenvolvimento de vários tipos de aplicações diferentes.
-
-Abaixo segue uma lista do módulos mais comuns que podem ou não ser
-interessantes para o seu caso. Não vamos abordar em detalhes nenhum deles
-porque isso foge ao escopo deste texto.
+Abaixo segue uma lista do mE<oacute>dulos mais comuns que podem ou nE<atilde>o
+ser interessantes para o seu caso. NE<atilde>o vamos abordar em detalhes
+nenhum deles porque isso foge ao escopo deste texto.
 
 =head2 Acesso a Banco de Dados
 
-O Perl possui algumas das ferramentas mais completas, eficientes e flexíveis
-quando se trata de acesso a banco de dados e o Catalyst aproveita todas elas.
-Dentre as várias existentes, podemos citar sem nenhuma exaustão:
+O Perl possui algumas das ferramentas mais completas, eficientes e
+flexE<iacute>veis quando se trata de acesso a banco de dados e o Catalyst
+aproveita todas elas. Dentre as vE<aacute>rias existentes, podemos citar sem
+nenhuma exaustE<atilde>o:
 
 =head3 KiokuDB
 
-O KiokuDB é um frontend para persistência de dados baseado no Moose. Maiores
-detalhes podem ser encontrados no site do projeto em
+O KiokuDB E<eacute> um frontend para persistE<ecirc>ncia de dados baseado no
+Moose. Maiores detalhes podem ser encontrados no site do projeto em
 L<http://www.iinteractive.com/kiokudb>. Ele pode ser instalado diretamente via
 cpan com o comando:
 
-    user@host:$~ cpan KiokuDB
+	user@host:$~ cpan KiokuDB
 
-Já a integração com o Catalyst é feita através da instalação do módulo
+JE<aacute> a integraE<ccedil>E<atilde>o com o Catalyst E<eacute> feita
+atravE<eacute>s da instalaE<ccedil>E<atilde>o do mE<oacute>dulo
 Catalyst::Model::KiokuDB:
 
-    user@host:$~ cpan Catalyst::Model::KiokuDB
+	user@host:$~ cpan Catalyst::Model::KiokuDB
 
 =cut
 
 =head3 DBIx::Class
 
-O DBIx::Class, também conhecido como DBIC, é de longe o ORM mais utilizado no
-mundo Perl, tanto por aplicações Catalyst quanto aplicações de propósito mais
-geral. Provavelmente você não vai querer viver sem ele. Maiores detalhes e
-documentação extensa podem ser encontradas no cpan
-L<http://search.cpan.org/search?q=dbix::class>. A instalação pode ser feita
-através do comando:
+O DBIx::Class, tambE<eacute>m conhecido como DBIC, E<eacute> de longe o ORM
+mais utilizado no mundo Perl, tanto por aplicaE<ccedil>E<otilde>es Catalyst
+quanto aplicaE<ccedil>E<otilde>es de propE<oacute>sito mais geral.
+Provavelmente vocE<ecirc> nE<atilde>o vai querer viver sem ele. Maiores
+detalhes e documentaE<ccedil>E<atilde>o extensa podem ser encontradas no cpan
+L<http://search.cpan.org/search?q=dbix::class>. A instalaE<ccedil>E<atilde>o
+pode ser feita atravE<eacute>s do comando:
 
-    user@host:~$ cpan DBIx::Class
+	user@host:~$ cpan DBIx::Class
 
-Aproveite para instalar também os módulos que integram o DBIC ao Catalyst:
+Aproveite para instalar tambE<eacute>m os mE<oacute>dulos que integram o DBIC
+ao Catalyst:
 
-    user@host:~$ cpan Catalyst::Model::DBIC::Schema \
-    Catalyst::Helper::Model::DBIC::Schema
+	user@host:~$ cpan Catalyst::Model::DBIC::Schema \
+	Catalyst::Helper::Model::DBIC::Schema
 
 =cut
 
 =head3 Notas sobre DBD::pg, DBD::mysql e outros
 
-Os módulos DBD::pg e DBD::mysql são os drivers de acesso ao Postgres e ao
-MySQL, respectivamente. A instalação de ambos requer componentes de
-desenvovimento específicos de cada SGBD.
+Os mE<oacute>dulos DBD::pg e DBD::mysql sE<atilde>o os drivers de acesso ao
+Postgres e ao MySQL, respectivamente. A instalaE<ccedil>E<atilde>o de ambos
+requer componentes de desenvolvimento especE<iacute>ficos de cada SGBD.
 
-O DBD::pg precisa do aplicativo B<pg_config> instalado. Ele normalmente é
-distribuído junto com os arquivos de desenvolvimento da libpq (no ubuntu, está
-no pacote libpq-dev).
+O DBD::pg precisa do aplicativo B<pg_config> instalado. Ele normalmente
+E<eacute> distribuE<iacute>do junto com os arquivos de desenvolvimento da
+libpq (no ubuntu, estE<aacute> no pacote libpq-dev).
 
 Analogamente, o DBD::mysql requer o aplicativo B<mysql_config> que normalmente
-é distribuído junto com os arquivos de desenvolvimento da libmysqlclient (no
-ubuntu, está no pacote libmysqlclient-dev).
+E<eacute> distribuE<iacute>do junto com os arquivos de desenvolvimento da
+libmysqlclient (no ubuntu, estE<aacute> no pacote libmysqlclient-dev).
 
 Atente para esses detalhes quando for utilizar outros bancos de dados. Muito
-provavelmente será necessário ter instalado um compilador e bibliotecas de
-desenvolvimento, conforme foi citado no início deste texto.
+provavelmente serE<aacute> necessE<aacute>rio ter instalado um compilador e bibliotecas de
+desenvolvimento, conforme foi citado no inE<iacute>cio deste texto.
 
 =cut
 
-=cut
-
-=head2 Criação de Templates
+=head2 CriaE<ccedil>E<atilde>o de Templates
 
 Um dos mais legais sistemas de templates que podem ser usados juntamente com o
-Catalyst é o Template-Toolkit. Para instalá-lo, se ele ainda não estiver
-presente, basta executar os comandos abaixo:
+Catalyst E<eacute> o Template-Toolkit. Para instalE<aacute>-lo, se ele ainda
+nE<atilde>o estiver presente, basta executar os comandos abaixo:
 
-    user@host:~$ cpan Template Catalyst::Helper::View::TT
+	user@host:~$ cpan Template Catalyst::Helper::View::TT
 
 Podemos citar ainda o HTML::Mason, HTML::Template, entre outros.
 
 =cut
 
-=head2 Gerenciamento de Sessões
+=head2 Gerenciamento de SessE<otilde>es
 
 Nada de ficar queimando seus cookies! O Catalyst cuida do gerenciamento de
-sessões pra você.
+sessE<otilde>es pra vocE<ecirc>.
 
 B<Catalyst::Plugin::Session>
 
-B<Catalyst::Plugin::Session::Store::FastMmap> - Armazena dados de sessão
-usando FastMmap.
+B<Catalyst::Plugin::Session::Store::FastMmap> - Armazena dados de
+sessE<atilde>o usando FastMmap.
 
-B<Catalyst::Plugin::Session::Store::File> - Armazena dados de sessão usando
-arquivos.
+B<Catalyst::Plugin::Session::Store::File> - Armazena dados de sessE<atilde>o
+usando arquivos.
 
-B<Catalyst::Plugin::Session::Store::DBIC> - Armazena dados de sessão usando
-banco de dados.
+B<Catalyst::Plugin::Session::Store::DBIC> - Armazena dados de sessE<atilde>o
+usando banco de dados.
 
 B<Catalyst::Plugin::Session::State::Cookie> - Usa cookies para manter o estado
-da sessão.
+da sessE<atilde>o.
 
 =cut
 
-=head2 Autenticação e autorização
+=head2 AutenticaE<ccedil>E<atilde>o e autorizaE<ccedil>E<atilde>o
 
-Precisando autenticar usuários? Não tema. Com o Catalyst e seus plugins não há
-problema!
+Precisando autenticar usuE<aacute>rios? NE<atilde>o tema. Com o Catalyst e
+seus plugins nE<atilde>o hE<aacute> problema!
 
-B<Catalyst::Plugin::Authentication> - Autenticação.
+B<Catalyst::Plugin::Authentication> - AutenticaE<ccedil>E<atilde>o.
 
-B<Catalyst::Plugin::Authorization::Roles> - Autorização baseada em regras (ou
-grupos).
+B<Catalyst::Plugin::Authorization::Roles> - AutorizaE<ccedil>E<atilde>o
+baseada em regras (ou grupos).
 
-B<Catalyst::Plugin::Authorization::ACL> - Autorização baseada em ACLs.
+B<Catalyst::Plugin::Authorization::ACL> - AutorizaE<ccedil>E<atilde>o baseada
+em ACLs.
 
 =cut
 
 =head2 Diversos
 
 B<Catalyst::Plugin::StackTrace> - Mostra a stack trace em uma tela de debug.
-Muito útil para depuração.
+Muito E<uacute>til para depuraE<ccedil>E<atilde>o.
 
-B<Catalyst::Plugin::ConfigLoader> - Suporte a vários formatos de arquivo de
-configuração.
+B<Catalyst::Plugin::ConfigLoader> - Suporte a vE<aacute>rios formatos de
+arquivo de configuraE<ccedil>E<atilde>o.
 
 B<Catalyst::Plugin::Unicode> - Suporte transparente a Unicode (UTF8).
 
-B<Catalyst::Plugin::Static::Simple> - Para servir páginas estáticas de forma
-simples.
+B<Catalyst::Plugin::Static::Simple> - Para servir pE<aacute>ginas
+estE<aacute>ticas de forma simples.
 
 B<Catalyst::Helper::Model::Email> ou B<Catalyst::View::Email::Template> para
 envio de email.
 
 =cut
 
-=cut
-
 =head1 ARMADILHAS COMUNS
 
-=head2 Fiz tudo certo mas "dá" permissão negada ao tentar instalar um módulo
+=head2 Fiz tudo certo mas "dE<aacute>" permissE<atilde>o negada ao tentar instalar um mE<oacute>dulo
 
-Você acha que fez tudo que tinha que fazer e na hora H o módulo não instala, e
-agora?
+VocE<ecirc> acha que fez tudo que tinha que fazer e na hora H o mE<oacute>dulo
+nE<atilde>o instala, e agora?
 
 Um dos erros mais comuns pode ser mostrado abaixo. Algumas linhas do log de
-instalação foram omitidas para poupar espaço. Não se assuste, elas estão lá
-para te ajudar.
+instalaE<ccedil>E<atilde>o foram omitidas para poupar espaE<ccedil>o.
+NE<atilde>o se assuste, elas estE<atilde>o lE<aacute> para te ajudar.
 
-Foi tentada a instalação do módulo String::Trigram. Note o final do log de
-instalação.
+Foi tentada a instalaE<ccedil>E<atilde>o do mE<oacute>dulo String::Trigram.
+Note o final do log de instalaE<ccedil>E<atilde>o.
 
     user@host:~$ cpan String::Trigram
     CPAN: Storable loaded ok (v2.18)
@@ -606,36 +650,39 @@ instalação.
     t state
     user@host:~$ 
 
-Há um warning avisando que o módulo YAML não está instalado. Mas como se
-acabamos de instalá-lo mais acima?
+HE<aacute> um warning avisando que o mE<oacute>dulo YAML nE<atilde>o
+estE<aacute> instalado. Mas como se acabamos de instalE<aacute>-lo mais acima?
 
-Mais abaixo vem um erro escabroso dizendo que não foi possível criar o
-diretório de instalação do módulo dentro do diretório
-/usr/local/lib/perl/5.10.0. Este é o diretório padrão de instalação de módulos
-Perl quando *NÃO* configuramos o cpan para usar local::lib.
+Mais abaixo vem um erro escabroso dizendo que nE<atilde>o foi possE<iacute>vel
+criar o diretE<oacute>rio de instalaE<ccedil>E<atilde>o do mE<oacute>dulo
+dentro do diretE<oacute>rio /usr/local/lib/perl/5.10.0. Este E<eacute> o
+diretE<oacute>rio padrE<atilde>o de instalaE<ccedil>E<atilde>o de
+mE<oacute>dulos Perl quando *NE<Atilde>O* configuramos o cpan para usar
+local::lib.
 
 Atente para o detalhe:
 
-    user@host:~$ env | grep PERL
-    user@host:~$
+	user@host:~$ env | grep PERL
+	user@host:~$
 
-Esse erro normalmente ocorre quando as variáveis de ambiente *NÃO* estão
-corretamente configradas. Revise a parte de variáveis de ambiente, dê uma
-conferida o arquiv ~/.bashrc e lembre-se sempre de fazer logoff do terminal
-corrente e abrir um novo terminal quando configurar as variáveis de ambiente.
+Esse erro normalmente ocorre quando as variE<aacute>veis de ambiente
+*NE<Atilde>O* estE<atilde>o corretamente config radas. Revise a parte de
+variE<aacute>veis de ambiente, dE<ecirc> uma conferida no arquivo ~/.bashrc e
+lembre-se sempre de fazer logoff do terminal corrente e abrir um novo terminal
+quando configurar as variE<aacute>veis de ambiente.
 
 =cut
 
-=head2 O cpan ficou maluco, responde as perguntas sozinho e não me deixa
-configurá-lo
+=head2 O cpan ficou maluco, responde as perguntas sozinho e nE<atilde>o me deixa configurE<aacute>-lo
 
 Isso normalmente acontece quando algo deu errado e estamos tentando uma
-segunda instalação da local::lib. Já limpamos os diretórios .cpan e perl5, mas
-esquecemos de limpar as variáveis de ambiente.
+segunda instalaE<ccedil>E<atilde>o da local::lib. JE<aacute> limpamos os
+diretE<oacute>rios .cpan e perl5, mas esquecemos de limpar as
+variE<aacute>veis de ambiente.
 
-Neste caso a variável PERL_MM_USE_DEFAULT está pedindo para o cpan se
-comportar exatamente conforme mandamos, assumindo os valores default para cada
-pergunta.
+Neste caso a variE<aacute>vel PERL_MM_USE_DEFAULT estE<aacute> pedindo para o
+cpan se comportar exatamente conforme mandamos, assumindo os valores default
+para cada pergunta.
 
 Confira essa pegadinha com:
 
@@ -643,20 +690,19 @@ Confira essa pegadinha com:
     PERL_MM_USE_DEFAULT=1
     user@host:~$
 
-Resolver este macabro problema é simples. Basta editar o seu arquivo ~/.bashrc
-e comentar as duas últimas linhas que foram adicionadas durante o tutorial:
+Resolver este macabro problema E<eacute> simples. Basta editar o seu arquivo ~/.bashrc
+e comentar as duas E<uacute>ltimas linhas que foram adicionadas durante o tutorial:
 
     # eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)
     # PERL_MM_USE_DEFAULT=1
 
-Agora prossiga com a configuração e lembre-se de descomentar essas linhas
-quando terminar, ou você vai acaber caindo na armadilha anterior.
+Agora prossiga com a configuraE<ccedil>E<atilde>o e lembre-se de descomentar
+essas linhas quando terminar, ou vocE<ecirc> vai acaber caindo na armadilha
+anterior.
 
 =cut
 
-=cut
-
-=head1 REFERÊNCIAS
+=head1 REFERE<Ecirc>NCIAS
 
 B<Site do Catalyst>: L<http://www.catalystframework.org>
 
@@ -664,27 +710,24 @@ B<Wiki do Catalyst>: L<http://wiki.catalystframework.org/wiki/installingcatalyst
 
 B<Livro de Catalyst>: L<http://apress.com/book/view/1430223650>
 
-B<Módulos recomendados para diversas finalidades>:
+B<ME<oacute>dulos recomendados para diversas finalidades>:
 L<http://www.perlfoundation.org/perl5/index.cgi?recommended_cpan_modules>
-
-=cut
 
 =cut
 
 =head1 AUTOR
 
-Blabos de Blebe, C<< <blabos at cpan.org> >> trabalha na Ética Tecnologia e
-Desenvolvimento (L<< http://etica.net >>), vai pra casa mais cedo todos os
-dias, desde que adotou Perl.
+Blabos de Blebe, C<< <blabos at cpan.org> >> trabalha na E<Eacute>tica
+Tecnologia e Desenvolvimento (L<< http://etica.net >>), vai pra casa mais cedo
+todos os dias, desde que adotou Perl.
 
 =cut
 
-
 =head1 AGRADECIMENTOS
 
-Este texto é resultado de pesquisas e principalmente, longas conversas com o
-Eden L<< http://search.cpan.org/~edenc >> ao longo do último ano. Deixo aqui
-meu muito obrigado por sua loooonga paciência.
+Este texto E<eacute> resultado de pesquisas e principalmente, longas conversas
+com o Eden L<< http://search.cpan.org/~edenc >> ao longo do E<uacute>ltimo
+ano. Deixo aqui meu muito obrigado por sua loooonga paciE<ecirc>ncia.
 
 =cut
 
