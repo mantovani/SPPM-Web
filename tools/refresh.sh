@@ -1,5 +1,5 @@
 #!/bin/sh
 
-perl artigos_refresh.pl > \
-/home/sppm/catalyst/root/templates/lib/site/listar_artigos.tt
+./artigos_refresh.pl > /home/sppm/catalyst/root/templates/lib/site/listar_artigos.tt
+
 

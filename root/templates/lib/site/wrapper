@@ -15,7 +15,8 @@
 	<link rel="stylesheet" href="/static/css/calendar.css" type="text/css" />
 	<link rel="stylesheet" href="/static/print.css" type="text/css" media="print"  />
 
-  <title>S&atilde;o Paulo Perl Mongers :: [% template.title %]</title>
+    <title>S&atilde;o Paulo Perl Mongers :: [% template.title %]</title>
+    <meta name="google-site-verification" content="B6Qa53hLtW0qem5IuI8QHE6IhruXMMrRnL2iwnMIdHE" /> 
  </head>
  <body>
 

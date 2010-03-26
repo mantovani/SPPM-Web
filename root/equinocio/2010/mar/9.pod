@@ -1,5 +1,7 @@
 ﻿=pod
 
+=encoding utf8
+
 =head1 Autenticação em aplicações usando Catalyst
 
 O objetivo da autenticação é estabelecer ou confirmar a identidade de
@@ -202,4 +204,7 @@ e L<Humane Login Screens|http://www.shadowcat.co.uk/blog/matt-s-trout/humane-log
 
 =head2 Autor
 
-wreis: Wallace Reis <wallace@reis.org.br>
+Wallace Reis <wallace@reis.org.br>
+
+=cut
+

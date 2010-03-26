@@ -2,7 +2,7 @@
 
 r1 - 21 Dec 2006 - NelsonFerraz
 
-=head1 As TrÃªs Grandes Virtudes do Programador
+=head1 As Três Grandes Virtudes do Programador
 
 I<>
 

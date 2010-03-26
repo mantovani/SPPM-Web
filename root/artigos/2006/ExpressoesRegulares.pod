@@ -2,7 +2,7 @@
 
 r2 - 19 Aug 2006 - JoenioCosta
 
-=head1 ExpressÃµes Regulares
+=head1 Expressões Regulares
 
 I<>
 

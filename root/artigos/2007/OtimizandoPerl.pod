@@ -2,7 +2,7 @@
 
 r6 - 18 Jul 2007 - AlceuJunior
 
-=head1 Otimizando cÃ³digo Perl
+=head1 Otimizando código Perl
 
 I<>
 

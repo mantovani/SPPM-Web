@@ -2,7 +2,7 @@
 
 r2 - 19 Aug 2006 - JoenioCosta
 
-=head1 TÃ©cnicas de manipulaÃ§Ã£o
+=head1 Técnicas de manipulação
 
 I<>
 

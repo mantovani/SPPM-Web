@@ -1,67 +1,70 @@
-=head1 BANCOS DE DADOS RELACIONAIS, ORIENTAÃÃO A OBJETOS E DBIx::Class
+
+=pod
+
+=head1 Bancos de dados relacionais, orientação a objetos e DBIx::Class
 
     "Mostre-me seus fluxogramas, esconda suas tabelas e eu continuarei
-     mistificado. Mostre-me suas tabelas e nÃ£o precisarei dos seus fluxogramas,
-     eles serÃ£o Ã³bvios"
+     mistificado. Mostre-me suas tabelas e não precisarei dos seus fluxogramas,
+     eles serão óbvios"
      -- Frederick Brooks - The Mythical Man-Month
 
-    "Entregar o produto Ã© um dos requisitos"
+    "Entregar o produto é um dos requisitos"
     -- http://www.jamesonwatts.com/2009/09/28/shipping-is-a-feature/
 
-Bancos de dados relacionais tem sido a norma no desenvolvimento de aplicaÃ§Ãµes
-de todos os tamanhos e tipos de complexidade a cerca de 30 anos. A combinaÃ§Ã£o
-de um modelo com forte base cientÃ­fica e a vasta disponibilidade de literatura
-e ferramentas fazem com que as bases relacionais sejam uma escolha sÃ³lida para
-a maioria das aplicaÃ§Ãµes em desenvolvimento.
-O paradigma de programaÃ§Ã£o orientado a objetos, Ã© relativamente bem menos
-popular e formal, mas tambÃ©m vastamente utilizado dentro do seu campo de
-aplicaÃ§Ã£o. Pensar em termos de objetos e das interaÃ§Ãµes entre eles Ã© uma
-tendÃªncia natural para um ser humano e estabelece uma ponte entre a engenharia
+Bancos de dados relacionais tem sido a norma no desenvolvimento de aplicações
+de todos os tamanhos e tipos de complexidade a cerca de 30 anos. A combinação
+de um modelo com forte base científica e a vasta disponibilidade de literatura
+e ferramentas fazem com que as bases relacionais sejam uma escolha sólida para
+a maioria das aplicações em desenvolvimento.
+O paradigma de programação orientado a objetos, é relativamente bem menos
+popular e formal, mas também vastamente utilizado dentro do seu campo de
+aplicação. Pensar em termos de objetos e das interações entre eles é uma
+tendência natural para um ser humano e estabelece uma ponte entre a engenharia
 tradicional e o desenvolvimento de software.
-Bancos de dados relacionais e orientaÃ§Ã£o a objetos sÃ£o elementos da engenharia
+Bancos de dados relacionais e orientação a objetos são elementos da engenharia
 de software que vem sendo utilizados em conjunto por muito tempo. Esse artigo
-irÃ¡ abordar as vantagens, desvantagens e apresentar o uso do DBIx::Class como
-soluÃ§Ã£o para os problemas cotidianos dessa parceria tecnolÃ³gica.
+irá abordar as vantagens, desvantagens e apresentar o uso do DBIx::Class como
+solução para os problemas cotidianos dessa parceria tecnológica.
 
-=head2 A DIFERENÃA DE IMPEDÃNCIA
+=head2 A DIFERENÇA DE IMPEDÂNCIA
 
-Objetos e RelaÃ§Ãµes sÃ£o conceitos de natureza fundamentalmente diferentes,
+Objetos e Relações são conceitos de natureza fundamentalmente diferentes,
 apesar de apresentarem algumas similaridades deceptivas. A travessia entre
-objetos ocorre atravÃ©s de ponteiros e referÃªncias enquanto as relaÃ§Ãµes sÃ£o
-unidas atravÃ©s de produtos cartesianos e chaves estrangeiras, o que leva a
-soluÃ§Ãµes de otimizaÃ§Ã£o diferentes para ambos os casos. As operaÃ§Ãµes de acesso
-tambÃ©m variam bastante a depender do volume de dados e relacionamentos
-envolvidos. Por exemplo, obter um Ãºnico estudante dentre todos os estudantes
-de um determinado estado Ã© uma operaÃ§Ã£o diferente de obter o estudante com o
-melhor desempenho escolar. A implementaÃ§Ã£o orientada a objeto presume que a
-informaÃ§Ã£o Ã© acessÃ­vel de maneira uniforme. TambÃ©m vale ressaltar que, ao
-contrÃ¡rio de registros em uma relaÃ§Ã£o, objetos nÃ£o sÃ£o canÃ´nicos.
+objetos ocorre através de ponteiros e referências enquanto as relações são
+unidas através de produtos cartesianos e chaves estrangeiras, o que leva a
+soluções de otimização diferentes para ambos os casos. As operações de acesso
+também variam bastante a depender do volume de dados e relacionamentos
+envolvidos. Por exemplo, obter um único estudante dentre todos os estudantes
+de um determinado estado é uma operação diferente de obter o estudante com o
+melhor desempenho escolar. A implementação orientada a objeto presume que a
+informação é acessível de maneira uniforme. Também vale ressaltar que, ao
+contrário de registros em uma relação, objetos não são canônicos.
 
-=head2 O PROBLEMA DA REFATORAÃÃO
+=head2 O PROBLEMA DA REFATORAÇÃO
 
-Durante o ciclo de vida de um projeto de software, ocorrem mudanÃ§as
-significativas em todas as camadas. Manter a integraÃ§Ã£o entre os componentes
-de software Ã© uma tarefa Ã¡rdua e contÃ­nua. Uma simples mudanÃ§a no nome de um
-campo requer que todas as referÃªncias ao nome desse campo sejam atualizadas na
-aplicaÃ§Ã£o. Uma refatoraÃ§Ã£o tÃ­pica envolve muito mais do que renomear um campo,
-tabelas sÃ£o criadas e removidas, chaves sÃ£o alteradas para refletir as mudanÃ§as,
-e dados que antes viviam num Ãºnico registro agora se encontram renormalizados
-entre vÃ¡rias tabelas e registros e todo o cÃ³digo da aplicaÃ§Ã£o agora precisa ser
-atualizado para refletir as mudanÃ§as estruturais.
+Durante o ciclo de vida de um projeto de software, ocorrem mudanças
+significativas em todas as camadas. Manter a integração entre os componentes
+de software é uma tarefa árdua e contínua. Uma simples mudança no nome de um
+campo requer que todas as referências ao nome desse campo sejam atualizadas na
+aplicação. Uma refatoração típica envolve muito mais do que renomear um campo,
+tabelas são criadas e removidas, chaves são alteradas para refletir as mudanças,
+e dados que antes viviam num único registro agora se encontram renormalizados
+entre várias tabelas e registros e todo o código da aplicação agora precisa ser
+atualizado para refletir as mudanças estruturais.
 
-=head2 PADRÃES DE ACESSO A DADOS
+=head2 PADRÕES DE ACESSO A DADOS
 
-Ao longo dos anos, a principal tÃ©cnica desenvolvida para atenuar os problemas
-com o acesso a dados Ã© o encapsulamento da complexidade numa camada dedicada.
-Tipicamente, ela atua como embaixatriz entre o domÃ­nio da base de dados e o da
-aplicaÃ§Ã£o e se ajusta para que alteraÃ§Ãµes em qualquer um dos lados nÃ£o impactue
+Ao longo dos anos, a principal técnica desenvolvida para atenuar os problemas
+com o acesso a dados é o encapsulamento da complexidade numa camada dedicada.
+Tipicamente, ela atua como embaixatriz entre o domínio da base de dados e o da
+aplicação e se ajusta para que alterações em qualquer um dos lados não impactue
 (muito) o outro.
 
 =head3 Data Access Object
 
 Dentro do paradigma orientado a objetos, representar a camada de acesso a dados
-com um objeto que Ã© responsÃ¡vel por consultar a base de dados e construir
-outros objetos a partir dos resultados Ã© uma soluÃ§Ã£o bastante Ã³bvia e direta.
+com um objeto que é responsável por consultar a base de dados e construir
+outros objetos a partir dos resultados é uma solução bastante óbvia e direta.
 Suponha um caso simples: construir boletins de alunos de ensino fundamental.
 
 =begin pod:xhtml
@@ -81,9 +84,9 @@ Primeiro, criamos o schema
 
 Populamos com alguns valores de teste:
 
-    INSERT INTO nota (estudante, materia, valor) VALUES ('JoÃ£o',  'Biologia', 8);
-    INSERT INTO nota (estudante, materia, valor) VALUES ('JoÃ£o',  'MatemÃ¡tica', 7);
-    INSERT INTO nota (estudante, materia, valor) VALUES ('JoÃ£o',  'FÃ­sica', 6);
+    INSERT INTO nota (estudante, materia, valor) VALUES ('João',  'Biologia', 8);
+    INSERT INTO nota (estudante, materia, valor) VALUES ('João',  'Matemática', 7);
+    INSERT INTO nota (estudante, materia, valor) VALUES ('João',  'Física', 6);
     INSERT INTO nota (estudante, materia, valor) VALUES ('Maria', 'Biologia', 9);
 
 Depois, um Data Access Object simples:
@@ -130,7 +133,7 @@ Depois, um Data Access Object simples:
 
     1;
 
-E agora, as classes do lado da aplicaÃ§Ã£o:
+E agora, as classes do lado da aplicação:
 
     package Estudante;
     use Moose;
@@ -164,26 +167,26 @@ E finalmente, nosso teste:
         info_conexao => ['dbi:Pg:dbname=equinocio_students', 'edenc', '']
     );
 
-    my $nome = 'JoÃ£o';
+    my $nome = 'João';
     isa_ok(my $estudante = $dao->buscar_estudante($nome), 'Estudante');
     cmp_ok(scalar @{$estudante->materias}, '==', 3);
     isa_ok($_, 'Materia') for @{$estudante->materias};
     is($estudante->nome, $nome);
 
-    my %nota_esperada = (Biologia => 8, 'MatemÃ¡tica' => 7, 'FÃ­sica' => 6);
+    my %nota_esperada = (Biologia => 8, 'Matemática' => 7, 'Física' => 6);
     cmp_ok(
         $_->nota, '==', $nota_esperada{$_->nome},
         $_->nome . ' nota'
     ) for @{$estudante->materias};
 
-    my %aprovacao_esperada = (Biologia => 1, 'MatemÃ¡tica' => 1, 'FÃ­sica' => 0);
+    my %aprovacao_esperada = (Biologia => 1, 'Matemática' => 1, 'Física' => 0);
 
     cmp_ok(
         $_->foi_aprovado, '==', $aprovacao_esperada{$_->nome},
-        $_->nome . ' aprovaÃ§Ã£o'
+        $_->nome . ' aprovação'
     ) for @{$estudante->materias};
 
-Rodamos o teste, e conferimos que estÃ¡ tudo ok:
+Rodamos o teste, e conferimos que está tudo ok:
 
     prove -lv t/001-buscar-estudante.t
     t/001-buscar-estudante.t ..
@@ -194,24 +197,24 @@ Rodamos o teste, e conferimos que estÃ¡ tudo ok:
     ok 5 - The object isa Materia
     ok 6
     ok 7 - Biologia nota
-    ok 8 - FÃ­sica nota
-    ok 9 - MatemÃ¡tica nota
-    ok 10 - Biologia aprovaÃ§Ã£o
-    ok 11 - FÃ­sica aprovaÃ§Ã£o
-    ok 12 - MatemÃ¡tica aprovaÃ§Ã£o
+    ok 8 - Física nota
+    ok 9 - Matemática nota
+    ok 10 - Biologia aprovação
+    ok 11 - Física aprovação
+    ok 12 - Matemática aprovação
     1..12
     ok
     All tests successful.
     Files=1, Tests=12,  1 wallclock secs ( 0.03 usr  0.02 sys +  0.25 cusr  0.03 csys =  0.33 CPU)
     Result: PASS
 
-O bom observador vai perceber algumas limitaÃ§Ãµes nessa abordagem. Por exemplo,
-esse DAO nÃ£o sabe criar nem atualizar objetos, dentre outras. Outra questÃ£o
-notÃ¡vel Ã© falta de normalizaÃ§Ã£o na tabela, afinal de contas, Ã© uma
-implementaÃ§Ã£o ingÃªnua. Suponha tambÃ©m que surgiu um requisito de Ãºltima hora:
+O bom observador vai perceber algumas limitações nessa abordagem. Por exemplo,
+esse DAO não sabe criar nem atualizar objetos, dentre outras. Outra questão
+notável é falta de normalização na tabela, afinal de contas, é uma
+implementação ingênua. Suponha também que surgiu um requisito de última hora:
 os estudantes precisam ser agrupados em turmas, ser listados em ordem
-alfabÃ©tica e as notas de um determinado estudante precisam estar ordenadas por
-matÃ©ria. Uma abordagem mais correta seria:
+alfabética e as notas de um determinado estudante precisam estar ordenadas por
+matéria. Uma abordagem mais correta seria:
 
 =begin pod:xhtml
 
@@ -219,83 +222,83 @@ matÃ©ria. Uma abordagem mais correta seria:
 
 =end pod:xhtml
 
-Um pouco de anÃ¡lise vai revelar que a API do DAO precisa ser repensada. Por
-exemplo, um mÃ©todo para realizar a listagem dos estudantes seria bastante
-similar ao mÃ©todo que obtÃ©m um estudante individual, basta omitir a restriÃ§Ã£o
-por nome. Outra porÃ§Ã£o de cÃ³digo que pode ser reaproveitada Ã© a construÃ§Ã£o do
-objetos Estudante e MatÃ©ria. Vale ressaltar que operaÃ§Ãµes como ordenaÃ§Ã£o e
-agrupamento sÃ£o mais eficientes se realizadas pelo prÃ³prio backend de storage.
-Se, por exemplo, for necessÃ¡rio exibir os 10 alunos com as melhores notas no
-paÃ­s inteiro, fazer a ordenaÃ§Ã£o no lado da aplicaÃ§Ã£o geraria um overhead de
-memÃ³ria proibitivo. A API do DAO tambÃ©m precisa ser cuidadosamente
-confeccionada para evitar a falÃ¡cia comum de:
+Um pouco de análise vai revelar que a API do DAO precisa ser repensada. Por
+exemplo, um método para realizar a listagem dos estudantes seria bastante
+similar ao método que obtém um estudante individual, basta omitir a restrição
+por nome. Outra porção de código que pode ser reaproveitada é a construção do
+objetos Estudante e Matéria. Vale ressaltar que operações como ordenação e
+agrupamento são mais eficientes se realizadas pelo próprio backend de storage.
+Se, por exemplo, for necessário exibir os 10 alunos com as melhores notas no
+país inteiro, fazer a ordenação no lado da aplicação geraria um overhead de
+memória proibitivo. A API do DAO também precisa ser cuidadosamente
+confeccionada para evitar a falácia comum de:
 
     $dao->listar_estudantes
     $dao->listar_estudantes_ordenados_por_nome
     $dao->listar_estudantes_ordenados_por_nota
     # etc...
 
-O problema com essa abordagem Ã© que quando for necessÃ¡rio ordenar estudantes
-por nome e nota, nÃ£o vai ser possÃ­vel reaproveitar os mÃ©todos existentes. Esse
-padrÃ£o de consultas combinadas Ã© bastante recorrente durante a vida de uma
-aplicaÃ§Ã£o. Fica claro que o principal problema na construÃ§Ã£o de um DAO Ã©
-projetar uma arquitetura e API que chegue a um ponto de convergÃªncia Ãºtil para
-a aplicaÃ§Ã£o, mesmo porque, se a API muda constantemente, a camada de acesso
-serÃ¡ inÃºtil porque a aplicaÃ§Ã£o terÃ¡ que mudar tambÃ©m, para acomodar as
-mudanÃ§as na API. O mais correto em termos de contrato seria o DAO expor mÃ©todos
-que tenham sentido conceitual para a aplicaÃ§Ã£o, por exemplo:
+O problema com essa abordagem é que quando for necessário ordenar estudantes
+por nome e nota, não vai ser possível reaproveitar os métodos existentes. Esse
+padrão de consultas combinadas é bastante recorrente durante a vida de uma
+aplicação. Fica claro que o principal problema na construção de um DAO é
+projetar uma arquitetura e API que chegue a um ponto de convergência útil para
+a aplicação, mesmo porque, se a API muda constantemente, a camada de acesso
+será inútil porque a aplicação terá que mudar também, para acomodar as
+mudanças na API. O mais correto em termos de contrato seria o DAO expor métodos
+que tenham sentido conceitual para a aplicação, por exemplo:
 
     $dao->melhores_estudantes_nacionais
     $dao->estudantes_aprovados
-    $dao->estudantes_por_serie('7Âª SÃ©rie')
+    $dao->estudantes_por_serie('7ª Série')
     # etc...
 
-Dessa forma, os detalhes de implementaÃ§Ã£o sÃ£o encapsulados e a aplicaÃ§Ã£o se
-preocupa apenas com as regras de negÃ³cio. AlÃ©m disso, o observador muito
-cauteloso tambÃ©m irÃ¡ perceber que nÃ£o existe tratamento de erros a nÃ­vel de
-infra-estrutura, como verificaÃ§Ã£o de persistÃªncia da conexÃ£o com o banco de
-dados, pooling de conexÃµes e relatÃ³rio de erros.
+Dessa forma, os detalhes de implementação são encapsulados e a aplicação se
+preocupa apenas com as regras de negócio. Além disso, o observador muito
+cauteloso também irá perceber que não existe tratamento de erros a nível de
+infra-estrutura, como verificação de persistência da conexão com o banco de
+dados, pooling de conexões e relatório de erros.
 
 =head3 MAPEAMENTO OBJETO-RELACIONAL
 
 O mapeamento objeto-relacional (popularmente conhecido como ORM -
-Object-Relational Mapping/Mapper) Ã© uma tentativa de reaproveitar trabalho
+Object-Relational Mapping/Mapper) é uma tentativa de reaproveitar trabalho
 baseado nas similaridades entre os modelos orientado a objetos e relacional.
-Nem todas as soluÃ§Ãµes sÃ£o felizes, e a maioria trazem mais problemas do que
-soluÃ§Ãµes. Muitos ORMs sÃ£o baseados em convenÃ§Ãµes, ou seja, requerem que a
+Nem todas as soluções são felizes, e a maioria trazem mais problemas do que
+soluções. Muitos ORMs são baseados em convenções, ou seja, requerem que a
 modelagem e arquitetura da base de dados seja adequada ao caso para o qual o
 ORM foi projetado. Outros introspectam e refletem os campos das tabelas
-diretamente para atributos de objetos, o que significa que mÃ©todos de acesso
+diretamente para atributos de objetos, o que significa que métodos de acesso
 para os atributos modificados magicamente deixam de funcionar em toda a
-aplicaÃ§Ã£o. A maioria das convenÃ§Ãµes nÃ£o permitem o uso de chaves compostas, o
+aplicação. A maioria das convenções não permitem o uso de chaves compostas, o
 que reduz bastante a utilidade de ORMs em sistemas mais complexos. Muitos
-tambÃ©m substituem SQL por uma linguagem de mapeamento prÃ³pria, o que adiciona
-um elemento de complexidade extra ao cÃ³digo. Em particular, DBA's que jÃ¡ sÃ£o
-bastante proficientes com SQL se sentem menos confortÃ¡veis e sÃ£o menos
-produtivos aprendendo uma linguagem especÃ­fica e que tipicamente Ã© menos
-flexÃ­vel do que SQL. A arquitetura baseada em convenÃ§Ã£o tambÃ©m reduz a
-extensibilidade e customizaÃ§Ã£o dos sistemas, criando barreiras na hora de se
-realizarem otimizaÃ§Ãµes especÃ­ficas de domÃ­nio. Todos esses problemas tem criado
-uma certa aversÃ£o a ORMs entre os DBA's mais experientes.
+também substituem SQL por uma linguagem de mapeamento própria, o que adiciona
+um elemento de complexidade extra ao código. Em particular, DBA's que já são
+bastante proficientes com SQL se sentem menos confortáveis e são menos
+produtivos aprendendo uma linguagem específica e que tipicamente é menos
+flexível do que SQL. A arquitetura baseada em convenção também reduz a
+extensibilidade e customização dos sistemas, criando barreiras na hora de se
+realizarem otimizações específicas de domínio. Todos esses problemas tem criado
+uma certa aversão a ORMs entre os DBA's mais experientes.
 
 =head2 DBIx::Class TO THE RESCUE
 
 Pensando em todos os problemas previamente mencionados, o DBIx::Class tenta
-adotar uma abordagem diferenciada. A principal regra Ã© manter a flexibilidade
-provendo defaults sensatos. Os defaults permitem que as aplicaÃ§Ãµes comecem a
-ser desenvolvidas rapidamente e as customizaÃ§Ãµes podem ser acrescentadas ao
-longo do projeto. Pode-se dizer que o DBIx::Class estÃ¡ mais para um framework
-para projetos de DAO do que um ORM. InvÃ©s de mapear diretamente para classes
-da aplicaÃ§Ã£o, sÃ£o construidos objetos intermediÃ¡rios que facilitam a construÃ§Ã£o
-de objetos do domÃ­nio. Um sistema de meta-dados "ensina" esses objetos a
+adotar uma abordagem diferenciada. A principal regra é manter a flexibilidade
+provendo defaults sensatos. Os defaults permitem que as aplicações comecem a
+ser desenvolvidas rapidamente e as customizações podem ser acrescentadas ao
+longo do projeto. Pode-se dizer que o DBIx::Class está mais para um framework
+para projetos de DAO do que um ORM. Invés de mapear diretamente para classes
+da aplicação, são construidos objetos intermediários que facilitam a construção
+de objetos do domínio. Um sistema de meta-dados "ensina" esses objetos a
 interagirem com as tabelas, de acordo com o backend adotado.
 
 =head3 Conceitos do DBIx::Class
 
 =head4 Schema
 
-Objetos Schema sÃ£o o ponto de entrada para a camada de acesso a dados. A
-construÃ§Ã£o da classe Ã© bem simples e direta:
+Objetos Schema são o ponto de entrada para a camada de acesso a dados. A
+construção da classe é bem simples e direta:
 
     package MySchema;
     use warnings;
@@ -306,10 +309,10 @@ construÃ§Ã£o da classe Ã© bem simples e direta:
 
     1;
 
-O mÃ©todo C<load_namespaces> indica que queremos carregar as definiÃ§Ãµes de
-tabelas do local padrÃ£o que sÃ£o os namespaces C<MySchema::Result> e
-C<MySchema::ResultSet>. Essas definiÃ§Ãµes podem ser escritas manualmente ou
-introspectadas de uma base existente atravÃ©s do C<DBIx::Class::Schema::Loader>.
+O método C<load_namespaces> indica que queremos carregar as definições de
+tabelas do local padrão que são os namespaces C<MySchema::Result> e
+C<MySchema::ResultSet>. Essas definições podem ser escritas manualmente ou
+introspectadas de uma base existente através do C<DBIx::Class::Schema::Loader>.
 Suponha o seguinte schema:
 
     --
@@ -453,7 +456,7 @@ Suponha o seguinte schema:
     -- Data for Name: aluno; Type: TABLE DATA; Schema: public; Owner: edenc
     --
 
-    INSERT INTO aluno (id, nome) VALUES (1, 'JoÃ£o');
+    INSERT INTO aluno (id, nome) VALUES (1, 'João');
     INSERT INTO aluno (id, nome) VALUES (2, 'Maria');
 
 
@@ -472,16 +475,16 @@ Suponha o seguinte schema:
     --
 
     INSERT INTO materia (id, nome) VALUES (1, 'Biologia');
-    INSERT INTO materia (id, nome) VALUES (2, 'MatemÃ¡tica');
-    INSERT INTO materia (id, nome) VALUES (3, 'FÃ­sica');
+    INSERT INTO materia (id, nome) VALUES (2, 'Matemática');
+    INSERT INTO materia (id, nome) VALUES (3, 'Física');
 
 
     --
     -- Data for Name: turma; Type: TABLE DATA; Schema: public; Owner: edenc
     --
 
-    INSERT INTO turma (id, turma) VALUES (1, '7Âª SÃ©rie');
-    INSERT INTO turma (id, turma) VALUES (2, '6Âª SÃ©rie');
+    INSERT INTO turma (id, turma) VALUES (1, '7ª Série');
+    INSERT INTO turma (id, turma) VALUES (2, '6ª Série');
 
 
     --
@@ -578,40 +581,40 @@ Suponha o seguinte schema:
     -- PostgreSQL database dump complete
     --
 
-O seguinte comando shell Ã© o suficiente para iniciar:
+O seguinte comando shell é o suficiente para iniciar:
 
     perl -MDBIx::Class::Schema::Loader=make_schema_at -le'make_schema_at("MySchema", { use_namespaces => 1, dump_directory => "./lib" }, 
     ["dbi:Pg:dbname=equinocio_students", "edenc", ""])'
 
-A opÃ§Ã£o C<use_namespaces> indica que queremos prefixar nossas classes com
-C<MySchema::Result::> e C<MySchema::ResultSet>, que Ã© a prÃ¡tica mais comum na
+A opção C<use_namespaces> indica que queremos prefixar nossas classes com
+C<MySchema::Result::> e C<MySchema::ResultSet>, que é a prática mais comum na
 comunidade do C<DBIx::Class>.
-A opÃ§Ã£o C<dump_directory> indica em qual diretÃ³rio queremos criar as classes.
-O array C<["dbi:Pg:dbname=equinocio_students", "edenc", ""]> sÃ£o opÃ§Ãµes de
-conexÃ£o com o banco de dados, tal qual seria passado ao C<DBI> (como vimos na
-pequena implementaÃ§Ã£o de um DAO).
-O diretÃ³rio C<lib> agora contÃ©m as classes com as definiÃ§Ãµes introspectadas da
+A opção C<dump_directory> indica em qual diretório queremos criar as classes.
+O array C<["dbi:Pg:dbname=equinocio_students", "edenc", ""]> são opções de
+conexão com o banco de dados, tal qual seria passado ao C<DBI> (como vimos na
+pequena implementação de um DAO).
+O diretório C<lib> agora contém as classes com as definições introspectadas da
 base de dados.
 
-Para obter mais opÃ§Ãµes de customizaÃ§Ã£o, consulte a documentaÃ§Ã£o do
+Para obter mais opções de customização, consulte a documentação do
 C<DBIx::Class::Schema::Loader>.
 
 =head4 Result Source
 
-Objetos Result Source contÃ©m meta-dados sobre as tabelas, como o nome da
-tabela, os nomes de colunas, restriÃ§Ãµes de unicidade e relacionamentos.
-No arquivo C<lib/MySchema/Result/Aluno.pm> temos o cÃ³digo introspectado pelo
+Objetos Result Source contém meta-dados sobre as tabelas, como o nome da
+tabela, os nomes de colunas, restrições de unicidade e relacionamentos.
+No arquivo C<lib/MySchema/Result/Aluno.pm> temos o código introspectado pelo
 C<DBIx::Class::Schema::Loader> para a tabela aluno.
 
     __PACKAGE__->load_components("Core");
 
-Essa instruÃ§Ã£o carrega a infra-estrutura bÃ¡sica do C<DBIx::Class>. Componentes
-adicionais podem ser carregados aqui tambÃ©m.
+Essa instrução carrega a infra-estrutura básica do C<DBIx::Class>. Componentes
+adicionais podem ser carregados aqui também.
 
     __PACKAGE__->table("aluno");
 
-C<table> indica o nome da tabela que este Result Source estÃ¡ referenciando,
-todas as consultas vÃ£o usar esse valor, literalmente.
+C<table> indica o nome da tabela que este Result Source está referenciando,
+todas as consultas vão usar esse valor, literalmente.
 
     __PACKAGE__->add_columns(
       "id",
@@ -631,20 +634,20 @@ todas as consultas vÃ£o usar esse valor, literalmente.
     );
 
 C<add_columns> indica os nomes e tipos de dados das colunas da tabela. Apenas
-o nome da coluna Ã© obrigatÃ³rio, as demais informaÃ§Ãµes nÃ£o sÃ£o necessÃ¡rias para
-a operaÃ§Ã£o do C<DBIx::Class>.
+o nome da coluna é obrigatório, as demais informações não são necessárias para
+a operação do C<DBIx::Class>.
 
     __PACKAGE__->set_primary_key("id");
 
-C<set_primary_key> indica a chave primÃ¡ria desta tabela. A declaraÃ§Ã£o correta
-da chave primÃ¡ria da tabela Ã© essencial para o bom funcionamento do
-C<DBIx::Class>. Chaves compostas sÃ£o suportadas normalmente (A tabela
-C<MySchema::Result::AlunoMateria> contÃ©m um exemplo).
+C<set_primary_key> indica a chave primária desta tabela. A declaração correta
+da chave primária da tabela é essencial para o bom funcionamento do
+C<DBIx::Class>. Chaves compostas são suportadas normalmente (A tabela
+C<MySchema::Result::AlunoMateria> contém um exemplo).
 
     __PACKAGE__->add_unique_constraint("aluno_pkey", ["id"]);
 
-C<add_unique_constraint> indica uma restriÃ§Ã£o de unicidade sobre uma tupla.
-DeclaraÃ§Ãµes de unicidade facilitam a construÃ§Ã£o posterior de consultas.
+C<add_unique_constraint> indica uma restrição de unicidade sobre uma tupla.
+Declarações de unicidade facilitam a construção posterior de consultas.
 
     __PACKAGE__->has_many(
       "aluno_materias",
@@ -653,20 +656,20 @@ DeclaraÃ§Ãµes de unicidade facilitam a construÃ§Ã£o posterior de consult
     );
 
 C<has_many> indica um relacionamento 1-N, nesse caso, um registro em C<aluno>
-pode ter vÃ¡rios registros relacionados na tabela C<aluno_materia>. As duas
-tabelas se relacionam atravÃ©s da chave estrangeira C<aluno_id> na tabela
-C<aluno_materia>, indicada pelo prefixo C<foreign>, e da chave primÃ¡ria C<id>,
+pode ter vários registros relacionados na tabela C<aluno_materia>. As duas
+tabelas se relacionam através da chave estrangeira C<aluno_id> na tabela
+C<aluno_materia>, indicada pelo prefixo C<foreign>, e da chave primária C<id>,
 na tabela C<aluno>, indicada pelo prefixo C<self>.
 Outros tipos de relacionamento, como C<belongs_to> (N-1), C<has_one> (1-1) e
-C<might_have> (1-1,0) sÃ£o utilizÃ¡veis baseados na mesma semÃ¢ntica.
-Relacionamentos N-M sÃ£o um caso especial, Ã© necessÃ¡rio dois relacionamentos
+C<might_have> (1-1,0) são utilizáveis baseados na mesma semântica.
+Relacionamentos N-M são um caso especial, é necessário dois relacionamentos
 (1-N) em duas tabelas distintas com uma terceira tabela (a
 tabela-relacionamento). Por conta da natureza abstrata desse tipo de
-relacionamento, o instrospectador nÃ£o consegue detectÃ¡-lo automaticamente.
-A tabela C<AlunoMateria> Ã© um exemplo de tabela-relacionamento, o
-C<DBIx::Class> jÃ¡ criou os relacionamentos bÃ¡sicos. Observe que os
-relacionamentos tem como nome as chaves primÃ¡rias, atribuÃ­das automaticamente,
-para evitar confusÃ£o com o valor da coluna, Ã© recomendÃ¡vel que se renomeie o
+relacionamento, o instrospectador não consegue detectá-lo automaticamente.
+A tabela C<AlunoMateria> é um exemplo de tabela-relacionamento, o
+C<DBIx::Class> já criou os relacionamentos básicos. Observe que os
+relacionamentos tem como nome as chaves primárias, atribuídas automaticamente,
+para evitar confusão com o valor da coluna, é recomendável que se renomeie o
 relacionamento:
 
     --- lib/MySchema/Result/AlunoMateria.pm
@@ -687,7 +690,7 @@ relacionamento:
      # Created by DBIx::Class::Schema::Loader v0.04006 @ 2010-03-09 21:13:41
 
 
-Falta unir as tabelas relevantes atravÃ©s da tabela-relacionamento.
+Falta unir as tabelas relevantes através da tabela-relacionamento.
 
 Aluno:
 
@@ -720,7 +723,7 @@ Materia:
 O primeiro argumento de C<many_to_many> indica o nome do relacionamento. O
 segundo argumento indica um relacionamento C<has_many> na tabela atual para a
 tabela-relacionamento. O terceiro argumento indica o relacionamento
-C<belongs_to> na tabela-relacionamento que serÃ¡ utilizado para chegar na segunda
+C<belongs_to> na tabela-relacionamento que será utilizado para chegar na segunda
 tabela relacionada.
 
 Um script de teste:
@@ -747,13 +750,13 @@ Para executar:
 
 O resultado:
 
-    MySchema::Result::Aluno => JoÃ£o
+    MySchema::Result::Aluno => João
     MySchema::Result::Aluno => Maria
 
 Percebe-se que o C<DBIx::Class> realizou a consulta e populou os objetos
 adequados.
 
-Consultando matÃ©rias:
+Consultando matérias:
 
     diff --git a/source/script/test.pl b/source/script/test.pl
     index 07e3395..faed9f7 100644
@@ -768,21 +771,21 @@ Consultando matÃ©rias:
     +   }
      }
 
-    MySchema::Result::Aluno => JoÃ£o
+    MySchema::Result::Aluno => João
             MySchema::Result::Materia => Biologia
-            MySchema::Result::Materia => MatemÃ¡tica
-            MySchema::Result::Materia => FÃ­sica
+            MySchema::Result::Materia => Matemática
+            MySchema::Result::Materia => Física
     MySchema::Result::Aluno => Maria
             MySchema::Result::Materia => Biologia
 
-Observe que o mÃ©todo C<materias> estÃ¡ disponÃ­vel por conta da declaraÃ§Ã£o
+Observe que o método C<materias> está disponível por conta da declaração
 C<many_to_many> em Aluno.
-Para melhorar a conveniÃªncia de acesso entre turmas e alunos, Ã© necessÃ¡ria a
-inclusÃ£o de outro relacionamento C<many_to_many> entre C<aluno> e C<turma>
-atravÃ©s da tabela-relacionamento C<aluno_turma>. Um detalhe importante Ã© que o
-introspectador utiliza inflexÃ£o automÃ¡tica em inglÃªs para determinar o nome dos
-relacionamentos, como o exemplo estÃ¡ em portuguÃªs, alguns reparos sÃ£o
-necessÃ¡rios:
+Para melhorar a conveniência de acesso entre turmas e alunos, é necessária a
+inclusão de outro relacionamento C<many_to_many> entre C<aluno> e C<turma>
+através da tabela-relacionamento C<aluno_turma>. Um detalhe importante é que o
+introspectador utiliza inflexão automática em inglês para determinar o nome dos
+relacionamentos, como o exemplo está em português, alguns reparos são
+necessários:
 
     diff --git a/source/lib/MySchema/Result/Turma.pm b/source/lib/MySchema/Result/Turma.pm
     index b6edf19..20c28bf 100644
@@ -828,7 +831,7 @@ necessÃ¡rios:
 
      # Created by DBIx::Class::Schema::Loader v0.04006 @ 2010-03-09 21:13:41
 
-Por fim, a declaraÃ§Ã£o do relacionamento C<many_to_many>:
+Por fim, a declaração do relacionamento C<many_to_many>:
 
     diff --git a/source/lib/MySchema/Result/Aluno.pm b/source/lib/MySchema/Result/Aluno.pm
     index 0163c8e..4353455 100644
@@ -884,83 +887,83 @@ Por fim, a declaraÃ§Ã£o do relacionamento C<many_to_many>:
 
     perl -Ilib script/test.pl
 
-    MySchema::Result::Turma => 7Âª SÃ©rie
-            MySchema::Result::Aluno => JoÃ£o
+    MySchema::Result::Turma => 7ª Série
+            MySchema::Result::Aluno => João
                     MySchema::Result::Materia => Biologia
-                    MySchema::Result::Materia => MatemÃ¡tica
-                    MySchema::Result::Materia => FÃ­sica
-    MySchema::Result::Turma => 6Âª SÃ©rie
+                    MySchema::Result::Materia => Matemática
+                    MySchema::Result::Materia => Física
+    MySchema::Result::Turma => 6ª Série
             MySchema::Result::Aluno => Maria
                     MySchema::Result::Materia => Biologia
 
 
-=head4 Por trÃ¡s das cenas
+=head4 Por trás das cenas
 
 O C<DBIx::Class> funciona de uma maneira bastante similar ao que implementamos
 na classe C<DAO>. As seguintes etapas ocorrem durante uma consulta:
 
 =over
 
-=item DefiniÃ§Ã£o de Consultas
+=item Definição de Consultas
 
-Estabelecimento dos critÃ©rios para recuperaÃ§Ã£o dos dados atravÃ©s de SQL ou do
-mecanismo de geraÃ§Ã£o de SQL embutido. No exemplo, nÃ£o houveram critÃ©rios
-explÃ­citos, porÃ©m o C<DBIx::Class> utilizou os meta-dados nos result sources
-para induzir critÃ©rios implicitamente.
+Estabelecimento dos critérios para recuperação dos dados através de SQL ou do
+mecanismo de geração de SQL embutido. No exemplo, não houveram critérios
+explícitos, porém o C<DBIx::Class> utilizou os meta-dados nos result sources
+para induzir critérios implicitamente.
 
     my $turmas = $schema->resultset('Turma');
 
 Indica que todos os registros da tabela C<turma> devem ser recuperados. O valor
-que passamos como argumento Ã© o nome do result source, que reside na classe
-C<MySchema::Result::Turma>. NÃ£o Ã© necessÃ¡rio indicar o nome completo da classe.
+que passamos como argumento é o nome do result source, que reside na classe
+C<MySchema::Result::Turma>. Não é necessário indicar o nome completo da classe.
 
     $turma->alunos;
 
-Indica que todos os registros relacionados Ã quele objeto especÃ­fico devem ser
-recuperados. O C<DBIx::Class> utiliza os meta-dados fornecidos na definiÃ§Ã£o do
-relacionamento para construir o join com um critÃ©rio adequado e recuperar os
+Indica que todos os registros relacionados àquele objeto específico devem ser
+recuperados. O C<DBIx::Class> utiliza os meta-dados fornecidos na definição do
+relacionamento para construir o join com um critério adequado e recuperar os
 dados na tabela correta. Uma forma equivalente de se obter o mesmo conjunto de
-registros seria construir o critÃ©rio manualmente:
+registros seria construir o critério manualmente:
 
     $schema->resultset('TurmaAluno')
         ->search({ turma_id => $turma->id })
         ->related_resultset('aluno');
 
-O critÃ©rio Ã© bastante parecido com o que estÃ¡ definido no relacionamento.
-PorÃ©m, utilizar a definiÃ§Ã£o do relacionamento Ã© mais eficiente do ponto de
-vista de engenharia porque mantÃ©m o critÃ©rio canonizado em um Ãºnico lugar,
-facilitando o processo de manutenÃ§Ã£o.
-Os detalhes de funcionamento dos mÃ©todos C<search> e C<related_resultset> serÃ£o
-abordados mais adiante junto com a definiÃ§Ã£o do conceito de Result Set.
+O critério é bastante parecido com o que está definido no relacionamento.
+Porém, utilizar a definição do relacionamento é mais eficiente do ponto de
+vista de engenharia porque mantém o critério canonizado em um único lugar,
+facilitando o processo de manutenção.
+Os detalhes de funcionamento dos métodos C<search> e C<related_resultset> serão
+abordados mais adiante junto com a definição do conceito de Result Set.
 
-=item PreparaÃ§Ã£o e ExecuÃ§Ã£o
+=item Preparação e Execução
 
-O C<DBIx::Class> tenta otimizar o processo de consultas o mÃ¡ximo possÃ­vel. As
-consultas sÃ£o realizadas de maneira "preguiÃ§osa", isso significa que sÃ³ haverÃ¡
-execuÃ§Ã£o quando os dados forem realmente necessÃ¡rios e nÃ£o durante o processo
-de definiÃ§Ã£o da consulta. Por exemplo, a consulta que recupera a lista de
-turmas nÃ£o acontece durante a chamada a C<$schema->resultset('Turma')>, mas
-durante a chamada a C<$turmas->all>. Isso Ã© um conceito fundamental, porque
-talvez fosse necessÃ¡rio o acrÃ©scimo de critÃ©rios extras antes da realizaÃ§Ã£o da
+O C<DBIx::Class> tenta otimizar o processo de consultas o máximo possível. As
+consultas são realizadas de maneira "preguiçosa", isso significa que só haverá
+execução quando os dados forem realmente necessários e não durante o processo
+de definição da consulta. Por exemplo, a consulta que recupera a lista de
+turmas não acontece durante a chamada a C<$schema->resultset('Turma')>, mas
+durante a chamada a C<$turmas->all>. Isso é um conceito fundamental, porque
+talvez fosse necessário o acréscimo de critérios extras antes da realização da
 consulta.
-Uma outra otimizaÃ§Ã£o que ocorre na recuperaÃ§Ã£o dos dados Ã© o caching automÃ¡tico
-dos resultados. A consulta sÃ³ ocorre na primeira vez em que acontece a chamada
-C<$turmas->all>, uma segunda invocaÃ§Ã£o irÃ¡ utilizar os dados cacheados. O mesmo
-vale para os objetos C<$turma> individuais, nÃ£o acontecem consultas adicionais
+Uma outra otimização que ocorre na recuperação dos dados é o caching automático
+dos resultados. A consulta só ocorre na primeira vez em que acontece a chamada
+C<$turmas->all>, uma segunda invocação irá utilizar os dados cacheados. O mesmo
+vale para os objetos C<$turma> individuais, não acontecem consultas adicionais
 a cada vez que se invoca C<$turma->turma>, por exemplo.
-Os handles de consultas do C<DBI> tambÃ©m sÃ£o cacheados, portanto hÃ¡ um pequeno
-ganho de desempenho em relaÃ§Ã£o Ã  implementaÃ§Ã£o do DAO, que prepara um novo
-handle, mesmo sendo uma repetiÃ§Ã£o da mesma consulta. AlÃ©m do cache, ocorre uma
-verificaÃ§Ã£o da conexÃ£o com o banco, se houver uma falha na comunicaÃ§Ã£o, o
-C<DBIx::Class> irÃ¡ automaticamente tentar re-estabelecer a conexÃ£o antes de
+Os handles de consultas do C<DBI> também são cacheados, portanto há um pequeno
+ganho de desempenho em relação à implementação do DAO, que prepara um novo
+handle, mesmo sendo uma repetição da mesma consulta. Além do cache, ocorre uma
+verificação da conexão com o banco, se houver uma falha na comunicação, o
+C<DBIx::Class> irá automaticamente tentar re-estabelecer a conexão antes de
 executar a consulta.
 
 =item Colapso de Dados
 
-Os dados recuperados por uma consulta sÃ£o sempre fornecidos pelo backend de
-forma tabular, o que requer um trabalho de re-estruturaÃ§Ã£o durante a populaÃ§Ã£o
+Os dados recuperados por uma consulta são sempre fornecidos pelo backend de
+forma tabular, o que requer um trabalho de re-estruturação durante a população
 dos objetos. Por exemplo, a consulta para recuperar todos os alunos e suas
-respectivas matÃ©rias seria:
+respectivas matérias seria:
 
        SELECT aluno.id,
               aluno.nome,
@@ -978,31 +981,31 @@ E o resultado seria:
 
      id | nome  | aluno_id | materia_id | nota | id |    nome
     ----+-------+----------+------------+------+----+------------
-      1 | JoÃ£o  |        1 |          1 |      |  1 | Biologia
-      1 | JoÃ£o  |        1 |          2 |      |  2 | MatemÃ¡tica
-      1 | JoÃ£o  |        1 |          3 |      |  3 | FÃ­sica
+      1 | João  |        1 |          1 |      |  1 | Biologia
+      1 | João  |        1 |          2 |      |  2 | Matemática
+      1 | João  |        1 |          3 |      |  3 | Física
       2 | Maria |        2 |          1 |      |  1 | Biologia
 
-Existem 3 registros contendo os dados de um Ãºnico registro em aluno, devido ao
-produto cartesiano resultante do join. Ã desejÃ¡vel que apenas um objeto aluno
-equivalente ao registro C<JoÃ£o> exista na aplicaÃ§Ã£o para esse caso. O que
-permite exibir a hierarquia dos dados sem repetiÃ§Ãµes como acontece no exemplo.
+Existem 3 registros contendo os dados de um único registro em aluno, devido ao
+produto cartesiano resultante do join. É desejável que apenas um objeto aluno
+equivalente ao registro C<João> exista na aplicação para esse caso. O que
+permite exibir a hierarquia dos dados sem repetições como acontece no exemplo.
 Baseado nos meta-dados presentes nas classes Result Source, o C<DBIx::Class>
 consegue re-estruturar os dados tabulares mapeando-os para objetos
 estruturados. Esse processo se chama "colapso de dados", devido ao processo
-de destruiÃ§Ã£o de dados duplicados que acontece por trÃ¡s das cenas.
+de destruição de dados duplicados que acontece por trás das cenas.
 
-=item InflaÃ§Ã£o de Dados
+=item Inflação de Dados
 
 O processo de "inflar" dados ocorre quando dados passam do backend para a
-aplicaÃ§Ã£o, o sentido inverso se chama "deflaÃ§Ã£o". Na implementaÃ§Ã£o exemplar
-da classe DAO, a inflaÃ§Ã£o foi feita manualmente. O C<DBIx::Class> fornece um
-mecanismo de inflaÃ§Ã£o extensÃ­vel que, por padrÃ£o, constrÃ³i objetos da mesma
+aplicação, o sentido inverso se chama "deflação". Na implementação exemplar
+da classe DAO, a inflação foi feita manualmente. O C<DBIx::Class> fornece um
+mecanismo de inflação extensível que, por padrão, constrói objetos da mesma
 classe que o Result Source, como por exemplo C<MySchema::Result::Aluno>. Esses
-objetos herdam da classe C<DBIx::Class::Row> que fornece operaÃ§Ãµes sobre dados
-de um Ãºnico registro. O processo de inflaÃ§Ã£o pode ser alterado atravÃ©s da
-sobrecarga do mÃ©todo C<inflate_result> em qualquer classe Result Source. Por
-exemplo, se fosse desejÃ¡vel construir hashes invÃ©s de objetos
+objetos herdam da classe C<DBIx::Class::Row> que fornece operações sobre dados
+de um único registro. O processo de inflação pode ser alterado através da
+sobrecarga do método C<inflate_result> em qualquer classe Result Source. Por
+exemplo, se fosse desejável construir hashes invés de objetos
 C<MySchema::Result::Materia>:
 
     diff --git a/source/lib/MySchema/Result/Materia.pm b/source/lib/MySchema/Result/Materia.pm
@@ -1043,7 +1046,7 @@ C<MySchema::Result::Materia>:
         }
      }
 
-JSON invÃ©s de hash:
+JSON invés de hash:
 
     diff --git a/source/lib/MySchema/Result/Materia.pm b/source/lib/MySchema/Result/Materia.pm
     index 401a1bd..982d538 100644
@@ -1084,9 +1087,9 @@ JSON invÃ©s de hash:
 
 =head4 Objetos Result Set
 
-AtÃ© agora, foram abordados exemplos bÃ¡sicos de consultas e recuperaÃ§Ã£o de
-dados. PorÃ©m, efetuar consultas de forma manutenÃ­vel e reaproveitÃ¡vel nÃ£o Ã© uma
-tarefa fÃ¡cil. Suponha a seguinte lista de requisitos e o SQL equivalente:
+Até agora, foram abordados exemplos básicos de consultas e recuperação de
+dados. Porém, efetuar consultas de forma manutenível e reaproveitável não é uma
+tarefa fácil. Suponha a seguinte lista de requisitos e o SQL equivalente:
 
 =over
 
@@ -1101,7 +1104,7 @@ tarefa fÃ¡cil. Suponha a seguinte lista de requisitos e o SQL equivalente:
         ON ta.aluno_id = me.id
      WHERE ta.turma_id = ?;
 
-=item * Enumerar Alunos Cursando uma Determinada MatÃ©ria
+=item * Enumerar Alunos Cursando uma Determinada Matéria
 
     SELECT * FROM aluno me
       JOIN aluno_materia ma
@@ -1110,7 +1113,7 @@ tarefa fÃ¡cil. Suponha a seguinte lista de requisitos e o SQL equivalente:
 
 =back
 
-Uma outra forma de enxergar um requisito desses Ã© atravÃ©s de conjuntos:
+Uma outra forma de enxergar um requisito desses é através de conjuntos:
 
 =begin pod:xhtml
 
@@ -1118,11 +1121,11 @@ Uma outra forma de enxergar um requisito desses Ã© atravÃ©s de conjuntos:
 
 =end pod:xhtml
 
-Em C<DBIx::Class> nÃ³s expressamos esses conjuntos atravÃ©s de objetos Result Set:
+Em C<DBIx::Class> nós expressamos esses conjuntos através de objetos Result Set:
 
     my $alunos = $schema->resultset('Aluno');
 
-C<$alunos> contÃ©m o conjunto universo dos registros de alunos, ou seja, todos
+C<$alunos> contém o conjunto universo dos registros de alunos, ou seja, todos
 os alunos.
 
     my $alunos_turma1 = $alunos->search(
@@ -1130,11 +1133,11 @@ os alunos.
         { join => [qw(turma_alunos)] }
     );
 
-C<$alunos_turma1> Ã© um subconjunto de C<$alunos>, que contÃ©m registros dos
-alunos da turma 1. Como a informaÃ§Ã£o de relacionamento entre turmas estÃ¡ na
-tabela-relacionamento C<turma_aluno>, Ã© necessÃ¡ria a declaraÃ§Ã£o de um join com
+C<$alunos_turma1> é um subconjunto de C<$alunos>, que contém registros dos
+alunos da turma 1. Como a informação de relacionamento entre turmas está na
+tabela-relacionamento C<turma_aluno>, é necessária a declaração de um join com
 o relacionamento equivalente.
-Para maior conveniÃªncia de abstraÃ§Ã£o, podem ser criados mÃ©todos no Result Set equivalente:
+Para maior conveniência de abstração, podem ser criados métodos no Result Set equivalente:
 
     diff --git a/source/lib/MySchema/ResultSet/Aluno.pm b/source/lib/MySchema/ResultSet/Aluno.pm
     new file mode 100644
@@ -1166,12 +1169,12 @@ Para maior conveniÃªncia de abstraÃ§Ã£o, podem ser criados mÃ©todos no R
     +
     +1;
 
-O mÃ©todo C<search> Ã© um construtor de objetos Result Set, cada invocaÃ§Ã£o desse
-mÃ©todo cria um clone do conjunto original e acrescenta os parÃ¢metros passados.
-O primeiro argumento, Ã© uma referÃªcia para um hash especificando o critÃ©rio de
-seleÃ§Ã£o de registros, caso anterior, deseja-se utilizar um critÃ©rio sobre uma
+O método C<search> é um construtor de objetos Result Set, cada invocação desse
+método cria um clone do conjunto original e acrescenta os parâmetros passados.
+O primeiro argumento, é uma referêcia para um hash especificando o critério de
+seleção de registros, caso anterior, deseja-se utilizar um critério sobre uma
 tabela relacionada, nesse caso, se utiliza o nome do relacionamento, a exemplo
-de C<aluno_materias.materia_id>. O segundo hash, sÃ£o atributos passados para o
+de C<aluno_materias.materia_id>. O segundo hash, são atributos passados para o
 Result Set, nesse caso, indicando o join desejado.
 
     diff --git a/source/script/test.pl b/source/script/test.pl
@@ -1196,11 +1199,11 @@ Result Set, nesse caso, indicando o join desejado.
     +   print "\t", ref $aluno, ' => ', $aluno->nome, "\n";
      }
 
-Mais detalhes sobre o mÃ©todo C<search> podem ser encontrados na documentaÃ§Ã£o da
+Mais detalhes sobre o método C<search> podem ser encontrados na documentação da
 classe C<DBIx::Class::ResultSet>.
 
-Eventualmente surgirÃ£o formas desejÃ¡veis de se combinar os resultados
-anteriores, por exemplo, enumerar alunos cursando uma determinada matÃ©ria em
+Eventualmente surgirão formas desejáveis de se combinar os resultados
+anteriores, por exemplo, enumerar alunos cursando uma determinada matéria em
 uma turma.
 
     SELECT * FROM aluno me
@@ -1210,8 +1213,8 @@ uma turma.
      WHERE ta.turma_id = ?
        AND ma.materia_id = ?;
 
-Como cada invocaÃ§Ã£o de C<search> retorna um novo subconjunto, pode-se encadear
-invocaÃ§Ãµes para combinar os critÃ©rios das chamadas.
+Como cada invocação de C<search> retorna um novo subconjunto, pode-se encadear
+invocações para combinar os critérios das chamadas.
 
     diff --git a/source/script/test.pl b/source/script/test.pl
     index 3e21ffa..68df674 100644
@@ -1227,13 +1230,13 @@ invocaÃ§Ãµes para combinar os critÃ©rios das chamadas.
         print "\t", ref $aluno, ' => ', $aluno->nome, "\n";
      }
 
-NÃ£o Ã© necessÃ¡ria a escrita de SQL ou consultas adicionais, apenas foram
-reaproveitados mÃ©todos que jÃ¡ existiam antes e que puderam ser combinados pela
+Não é necessária a escrita de SQL ou consultas adicionais, apenas foram
+reaproveitados métodos que já existiam antes e que puderam ser combinados pela
 arquitetura de consultas do C<DBIx::Class>. Pelo fato das consultas serem
-preguiÃ§osas, a consulta nÃ£o ocorre durante a invocaÃ§Ã£o de C<turma> ou
-C<materia>, apenas quando se invoca C<all>, e nesse ponto, os critÃ©rios da
-consulta foram populados pelos mÃ©todos anteriores.
-O fato de que cada invocaÃ§Ã£o de C<search> constrÃ³i um novo conjunto permite o
+preguiçosas, a consulta não ocorre durante a invocação de C<turma> ou
+C<materia>, apenas quando se invoca C<all>, e nesse ponto, os critérios da
+consulta foram populados pelos métodos anteriores.
+O fato de que cada invocação de C<search> constrói um novo conjunto permite o
 reaproveitamento dos objetos result set. Por exemplo:
 
     my $alunos_turma1 = $schema->resultset('Alunos')->turma(1);
@@ -1244,23 +1247,23 @@ reaproveitamento dos objetos result set. Por exemplo:
     my $alunos_turma1_materia1 = $alunos_turma1->materia(1);
     my $alunos_turma1_materia1_aprovados->materia(1);
 
-=head2 ConclusÃ£o
+=head2 Conclusão
 
-Observando a forma como as aplicaÃ§Ãµes interagem com bases de dados, fica Ã³bvio
-que o principal problema de se escrever uma camada intermediÃ¡ria Ã© alcanÃ§ar um
-contrato flexÃ­vel, tanto com a aplicaÃ§Ã£o quanto com a base de dados. O
-C<DBIx::Class> tenta se destacar dos outros ORMs atravÃ©s do fornecimento de
-uma arquitetura formal porÃ©m flexÃ­vel, e que tem opÃ§Ãµes de extensibilidade
-convenientes. O C<DBIx::Class> se propÃµe muito mais a ser um framework de
-construÃ§Ã£o de camadas de acesso a dados do que um ORM propriamente dito.
-Hoje abordamos alguns princÃ­pios fundamentais sobre camadas de acesso a dados
-baseadas em C<DBIx::Class>, assim como algumas funcionalidades bÃ¡sicas de
-arquitetura e construÃ§Ã£o de consultas. AmanhÃ£ serÃ£o abordadas formas avanÃ§adas
-de consulta e escrita, alÃ©m de tÃ©cnicas de desenvolvimento e depuraÃ§Ã£o.
+Observando a forma como as aplicações interagem com bases de dados, fica óbvio
+que o principal problema de se escrever uma camada intermediária é alcançar um
+contrato flexível, tanto com a aplicação quanto com a base de dados. O
+C<DBIx::Class> tenta se destacar dos outros ORMs através do fornecimento de
+uma arquitetura formal porém flexível, e que tem opções de extensibilidade
+convenientes. O C<DBIx::Class> se propõe muito mais a ser um framework de
+construção de camadas de acesso a dados do que um ORM propriamente dito.
+Hoje abordamos alguns princípios fundamentais sobre camadas de acesso a dados
+baseadas em C<DBIx::Class>, assim como algumas funcionalidades básicas de
+arquitetura e construção de consultas. Amanhã serão abordadas formas avançadas
+de consulta e escrita, além de técnicas de desenvolvimento e depuração.
 
 =head2 AUTOR
 
-Eden Cardim C<< <edencardim@gmail.com> >> Ã© consultor de perl independente hÃ¡ 4 anos, trabalha com perl desde 1998 e Ã© contribuidor dos projetos C<DBIx::Class>, C<Catalyst> e C<Reaction>, alÃ©m de contribuidor do CPAN. Atualmente, presta serviÃ§o para a ShadowCat System Ltd.
+Eden Cardim C<< <edencardim@gmail.com> >> é consultor de perl independente há 4 anos, trabalha com perl desde 1998 e é contribuidor dos projetos C<DBIx::Class>, C<Catalyst> e C<Reaction>, além de contribuidor do CPAN. Atualmente, presta serviço para a ShadowCat System Ltd.
 
 =cut
 

@@ -2,7 +2,7 @@
 
 r2 - 19 Aug 2006 - JoenioCosta
 
-=head1 Adicionano repositÃ³rio de modulos em seu PPM
+=head1 Adicionano repositório de modulos em seu PPM
 
 NE<atilde>o achou certo mE<oacute>dulo em seu repositE<oacute>rio?
 Consulte outros...

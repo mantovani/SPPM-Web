@@ -2,7 +2,7 @@
 
 r2 - 19 Aug 2006 - JoenioCosta
 
-=head1 ProgramaE<ccedil>E<atilde>o WEB com Perl
+=head1 Programação WEB com Perl
 
 I<>
 

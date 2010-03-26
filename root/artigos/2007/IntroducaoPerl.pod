@@ -2,7 +2,7 @@
 
 r6 - 02 Mar 2007 - AlceuJunior
 
-=head1 Uma introduÃ§Ã£o ao Perl
+=head1 Uma introdução ao Perl
 
 I<>
 

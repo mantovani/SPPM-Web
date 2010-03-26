@@ -2,7 +2,7 @@
 
 r7 - 17 Nov 2006 
 
-=head1 VariÃ¡veis Especiais em Perl
+=head1 Variáveis Especiais em Perl
 
 I<>
 

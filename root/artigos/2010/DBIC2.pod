@@ -1,15 +1,19 @@
-=head1 BANCOS DE DADOS RELACIONAIS, ORIENTAÃÃO A OBJETOS e DBIX::CLASS, PARTE 2
 
-No artigo de ontem, falamos sobre conceitos bÃ¡sicos de camadas de acesso a
-dados e os problemas inerentes. Abordamos os conceitos bÃ¡sicos de
-operaÃ§Ã£o do C<DBIx::Class> e criamos um esquema de exemplo para experimentar
-algumas consultas. Hoje iremos abordar inserÃ§Ãµes e atualizaÃ§Ãµes, alÃ©m de
-introduzir algumas tÃ©cnicas avanÃ§adas como depuraÃ§Ã£o e otimizaÃ§Ã£o.
+=pod
+
+=head1 Bancos de dados relacionais, orientação a objetos e DBIx::Class, parte
+2
+
+No artigo de ontem, falamos sobre conceitos básicos de camadas de acesso a
+dados e os problemas inerentes. Abordamos os conceitos básicos de
+operação do C<DBIx::Class> e criamos um esquema de exemplo para experimentar
+algumas consultas. Hoje iremos abordar inserções e atualizações, além de
+introduzir algumas técnicas avançadas como depuração e otimização.
 
 =head2 Objetos Row - Registros
 
-A forma bÃ¡sica de se criar um registro Ã© instanciar um objeto da classe
-equivalente Ã  tabela que serÃ¡ alterada:
+A forma básica de se criar um registro é instanciar um objeto da classe
+equivalente à tabela que será alterada:
 
     diff --git a/source/script/test2.pl b/source/script/test2.pl
     new file mode 100644
@@ -23,11 +27,11 @@ equivalente Ã  tabela que serÃ¡ alterada:
     +
     +my $schema = MySchema->connect('dbi:Pg:dbname=equinocio_students', 'edenc', '');
     +my $alunos = $schema->resultset('Aluno');
-    +my $aluno = $alunos->new({ nome => 'JosÃ©' });
+    +my $aluno = $alunos->new({ nome => 'José' });
 
-O mÃ©todo C<new> deve ser invocado sobre o result set onde se quer inserir o
+O método C<new> deve ser invocado sobre o result set onde se quer inserir o
 registro, nesse caso, no conjunto de todos os alunos. O objeto criado ainda
-nÃ£o estÃ¡ persistido na base de dados.
+não está persistido na base de dados.
 
     diff --git a/source/script/test2.pl b/source/script/test2.pl
     index 098abdd..8b4c989 100644
@@ -36,12 +40,12 @@ nÃ£o estÃ¡ persistido na base de dados.
     @@ -5,3 +5,4 @@ use MySchema;
      my $schema = MySchema->connect('dbi:Pg:dbname=equinocio_students', 'edenc', '');
      my $alunos = $schema->resultset('Aluno');
-     my $aluno = $alunos->new({ nome => 'JosÃ©' });
+     my $aluno = $alunos->new({ nome => 'José' });
     +$aluno->insert;
 
-O mÃ©todo C<insert> persiste um objeto-registro na base de dados. Se o objeto
-jÃ¡ estiver persistido, esse mÃ©todo Ã© um no-op.
-Para associar o novo aluno Ã  matÃ©rias:
+O método C<insert> persiste um objeto-registro na base de dados. Se o objeto
+já estiver persistido, esse método é um no-op.
+Para associar o novo aluno à matérias:
 
     diff --git a/source/script/test2.pl b/source/script/test2.pl
     index 50636f3..57ec631 100644
@@ -50,76 +54,76 @@ Para associar o novo aluno Ã  matÃ©rias:
     @@ -5,4 +5,11 @@ use MySchema;
      my $schema = MySchema->connect('dbi:Pg:dbname=equinocio_students', 'edenc', '');
      my $alunos = $schema->resultset('Aluno');
-     my $aluno = $alunos->find({ nome => 'JosÃ©' });
+     my $aluno = $alunos->find({ nome => 'José' });
     -$aluno->insert;
     +my $jose_materias = $aluno->aluno_materias;
-    +print 'MatÃ©rias estudadas por ' . $aluno->nome . ': '. $aluno->materias->count, "\n";
+    +print 'Matérias estudadas por ' . $aluno->nome . ': '. $aluno->materias->count, "\n";
     +
     +$jose_materias->create({ materia => { nome => 'Geografia'} });
-    +$jose_materias->create({ materia => { nome => 'FÃ­sica'} });
+    +$jose_materias->create({ materia => { nome => 'Física'} });
     +
-    +print 'MatÃ©rias estudadas por ' . $aluno->nome . ":\n";
+    +print 'Matérias estudadas por ' . $aluno->nome . ":\n";
     +print $_->nome, "\n" for $aluno->materias->all;
 
     perl -Ilib script/test2.pl
 
-    MatÃ©rias estudadas por JosÃ©: 0
-    MatÃ©rias estudadas por JosÃ©:
-    FÃ­sica
+    Matérias estudadas por José: 0
+    Matérias estudadas por José:
+    Física
     Geografia
 
-Por trÃ¡s das cenas, aconteceram muito mais coisas do que Ã© aparentado no
-cÃ³digo. O mÃ©todo C<create> Ã© um atalho para C<$resultset-E<gt>new-E<gt>insert>.
-A matÃ©ria "Geografia" ainda nÃ£o existe, entÃ£o o C<DBIx::Class> automaticamente
-criou um novo registro na tabela C<materia>, obteve as colunas necessÃ¡rias
-atravÃ©s dos meta-dados informados no relacionamento C<materia> da classe
-C<AlunoMateria> e criou o registro nessa tabela com a associaÃ§Ã£o correta ao
-novo registro da tabela C<materia>. No caso de "FÃ­sica", o registro jÃ¡ existia,
-entÃ£o ocorreu o mesmo processo, porÃ©m nÃ£o foi criado um registro novo. AlÃ©m
-disso, como C<$jose_materias> Ã© o sub-conjunto das matrÃ­culas em matÃ©rias do
-aluno "JoÃ£o", o C<DBIx::Class> tambÃ©m inseriu a associaÃ§Ã£o correta com o
-registro desse aluno. Vale a observaÃ§Ã£o que o argumento C<materia> Ã© o nome
-do relacionamento, e nÃ£o o nome de uma coluna, por isso o C<DBIx::Class>
-conseguiu induzir os dados corretos para fazer a associaÃ§Ã£o entre os registros.
+Por trás das cenas, aconteceram muito mais coisas do que é aparentado no
+código. O método C<create> é um atalho para C<$resultset-E<gt>new-E<gt>insert>.
+A matéria "Geografia" ainda não existe, então o C<DBIx::Class> automaticamente
+criou um novo registro na tabela C<materia>, obteve as colunas necessárias
+através dos meta-dados informados no relacionamento C<materia> da classe
+C<AlunoMateria> e criou o registro nessa tabela com a associação correta ao
+novo registro da tabela C<materia>. No caso de "Física", o registro já existia,
+então ocorreu o mesmo processo, porém não foi criado um registro novo. Além
+disso, como C<$jose_materias> é o sub-conjunto das matrículas em matérias do
+aluno "João", o C<DBIx::Class> também inseriu a associação correta com o
+registro desse aluno. Vale a observação que o argumento C<materia> é o nome
+do relacionamento, e não o nome de uma coluna, por isso o C<DBIx::Class>
+conseguiu induzir os dados corretos para fazer a associação entre os registros.
 
 Objetos-registro e objetos-conjunto operam harmoniosamente, utilizando os
-meta-dados informados pelos relacionamentos. Por exemplo, poderÃ­amos utilizar
-um objeto existente para fazer a associaÃ§Ã£o com C<materia>.
+meta-dados informados pelos relacionamentos. Por exemplo, poderíamos utilizar
+um objeto existente para fazer a associação com C<materia>.
 
     diff --git a/source/script/test2.pl b/source/script/test2.pl
     index 57ec631..454f82a 100644
     --- a/source/script/test2.pl
     +++ b/source/script/test2.pl
-    @@ -8,8 +8,8 @@ my $aluno = $alunos->find({ nome => 'JosÃ©' });
+    @@ -8,8 +8,8 @@ my $aluno = $alunos->find({ nome => 'José' });
      my $jose_materias = $aluno->aluno_materias;
-     print 'MatÃ©rias estudadas por ' . $aluno->nome . ': '. $aluno->materias->count, "\n";
+     print 'Matérias estudadas por ' . $aluno->nome . ': '. $aluno->materias->count, "\n";
 
     -$jose_materias->create({ materia => { nome => 'Geografia'} });
-    -$jose_materias->create({ materia => { nome => 'FÃ­sica'} });
+    -$jose_materias->create({ materia => { nome => 'Física'} });
     +my $materia = $schema->resultset('Materia')->find({ nome => 'Biologia' });
     +$jose_materias->create({ materia => $materia });
 
-     print 'MatÃ©rias estudadas por ' . $aluno->nome . ":\n";
+     print 'Matérias estudadas por ' . $aluno->nome . ":\n";
      print $_->nome, "\n" for $aluno->materias->all;
 
-Para ter uma idÃ©ia melhor do que acontece por trÃ¡s das cenas, pode-se ativar
-a variÃ¡vel de ambiente C<DBIC_TRACE>, que irÃ¡ exibir o SQL gerado em C<STDERR>:
+Para ter uma idéia melhor do que acontece por trás das cenas, pode-se ativar
+a variável de ambiente C<DBIC_TRACE>, que irá exibir o SQL gerado em C<STDERR>:
 
     DBIC_TRACE=1 perl -Ilib script/test2.pl
 
-    SELECT me.id, me.nome FROM aluno me WHERE ( me.nome = ? ): 'JosÃ©'
+    SELECT me.id, me.nome FROM aluno me WHERE ( me.nome = ? ): 'José'
     SELECT COUNT( * ) FROM aluno_materia me JOIN materia materia ON materia.id = me.materia_id WHERE ( me.aluno_id = ? ): '4'
-    MatÃ©rias estudadas por JosÃ©: 2
+    Matérias estudadas por José: 2
     SELECT me.id, me.nome FROM materia me WHERE ( me.nome = ? ): 'Biologia'
     INSERT INTO aluno_materia ( aluno_id, materia_id) VALUES ( ?, ? ): '4', '1'
-    MatÃ©rias estudadas por JosÃ©:
+    Matérias estudadas por José:
     SELECT materia.id, materia.nome FROM aluno_materia me JOIN materia materia ON materia.id = me.materia_id WHERE ( me.aluno_id = ? ): '4'
     Biologia
-    FÃ­sica
+    Física
     Geografia
 
-Uma outra forma de se criar registros em tabelas-relacionamento Ã© utilizar um
-construtor especial que Ã© criado pelo C<DBIx::Class> quando se declara um
+Uma outra forma de se criar registros em tabelas-relacionamento é utilizar um
+construtor especial que é criado pelo C<DBIx::Class> quando se declara um
 relacionamento C<many_to_many>, como exemplo, o caso de acrescentar um aluno a
 uma turma existente:
 
@@ -134,23 +138,23 @@ uma turma existente:
     +use MySchema;
     +
     +my $schema = MySchema->connect('dbi:Pg:dbname=equinocio_students', 'edenc', '');
-    +my $aluno = $schema->resultset('Aluno')->find({ nome => 'JosÃ©' });
-    +my $turma = $schema->resultset('Turma')->find({ turma => '7Âª SÃ©rie'});
+    +my $aluno = $schema->resultset('Aluno')->find({ nome => 'José' });
+    +my $turma = $schema->resultset('Turma')->find({ turma => '7ª Série'});
     +$turma->add_to_alunos($aluno);
 
     DBIC_TRACE=1 perl -Ilib script/test3.pl
 
-    SELECT me.id, me.nome FROM aluno me WHERE ( me.nome = ? ): 'JosÃ©'
-    SELECT me.id, me.turma FROM turma me WHERE ( me.turma = ? ): '7Âª SÃ©rie'
+    SELECT me.id, me.nome FROM aluno me WHERE ( me.nome = ? ): 'José'
+    SELECT me.id, me.turma FROM turma me WHERE ( me.turma = ? ): '7ª Série'
     INSERT INTO turma_aluno ( aluno_id, turma_id) VALUES ( ?, ? ): '4', '1'
 
-Pode-se usar o caso inverso tambÃ©m:
+Pode-se usar o caso inverso também:
 
     $aluno->add_to_turmas($turma);
 
-Quando a tabela-relacionamento tem atributos de relacionamento, como Ã© o caso
-de C<aluno_materia>. O mÃ©todo C<add_to_$rel> aceita um hashref como argumento
-adicional, contendo os valores dos atributos em questÃ£o:
+Quando a tabela-relacionamento tem atributos de relacionamento, como é o caso
+de C<aluno_materia>. O método C<add_to_$rel> aceita um hashref como argumento
+adicional, contendo os valores dos atributos em questão:
 
     diff --git a/source/script/test4.pl b/source/script/test4.pl
     new file mode 100644
@@ -164,17 +168,17 @@ adicional, contendo os valores dos atributos em questÃ£o:
     +
     +my $schema = MySchema->connect('dbi:Pg:dbname=equinocio_students', 'edenc', '');
     +my $aluno = $schema->resultset('Aluno')->find({ nome => 'Maria' });
-    +my $materia = $schema->resultset('Materia')->find({ nome => 'FÃ­sica'});
+    +my $materia = $schema->resultset('Materia')->find({ nome => 'Física'});
     +$aluno->add_to_materias($materia, { nota => 8 });
 
 Uma vez que os conceito de objeto-conjunto (resultset), objeto-registro (row) e
-os relacionamentos eles sÃ£o compreendidos, a interaÃ§Ã£o entre esses objetos
-geralmente Ã© bastante intuitiva e o C<DBIx::Class> vai fazer "a coisa certa" na
-maior parte das vezes. As alternativas de interaÃ§Ã£o sÃ£o bastante vastas,
-experimentar Ã© a melhor forma de aprender, nesse caso. A documentaÃ§Ã£o tambÃ©m
+os relacionamentos eles são compreendidos, a interação entre esses objetos
+geralmente é bastante intuitiva e o C<DBIx::Class> vai fazer "a coisa certa" na
+maior parte das vezes. As alternativas de interação são bastante vastas,
+experimentar é a melhor forma de aprender, nesse caso. A documentação também
 apresenta exemplos e casos mais comuns.
 
-Para atualizar um registro, pode-se utilizar os mÃ©todos de acesso das colunas
+Para atualizar um registro, pode-se utilizar os métodos de acesso das colunas
 nos objetos-registro:
 
     diff --git a/source/script/test5.pl b/source/script/test5.pl
@@ -190,7 +194,7 @@ nos objetos-registro:
     +my $schema = MySchema->connect('dbi:Pg:dbname=equinocio_students', 'edenc', '');
     +my $aluno = $schema->resultset('Aluno')->find({ nome => 'Maria' });
     +my $aluno_materia = $aluno->aluno_materias
-    +    ->search({'materia.nome' => 'FÃ­sica'}, { join => ['materia']})
+    +    ->search({'materia.nome' => 'Física'}, { join => ['materia']})
     +    ->first;
     +$aluno_materia->nota(7);
     +$aluno_materia->update;
@@ -200,23 +204,23 @@ nos objetos-registro:
     SELECT me.id, me.nome FROM aluno me WHERE ( me.nome = ? ): 'Maria'
     SELECT me.aluno_id, me.materia_id, me.nota FROM aluno_materia me JOIN
     materia materia ON materia.id = me.materia_id WHERE ( (
-    materia.nome = ? AND me.aluno_id = ? ) ): 'FÃ­sica', '2'
+    materia.nome = ? AND me.aluno_id = ? ) ): 'Física', '2'
     UPDATE aluno_materia SET nota = ? WHERE ( ( aluno_id = ? AND materia_id = ?
     ) ): '7', '2', '3'
 
-Alternativamente, pode-se atualizar o registro com uma Ãºnica chamada:
+Alternativamente, pode-se atualizar o registro com uma única chamada:
 
     $aluno_materia->update({ nota => 7 });
 
-AtualizaÃ§Ãµes em massa sÃ£o possÃ­veis atravÃ©s de objetos resultset:
+Atualizações em massa são possíveis através de objetos resultset:
 
     my $aluno_materias = $schema->resultset('AlunoMateria');
     $aluno_materias->search({ nota => undef })->update({ nota => 5 });
 
-=head2 DepuraÃ§Ã£o e OtimizaÃ§Ã£o
+=head2 Depuração e Otimização
 
 Nem sempre o C<DBIx::Class> vai acertar a melhor forma de se fazer a consulta,
-as vezes Ã© necessÃ¡rio dar algumas "dicas" de otimizaÃ§Ã£o. Um dos exemplos de
+as vezes é necessário dar algumas "dicas" de otimização. Um dos exemplos de
 ontem apresentou a seguinte consulta:
 
     use warnings;
@@ -251,15 +255,15 @@ Rodando novamente com C<DBIC_TRACE> ativado:
     SELECT materia.id, materia.nome FROM aluno_materia me JOIN materia materia
     ON materia.id = me.materia_id WHERE ( me.aluno_id = ? ): '2'
 
-Os DBA's de plantÃ£o perceberÃ£o imediatamente o que estÃ¡ acontecendo e que esta
-nÃ£o Ã© a forma Ã³tima de realizar a consulta. Primeiro, obteve-se a lista de
-turmas, em seguida uma consulta com as tabela-relacionamentos unidas Ã s tabelas
-C<aluno> e C<materia>, de onde vÃªm os dados para popular os respectivos objetos.
+Os DBA's de plantão perceberão imediatamente o que está acontecendo e que esta
+não é a forma ótima de realizar a consulta. Primeiro, obteve-se a lista de
+turmas, em seguida uma consulta com as tabela-relacionamentos unidas às tabelas
+C<aluno> e C<materia>, de onde vêm os dados para popular os respectivos objetos.
 Realizar uma consulta para cada registro na tabela C<turma> e outra para cada
-registro da tabela C<aluno> pode nÃ£o ter muito impacto nesse exemplo, porÃ©m se,
+registro da tabela C<aluno> pode não ter muito impacto nesse exemplo, porém se,
 por exemplo, a tabela C<aluno> crescer para, digamos, 500 registros (escolas
-com 500 alunos sÃ£o bastante comuns) o overhead de realizar 500 consultas serÃ¡
-perceptÃ­vel. Para esse caso, utiliza-se o atributo C<prefetch>:
+com 500 alunos são bastante comuns) o overhead de realizar 500 consultas será
+perceptível. Para esse caso, utiliza-se o atributo C<prefetch>:
 
     diff --git a/source/script/test.pl b/source/script/test.pl
     index 8977ab7..697ecc9 100644
@@ -288,25 +292,25 @@ perceptÃ­vel. Para esse caso, utiliza-se o atributo C<prefetch>:
     aluno_materias ON aluno_materias.aluno_id = aluno.id LEFT JOIN materia
     materia ON materia.id = aluno_materias.materia_id ORDER BY
     turma_alunos.turma_id, aluno_materias.aluno_id:
-    MySchema::Result::Turma => 7Âª SÃ©rie
-            MySchema::Result::Aluno => JoÃ£o
+    MySchema::Result::Turma => 7ª Série
+            MySchema::Result::Aluno => João
                     MySchema::Result::Materia => Biologia
-                    MySchema::Result::Materia => MatemÃ¡tica
-                    MySchema::Result::Materia => FÃ­sica
-            MySchema::Result::Aluno => JosÃ©
+                    MySchema::Result::Materia => Matemática
+                    MySchema::Result::Materia => Física
+            MySchema::Result::Aluno => José
                     MySchema::Result::Materia => Geografia
-                    MySchema::Result::Materia => FÃ­sica
+                    MySchema::Result::Materia => Física
                     MySchema::Result::Materia => Biologia
-    MySchema::Result::Turma => 6Âª SÃ©rie
+    MySchema::Result::Turma => 6ª Série
             MySchema::Result::Aluno => Maria
                     MySchema::Result::Materia => Biologia
-                    MySchema::Result::Materia => FÃ­sica
+                    MySchema::Result::Materia => Física
 
-Com uma Ãºnica consulta obtemos o mesmo resultado anterior, independente da
-quantidade de registros envolvidos. Uma observaÃ§Ã£o importante Ã© que essa
-otimizaÃ§Ã£o foi introduzida modificando apenas o conjunto-origem dos dados,
-o restante do acesso Ã  API permaneceu idÃªntico. Isso sÃ³ foi possÃ­vel devido a
-outra coisa que aconteceu por trÃ¡s das cenas, o C<DBIx::Class> utilizou os
+Com uma única consulta obtemos o mesmo resultado anterior, independente da
+quantidade de registros envolvidos. Uma observação importante é que essa
+otimização foi introduzida modificando apenas o conjunto-origem dos dados,
+o restante do acesso à API permaneceu idêntico. Isso só foi possível devido a
+outra coisa que aconteceu por trás das cenas, o C<DBIx::Class> utilizou os
 meta-dados das tabelas e relacionamentos para realizar o colapso dos dados
 automaticamente.
 
@@ -328,18 +332,18 @@ Para ordenar os registros, utiliza-se o atributo C<order_by>:
 =head2 Views Virtuais e SQL Manual
 
 Apesar de a arquitetura de consultas do C<DBIx::Class> ser bastante expressiva
-e flexÃ­vel, sempre existem os casos onde a melhor resoluÃ§Ã£o Ã© a escrita de SQL
-puro. Inclusive o sistema inteiro pode ser utilizado como um dicionÃ¡rio de
+e flexível, sempre existem os casos onde a melhor resolução é a escrita de SQL
+puro. Inclusive o sistema inteiro pode ser utilizado como um dicionário de
 consultas, dispensando o gerador de SQL interno mas preservando as
-funcionalidades de colapso, inserÃ§Ã£o, atualizaÃ§Ã£o e encadeamento.
-Uma view virtual funciona da mesma forma que uma classe-tabela porÃ©m a sua
-fonte de dados Ã© proveniente de uma string de SQL. O restante das definiÃ§Ãµes,
-como declaraÃ§Ãµes de colunas, tuplas de unicidade e relacionamentos sÃ£o
-idÃªnticas Ã s tabelas comuns.
-Por exemplo, seria desejÃ¡vel que a avaliaÃ§Ã£o de desempenho dos alunos fosse
-consultada atravÃ©s de uma view virtual, jÃ¡ que pode envolver operaÃ§Ãµes
-complexas como cÃ¡lculo de pesos e medidas estatÃ­sticas como desvio-padrÃ£o.
-Uma forma simples de calcular a avaliaÃ§Ã£o, em SQL:
+funcionalidades de colapso, inserção, atualização e encadeamento.
+Uma view virtual funciona da mesma forma que uma classe-tabela porém a sua
+fonte de dados é proveniente de uma string de SQL. O restante das definições,
+como declarações de colunas, tuplas de unicidade e relacionamentos são
+idênticas às tabelas comuns.
+Por exemplo, seria desejável que a avaliação de desempenho dos alunos fosse
+consultada através de uma view virtual, já que pode envolver operações
+complexas como cálculo de pesos e medidas estatísticas como desvio-padrão.
+Uma forma simples de calcular a avaliação, em SQL:
 
     SELECT aluno_id,
            avg(nota) AS resultado_final,
@@ -381,7 +385,7 @@ E a classe virtual view equivalente:
     +
     +1;
 
-AcrÃ©scimo do relacionamento na tabela aluno:
+Acréscimo do relacionamento na tabela aluno:
 
     diff --git a/source/lib/MySchema/Result/Aluno.pm b/source/lib/MySchema/Result/Aluno.pm
     index 4353455..2ac9b85 100644
@@ -400,7 +404,7 @@ AcrÃ©scimo do relacionamento na tabela aluno:
      1;
 
 
-As alteraÃ§Ãµes no script de teste para incluir a avaliaÃ§Ã£o:
+As alterações no script de teste para incluir a avaliação:
 
     diff --git a/source/script/test.pl b/source/script/test.pl
     index 579ffa2..c9b6939 100644
@@ -425,59 +429,59 @@ As alteraÃ§Ãµes no script de teste para incluir a avaliaÃ§Ã£o:
              }
 
 
-    MySchema::Result::Turma => 6Âª SÃ©rie
+    MySchema::Result::Turma => 6ª Série
             MySchema::Result::Aluno => Maria
                     Resultado final: 6.0000000000000000
                     Status: aprovado
                     MySchema::Result::Materia => Biologia
-                    MySchema::Result::Materia => FÃ­sica
-    MySchema::Result::Turma => 7Âª SÃ©rie
-            MySchema::Result::Aluno => JoÃ£o
+                    MySchema::Result::Materia => Física
+    MySchema::Result::Turma => 7ª Série
+            MySchema::Result::Aluno => João
                     Resultado final: 5.0000000000000000
                     Status: reprovado
                     MySchema::Result::Materia => Biologia
-                    MySchema::Result::Materia => FÃ­sica
-                    MySchema::Result::Materia => MatemÃ¡tica
-            MySchema::Result::Aluno => JosÃ©
+                    MySchema::Result::Materia => Física
+                    MySchema::Result::Materia => Matemática
+            MySchema::Result::Aluno => José
                     Resultado final: 5.0000000000000000
                     Status: reprovado
                     MySchema::Result::Materia => Biologia
-                    MySchema::Result::Materia => FÃ­sica
+                    MySchema::Result::Materia => Física
                     MySchema::Result::Materia => Geografia
 
-=head2 CONCLUSÃO
+=head2 CONCLUSÃO
 
-A filosofia bÃ¡sica do C<DBIx::Class> Ã© a mesma do perl: "coisas simples sÃ£o
-fÃ¡ceis e coisas complicadas possÃ­veis". Existe uma variedade enorme de
-ferramentas disponÃ­veis para realizar as tarefas bÃ¡sicas do cotidiano, porÃ©m,
-Ã© bastante simples contornar o mecanismo bÃ¡sico e inserir customizaÃ§Ãµes. Os
+A filosofia básica do C<DBIx::Class> é a mesma do perl: "coisas simples são
+fáceis e coisas complicadas possíveis". Existe uma variedade enorme de
+ferramentas disponíveis para realizar as tarefas básicas do cotidiano, porém,
+é bastante simples contornar o mecanismo básico e inserir customizações. Os
 conceitos apresentados nesse artigo e seu sucessor apresentaram alguns recursos
-na tentativa de "atiÃ§ar" a curiosidade dos leitores para investigar a gama
+na tentativa de "atiçar" a curiosidade dos leitores para investigar a gama
 completa de recursos de desenvolvimento.
-A partir daqui, Ã© recomendavel a leitura minuciosa dos manuais do
+A partir daqui, é recomendavel a leitura minuciosa dos manuais do
 C<DBIx::Class>. A lista de emails (dbix-class@lists.scsys.co.uk) e o canal de
-suporte do IRC (#dbix-class @ irc.perl.org ) sÃ£o bastante movimentados e
-fornecem suporte em inglÃªs. Alguns contribuidores do projeto C<DBIx::Class>,
+suporte do IRC (#dbix-class @ irc.perl.org ) são bastante movimentados e
+fornecem suporte em inglês. Alguns contribuidores do projeto C<DBIx::Class>,
 inclusive o autor desse artigo frequentam a lista (saopaulo-pm@mail.pm.org)
-e o canal de IRC do SÃ£o Paulo-PM (#sao-paulo.pm @ irc.prl.org), onde costumam
-disponibilizar suporte em portuguÃªs.
+e o canal de IRC do São Paulo-PM (#sao-paulo.pm @ irc.prl.org), onde costumam
+disponibilizar suporte em português.
 
 Happy Hacking!
 
 =head2 AGRADECIMENTO
 
-Thiago Rondon, que organizou o equinÃ³cio e conseguiu me convencer a passar
-horas escrevendo os artigos de ontem e hoje, alÃ©m de contribuir com idÃ©ias e
-revisÃµes.
-Nuba Princigalli, pela revisÃ£o dos artigos e bounce de idÃ©ias em geral.
-SÃ£o Paulo Perl Mongers e Rio Perl Mongers pelos encontros sociais, eventos e
-fontes de procrastinaÃ§Ã£o.
+Thiago Rondon, que organizou o equinócio e conseguiu me convencer a passar
+horas escrevendo os artigos de ontem e hoje, além de contribuir com idéias e
+revisões.
+Nuba Princigalli, pela revisão dos artigos e bounce de idéias em geral.
+São Paulo Perl Mongers e Rio Perl Mongers pelos encontros sociais, eventos e
+fontes de procrastinação.
 
 =head2 AUTOR
 
-Eden Cardim <edencardim@gmail.com> Ã© consultor de perl independente hÃ¡ 4 anos,
-trabalha com perl desde 1998 e Ã© contribuidor dos projetos C<DBIx::Class>,
-C<Catalyst> e C<Reaction>, alÃ©m de contribuidor do CPAN. Atualmente, presta
-serviÃ§o para a ShadowCat Systems Ltd (shadowcat.co.uk).
+Eden Cardim <edencardim@gmail.com> é consultor de perl independente há 4 anos,
+trabalha com perl desde 1998 e é contribuidor dos projetos C<DBIx::Class>,
+C<Catalyst> e C<Reaction>, além de contribuidor do CPAN. Atualmente, presta
+serviço para a ShadowCat Systems Ltd (shadowcat.co.uk).
 
 =cut

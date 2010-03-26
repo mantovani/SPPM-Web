@@ -5,7 +5,7 @@
 
 r10 - 17 Mar 2009 - NelsonFerraz
 
-=head1 MÃ³dulos Recomendados do CPAN
+=head1 Módulos Recomendados do CPAN
 
 I<>
 

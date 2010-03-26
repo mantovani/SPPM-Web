@@ -2,7 +2,7 @@
 
 r4 - 15 Oct 2006 - DavidDias
 
-=head1 ExpressÃµes Regulares - IntroduÃ§Ã£o, PrÃ¡ticas e TÃ©cnicas AvanÃ§adas
+=head1 Expressões Regulares - Introdução, Práticas e Técnicas Avançadas
 
 ----
 

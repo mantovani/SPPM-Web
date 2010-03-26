@@ -4,14 +4,14 @@
 <li><a href="/artigo/2010/CatalystLocalLib">Catalyst com local::lib por Blabos de Blebe.</a></li>
 <li><a href="/artigo/2010/CatalystScriptRunner">Catalyst::ScriptRunner por Daniel Mantovani.</a></li>
 <li><a href="/artigo/2010/ConceitosAntesCatalyst">Conceitos e conhecimentos para começar no Catalyst. por Thiago Rondon.</a></li>
-<li><a href="/artigo/2010/DBIC">BANCOS DE DADOS RELACIONAIS, ORIENTAÇÃO A OBJETOS E DBIx::Class por Eden Cardim.</a></li>
-<li><a href="/artigo/2010/DBIC2">BANCOS DE DADOS RELACIONAIS, ORIENTAÇÃO A OBJETOS e DBIX::CLASS, PARTE 2 por Eden Cardim.</a></li>
+<li><a href="/artigo/2010/DBIC">Bancos de dados relacionais, orientação a objetos e DBIx::Class por Eden Cardim.</a></li>
+<li><a href="/artigo/2010/DBIC2">Bancos de dados relacionais, orientação a objetos e DBIx::Class, parte2 por Eden Cardim.</a></li>
 <li><a href="/artigo/2010/DesenvolvimentoCatalystPadre">Desenvolvimento de Aplicativos Catalyst com Padre por Breno G. de Oliveira.</a></li>
 <li><a href="/artigo/2010/EmailAlemDoEnviarReceber">O email além do enviar e receber por Otavio Fernandes.</a></li>
 <li><a href="/artigo/2010/GarantiaQualidade">Testes, uma garantia de qualidade por Wallace Reis.</a></li>
 <li><a href="/artigo/2010/GraficosAppCatalyst">Gráficos de sua Aplicação Catalyst por Breno G. de Oliveira.</a></li>
 <li><a href="/artigo/2010/HTMLFormHandler">HTML::FormHandler por Gabriel Andrade Santana.</a></li>
-<li><a href="/artigo/2010/LogApplicacao">LOG SUA APLICAÇÃO por Solli M. Honorio.</a></li>
+<li><a href="/artigo/2010/LogApplicacao">Log sua aplicação por Solli M. Honorio.</a></li>
 <li><a href="/artigo/2010/Memcached">Memcached por Thiago Rondon.</a></li>
 <li><a href="/artigo/2010/Mojolicious">Mojolicious - A Web Divertida! por Breno G. de Oliveira
 
@@ -42,7 +42,7 @@
 
 .</a></li>
 <li><a href="/artigo/2008/PrimeirosPassosEmPerl">Primeiros Passos em Perl por Nelson Ferraz
-
+:e
 .</a></li>
 </ul>
 <h3>2007</h3>
@@ -102,19 +102,22 @@
 <li><a href="/artigo/2006/PraticasEssenciaisDeDesenvolvimento">Praticas Essenciais de Desenvolvimento por Joenio Costa
 
 .</a></li>
-<li><a href="/artigo/2006/ProgramacaoWEBComPerl">ProgramaE<ccedil>E<atilde>o WEB com Perl por Joenio Costa
+<li><a href="/artigo/2006/ProgramacaoWEBComPerl">Programação WEB com Perl por Joenio Costa
 
 .</a></li>
-<li><a href="/artigo/2006/RecomendacoesProgramacaoEmPerl">Recomendações para programação em Perl por Joenio Costa
+<li><a href="/artigo/2006/RecomendacoesProgramacaoEmPerl">Recomendações para
+programação em Perl por Joenio Costa
 
 .</a></li>
-<li><a href="/artigo/2006/RegexPraticasTecnicasAvancadas">Expressões Regulares - Introdução, Práticas e Técnicas Avançadas por David Dias
+<li><a href="/artigo/2006/RegexPraticasTecnicasAvancadas">Expressões Regulares
+- Introdução, Práticas e Técnicas Avançadas por David Dias
 
 .</a></li>
 <li><a href="/artigo/2006/SmartQuestionsHowTo">Como fazer perguntas de forma inteligente por Nelson Ferraz
 
 .</a></li>
-<li><a href="/artigo/2006/TecnicasManipulacaoEstruturas">Técnicas de manipulação por Joenio Costa
+<li><a href="/artigo/2006/TecnicasManipulacaoEstruturas">Técnicas de
+manipulação por Joenio Costa
 
 .</a></li>
 <li><a href="/artigo/2006/TestandoSoftwaresEmPerl">Testes de Software em Perl por Joenio Costa

@@ -3,9 +3,6 @@
 
       <div id="container_top">
        <center>
-       <a href="/equinocio/2010">
-       <img src="/static/images/equinocio_2010_mar.png" alt="Equinocio 2010 mar" border="0" width="900" height="495" />
-       </a>
        </center> 
 	<div id="container_bottom">
           <div class="top">
@@ -32,11 +29,12 @@
 		<div class="left_section">
 		<div class="side">
 			<h2 class="documentacao"></h2>
-			<h3>Equin&oacute;cio de Mar&ccedil;o 2010</h3>
+			<h3>Artigos</h3>
 
-			<p>Acompanhe o equin&oacute;cio de mar&ccedil;o que ir&aacute; come&ccedil;ar no primeiro dia do m&ecirc;s!. 
-			Ser&atilde;o produzidos artigos relacionados ao desenvolvimento web, um por dia. Aguarde e participe !
-			</p>
+			<p>
+            Veja a nossa sessão de artigos, este ano foi produzido um grande
+            material relacionao ao desenvolvimento web pelo evento equinócio.
+            </p>
 
                     <div class="list_heading">
 			<h4>Mais Artigos</h4>
@@ -64,9 +62,19 @@
 </ul>
 </div>
 
-		</div>
+		<div class="side">
 
-		</div>
+<center>
+
+<script
+src="http://s6.smrtlnks.com/users/GenerateBlueLinks.php?feedUrl=http%3A%2F%2Fwww.oreillynet.com%2Fpub%2Ffeed%2F29%3Ftopic%3D37&amp;title=Novos%20Livros%20de%20Perl&amp;skin=white&amp;width=400&amp;numItems=4&amp;type=grid&amp;display=thumbs&amp;auto=yes&amp;topLogo=oreilly.jpg&amp;logoLink=http://www.oreilly.com&amp;feedTitleLink=viewall&amp;columns=4&amp;xsl=oreilly.xsl&amp;blueSiteId=oreilly"
+type="text/javascript"></script>
+
+</center>
+
+        </div>
+
+        <div class="side">
 
 		<center>
           	<table><tr><td>
@@ -78,5 +86,12 @@
 		</td></tr></table>
 
 </center>
-	  </div></div></div></div></div>
+	  
+        </div>
+
+        </div>
+
+        </div>
+
+      </div></div></div></div></div>
 

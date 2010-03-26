@@ -2,7 +2,7 @@
 
 r3 - 01 Dec 2006 - OtavioFernandes
 
-=head1 IntroduÃ§Ã£o ao Inline::C
+=head1 Introdução ao Inline::C
 
 I<>
 

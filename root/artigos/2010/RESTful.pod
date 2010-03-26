@@ -1,47 +1,47 @@
 
 =pod
 
-=head1 Arquitetura REST e o serviÃ§o web 'RESTful'.
+=head1 Arquitetura REST e o serviço web 'RESTful'.
 
-REST Ã© um termo definido por Roy Fielding em sua tese de mestrado no qual ele descreve sobre um estilo de arquitetura de software sobre um sistema operado em rede. REST Ã© um acrÃ´nimo para "TransferÃªncia de Estado Representacional" (Representational State Transfer).
+REST é um termo definido por Roy Fielding em sua tese de mestrado no qual ele descreve sobre um estilo de arquitetura de software sobre um sistema operado em rede. REST é um acrônimo para "Transferência de Estado Representacional" (Representational State Transfer).
 
-REST vÃª cada aplicaÃ§Ã£o web como um conjunto de recursos, que representam um estado particular de um aplicativo. Quando vocÃª acessa este recurso, vocÃª estÃ¡ transferindo o estado (conteÃºdo), e talvez alterando o seu estado.
+REST vê cada aplicação web como um conjunto de recursos, que representam um estado particular de um aplicativo. Quando você acessa este recurso, você está transferindo o estado (conteúdo), e talvez alterando o seu estado.
 
-Lembra-se: REST nÃ£o Ã© um padrÃ£o, nÃ£o Ã© um protocolo e sim uma arquitetura, e iremos discutir os seus principios mais importantes abaixo e posteriormente a implementÃ§Ã£o 'RESTful'.
+Lembra-se: REST não é um padrão, não é um protocolo e sim uma arquitetura, e iremos discutir os seus principios mais importantes abaixo e posteriormente a implementção 'RESTful'.
 
-=head3 PrincÃ­pios
+=head3 Princípios
 
-Iremos descrever aqui trÃªs caracterÃ­sticas do REST.
+Iremos descrever aqui três características do REST.
 
 =over
 
 =item Recursos
 
-Os recursos individuais sÃ£o identificados na requisiÃ§Ã£o, como descrevendo elas nas URIs, um exemplo: http://meu.servidor/usuario/thiago.
+Os recursos individuais são identificados na requisição, como descrevendo elas nas URIs, um exemplo: http://meu.servidor/usuario/thiago.
 
-=item AÃ§Ãµes
+=item Ações
 
-VocÃª pode aplicar vÃ¡rias aÃ§Ãµes sobre um recursos. SÃ£o oito metÃ³dos disponÃ­veis pelo protocolo HTTP, porÃ©m os mais utilizados sÃ£o:
+Você pode aplicar várias ações sobre um recursos. São oito metódos disponíveis pelo protocolo HTTP, porém os mais utilizados são:
 
-PUT - Cria ou atualiza o conteÃºdo do recurso, veja o POST tambÃ©m.
+PUT - Cria ou atualiza o conteúdo do recurso, veja o POST também.
 
-GET - Busca o conteÃºdo do recurso.
+GET - Busca o conteúdo do recurso.
 
-DELETE - Apaga o conteÃºdo do recurso.
+DELETE - Apaga o conteúdo do recurso.
 
-=item ConteÃºdo
+=item Conteúdo
 
-MIME TYPES - De modo geral Ã© utilizado por alguns protocolos para identificar que tipo de conteÃºdo esta sendo negociado. A identificaÃ§Ã£o geralmente Ã© feita no cabeÃ§alho pelo campo cujo o nome Ã© Content-type.
+MIME TYPES - De modo geral é utilizado por alguns protocolos para identificar que tipo de conteúdo esta sendo negociado. A identificação geralmente é feita no cabeçalho pelo campo cujo o nome é Content-type.
 
-Todo recurso inclui a informaÃ§Ã£o do formato referente ao conteÃºdo, ou seja quando por exemplo vocÃª receber a informaÃ§Ã£o da mensagem que o conteÃºdo (Content-type) se encontra no formato JSON (application/json) vocÃª tera que processar a informaÃ£o neste formato.
+Todo recurso inclui a informação do formato referente ao conteúdo, ou seja quando por exemplo você receber a informação da mensagem que o conteúdo (Content-type) se encontra no formato JSON (application/json) você tera que processar a informaão neste formato.
 
-Normalmente o formato dos arquivos utilizados pelos serviÃ§os RESTful sÃ£o JSON, XML ou YAML.
+Normalmente o formato dos arquivos utilizados pelos serviços RESTful são JSON, XML ou YAML.
 
 =back
 
 =head2 Absorvendo a arquitetura REST.
 
-Abaixo irei descrever alguns elementos da arquitetura proposta na sua definiÃ§Ã£o.
+Abaixo irei descrever alguns elementos da arquitetura proposta na sua definição.
 
 =head3 Cliente-Servidor
 
@@ -51,7 +51,7 @@ Abaixo irei descrever alguns elementos da arquitetura proposta na sua definiÃ§
 
 =end pod:xhtml
 
-Clientes e servidores sÃ£o separados por uma interface por razÃµes de interesses (SoC), isto significa que o cliente nÃ£o implica em como os dados sÃ£o armazenados pois Ã© uma responsabilidade interna do servidor, assim como os servidores nÃ£o se importam com a interface do usuÃ¡rio. 
+Clientes e servidores são separados por uma interface por razões de interesses (SoC), isto significa que o cliente não implica em como os dados são armazenados pois é uma responsabilidade interna do servidor, assim como os servidores não se importam com a interface do usuário. 
 
 Esta caracteristica torna o desenvolvimento independente entre as partes.
 
@@ -63,29 +63,29 @@ Esta caracteristica torna o desenvolvimento independente entre as partes.
 
 =end pod:xhtml
 
-Este Ã© um dos conceitos mais importantes na minha opniÃ£o para os desenvolvedores em relaÃ§Ã£o aos elementos do estilo desta arquitetura. 
+Este é um dos conceitos mais importantes na minha opnião para os desenvolvedores em relação aos elementos do estilo desta arquitetura. 
 
-Iremos adicionar uma restriÃ§Ã£o as interaÃ§Ãµes entre o cliente e o servidor, a comunicaÃ§Ã£o serÃ¡ cliente-stateless-servidor (CSS) e isto significa que para cada requisiÃ§Ã£o serÃ¡ enviada toda informaÃ§Ã£o necessaria para o entendimento da requisiÃ§Ã£o e nÃ£o poderÃ¡ re-utilizar nenhum contexto armazenado no servidor.
+Iremos adicionar uma restrição as interações entre o cliente e o servidor, a comunicação será cliente-stateless-servidor (CSS) e isto significa que para cada requisição será enviada toda informação necessaria para o entendimento da requisição e não poderá re-utilizar nenhum contexto armazenado no servidor.
 
-Toda requisiÃ§Ã£o deve ser auto-suficiente e vocÃª deve manter o estado da sessÃ£o no cliente. Com este conceito vocÃª tem alguns beneficios, tais eles como:
+Toda requisição deve ser auto-suficiente e você deve manter o estado da sessão no cliente. Com este conceito você tem alguns beneficios, tais eles como:
 
 =over 
 
 =item Visibilidade 
 
-O I<pacote> de requisiÃ§Ã£o de dados contÃ©m todas as informaÃ§Ãµes necessarias para responder a solicitaÃ§Ã£o, diminuindo o trabalho do servidor.
+O I<pacote> de requisição de dados contém todas as informações necessarias para responder a solicitação, diminuindo o trabalho do servidor.
 
 =item Confiabilidade 
 
-Ã melhorada porque facilita a tarefa de recuperaÃ§Ã£o de falhas.
+É melhorada porque facilita a tarefa de recuperação de falhas.
 
 =item Escalabilidade 
 
-NÃ£o hÃ¡ necessidade de manter o estado das solicitaÃ§Ãµes, permitindo que o servidor se livre dos recursos alocados rapidamente e ainda simplificando a implementaÃ§Ã£o.
+Não há necessidade de manter o estado das solicitações, permitindo que o servidor se livre dos recursos alocados rapidamente e ainda simplificando a implementação.
 
 =back
 
-PorÃ©m fica um alerta, vocÃª deve sempre observar que esta arquitetura pode lhe trazer prejuizos caso seja mal implementada pelo desenvolvedor, por exemplo se vocÃª nÃ£o elaborar um controle de sessÃ£o no cliente vocÃª pode ter uma sobrecarga de interaÃ§Ã£o. Utilize o controle de sessÃ£o no cliente como uma vantagem e nÃ£o uma desvantagem.
+Porém fica um alerta, você deve sempre observar que esta arquitetura pode lhe trazer prejuizos caso seja mal implementada pelo desenvolvedor, por exemplo se você não elaborar um controle de sessão no cliente você pode ter uma sobrecarga de interação. Utilize o controle de sessão no cliente como uma vantagem e não uma desvantagem.
 
 =head3 Cache
 
@@ -95,11 +95,11 @@ PorÃ©m fica um alerta, vocÃª deve sempre observar que esta arquitetura pode 
 
 =end pod:xhtml
 
-Vamos adicionar mais um elemento na arquitetura do REST, o cache no cliente. Podemos definir atÃ© agora que iremos obter um cliente-cache-stateless-servidor.
+Vamos adicionar mais um elemento na arquitetura do REST, o cache no cliente. Podemos definir até agora que iremos obter um cliente-cache-stateless-servidor.
 
-Para melhorar o desempenho de rede devemos utilizar este mecanismo para eliminar parcialmente as interaÃ§Ãµes, melhorando a eficiÃªncia, escalabilidade e desempenho pelo usuÃ¡rio.
+Para melhorar o desempenho de rede devemos utilizar este mecanismo para eliminar parcialmente as interações, melhorando a eficiência, escalabilidade e desempenho pelo usuário.
 
-PorÃ©m isto deve ser muito bem planejado, um cache muito utilizado pode diminuir a confiabilidade dos dados, ou seja eles podem se tornar obsoletos em relaÃ§Ã£o se pedido  fosse feito direramente ao servidor, por isto muito cuidado no formataÃ§Ã£o da sua estrategia.
+Porém isto deve ser muito bem planejado, um cache muito utilizado pode diminuir a confiabilidade dos dados, ou seja eles podem se tornar obsoletos em relação se pedido  fosse feito direramente ao servidor, por isto muito cuidado no formatação da sua estrategia.
 
 =head3 Camadas
 
@@ -109,23 +109,23 @@ PorÃ©m isto deve ser muito bem planejado, um cache muito utilizado pode diminu
 
 =end pod:xhtml
 
-A utilizaÃ§Ã£o de camandas tem como finalidade melhorar a escabilidade do processo, isto significa que Ã© permitido uma arquitetura composta por camadas hierÃ¡rquicas por condicionar o comportamento de componentes de modo que cada componente nÃ£o pode "ver" alÃ©m da camada imediata com as quais estÃ£o interagindo.
+A utilização de camandas tem como finalidade melhorar a escabilidade do processo, isto significa que é permitido uma arquitetura composta por camadas hierárquicas por condicionar o comportamento de componentes de modo que cada componente não pode "ver" além da camada imediata com as quais estão interagindo.
 
-A grande vantagem da imposiÃ§Ã£o desta restriÃ§Ã£o que a complexidade Ã© restrita, e podemos pensar que estas camadas podem encapsular serviÃ§os (ex.: serviÃ§os legados) e etc.
+A grande vantagem da imposição desta restrição que a complexidade é restrita, e podemos pensar que estas camadas podem encapsular serviços (ex.: serviços legados) e etc.
 
-Como em todos os aspectos, isto deve ser levado em conta na implementaÃ§Ã£o para evitar sobrecargas entre as camadas, a implementaÃ§Ã£o de cache por dominio Ã© uma estrategia para quem for aproveitar desta caracteristica do REST.
+Como em todos os aspectos, isto deve ser levado em conta na implementação para evitar sobrecargas entre as camadas, a implementação de cache por dominio é uma estrategia para quem for aproveitar desta caracteristica do REST.
 
 =head2 Usufruindo do REST na web.
 
-RESTful Ã© uma implementaÃ§Ã£o de um "web service" simples utilizando o HTTP e os principios REST. 
+RESTful é uma implementação de um "web service" simples utilizando o HTTP e os principios REST. 
 
-VocÃª nÃ£o necessariamente deve se utilizar de todos os elementos propostos pelo REST, mas o melhor que ele pode te oferecer na resoluÃ§Ã£o do seu trabalho.
+Você não necessariamente deve se utilizar de todos os elementos propostos pelo REST, mas o melhor que ele pode te oferecer na resolução do seu trabalho.
 
 =head2 Catalyst
 
-O L<Catalyst::Controller::REST> Ã© um facilitador para implementaÃ§Ã£o de serviÃ§os RESTful em Catalyst. Basicamente, isto ocorre com o sistema de I<dispatch> para redirecionar a requisiÃ§Ã£o para o bloco do cÃ³digo especifico dependendo do metÃ³do HTTP utilizado tambÃ©m.
+O L<Catalyst::Controller::REST> é um facilitador para implementação de serviços RESTful em Catalyst. Basicamente, isto ocorre com o sistema de I<dispatch> para redirecionar a requisição para o bloco do código especifico dependendo do metódo HTTP utilizado também.
 
-Veja abaixo um exemplo de implementaÃ§Ã£o:
+Veja abaixo um exemplo de implementação:
 	
 	package Foo::Controller::Bar;
 	use Moose;
@@ -163,19 +163,19 @@ Veja abaixo um exemplo de implementaÃ§Ã£o:
 		);
 	} 
 
-O exemplo acima foi retirado do manual do prÃ³prio mÃ³dulo, porem observe como Ã© muito simples a implementaÃ§Ã£o.
+O exemplo acima foi retirado do manual do próprio módulo, porem observe como é muito simples a implementação.
 
-Neste exemplo estamos criando um controlador e declaramos uma "action" em I<sub thing>, no qual Ã© utilizada pela classe REST (ActionClass('REST')). Declarando I<thing_GET> e I<thing_PUT> e a explicaÃ§Ã£o Ã© trivial, qualquer requisiÃ§Ã£o GET Ã© enviado para o bloco de cÃ³digo thing_GET, assim como acontece com PUT.
+Neste exemplo estamos criando um controlador e declaramos uma "action" em I<sub thing>, no qual é utilizada pela classe REST (ActionClass('REST')). Declarando I<thing_GET> e I<thing_PUT> e a explicação é trivial, qualquer requisição GET é enviado para o bloco de código thing_GET, assim como acontece com PUT.
 
-Todos os metÃ³dos nÃ£o declarados, serÃ£o respondidos com uma mensagem "405 Method Not Allowed". 
+Todos os metódos não declarados, serão respondidos com uma mensagem "405 Method Not Allowed". 
 
-Todo o conteÃºdo no $c->stash->{rest} serÃ¡ serializado para vocÃª, e o formato irÃ¡ depender do "content-type" na mensagem de requisiÃ§Ã£o.
+Todo o conteúdo no $c->stash->{rest} será serializado para você, e o formato irá depender do "content-type" na mensagem de requisição.
 
-A documentaÃ§Ã£o do mÃ³dulo Ã© boa, compreendendo os conceitos e principios do REST, vocÃª nÃ£o terÃ¡ dificuldade nenhuma em utilizar os exemplos do mÃ³dulo, assim como ele. Recomendo a leitura do mÃ³dulo em questÃ£o, para vocÃª verificar as opÃ§Ãµes de configuraÃ§Ã£o, comportamentos e etc. 
+A documentação do módulo é boa, compreendendo os conceitos e principios do REST, você não terá dificuldade nenhuma em utilizar os exemplos do módulo, assim como ele. Recomendo a leitura do módulo em questão, para você verificar as opções de configuração, comportamentos e etc. 
 
-=head1 Exemplo de implementaÃ§Ã£o.
+=head1 Exemplo de implementação.
 
-Para nosso exemplo, iremos precisar instalar os seguintes mÃ³dulos:
+Para nosso exemplo, iremos precisar instalar os seguintes módulos:
 
 =over
 
@@ -189,7 +189,7 @@ Para nosso exemplo, iremos precisar instalar os seguintes mÃ³dulos:
 
 =back
 
-Vamos criar nossa aplicaÃ§Ã£o e um banco de dados, seguem os comandos:
+Vamos criar nossa aplicação e um banco de dados, seguem os comandos:
 
 	$ catalyst.pl equinocio
 
@@ -225,7 +225,7 @@ Vamos criar nossa aplicaÃ§Ã£o e um banco de dados, seguem os comandos:
 	$ ./script/equinocio_create.pl controller User
 
 
-Ok, atÃ© aqui nada de novo. Criamos nossa aplicaÃ§Ã£o catalyst, veja abaixo um exemplo de um controlador. (lib/Controller/User.pm)
+Ok, até aqui nada de novo. Criamos nossa aplicação catalyst, veja abaixo um exemplo de um controlador. (lib/Controller/User.pm)
 
 	
 	package equinocio::Controller::User;
@@ -284,7 +284,7 @@ Ok, atÃ© aqui nada de novo. Criamos nossa aplicaÃ§Ã£o catalyst, veja abaix
 
 	1;
 
-Pronto ! Agora, vamos testar nossa aplicaÃ§Ã£o.
+Pronto ! Agora, vamos testar nossa aplicação.
 
 	$ cat new.yml 
 	user_id: thiago
@@ -310,11 +310,11 @@ Pronto ! Agora, vamos testar nossa aplicaÃ§Ã£o.
 	phone: 1111-44444
 
 
-=head2 ConsideraÃ§Ãµes finais.
+=head2 Considerações finais.
 
-Caso tenham alguma dÃºvida em relaÃ§Ã£o ao conceito, ao mÃ³dulo ou qualquer implementaÃ§Ã£o relacionada a este artigo entre em contato pelo IRC ou pela lista da SÃ£o-Paulo Perl Mongers.
+Caso tenham alguma dúvida em relação ao conceito, ao módulo ou qualquer implementação relacionada a este artigo entre em contato pelo IRC ou pela lista da São-Paulo Perl Mongers.
 
-=head2 ReferÃªncias
+=head2 Referências
 
 L<http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm>
 

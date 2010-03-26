@@ -1,7 +1,7 @@
 
 =pod
 
-=head1 Conceitos e conhecimentos para comeÃ§ar no Catalyst.
+=head1 Conceitos e conhecimentos para começar no Catalyst.
 
 Este ensaio E<eacute> uma forma objetiva de explicar os conhecimentos necessE<aacute>rios para comeE<ccedil>ar a programar utilizando o elegante framework de programaE<ccedil>E<atilde>o para web. Este texto tende a nE<atilde>o ser exaustivo e nem autoritE<aacute>rio em nenhum dos tE<oacute>picos que serE<aacute> abordado. A missE<atilde>o aqui E<eacute> provocar a curiosidade de conceitos e "ferramentas" para que vocE<ecirc> possa aproveitar melhor o L<Catalyst>.
 

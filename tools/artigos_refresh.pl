@@ -1,15 +1,18 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 # by maluco
 
 use strict;
 use warnings;
 
+use utf8;
+
 use constant ARTIGOS_DIR => "/home/sppm/catalyst/root/artigos";
 
 package Artigos::POD;
 
 use base 'Pod::Xhtml';
+use utf8;
 
 sub new {
     my $class = shift;

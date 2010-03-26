@@ -2,7 +2,7 @@
 
 r1 - 29 Jul 2009 - MarcoAurelioMACAE
 
-=head1 Como instalar, passo a passo o: Apache, Mysql, Perl e mÃ³dulos necessÃ¡rios do CPAN no Windows
+=head1 Como instalar, passo a passo o: Apache, Mysql, Perl e módulos necessários do CPAN no Windows
 
 I<>
 

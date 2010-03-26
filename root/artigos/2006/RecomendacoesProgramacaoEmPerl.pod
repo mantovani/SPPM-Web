@@ -2,7 +2,7 @@
 
 r3 - 20 Aug 2006 - JoenioCosta
 
-=head1 RecomendaÃ§Ãµes para programaÃ§Ã£o em Perl
+=head1 Recomendações para programação em Perl
 
 ----
 

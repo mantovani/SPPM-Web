@@ -2,7 +2,7 @@
 
 r4 - 05 Jan 2007 - NelsonFerraz
 
-=head1 Por que tentar obstruir a leitura do seu cÃ³digo Ã© uma mÃ¡ idÃ©ia
+=head1 Por que tentar obstruir a leitura do seu código é uma má idéia
 
 I<>
 

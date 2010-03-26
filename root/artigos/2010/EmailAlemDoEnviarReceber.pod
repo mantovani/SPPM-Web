@@ -2,36 +2,36 @@
 
 =encoding utf8
 
-=head1 O email alÃ©m do enviar e receber
+=head1 O email além do enviar e receber
 
-=head1 IntroduÃ§Ã£o
+=head1 Introdução
 
-No mundo corporativo uma das ferramentas mais exigidas Ã© o email. Este tem
-base no protocolo SMTP, este teve sua Ãºltima grande alteraÃ§Ã£o em agosto de
+No mundo corporativo uma das ferramentas mais exigidas é o email. Este tem
+base no protocolo SMTP, este teve sua última grande alteração em agosto de
 1982, ou seja, estamos lidando com algo de quase 30 anos, e sabemos que no
-mundo da tecnologia este perÃ­odo representa uma eternidade. Porem, a
-tecnologia com o propÃ³sito de entregar mensagens eletrÃ´nicas Ã© muito mais
+mundo da tecnologia este período representa uma eternidade. Porem, a
+tecnologia com o propósito de entregar mensagens eletrônicas é muito mais
 antiga, o que pode dificultar ainda mais as coisas.
 
 Com este conhecimento, podemos refletir um pouco sobre como agregar valor,
-atravÃ©s da tecnologia, para um dos pilares no mundo corporativo.
+através da tecnologia, para um dos pilares no mundo corporativo.
 
-=head1 Enviar e receber nÃ£o basta
+=head1 Enviar e receber não basta
 
-AtÃ© pouco tempo, estas aÃ§Ãµes eram mais do que suficientes para uma corporaÃ§Ã£o.
-Nada mais era necessÃ¡rio, apenas que as mensagens fossem entregues de forma
-veloz.  Atualmente, as mais diversas "features" estÃ£o tomando espaÃ§o, por
+Até pouco tempo, estas ações eram mais do que suficientes para uma corporação.
+Nada mais era necessário, apenas que as mensagens fossem entregues de forma
+veloz.  Atualmente, as mais diversas "features" estão tomando espaço, por
 exemplo:
 
 =over
 
 =item *
 
-Evitar os Malwares (Spam, VÃ­rus, Phishing, etc);
+Evitar os Malwares (Spam, Vírus, Phishing, etc);
 
 =item *
 
-CÃ³pias Ocultas;
+Cópias Ocultas;
 
 =item *
 
@@ -47,50 +47,50 @@ Criptografia;
 
 =item *
 
-Regras por conteÃºdo;
+Regras por conteúdo;
 
 =item *
 
-Integrar-se com outras aplicaÃ§Ãµes;
+Integrar-se com outras aplicações;
 
 =back
 
-Rapidamente, chegamos a conclusÃ£o: precisamos de ferramentas flexÃ­veis o
+Rapidamente, chegamos a conclusão: precisamos de ferramentas flexíveis o
 suficiente para lidar com esta demanda.
 
 =head1 Perl e Email
 
-Perl Ã© uma linguagem de programaÃ§Ã£o extremamente competente, e vira sinÃ´nimo
-quando falamos do tratamento de texto, e-mail nada mais Ã© o do que texto. Perl
-Ã© a linguagem mais completa quando o assunto Ã© tratar tudo o que estÃ¡
-relacionado ao email, graÃ§as a sua longa histÃ³ria na computaÃ§Ã£o, nos ambientes
+Perl é uma linguagem de programação extremamente competente, e vira sinônimo
+quando falamos do tratamento de texto, e-mail nada mais é o do que texto. Perl
+é a linguagem mais completa quando o assunto é tratar tudo o que está
+relacionado ao email, graças a sua longa história na computação, nos ambientes
 unix-like, e, principalmente, porque Perl cresceu lado-a-lado com a internet,
 ou seja, com os protocolos relacionados ao e-mail.
 
-Uma busca rÃ¡pida na CPAN (Comprehensive Perl Archive Network, o maior
-repositÃ³rio de mÃ³dulos do mundo), reafirma o paragrafo acima: a palavra
-"email" retorna 4585 referÃªncias. De forma geral, temos aproximadamente mais
-de quatro mil opÃ§Ãµes para lidar com e-mail, e observe que nÃ£o estamos
-incluindo nada especÃ­fico sobre os outros procolos relacionados.
+Uma busca rápida na CPAN (Comprehensive Perl Archive Network, o maior
+repositório de módulos do mundo), reafirma o paragrafo acima: a palavra
+"email" retorna 4585 referências. De forma geral, temos aproximadamente mais
+de quatro mil opções para lidar com e-mail, e observe que não estamos
+incluindo nada específico sobre os outros procolos relacionados.
 
 =head1 Ao aplicar as regras
 
-ApÃ³s alguns anos lidando com e-mail, pude observar as necessidades e os erros
-cometidos na hora de fazer a triagem do correio eletrÃ´nico. Geralmente, o
+Após alguns anos lidando com e-mail, pude observar as necessidades e os erros
+cometidos na hora de fazer a triagem do correio eletrônico. Geralmente, o
 desenvolvedor/sysadmin escolhe o momento da entrega da mensagem para fazer
-isso. A entrega do e-mail Ã© feita por uma ferramenta denominada MDA (Mail
-Delivery Agent). Porem, este perÃ­odo nÃ£o cobre o envio de mensagens, e
-obviamente, nÃ³s nÃ£o queremos ter retrabalho.
+isso. A entrega do e-mail é feita por uma ferramenta denominada MDA (Mail
+Delivery Agent). Porem, este período não cobre o envio de mensagens, e
+obviamente, nós não queremos ter retrabalho.
 
-Portanto, o momento ideal para fazer esta triagem (ou filtragem) Ã© durante o
-transporte da mensagem, o qual Ã© feito pelo MTA (Mail Transfer Agent). Para
+Portanto, o momento ideal para fazer esta triagem (ou filtragem) é durante o
+transporte da mensagem, o qual é feito pelo MTA (Mail Transfer Agent). Para
 esta tarefa, eu gostaria de destacar o projeto Qpsmtpd.
 
 =head1 Qpsmtpd (L<http://smtpd.develooper.com/>)
 
-HÃ¡ pouco tempo atrÃ¡s eu estava pesquisando ferramentas para o meu projeto
+Há pouco tempo atrás eu estava pesquisando ferramentas para o meu projeto
 atual, e me deparei com o B<Qpsmtpd>. Sinceramente, fiquei muito supreso com a
-modularidade deste projeto, ele de muitas formas lhe dÃ¡ a oportunidade de
+modularidade deste projeto, ele de muitas formas lhe dá a oportunidade de
 intervir no fluxo de uma mensagem.
 
 Neste projeto eu destaco:
@@ -100,36 +100,36 @@ Neste projeto eu destaco:
 =item *
 
 Competente para lidar com o fluxo de mensagens vindas da internet. Este fato
-adiciona uma grande complicaÃ§Ã£o ao software, porque existe muitos cuidados
-necessÃ¡rios para lidar com este tipo de trafego, tanto para evitar emails
-indesejados como para proteger o ambiente da aplicaÃ§Ã£o;
+adiciona uma grande complicação ao software, porque existe muitos cuidados
+necessários para lidar com este tipo de trafego, tanto para evitar emails
+indesejados como para proteger o ambiente da aplicação;
 
 =item *
 
-Extremamente plugÃ¡vel. Geralmente, os projetos feitos para ter plugins, fazem
-uma base para receber o novo cÃ³digo, porem, esta base nÃ£o segue as mesmas
-regras/polÃ­ticas aplicadas para os plugins. Porem, no Qpsmtpd isso nÃ£o Ã©
-verdade, a mesma estrutura do software Ã© a mesma dos plugins, ou seja,
-adiciona muita flexÃ­bilidade e um design simples para a aplicaÃ§Ã£o;
+Extremamente plugável. Geralmente, os projetos feitos para ter plugins, fazem
+uma base para receber o novo código, porem, esta base não segue as mesmas
+regras/políticas aplicadas para os plugins. Porem, no Qpsmtpd isso não é
+verdade, a mesma estrutura do software é a mesma dos plugins, ou seja,
+adiciona muita flexíbilidade e um design simples para a aplicação;
 
 =item *
 
-O design simples e plugÃ¡vel colabora para o desempenho, o qual Ã© considerado
-excelente. Este projeto Ã© o utilizado para receber as mensagens dos hosts:
+O design simples e plugável colabora para o desempenho, o qual é considerado
+excelente. Este projeto é o utilizado para receber as mensagens dos hosts:
 apache.org e cpan.org, entre muitos outros;
 
 =item *
 
-Tem um Ã³timo suporte a grandes estruturas, podendo trabalhar com um Fork
-Server (onde os novos processo sÃ£o alocados sobre demanda) ou Pre-Fork (no
-qual os novos processos nascem junto com o daemon pai). TambÃ©m dÃ¡ suporte ao
+Tem um ótimo suporte a grandes estruturas, podendo trabalhar com um Fork
+Server (onde os novos processo são alocados sobre demanda) ou Pre-Fork (no
+qual os novos processos nascem junto com o daemon pai). Também dá suporte ao
 daemon para trabalhar de forma assincrona;
 
 =back
 
 =head1 Plugin Exemplo
 
-Este exemplo foi utilizado em uma apresentaÃ§Ã£o sobre o software
+Este exemplo foi utilizado em uma apresentação sobre o software
 (L<http://develooper.com/talks/qpsmtpd-lt-oscon-2007.pdf>).
 
 sub hook_quit {
@@ -151,7 +151,7 @@ sub hook_quit {
     return DONE;
 }
 
-TambÃ©m existem muitos outros plugins jÃ¡ disponÃ­veis para o projeto:
+Também existem muitos outros plugins já disponíveis para o projeto:
 
 =over
 
@@ -189,10 +189,10 @@ TLS (SSL, Transport Level Security);
 
 =back
 
-=head1 ConclusÃ£o
+=head1 Conclusão
 
-Existem outras ferramentas qualificadas para esta tarefa. TambÃ©m destaco o
-B<Amavisd-New>, vide apresentaÃ§Ã£o para o B<YAPC::Brasil::2009>:
+Existem outras ferramentas qualificadas para esta tarefa. Também destaco o
+B<Amavisd-New>, vide apresentação para o B<YAPC::Brasil::2009>:
 L<http://www.slideshare.net/otaviof/extendendo-o-amavisd-new>
 
 =head1 AUTOR
