@@ -1,8 +1,0 @@
-AddHandler fastcgi-script .fcgi
-Options +FollowSymLinks +ExecCGI
-
-RewriteEngine On
-RewriteRule ^(catalyst/script/dispatch\.fcgi/.*)$ - [L]
-RewriteRule ^(.*)$ catalyst/script/dispatch.fcgi/$1 [PT,L]
-
-
