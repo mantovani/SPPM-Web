@@ -1,34 +1,38 @@
+
 =pod
+
+=encoding utf8
 
 =head1 Testes, uma garantia de qualidade
 
-Teste de I<software> é um processo de validação e verificação dos requisitos
-técnicos e das regras de negócio afim de obter informações sobre a qualidade
-de um produto ou serviço, como também com a intenção de encontrar falhas de
-implementação, garantindo assim que o I<software> funcione como esperado.
+Teste de I<software> é um processo de validação e verificação dos
+requisitos técnicos e das regras de negócio afim de obter informações
+sobre a qualidade de um produto ou serviço, como também com a intenção de
+encontrar falhas de implementação, garantindo assim que o I<software>
+funcione como esperado.
 
-Os diversos processos de desenvolvimento discorrem diferentemente sobre quem, quando
-e como produzir os casos de teste, porém todos ressaltam a sua importância no
-desenvolvimento de I<software>.
+Os diversos processos de desenvolvimento discorrem diferentemente sobre quem,
+quando e como produzir os casos de teste, porém todos ressaltam a sua
+importância no desenvolvimento de I<software>.
 
-=head3 E o que Perl nos fornece?
+=head2 E o que Perl nos fornece?
 
 O L<CPAN|http://www.cpan.org/> contém algumas centenas de módulos,
-I<frameworks> e ferramentas para serem usados no desenvolvimento de
-testes. Encontra-se algumas sugestões neste artigo.
+I<frameworks> e ferramentas para serem usados no desenvolvimento de testes.
+Encontra-se algumas sugestões neste artigo.
 
 =head2 Métodos de teste
 
 Os métodos de testes são tradicionalmente divididos em testes de caixa preta
-e caixa branca, os quais referem-se ao ponto de visão do engenheiro quando este
-está desenvolvendo os casos de teste.
+e caixa branca, os quais referem-se ao ponto de visão do engenheiro quando
+este está desenvolvendo os casos de teste.
 
 =head3 Caixa preta
 
 Testes de caixa preta compreendem o conjunto de casos onde não se tem
-conhecimento (ou não é tomado em consideração) os detalhes internos de I<design>
-e implementação. Este método é aplicável à todos os níves de teste,
-porém é mais utilizado nos de integração e aceitação.
+conhecimento (ou não é tomado em consideração) os detalhes internos de
+I<design> e implementação. Este método é aplicável à todos os níveis de
+teste, porém é mais utilizado nos de integração e aceitação.
 
 Exemplo:
 
@@ -59,9 +63,9 @@ Exemplo:
 
 =head3 Caixa branca
 
-Testes de caixa branca (ou testes de estrutura) usam a pespectiva interna
-do I<software> para projetar os casos de teste baseado nas estruturas de dados
-e implementação. Este pode ser usado nos níveis de unidade, integração e
+Testes de caixa branca (ou testes de estrutura) usam a perspectiva interna do
+I<software> para projetar os casos de teste baseado nas estruturas de dados e
+implementação. Este pode ser usado nos níveis de unidade, integração e
 regressão.
 
 Neste exemplo, vamos testar o controller Foo que supostamente responderia pelo
@@ -135,15 +139,15 @@ eles, cito:
 
 =head3 Unidade
 
-Testes de unidade são geralmente usados para garantir que os vários componentes
-que compõem o I<software> funcionam corretamente de forma isolada uns dos outros.
-Estes correspondem a seções do código, geralmente funções ou classes (ou um conjunto
-de classes) num sistema orientado a objetos.
+Testes de unidade são geralmente usados para garantir que os vários
+componentes que compõem o I<software> funcionam corretamente de forma isolada
+uns dos outros. Estes correspondem a seções do código, geralmente funções
+ou classes (ou um conjunto de classes) num sistema orientado a objetos.
 
 Técnicas muito usadas neste nível são I<mock object> e I<method stub>.
 
-A primeira consiste basicamente em simular objetos que tenham a interface requerida
-e o comportamento desejado pelo componente testado.
+A primeira consiste basicamente em simular objetos que tenham a interface
+requerida e o comportamento desejado pelo componente testado.
 
 Exemplo:
 
@@ -187,7 +191,6 @@ Exemplo:
     };
 
     1;
-
 
     use strict;
     use warnings;
@@ -249,8 +252,8 @@ Exemplo:
 
 Veja também L<Test::MockObject>.
 
-A segunda (também chamada de apenas I<stub>) é um pedaço de código usado para
-garantir presença de alguma outra funcionalidade programada.
+A segunda (também chamada de apenas I<stub>) é um pedaço de código usado
+para garantir presença de alguma outra funcionalidade programada.
 
 Exemplo:
 
@@ -288,12 +291,12 @@ validar a interface e a interação entre eles.
 
 =item * Aplicações desenvolvidas em L<Catalyst|http://catalyst.perl.org/>: L<Test::WWW::Mechanize::Catalyst> e L<Catalyst::Test>
 
-Algumas vezes se faz necessário obter acesso ao objeto contexto do Catalyst
-- durante o desenvolvimento dos testes de aplicações que usam este I<web framework>.
-Diferente do Test::WWW::Mechanize::Catalyst, o Catalyst::Test já nos fornece
-este recurso por padrão através do método C<ctx_request>. Então, se a aplicação
-usar L<Class::MOP> ou for desenvolvida em Catalyst a partir da versão 5.8, pode-se
-contornar tal carência da seguinte forma:
+Algumas vezes se faz necessário obter acesso ao objeto contexto do Catalyst -
+durante o desenvolvimento dos testes de aplicações que usam este I<web
+framework>. Diferente do Test::WWW::Mechanize::Catalyst, o Catalyst::Test já
+nos fornece este recurso por padrão através do método C<ctx_request>.
+Então, se a aplicação usar L<Class::MOP> ou for desenvolvida em Catalyst a
+partir da versão 5.8, pode-se contornar tal carência da seguinte forma:
 
     use strict;
     use warnings;
@@ -317,26 +320,29 @@ contornar tal carência da seguinte forma:
 
 =head3 Regressão
 
-Um teste é classificado como de regressão quando se tem por objetivo encontrar
-falhas após uma mudança no código que já estava funcionando ou defeitos conhecidos
-e resolvidos que voltaram a aparecer.
+Um teste é classificado como de regressão quando se tem por objetivo
+encontrar falhas após uma mudança no código que já estava funcionando ou
+defeitos conhecidos e resolvidos que voltaram a aparecer.
 
 =head3 Aceitação
 
-Este nível compreende o conjunto de testes produzidos para execução antes da entrega
-do software ao usuário final ou logo após o termino de um ciclo de desenvolvimento
-conhecidos como I<smoke tests>, ou executados pelo consumidor em ambiente de laboratório
-então conhecidos como aceitação do usuário.
+Este nível compreende o conjunto de testes produzidos para execução antes
+da entrega do software ao usuário final ou logo após o término de um ciclo
+de desenvolvimento conhecido como I<smoke tests>, ou executados pelo
+consumidor em ambiente de laboratório então conhecidos como aceitação do
+usuário.
 
 =head3 Plataforma
 
-Os testes de plataforma envolvem a verificação e validação do I<software> nos
-diversos tipos de I<hardware>, sistema operacional e SGBD (Sistema Gerenciador
-de Banco de Dados), e geralmente são conduzidos após o nível I<beta>.
+Os testes de plataforma envolvem a verificação e validação do I<software>
+nos diversos tipos de I<hardware>, sistema operacional e SGBD (Sistema
+Gerenciador de Banco de Dados), e geralmente são conduzidos após o nível
+I<beta>.
 
-Caso a aplicação seja desenvolvida usando o Catalyst, os casos de testes obtidos
-durante o processo de desenvolvimento podem ser usados em conjunto aos novos específicos
-deste nível, modificando apenas a variável de ambiente C<CATALYST_SERVER>:
+Caso a aplicação seja desenvolvida usando o Catalyst, os casos de testes
+obtidos durante o processo de desenvolvimento podem ser usados em conjunto aos
+novos específicos deste nível, modificando apenas a variável de ambiente
+C<CATALYST_SERVER>:
 
     $ CATALYST_SERVER='http://localhost:3000/' prove -lr t
 
@@ -349,7 +355,7 @@ deste modo, os testes executarão no servidor externo.
 =head2 I<Coverage>
 
 I<Code coverage> é uma medida usada em teste de I<software>, a qual é obtida
-através da analise de todas as partes do código fonte que foram percorridas
+através da análise de todas as partes do código fonte que foram percorridas
 durante a execução dos testes, sabendo-se quão testado está o I<software>.
 
 =over 2
@@ -362,11 +368,12 @@ durante a execução dos testes, sabendo-se quão testado está o I<software>.
 
 =head2 Considerações finais
 
-Teste de software é um assunto tão extenso quanto importante, assim não é possível
-abranger toda sua dimensão aqui, mas espero ter feito uma boa introdução ao tema.
+Teste de software é um assunto tão extenso quanto importante, assim não é
+possível abranger toda sua dimensão aqui, mas espero ter feito uma boa
+introdução ao tema.
 
-Agradecimentos a Thiago Rondon, pela insistência comigo para escrever este artigo e
-ajuda na revisão.
+Agradecimentos a Thiago Rondon, pela insistência comigo para escrever este
+artigo e ajuda na revisão.
 
 Por fim, lembre-se, desenvolva testes "antes tarde do que nunca"!
 
@@ -392,4 +399,5 @@ Por fim, lembre-se, desenvolva testes "antes tarde do que nunca"!
 
 =head2 Autor
 
-wreis: Wallace Reis <wallace@reis.org.br>
+wreis: Wallace Reis <wallace@reis.org.br>.
+

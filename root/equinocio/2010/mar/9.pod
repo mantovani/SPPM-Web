@@ -1,50 +1,49 @@
+
 =pod
 
-=head1 AutenticaE<ccedil>E<atilde>o em aplicaE<ccedil>E<otilde>es usando Catalyst
+=encoding utf8
 
-O objetivo da autenticaE<ccedil>E<atilde>o E<eacute> estabelecer ou confirmar
-a identidade de um usuE<aacute>rio, o qual pode ser uma pessoa ou grupo de
-pessoas que usem as mesmas credenciais, provendo desta forma, suporte as
-demais partes do sistema como controle de acesso (autorizaE<ccedil>E<atilde>o)
-e customizaE<ccedil>E<atilde>o da interface com o usuE<aacute>rio. Neste
-artigo, veremos como realizar autenticaE<ccedil>E<atilde>o bE<aacute>sica em
-aplicaE<ccedil>E<otilde>es que usam o web I<framework> Catalyst com o
-I<plugin> padrE<atilde>o, porE<eacute>m nE<atilde>o se E<eacute> obrigado a
-usar este I<plugin>, o Catalyst E<eacute> flexE<iacute>vel suficiente para
-realizar a autenticaE<ccedil>E<atilde>o e autorizaE<ccedil>E<atilde>o da forma
-que se quer implementar.
+=head1 Autenticação em aplicações usando Catalyst
+
+O objetivo da autenticação é estabelecer ou confirmar a identidade de um
+usuário, o qual pode ser uma pessoa ou grupo de pessoas que usem as mesmas
+credenciais, provendo desta forma, suporte as demais partes do sistema como
+controle de acesso (autorização) e customização da interface com o
+usuário. Neste artigo, veremos como realizar autenticação básica em
+aplicações que usam o web I<framework> Catalyst com o I<plugin> padrão,
+porém não se é obrigado a usar este I<plugin>, o Catalyst é flexível
+suficiente para realizar a autenticação e autorização da forma que se quer
+implementar.
 
 =head2 Requisitos
 
-Para realizar a autenticaE<ccedil>E<atilde>o, precisa-se de um conjunto de
-I<plugins> sendo eles:
+Para realizar a autenticação, precisa-se de um conjunto de I<plugins> sendo
+eles:
 
 =over 4
 
 =item * L<Catalyst::Plugin::Authentication>
 
-Este I<plugin> provE<ecirc> a estrutura bE<aacute>sica para
-aplicaE<ccedil>E<otilde>es com Catalyst realizarem
-autenticaE<ccedil>E<atilde>o e autorizaE<ccedil>E<atilde>o, contendo
-tambE<eacute>m alguns I<plugins> de C<Credential> e C<Store>.
+Este I<plugin> provê a estrutura básica para aplicações com Catalyst
+realizarem autenticação e autorização, contendo também alguns I<plugins>
+de C<Credential> e C<Store>.
 
 =item * Um I<plugin> de C<Credential>
 
 =item * Um I<plugin> de C<Store>
 
-=item * I<Plugins> para controle de sessE<atilde>o
+=item * I<Plugins> para controle de sessão
 
-A fim de permitir que teus usuE<aacute>rios permaneE<ccedil>am conectados
-E<agrave> sua aplicaE<ccedil>E<atilde>o atravE<eacute>s das pE<aacute>ginas,
-E<eacute> preciso guardar este estado de alguma forma tanto do lado do
-servidor quanto no cliente. Pode-se usar o recomendado pelo Catalyst para tal
-fim, L<Catalyst::Plugin::Session>, juntamente com um I<plugin> de C<State> e
-outro de C<Store>.
+A fim de permitir que teus usuários permaneçam conectados à sua aplicação
+através das páginas, é preciso guardar este estado de alguma forma tanto do
+lado do servidor quanto no cliente. Pode-se usar o recomendado pelo Catalyst
+para tal fim, L<Catalyst::Plugin::Session>, juntamente com um I<plugin> de
+C<State> e outro de C<Store>.
 
 =back
 
 Antes de prosseguir, lembre-se de carregar os I<plugins> requeridos na classe
-da aplicaE<ccedil>E<atilde>o.
+da aplicação.
 
     use Catalyst qw/
         Authentication
@@ -55,31 +54,26 @@ da aplicaE<ccedil>E<atilde>o.
 
 =head2 Catalyst::Plugin::Authentication
 
-A autenticaE<ccedil>E<atilde>o no Catalyst estE<aacute> projetada para ser bem
-flexE<iacute>vel aos vE<aacute>rios tipos de processos que se podem realizar,
-basicamente dividida em mE<oacute>dulos de armazenamento (C<Store>) e de
-verificaE<ccedil>E<atilde>o (C<Credential>). O C<Credential> E<eacute>
-responsE<aacute>vel por verificar a identidade do usuE<aacute>rio, geralmente
-comparando a informaE<ccedil>E<atilde>o provida por este com a
-informaE<ccedil>E<atilde>o encontrada no C<Store>.
+A autenticação no Catalyst está projetada para ser bem flexível aos
+vários tipos de processos que se podem realizar, basicamente dividida em
+módulos de armazenamento (C<Store>) e de verificação (C<Credential>). O
+C<Credential> é responsável por verificar a identidade do usuário,
+geralmente comparando a informação provida por este com a informação
+encontrada no C<Store>.
 
-Estes mE<oacute>dulos sE<atilde>o carregados em conjunto por meio de
-I<realms>, permitindo assim E<agrave> aplicaE<ccedil>E<atilde>o ter
-mE<uacute>ltiplos mE<eacute>todos de autenticaE<ccedil>E<atilde>o de
-usuE<aacute>rios. Toda aplicaE<ccedil>E<atilde>o que realize
-autenticaE<ccedil>E<atilde>o deve ter ao menos um C<realm> que E<eacute> o
-C<default>, mas pode-se ter quantos forem necessE<aacute>rios.
+Estes módulos são carregados em conjunto por meio de I<realms>, permitindo
+assim à aplicação ter múltiplos métodos de autenticação de usuários.
+Toda aplicação que realize autenticação deve ter ao menos um C<realm> que
+é o C<default>, mas pode-se ter quantos forem necessários.
 
-=head2 ConfiguraE<ccedil>E<atilde>o
+=head2 Configuração
 
-Os itens da configuraE<ccedil>E<atilde>o vE<atilde>o depender dos
-mE<oacute>dulos de C<Credential> e C<Store> que se tenha decidido usar. A
-seguir, temos um exemplo de configuraE<ccedil>E<atilde>o (no formato do
-L<Config::General>) que utiliza dois mE<eacute>todos de
-autenticaE<ccedil>E<atilde>o com o padrE<atilde>o para o C<realm> de
-C<password>. Consulte a documentaE<ccedil>E<atilde>o para detalhes sobre a
-configuraE<ccedil>E<atilde>o de cada tipo de C<Credential> e C<Store>, bem
-como a do L<Catalyst::Plugin::Authentication>.
+Os itens da configuração vão depender dos módulos de C<Credential> e
+C<Store> que se tenha decidido usar. A seguir, temos um exemplo de
+configuração (no formato do L<Config::General>) que utiliza dois métodos de
+autenticação com o padrão para o C<realm> de C<password>. Consulte a
+documentação para detalhes sobre a configuração de cada tipo de
+C<Credential> e C<Store>, bem como a do L<Catalyst::Plugin::Authentication>.
 
     <authentication>
         default_realm password
@@ -107,9 +101,8 @@ como a do L<Catalyst::Plugin::Authentication>.
         </signature>
     </authentication>
 
-AtE<eacute> a versE<atilde>o 0.10008 do I<plugin> de
-autenticaE<ccedil>E<atilde>o, vocE<ecirc> precisaria colocar toda os I<realms>
-dentro da chave C<realms>.
+Até a versão 0.10008 do I<plugin> de autenticação, você precisaria
+colocar toda os I<realms> dentro da chave C<realms>.
 
     <authentication>
         default_realm password
@@ -127,16 +120,16 @@ dentro da chave C<realms>.
         </realms>
     </authentication>
 
-=head2 ImplementaE<ccedil>E<atilde>o
+=head2 Implementação
 
-Existem apenas trE<ecirc>s partes que se referem a
-implementaE<ccedil>E<atilde>o bE<aacute>sica de autenticaE<ccedil>E<atilde>o.
+Existem apenas três partes que se referem a implementação básica de
+autenticação.
 
 =over 3
 
 =item * I<Login>
 
-=item * Verificar que um usuE<aacute>rio estE<aacute> "logado"
+=item * Verificar que um usuário está "logado"
 
 =item * I<Logout>
 
@@ -144,60 +137,54 @@ implementaE<ccedil>E<atilde>o bE<aacute>sica de autenticaE<ccedil>E<atilde>o.
 
 =head3 I<Login>
 
-Esta parte envolve - geralmente a partir de um formulE<aacute>rio - obter as
-credenciais do usuE<aacute>rio e verificar que este E<eacute> valido. Pode-se
-usar um processador de formulE<aacute>rios como o L<HTML::FormHandler>, mas
-nE<atilde>o E<eacute> requisito. Para fazer I<login> do usuE<aacute>rio,
-usa-se o mE<eacute>todo C<authenticate> a partir de uma I<action> num
-I<controller>.
+Esta parte envolve - geralmente a partir de um formulário - obter as
+credenciais do usuário e verificar que este é valido. Pode-se usar um
+processador de formulários como o L<HTML::FormHandler>, mas não é
+requisito. Para fazer I<login> do usuário, usa-se o método C<authenticate> a
+partir de uma I<action> num I<controller>.
 
     sub login : Action {
         my ( $self, $c ) = @_;
         my $params = $c->req->body_params;
         if ( $params->{'username'} && $params->{'password'} ) {
             if ( $c->authenticate({ map { $_ => $params->{$_} } qw/username password/ }) ) {
-                # usuario valido e autenticado
-                # redirecione para algum caminho da sua aplicacao
+                # usuário valido e autenticado
+                # redirecione para algum caminho da sua aplicação
             } else {
-                # mostrar a pagina com o formulario de autenticacao e uma mensagem de erro
+                # mostrar a pagina com o formulário de autenticação e uma mensagem de erro
             }
         } else {
-            # mostrar a pagina com o formulario de autenticacao
+            # mostrar a pagina com o formulário de autenticação
         }
     }
 
-=head3 Verificar que um usuE<aacute>rio estE<aacute> "logado"
+=head3 Verificar que um usuário está "logado"
 
-Em determinados caminhos da aplicaE<ccedil>E<atilde>o, E<eacute>
-necessE<aacute>rio que se tenha um usuE<aacute>rio "logado", como por exemplo
-uma pE<aacute>gina de preferE<ecirc>ncias ou se a aplicaE<ccedil>E<atilde>o
-utiliza dados deste para gerar e mostrar informaE<ccedil>E<otilde>es numa
-pE<aacute>gina. Deste modo, faz-se necessE<aacute>rio retornar para o passo de
-I<login> caso a verificaE<ccedil>E<atilde>o falhe. Para tal fim, pode-se usar
-alguns mE<eacute>todos como
+Em determinados caminhos da aplicação, é necessário que se tenha um
+usuário "logado", como por exemplo uma página de preferências ou se a
+aplicação utiliza dados deste para gerar e mostrar informações numa
+página. Deste modo, faz-se necessário retornar para o passo de I<login> caso
+a verificação falhe. Para tal fim, pode-se usar alguns métodos como
 
 =over 3
 
 =item * C<user_exists>
 
-Retorna verdeiro se um usuE<aacute>rio estE<aacute> "logado". Se esta for a
-E<uacute>nica informaE<ccedil>E<atilde>o necessE<aacute>ria, nE<atilde>o
-interessando qual usuE<aacute>rio especificamente E<eacute>, a depender do
-mecanismo de armazenamento, este mE<eacute>todo pode ser muito mais eficiente.
-A diferenE<ccedil>a entre este mE<eacute>todo e o C<user> E<eacute> que este
-retornarE<aacute> verdadeiro, mesmo se o usuE<aacute>rio "logado" nE<atilde>o
-foi ainda recuperado a partir do armazenamento.
+Retorna verdeiro se um usuário está "logado". Se esta for a única
+informação necessária, não interessando qual usuário especificamente é,
+a depender do mecanismo de armazenamento, este método pode ser muito mais
+eficiente. A diferença entre este método e o C<user> é que este retornará
+verdadeiro, mesmo se o usuário "logado" não foi ainda recuperado a partir do
+armazenamento.
 
 =item * C<user_in_realm>
 
 Semelhante ao C<user_exists>, exceto que apenas retorna verdadeiro se o
-usuE<aacute>rio estE<aacute> "logado" -e- foi recuperado a partir do C<realm>
-fornecido.
+usuário está "logado" -e- foi recuperado a partir do C<realm> fornecido.
 
 =item * C<user>
 
-Retorna o atual usuE<aacute>rio "logado", ou C<undef> se nE<atilde>o
-hE<aacute> algum.
+Retorna o atual usuário "logado", ou C<undef> se não há algum.
 
 =back
 
@@ -206,7 +193,7 @@ Como por exemplo
     sub requires_user : Action {
         my ( $self, $c ) = @_;
         if ( $c->user_exists ) {
-            # usuE<aacute>rio "logado"
+            # usuário "logado"
         } else {
             # retorna ao passo de login
         }
@@ -214,9 +201,8 @@ Como por exemplo
 
 =head3 I<Logout>
 
-E por E<uacute>ltimo a mais simples, resume-se a apenas chamar o
-mE<eacute>todo C<logout> e redirecionar o usuE<aacute>rio para o caminho de
-I<login> ou algum outro.
+E por último a mais simples, resume-se a apenas chamar o método C<logout> e
+redirecionar o usuário para o caminho de I<login> ou algum outro.
 
     sub logout : Action {
         my ( $self, $c ) = @_;
@@ -224,7 +210,7 @@ I<login> ou algum outro.
         # redirecione
     }
 
-=head2 Veja tambE<eacute>m
+=head2 Veja também
 
 L<Catalyst Advent Calendar
 2008-19|http://www.catalystframework.org/calendar/2008/19>,
@@ -233,5 +219,5 @@ Screens|http://www.shadowcat.co.uk/blog/matt-s-trout/humane-login-screens/>.
 
 =head2 Autor
 
-wreis: Wallace Reis <wallace@reis.org.br>
+wreis: Wallace Reis <wallace@reis.org.br>.
 

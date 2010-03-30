@@ -1,27 +1,29 @@
+
 =pod
+
+=encoding utf8
 
 =head1 Desenvolvimento de Aplicativos Catalyst com Padre
 
-Este E<uacute>ltimo ano foi regado de novidades! Do Catalyst usando Moose a
-toda a atenE<ccedil>E<atilde>o que Perl ganhou com o L<< Desafio Iron Man
-|http://ironman.enlightenedperl.org/ >> alE<eacute>m de
+Este último ano foi regado de novidades! Do Catalyst usando Moose a toda a
+atenção que Perl ganhou com o L<< Desafio Iron Man
+|http://ironman.enlightenedperl.org/ >> além de
 L<muitos|http://blogs.perl.org/> L<novos|http://sao-paulo.pm.org>
 L<designs|http://www.perl.org/> L<bacanas|http://perldoc.perl.org/>, a
-comunidade Perl no mundo todo nunca esteve tE<atilde>o integrada, e programar
-nunca foi tE<atilde>o fE<aacute>cil e divertido.
+comunidade Perl no mundo todo nunca esteve tão integrada, e programar nunca
+foi tão fácil e divertido.
 
 Um dos projetos que realmente se destacaram foi o L<< Padre, a IDE Perl
-|http://padre.perlide.org >>. E na ediE<ccedil>E<atilde>o de hoje do
-CalendE<aacute>rio de EquinE<oacute>cio vamos aprender um pouco mais sobre o
-Padre e como ele pode ser usado para criarmos aplicaE<ccedil>E<otilde>es web
-em nosso framework favorito :)
+|http://padre.perlide.org >>. E na edição de hoje do Calendário de
+Equinócio vamos aprender um pouco mais sobre o Padre e como ele pode ser
+usado para criarmos aplicações web em nosso framework favorito :)
 
-=head2 O que E<eacute> o Padre?
+=head2 O que é o Padre?
 
-Padre E<eacute> um ambiente de desenvolvimento integrado (IDE, do
-inglE<ecirc>s Integrated Development Environment) escrito em Perl e feito
-especialmente para auxiliar desenvolvimento em Perl, de pequenos scripts de
-iniciantes a aplicativos complexos.
+Padre é um ambiente de desenvolvimento integrado (IDE, do inglês Integrated
+Development Environment) escrito em Perl e feito especialmente para auxiliar
+desenvolvimento em Perl, de pequenos scripts de iniciantes a aplicativos
+complexos.
 
 =begin pod:xhtml
 
@@ -29,71 +31,64 @@ iniciantes a aplicativos complexos.
 
 =end pod:xhtml
 
-Apesar do Padre ser em si um aplicativo bastante novo, estE<aacute> crescendo
-e evoluindo a uma velocidade impressionante. JE<aacute> temos mais de 50
-versE<otilde>es lanE<ccedil>adas e mais de 10 mil commits pelos 55
-desenvolvedores espalhados por todo o mundo, e esses nE<uacute>meros
-nE<atilde>o param de crescer (duvida? compare com os nE<uacute>meros da
-versE<atilde>o original deste artigo, de apenas 2 meses atrE<aacute>s).
+Apesar do Padre ser em si um aplicativo bastante novo, está crescendo e
+evoluindo a uma velocidade impressionante. Já temos mais de 50 versões
+lançadas e mais de 10 mil commits pelos 55 desenvolvedores espalhados por
+todo o mundo, e esses números não param de crescer (duvida? compare com os
+números da versão original deste artigo, de apenas 2 meses atrás).
 
-O Padre foi criado por L<GE<aacute>bor SzabE<oacute>|http://szabgab.com> para
-auxiliar iniciantes em Perl e pessoas que se sentem mais confortE<aacute>veis
-trabalhando longe do terminal, em uma IDE completa disponE<iacute>vel em todos
-os principais sistemas operacionais do mercado - incluindo L<< pacotes
-prE<eacute>-compilados| http://padre.perlide.org/download.html >> para
-Windows, MacOS X e Linux.
+O Padre foi criado por L<Gábor Szabó|http://szabgab.com> para auxiliar
+iniciantes em Perl e pessoas que se sentem mais confortáveis trabalhando
+longe do terminal, em uma IDE completa disponível em todos os principais
+sistemas operacionais do mercado - incluindo L<< pacotes pré-compilados|
+http://padre.perlide.org/download.html >> para Windows, MacOS X e Linux.
 
-Padre suporta detalhamento de Classes e criaE<ccedil>E<atilde>o rE<aacute>pida
-de mE<oacute>dulos, E<eacute> totalmente integrado E<agrave>
-documentaE<ccedil>E<atilde>o Perl em seu sistema e ao CPAN, e oferece ainda
-uma sE<eacute>rie de opE<ccedil>E<otilde>es de refatoraE<ccedil>E<atilde>o de
-cE<oacute>digo como renomear variE<aacute>veis lexicalmente e extrair
-sub-rotinas. Mesmo que vocE<ecirc> seja um experiente usuE<aacute>rio do vim
-ou Emacs, vale a pena conferir! De fato, uma das principais
-caracterE<iacute>sticas do Padre E<eacute> que, por ser escrito em Perl 5,
-permite que vocE<ecirc> facilmente estenda e corrija sua IDE sempre que
-encontrar algo que sente falta ou nE<atilde>o gosta. Outra grande vantagem
-para desenvolvedores E<eacute> a possibilidade de adicionar ainda mais
-funcionalidades ao Padre atravE<eacute>s de seu poderoso sistema de plugins.
+Padre suporta detalhamento de Classes e criação rápida de módulos, é
+totalmente integrado à documentação Perl em seu sistema e ao CPAN, e
+oferece ainda uma série de opções de refatoração de código como renomear
+variáveis lexicalmente e extrair sub-rotinas. Mesmo que você seja um
+experiente usuário do vim ou Emacs, vale a pena conferir! De fato, uma das
+principais características do Padre é que, por ser escrito em Perl 5,
+permite que você facilmente estenda e corrija sua IDE sempre que encontrar
+algo que sente falta ou não gosta. Outra grande vantagem para desenvolvedores
+é a possibilidade de adicionar ainda mais funcionalidades ao Padre através
+de seu poderoso sistema de plugins.
 
 E foi exatamente isso que fizemos :-)
-
 
 =head2 Apresentando o Padre::Plugin::Catalyst
 
 L<Padre::Plugin::Catalyst|http://search.cpan.org/perldoc?Padre::Plugin::Catalyst>
 integra o desenvolvimento de aplicativos Catalyst com o Padre, aprimorando
-ainda mais (esperamos!) a experiE<ecirc>ncia do desenvolvedor.
+ainda mais (esperamos!) a experiência do desenvolvedor.
 
 =begin pod:xhtml
 
-<img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/padre/padre_plugin_catalyst.png" alt="O Plugin Catalyst para o Padre, em toda sua glE<oacute>ria" />
+<img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/padre/padre_plugin_catalyst.png" alt="O Plugin Catalyst para o Padre, em toda sua glória" />
 
 =end pod:xhtml
 
-O plugin do Catalyst estE<aacute> disponE<iacute>vel em mais de 10 idiomas
-(obrigado, pessoal!), incluindo suporte oficial ao PortuguE<ecirc>s Brasileiro
-- entE<atilde>o nE<atilde>o hE<aacute> desculpas para nE<atilde>o
-experimentE<aacute>-lo :)
+O plugin do Catalyst está disponível em mais de 10 idiomas (obrigado,
+pessoal!), incluindo suporte oficial ao Português Brasileiro - então não
+há desculpas para não experimentá-lo :)
 
-=head3 InstalaE<ccedil>E<atilde>o
+=head3 Instalação
 
-	cpan> install Padre::Plugin::Catalyst
+    cpan> install Padre::Plugin::Catalyst
 
-Se vocE<ecirc> jE<aacute> tem o L<Padre|http://search.cpan.org/perldoc?Padre>
-e o L<Catalyst::Devel|http://search.cpan.org/perldoc?Catalyst::Devel>
-instalados, o processo de instalaE<ccedil>E<atilde>o do plugin deve correr
-tranquilamente. Caso contrE<aacute>rio, vocE<ecirc> pode querer dar uma olhada
-nas L<< InstruE<ccedil>E<otilde>es de instalaE<ccedil>E<atilde>o do
-Padre|http://padre.perlide.org/download.html >> para seu sistema (que, como
-mencionado anteriormente, contE<eacute>m pacotes prontos para Windows, Linux e
-MacOS X), uma vez que a instalaE<ccedil>E<atilde>o de pacotes de
+Se você já tem o L<Padre|http://search.cpan.org/perldoc?Padre> e o
+L<Catalyst::Devel|http://search.cpan.org/perldoc?Catalyst::Devel> instalados,
+o processo de instalação do plugin deve correr tranquilamente. Caso
+contrário, você pode querer dar uma olhada nas L<< Instruções de
+instalação do Padre|http://padre.perlide.org/download.html >> para seu
+sistema (que, como mencionado anteriormente, contém pacotes prontos para
+Windows, Linux e MacOS X), uma vez que a instalação de pacotes de
 desenvolvimento do wxWidgets pode ocasionalmente tornar-se complicada.
 
 Uma vez instalado, rode o Padre e escolha "Plugins->Gerenciador de Plugins" na
-barra de menu. Uma janela aparecerE<aacute> com uma lista de todos os plugins
-instalados em seu sistema, incluindo o nosso, com uma versE<atilde>o miniatura
-do logo do Catalyst.
+barra de menu. Uma janela aparecerá com uma lista de todos os plugins
+instalados em seu sistema, incluindo o nosso, com uma versão miniatura do
+logo do Catalyst.
 
 =begin pod:xhtml
 
@@ -101,28 +96,24 @@ do logo do Catalyst.
 
 =end pod:xhtml
 
-Para ativar o plugin do Catalyst basta um duplo clique nele, ou
-selecionE<aacute>-lo e clicar no botE<atilde>o "Ativar" da janela do
-Gerenciador de Plugins.
+Para ativar o plugin do Catalyst basta um duplo clique nele, ou selecioná-lo
+e clicar no botão "Ativar" da janela do Gerenciador de Plugins.
 
 =head2 O que podemos fazer com ele?
 
-A primeira coisa que vocE<ecirc> notarE<aacute> apE<oacute>s ativar o plugin
-do Catalyst E<eacute> o novo painel "Servidor Desenv. Catalyst" na parte de
-baixo da janela principal do Padre - provavelmente ao lado da aba
-"SaE<iacute>da".
+A primeira coisa que você notará após ativar o plugin do Catalyst é o novo
+painel "Servidor Desenv. Catalyst" na parte de baixo da janela principal do
+Padre - provavelmente ao lado da aba "Saída".
 
-O painel permite que vocE<ecirc> ative/desative o servidor web de
-desenvolvimento de seu aplicativo e monitore sua saE<iacute>da. VocE<ecirc>
-pode ainda marcar a caixa "auto-reiniciar" para que o servidor de
-desenvolvimento seja reiniciado sempre que arquivos do projeto forem
-modificados (o equivalente E<agrave> opE<ccedil>E<atilde>o C<-r> do servidor
-de desenvolvimento de sua aplicaE<ccedil>E<atilde>o).
+O painel permite que você ative/desative o servidor web de desenvolvimento de
+seu aplicativo e monitore sua saída. Você pode ainda marcar a caixa
+"auto-reiniciar" para que o servidor de desenvolvimento seja reiniciado sempre
+que arquivos do projeto forem modificados (o equivalente à opção C<-r> do
+servidor de desenvolvimento de sua aplicação).
 
-Note tambE<eacute>m a nova opE<ccedil>E<atilde>o de menu "Catalyst", dentro do
-menu "Plugins". Esse menu permite que vocE<ecirc> crie e manipule seus
-aplicativos Catalyst, oferecendo ainda acesso rE<aacute>pido E<agrave> extensa
-documentaE<ccedil>E<atilde>o online do framework.
+Note também a nova opção de menu "Catalyst", dentro do menu "Plugins". Esse
+menu permite que você crie e manipule seus aplicativos Catalyst, oferecendo
+ainda acesso rápido à extensa documentação online do framework.
 
 =begin pod:xhtml
 
@@ -130,14 +121,14 @@ documentaE<ccedil>E<atilde>o online do framework.
 
 =end pod:xhtml
 
-As seguintes opE<ccedil>E<otilde>es estE<atilde>o disponE<iacute>veis no menu:
+As seguintes opções estão disponíveis no menu:
 
 =head3 'Novo Aplicativo Catalyst'
 
-Como o prE<oacute>prio nome denuncia, essa opE<ccedil>E<atilde>o permite que vocE<ecirc> crie um novo
-aplicativo Catalyst em um diretE<oacute>rio a sua escolha. Fique de olho no
-painel C<SaE<iacute>da> do Padre, pois todas as informaE<ccedil>E<otilde>es a respeito da 
-criaE<ccedil>E<atilde>o do novo projeto aparecerE<atilde>o por lE<aacute>.
+Como o próprio nome denuncia, essa opção permite que você crie um novo
+aplicativo Catalyst em um diretório a sua escolha. Fique de olho no painel
+C<Saída> do Padre, pois todas as informações a respeito da criação do
+novo projeto aparecerão por lá.
 
 =begin pod:xhtml
 
@@ -145,22 +136,21 @@ criaE<ccedil>E<atilde>o do novo projeto aparecerE<atilde>o por lE<aacute>.
 
 =end pod:xhtml
 
-=head3'Criar um novo...'
+=head3 'Criar um novo...'
 
-B<Nota:> As opE<ccedil>E<otilde>es abaixo sE<oacute> estarE<atilde>o
-disponE<iacute>veis se o documento ativo pertence a um projeto Catalyst.
+B<Nota:> As opções abaixo só estarão disponíveis se o documento ativo
+pertence a um projeto Catalyst.
 
-Os mE<oacute>dulos auxiliares do Catalyst permitem a criaE<ccedil>E<atilde>o
-automE<aacute>tica de esqueletos para os componentes MVC de seu aplicativo.
-AtravE<eacute>s deste menu vocE<ecirc> pode nE<atilde>o apenas escolher o nome
-de seu novo componente como tambE<eacute>m seu tipo. Por exemplo, ao escolher
-a criaE<ccedil>E<atilde>o de uma nova Vista (View), o tipo "TT"
-aparecerE<aacute> como opE<ccedil>E<atilde>o caso vocE<ecirc> tenha o
-mE<oacute>dulo L<< Catalyst::Helper::View::TT >> instalado.
+Os módulos auxiliares do Catalyst permitem a criação automática de
+esqueletos para os componentes MVC de seu aplicativo. Através deste menu
+você pode não apenas escolher o nome de seu novo componente como também seu
+tipo. Por exemplo, ao escolher a criação de uma nova Vista (View), o tipo
+"TT" aparecerá como opção caso você tenha o módulo L<<
+Catalyst::Helper::View::TT >> instalado.
 
-Os componentes disponE<iacute>veis sE<atilde>o:
+Os componentes disponíveis são:
 
-=over 
+=over
 
 =item * Modelo
 
@@ -178,85 +168,72 @@ Os componentes disponE<iacute>veis sE<atilde>o:
 
 =head3 'Iniciar/Parar Servidor Web'
 
-Assim como o botE<atilde>o no painel "Servidor Desenv. Catalyst", essas duas
-opE<ccedil>E<otilde>es permitem controlar o servidor de desenvolvimento de sua
-aplicaE<ccedil>E<atilde>o.
+Assim como o botão no painel "Servidor Desenv. Catalyst", essas duas opções
+permitem controlar o servidor de desenvolvimento de sua aplicação.
 
-=head3 'Atualizar Script da AplicaE<ccedil>E<atilde>o'
+=head3 'Atualizar Script da Aplicação'
 
 Se, ao ativar o servidor de desenvolvimento, o painel do Catalyst acusar que
-vocE<ecirc> estE<aacute> executando um script antigo, vocE<ecirc> pode usar
-essa opE<ccedil>E<atilde>o para atualizar os scripts de seu aplicativo.
-Mensagens informacionais a respeito das modificaE<ccedil>E<otilde>es feitas
-serE<atilde>o enviadas diretamente ao painel de C<SaE<iacute>da> do Padre.
+você está executando um script antigo, você pode usar essa opção para
+atualizar os scripts de seu aplicativo. Mensagens informacionais a respeito
+das modificações feitas serão enviadas diretamente ao painel de C<Saída>
+do Padre.
 
-=head3 'ReferE<ecirc>ncias Online do Catalyst'
+=head3 'Referências Online do Catalyst'
 
-Caso esteja comeE<ccedil>ando no mundo Catalyst, esse menu serE<aacute>
-particularmente E<uacute>til. AtravE<eacute>s dele vocE<ecirc> nE<atilde>o
-sE<oacute> ganha acesso rE<aacute>pido a diversas referE<ecirc>ncias online e
-documentaE<ccedil>E<atilde>o do Catalyst (incluindo um excelente tutorial em
-inglE<ecirc>s) como possui um item chamado "Suporte Online da Comunidade
-Catalyst", que apontarE<aacute> seu navegador Web padrE<atilde>o para uma
-interface IRC conectada diretamente ao canal #catalyst em irc.perl.org, onde
-vocE<ecirc> pode fazer sua pergunta para humanos de verdade que estejam por
-lE<aacute>, incluindo muitos dos principais desenvolvedores do framework. B<<
-Nota: por tratar-se de um canal internacional com pessoas do mundo todo,
-sE<oacute> sE<atilde>o admitidas mensagens em inglE<ecirc>s. Para ajuda em
-portuguE<ecirc>s, entre em um dos diversos canais brasileiros como o #rio-pm,
-#sao-paulo.pm ou #brasil-pm >>.
+Caso esteja começando no mundo Catalyst, esse menu será particularmente
+útil. Através dele você não só ganha acesso rápido a diversas
+referências online e documentação do Catalyst (incluindo um excelente
+tutorial em inglês) como possui um item chamado "Suporte Online da Comunidade
+Catalyst", que apontará seu navegador Web padrão para uma interface IRC
+conectada diretamente ao canal #catalyst em irc.perl.org, onde você pode
+fazer sua pergunta para humanos de verdade que estejam por lá, incluindo
+muitos dos principais desenvolvedores do framework. B<< Nota: por tratar-se de
+um canal internacional com pessoas do mundo todo, só são admitidas mensagens
+em inglês. Para ajuda em português, entre em um dos diversos canais
+brasileiros como o #rio-pm, #sao-paulo.pm ou #brasil-pm >>.
 
-=head2 Item dinE<acirc>mico do menu de contexto: 'Abrir Template'
+=head2 Item dinâmico do menu de contexto: 'Abrir Template'
 
 =begin pod:xhtml
 
-<img
-src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/padre/context_menu.png"
-alt="a nova opE<ccedil>E<atilde>o 'Abrir Template' aparece no menu de contexto
-do documento" />
+<img src="http://sao-paulo.pm.org/static/images/equinocio/2010/mar/padre/context_menu.png" alt="a nova opção 'Abrir Template' aparece no menu de contexto do documento" />
 
 =end pod:xhtml
 
-A medida em que o plugin Catalyst comeE<ccedil>a a expandir seus horizontes e
+A medida em que o plugin Catalyst começa a expandir seus horizontes e
 explorar o documento aberto, surge uma nova habilidade: se sua I<Action>
-define um template, clicar com o botE<atilde>o direito na linha em que ela
-estE<aacute> definida habilitarE<aacute> a opE<ccedil>E<atilde>o "Abrir
-Template", que abrirE<aacute> o arquivo de template automaticamente para
-vocE<ecirc>.
+define um template, clicar com o botão direito na linha em que ela está
+definida habilitará a opção "Abrir Template", que abrirá o arquivo de
+template automaticamente para você.
 
+=head2 Ao infinito... e além!
 
-=head2 Ao infinito... e alE<eacute>m!
+Mesmo sendo muito novo, o plugin Catalyst para o Padre já mostra um grande
+potencial. Combinando o poder de uma IDE como o Padre ao seu processo de
+desenvolvimento web com Catalyst certamente trará resultados incríveis.
 
-Mesmo sendo muito novo, o plugin Catalyst para o Padre jE<aacute> mostra um
-grande potencial. Combinando o poder de uma IDE como o Padre ao seu processo
-de desenvolvimento web com Catalyst certamente trarE<aacute> resultados
-incrE<iacute>veis.
+Dito isso, sua ajuda é muito bem-vinda! Experimente o Padre e o Plugin do
+Catalyst e nos diga o que mais gostou, o que detestou, o que sentiu falta, e o
+que mais puder imaginar para auxiliar o desenvolvimento Catalyst dentro do
+Padre. Relatórios de problemas e lista de desejos são sempre bons - patches
+mais ainda!
 
-Dito isso, sua ajuda E<eacute> muito bem-vinda! Experimente o Padre e o Plugin
-do Catalyst e nos diga o que mais gostou, o que detestou, o que sentiu falta,
-e o que mais puder imaginar para auxiliar o desenvolvimento Catalyst dentro do
-Padre. RelatE<oacute>rios de problemas e lista de desejos sE<atilde>o sempre
-bons - patches mais ainda!
-
-O C<Padre::Plugin::Catalyst> E<eacute> desenvolvido no L<< repositE<oacute>rio
-principal do Padre|http://svn.perlide.org/padre/trunk/Padre-Plugin-Catalyst/
->>, e estamos todos no #padre (irc.perl.org), entE<atilde>o dE<ecirc> um pulo
-por lE<aacute> e nos diga o que achou. Caso nE<atilde>o se sinta
-confortE<aacute>vel com o inglE<ecirc>s, pode nos procurar nos canais
-nacionais como #brasil-pm, #rio-pm e #sao-paulo.pm, todos tambE<eacute>m em
+O C<Padre::Plugin::Catalyst> é desenvolvido no L<< repositório principal do
+Padre|http://svn.perlide.org/padre/trunk/Padre-Plugin-Catalyst/ >>, e estamos
+todos no #padre (irc.perl.org), então dê um pulo por lá e nos diga o que
+achou. Caso não se sinta confortável com o inglês, pode nos procurar nos
+canais nacionais como #brasil-pm, #rio-pm e #sao-paulo.pm, todos também em
 irc.perl.org.
 
-Bem, por hoje E<eacute> sE<oacute> pe-pe-pessoal. Espero que tenham gostado
-:-)
+Bem, por hoje é só pe-pe-pessoal. Espero que tenham gostado :-)
 
-Tenham todos um E<oacute>timo equinE<oacute>cio, aproveitem o
-calendE<aacute>rio e divirtam-se!
+Tenham todos um ótimo equinócio, aproveitem o calendário e divirtam-se!
 
 =head2 Autor
 
 Breno G. de Oliveira C<< <garu@cpan.org> >>
 
-Traduzido e adaptado para o portuguE<ecirc>s por Breno G. de Oliveira a partir
-do L<< original em
-inglE<ecirc>s|http://www.catalystframework.org/calendar/2009/9 >>.
+Traduzido e adaptado para o português por Breno G. de Oliveira a partir do
+L<< original em inglês|http://www.catalystframework.org/calendar/2009/9 >>.
 

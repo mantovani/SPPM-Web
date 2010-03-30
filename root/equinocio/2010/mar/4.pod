@@ -1,39 +1,40 @@
+
 =pod
 
 =encoding utf8
 
-=head1 O email alE<eacute>m do enviar e receber
+=head1 O email além do enviar e receber
 
-=head1 IntroduE<ccedil>E<atilde>o
+=cut
 
-No mundo corporativo uma das ferramentas mais exigidas E<eacute> o email. Este
-tem base no protocolo SMTP, este teve sua E<uacute>ltima grande
-alteraE<ccedil>E<atilde>o em agosto de 1982, ou seja, estamos lidando com algo
-de quase 30 anos, e sabemos que no mundo da tecnologia este perE<iacute>odo
-representa uma eternidade. Porem, a tecnologia com o propE<oacute>sito de
-entregar mensagens eletrE<ocirc>nicas E<eacute> muito mais antiga, o que pode
-dificultar ainda mais as coisas.
+=head1 Introdução
+
+No mundo corporativo uma das ferramentas mais exigidas é o email. Este tem
+base no protocolo SMTP, este teve sua última grande alteração em agosto de
+1982, ou seja, estamos lidando com algo de quase 30 anos, e sabemos que no
+mundo da tecnologia este período representa uma eternidade. Porem, a
+tecnologia com o propósito de entregar mensagens eletrônicas é muito mais
+antiga, o que pode dificultar ainda mais as coisas.
 
 Com este conhecimento, podemos refletir um pouco sobre como agregar valor,
-atravE<eacute>s da tecnologia, para um dos pilares no mundo corporativo.
+através da tecnologia, para um dos pilares no mundo corporativo.
 
-=head1 Enviar e receber nE<atilde>o basta
+=head1 Enviar e receber não basta
 
-AtE<eacute> pouco tempo, estas aE<ccedil>E<otilde>es eram mais do que
-suficientes para uma corporaE<ccedil>E<atilde>o. Nada mais era
-necessE<aacute>rio, apenas que as mensagens fossem entregues de forma veloz.
-Atualmente, as mais diversas "features" estE<atilde>o tomando espaE<ccedil>o,
-por exemplo:
+Até pouco tempo, estas ações eram mais do que suficientes para uma
+corporação. Nada mais era necessário, apenas que as mensagens fossem
+entregues de forma veloz. Atualmente, as mais diversas "features" estão
+tomando espaço, por exemplo:
 
 =over
 
 =item *
 
-Evitar os Malwares (Spam, VE<iacute>rus, Phishing, etc);
+Evitar os Malwares (Spam, Vírus, Phishing, etc);
 
 =item *
 
-CE<oacute>pias Ocultas;
+Cópias Ocultas;
 
 =item *
 
@@ -49,55 +50,51 @@ Criptografia;
 
 =item *
 
-Regras por conteE<uacute>do;
+Regras por conteúdo;
 
 =item *
 
-Integrar-se com outras aplicaE<ccedil>E<otilde>es;
+Integrar-se com outras aplicações;
 
 =back
 
-Rapidamente, chegamos a conclusE<atilde>o: precisamos de ferramentas
-flexE<iacute>veis o suficiente para lidar com esta demanda.
+Rapidamente, chegamos a conclusão: precisamos de ferramentas flexíveis o
+suficiente para lidar com esta demanda.
 
 =head1 Perl e Email
 
-Perl E<eacute> uma linguagem de programaE<ccedil>E<atilde>o extremamente
-competente, e vira sinE<ocirc>nimo quando falamos do tratamento de texto,
-e-mail nada mais E<eacute> o do que texto. Perl E<eacute> a linguagem mais
-completa quando o assunto E<eacute> tratar tudo o que estE<aacute> relacionado
-ao email, graE<ccedil>as a sua longa histE<oacute>ria na
-computaE<ccedil>E<atilde>o, nos ambientes unix-like, e, principalmente, porque
-Perl cresceu lado a lado com a internet, ou seja, com os protocolos
-relacionados ao e-mail.
+Perl é uma linguagem de programação extremamente competente, e vira
+sinônimo quando falamos do tratamento de texto, e-mail nada mais é o do que
+texto. Perl é a linguagem mais completa quando o assunto é tratar tudo o que
+está relacionado ao email, graças a sua longa história na computação, nos
+ambientes unix-like, e, principalmente, porque Perl cresceu lado a lado com a
+internet, ou seja, com os protocolos relacionados ao e-mail.
 
-Uma busca rE<aacute>pida na CPAN (Comprehensive Perl Archive Network, o maior
-repositE<oacute>rio de mE<oacute>dulos do mundo), reafirma o paragrafo acima:
-a palavra "email" retorna 4585 referE<ecirc>ncias. De forma geral, temos
-aproximadamente mais de quatro mil opE<ccedil>E<otilde>es para lidar com
-e-mail, e observe que nE<atilde>o estamos incluindo nada especE<iacute>fico
-sobre os outros procolos relacionados.
+Uma busca rápida na CPAN (Comprehensive Perl Archive Network, o maior
+repositório de módulos do mundo), reafirma o paragrafo acima: a palavra
+"email" retorna 4585 referências. De forma geral, temos aproximadamente mais
+de quatro mil opções para lidar com e-mail, e observe que não estamos
+incluindo nada específico sobre os outros procolos relacionados.
 
 =head1 Ao aplicar as regras
 
-ApE<oacute>s alguns anos lidando com e-mail, pude observar as necessidades e
-os erros cometidos na hora de fazer a triagem do correio eletrE<ocirc>nico.
-Geralmente, o desenvolvedor/sysadmin escolhe o momento da entrega da mensagem
-para fazer isso. A entrega do e-mail E<eacute> feita por uma ferramenta
-denominada MDA (Mail Delivery Agent). Porem, este perE<iacute>odo nE<atilde>o
-cobre o envio de mensagens, e obviamente, nE<oacute>s nE<atilde>o queremos ter
-retrabalho.
+Após alguns anos lidando com e-mail, pude observar as necessidades e os erros
+cometidos na hora de fazer a triagem do correio eletrônico. Geralmente, o
+desenvolvedor/sysadmin escolhe o momento da entrega da mensagem para fazer
+isso. A entrega do e-mail é feita por uma ferramenta denominada MDA (Mail
+Delivery Agent). Porem, este período não cobre o envio de mensagens, e
+obviamente, nós não queremos ter retrabalho.
 
-Portanto, o momento ideal para fazer esta triagem (ou filtragem) E<eacute>
-durante o transporte da mensagem, o qual E<eacute> feito pelo MTA (Mail
-Transfer Agent). Para esta tarefa, eu gostaria de destacar o projeto Qpsmtpd.
+Portanto, o momento ideal para fazer esta triagem (ou filtragem) é durante o
+transporte da mensagem, o qual é feito pelo MTA (Mail Transfer Agent). Para
+esta tarefa, eu gostaria de destacar o projeto Qpsmtpd.
 
 =head1 Qpsmtpd (L<http://smtpd.develooper.com/>)
 
-HE<aacute> pouco tempo atrE<aacute>s eu estava pesquisando ferramentas para o
-meu projeto atual, e me deparei com o B<Qpsmtpd>. Sinceramente, fiquei muito
-surpreso com a modularidade deste projeto, ele de muitas formas lhe dE<aacute>
-a oportunidade de intervir no fluxo de uma mensagem.
+Há pouco tempo atrás eu estava pesquisando ferramentas para o meu projeto
+atual, e me deparei com o B<Qpsmtpd>. Sinceramente, fiquei muito surpreso com
+a modularidade deste projeto, ele de muitas formas lhe dá a oportunidade de
+intervir no fluxo de uma mensagem.
 
 Neste projeto eu destaco:
 
@@ -106,40 +103,37 @@ Neste projeto eu destaco:
 =item *
 
 Competente para lidar com o fluxo de mensagens vindas da internet. Este fato
-adiciona uma grande complicaE<ccedil>E<atilde>o ao software, porque existe
-muitos cuidados necessE<aacute>rios para lidar com este tipo de trafego, tanto
-para evitar emails indesejados como para proteger o ambiente da
-aplicaE<ccedil>E<atilde>o;
+adiciona uma grande complicação ao software, porque existe muitos cuidados
+necessários para lidar com este tipo de trafego, tanto para evitar emails
+indesejados como para proteger o ambiente da aplicação;
 
 =item *
 
-Extremamente "plugE<aacute>vel". Geralmente, os projetos feitos para ter
-plugins, fazem uma base para receber o novo cE<oacute>digo, porem, esta base
-nE<atilde>o segue as mesmas regras/polE<iacute>ticas aplicadas para os
-plugins. Porem, no Qpsmtpd isso nE<atilde>o E<eacute> verdade, a mesma
-estrutura do software E<eacute> a mesma dos plugins, ou seja, adiciona muita
-flexibilidade e um design simples para a aplicaE<ccedil>E<atilde>o;
+Extremamente "plugável". Geralmente, os projetos feitos para ter
+plugins, fazem uma base para receber o novo código, porem, esta base não
+segue as mesmas regras/políticas aplicadas para os plugins. Porem, no Qpsmtpd
+isso não é verdade, a mesma estrutura do software é a mesma dos plugins, ou
+seja, adiciona muita flexibilidade e um design simples para a aplicação;
 
 =item *
 
-O design simples e "plugE<aacute>vel" colabora para o desempenho, o qual
-E<eacute> considerado excelente. Este projeto E<eacute> o utilizado para
-receber as mensagens dos hosts: apache.org e cpan.org, entre muitos outros;
+O design simples e "plugável" colabora para o desempenho, o qual é
+considerado excelente. Este projeto é o utilizado para receber as mensagens
+dos hosts: apache.org e cpan.org, entre muitos outros;
 
 =item *
 
-Tem um E<oacute>timo suporte a grandes estruturas, podendo trabalhar com um
-Fork Server (onde os novos processo sE<atilde>o alocados sobre demanda) ou
-Pre-Fork (no qual os novos processos nascem junto com o daemon pai).
-TambE<eacute>m dE<aacute> suporte ao daemon para trabalhar de forma
-assE<iacute>ncrona;
+Tem um ótimo suporte a grandes estruturas, podendo trabalhar com um Fork
+Server (onde os novos processo são alocados sobre demanda) ou Pre-Fork (no
+qual os novos processos nascem junto com o daemon pai). Também dá suporte ao
+daemon para trabalhar de forma assíncrona;
 
 =back
 
 =head1 Plugin Exemplo
 
-Este exemplo foi utilizado em uma apresentaE<ccedil>E<atilde>o sobre o
-software (L<http://develooper.com/talks/qpsmtpd-lt-oscon-2007.pdf>).
+Este exemplo foi utilizado em uma apresentação sobre o software
+(L<http://develooper.com/talks/qpsmtpd-lt-oscon-2007.pdf>).
 
 sub hook_quit {
     my $qp = shift->qp;
@@ -160,8 +154,7 @@ sub hook_quit {
     return DONE;
 }
 
-TambE<eacute>m existem muitos outros plugins jE<aacute> disponE<iacute>veis
-para o projeto:
+Também existem muitos outros plugins já disponíveis para o projeto:
 
 =over
 
@@ -199,15 +192,15 @@ TLS (SSL, Transport Level Security);
 
 =back
 
-=head1 ConclusE<atilde>o
+=head1 Conclusão
 
-Existem outras ferramentas qualificadas para esta tarefa. TambE<eacute>m
-destaco o B<Amavisd-New>, vide apresentaE<ccedil>E<atilde>o para o
-B<YAPC::Brasil::2009>:
-L<http://www.slideshare.net/otaviof/extendendo-o-amavisd-new>
+Existem outras ferramentas qualificadas para esta tarefa. Também destaco o
+B<Amavisd-New>, vide apresentação para o B<YAPC::Brasil::2009>:
+L<http://www.slideshare.net/otaviof/extendendo-o-amavisd-new>.
 
 =head1 Autor
 
-Otavio Fernandes (otaviof) L<otaviof@gmail.com>
+Otavio Fernandes (otaviof) <otaviof@gmail.com>.
 
 =cut
+
