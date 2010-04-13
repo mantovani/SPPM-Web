@@ -26,6 +26,8 @@ requires 'Class::CSV';
 requires 'Cache::FileCache';
 requires 'DateTime';
 requires 'B::Hooks::OP::Check';
+requires 'DBIx::Class::ForceUTF8';
+requires 'HTML::FormHandler::Moose';
 
 
 catalyst;
