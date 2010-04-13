@@ -8,38 +8,7 @@
             
 		<p>Bem Vindo, para desfrutar do Encontro Técnico é só se cadastrar abaixo:</p>
 
-        <form name="cadastro" action="[% c.uri_for('../','encontrotecnico','inserir') %]" method="post">
-            <table>
-                <tr>
-                    <td><font size="2">Nome Completo</font></td>
-                    <td><input type="text" name="nome" /><font size="1">Obrigatório</font></td>
-                </tr>
-                <tr>
-                    <td><font size="2">Email</font></td>
-                    <td><input type="text" name="email" /><font size="1">Obrigatório</font></td>
-                </tr>
-                <tr>
-                    <td><font size="2">Telefone Comercial</font></td>
-                    <td><input type="text" name="telefone_comercial" /></td>
-                </tr>
-                <tr>
-                    <td><font size="2">Telefone Celular</font></td>
-                    <td><input type="text" name="telefone_celular" /></td>
-                </tr>
-                <tr>
-                    <td><font size="2">Ramo de Trabalho</font></td>
-                    <td><input type="text" name="ramo" /><font size="1">Obrigatório</font></td>
-                </tr>
-                <tr>
-                    <td><font size="2">Como Ficou Sabendo?</font></td>
-                    <td><input type="text" name="sabendo" /><font size="1">Obrigatório</font></td>
-                </tr>
-                <tr>
-                    <input name="encontro_id" type="hidden" value="[% id %]" />
-                    <td><input type="submit" value="Enviar"/></td>
-                </tr>
-            </table>
-        </form>
+        [% form.render %]
 
 		</div>
           </div>

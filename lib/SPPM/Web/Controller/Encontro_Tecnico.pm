@@ -12,42 +12,35 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
     }
 
     final action enjoy (Int $id) as 'inscrever' under base {
-        my $check = $ctx->model('Encontros::EncontroTecnico')->find(
-            { id   => $id }
+        use aliased 'SPPM::Web::Form::EncontroTecnico' => 'FormCadas';
+        my $form = FormCadas->new(
+            item => $ctx->model('Encontros::Inscrico')->new_result({encontro_id => $id}),
         );
-        if ($check) {
-            $ctx->stash->{'id'} = $id;
-            $ctx->stash( template => 'encontrotecnico/inscrever.tt' );
-            $ctx->forward('View::TT');
-        } else {
-            $ctx->res->redirect($ctx->uri_for('../','index'));
-        }
-    }
-
-    final action subscribe as 'inserir' under base {
-    
-        if ( $ctx->req->method eq 'POST' ) {
-            my $infos = $ctx->req->body_params;                                                        
-                                                                                                       
-            my $check = $ctx->model('Encontros::Inscrico')->find(                                      
-                {   email       => $infos->{'email'},                                                  
-                    encontro_id => $infos->{'encontro_id'}                                             
-                }                                                                                      
-            );                                                                                         
-                                                                                                       
-            if ( !$check ) {                                                                           
-                my $insert
-                    = $ctx->model('Encontros::Inscrico')->create($infos);                              
+            
+        if ($ctx->req->method eq 'GET') {
+            my $check = $ctx->model('Encontros::EncontroTecnico')->find(
+                { id   => $id }
+            );
+            if ($check) {
+                $ctx->stash->{'form'} = $form;
+                $ctx->stash( template => 'encontrotecnico/inscrever.tt' );
+                $ctx->forward('View::TT');
+            }
+            else {
+                $ctx->res->redirect($ctx->uri_for('../','index'));
+            }
+        } 
+        elsif($ctx->req->method eq 'POST') {
+            $form->process(params => $ctx->req->params);
+            if($form->validated) {
                 $ctx->stash( template => 'encontrotecnico/ok.tt' );                                    
             } else {
-                $ctx->stash( template => 'encontrotecnico/not_ok.tt' );                                
-            }                                                                                          
-             $ctx->forward('View::TT');
+                $ctx->stash->{'form'} = $form;
+                $ctx->stash( template => 'encontrotecnico/inscrever.tt' );
+            }
+            $ctx->forward('View::TT');
         }
-        else {
-            $ctx->res->redirect($ctx->uri_for('../','index'));
-        }
-    } 
+    }
 
 }
 
