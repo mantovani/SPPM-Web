@@ -144,6 +144,9 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key( "email", "encontro_id" );
 
+__PACKAGE__->add_unique_constraint( constraint_pk => [qw/email encontro_id/],
+);
+
 # Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-12 03:11:43
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4eaVJE6h9DHw/+lmOMxueg
 

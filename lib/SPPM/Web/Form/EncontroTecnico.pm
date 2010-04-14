@@ -4,24 +4,28 @@ use HTML::FormHandler::Moose;
 extends 'HTML::FormHandler::Model::DBIC';
 
 use utf8;
+use strict;
+use warnings;
 use namespace::autoclean;
 use Moose::Util::TypeConstraints;
 
-has '+item_class' => ( default => 'Encontros::Inscrico' );
+subtype
+    'tamanho_min' => as 'Str',
+    => where { length($_) >= 6 },
+    => message {'Precisa ter pelo menos seis caracteres'};
 
 has_field 'nome' => (
     type             => 'Text',
-    label            => 'Nome do usuário',
+    label            => 'Nome Completo',
     required_message => 'Obrigatório',
     required         => 1,
+    apply            => ['tamanho_min'],
 );
 has_field 'email' => (
     type             => 'Email',
     label            => 'Email',
-    unique           => 1,
     required         => 1,
     required_message => 'Obrigatório',
-    unique_message   => 'Alguém já se cadastrou usando esse email',
 );
 
 has_field 'telefone_comercial' => (
