@@ -1,0 +1,7 @@
+<form id="form2" method="post" action="../check/[% id %]"> 
+<fieldset class="main_fieldset"> 
+<div><label class="label" for="email">Email: </label><input type="text" name="email" id="email" value="" /></div> 
+<input type="hidden" name="verificar" value="1" />
+<div><input type="submit" name="Participar" id="Participar" value="Participar!" /></div> 
+</fieldset></form> 
+

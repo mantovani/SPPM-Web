@@ -1,4 +1,4 @@
-package Schema::Result::Inscrico;
+package Schema::Result::Inscricao;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -8,17 +8,25 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components(qw/InflateColumn::DateTime ForceUTF8/);
+__PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
-Schema::Result::Inscrico
+Schema::Result::Inscricao
 
 =cut
 
-__PACKAGE__->table("inscricoes");
+__PACKAGE__->table("inscricao");
 
 =head1 ACCESSORS
+
+=head2 id
+
+  data_type: INT
+  default_value: undef
+  is_auto_increment: 1
+  is_nullable: 0
+  size: 11
 
 =head2 nome
 
@@ -38,22 +46,28 @@ __PACKAGE__->table("inscricoes");
 
   data_type: INT
   default_value: undef
-  is_nullable: 1
+  is_nullable: 0
   size: 11
 
 =head2 telefone_celular
 
   data_type: INT
   default_value: undef
-  is_nullable: 1
+  is_nullable: 0
   size: 11
 
-
-=head2 empresa
+=head2 empresa_trabalha
 
   data_type: VARCHAR
   default_value: undef
-  is_nullable: 1
+  is_nullable: 0
+  size: 250
+
+=head2 ramo_trabalha
+
+  data_type: VARCHAR
+  default_value: undef
+  is_nullable: 0
   size: 250
 
 =head2 sabendo
@@ -62,20 +76,6 @@ __PACKAGE__->table("inscricoes");
   default_value: undef
   is_nullable: 0
   size: 250
-
-=head2 ramo
-
-  data_type: VARCHAR
-  default_value: undef
-  is_nullable: 1
-  size: 250
-
-=head2 encontro_id
-
-  data_type: INT
-  default_value: undef
-  is_nullable: 0
-  size: 11
 
 =head2 observacao
 
@@ -87,6 +87,13 @@ __PACKAGE__->table("inscricoes");
 =cut
 
 __PACKAGE__->add_columns(
+    "id",
+    {   data_type         => "INT",
+        default_value     => undef,
+        is_auto_increment => 1,
+        is_nullable       => 0,
+        size              => 11,
+    },
     "nome",
     {   data_type     => "VARCHAR",
         default_value => undef,
@@ -102,19 +109,25 @@ __PACKAGE__->add_columns(
     "telefone_comercial",
     {   data_type     => "INT",
         default_value => undef,
-        is_nullable   => 1,
+        is_nullable   => 0,
         size          => 11
     },
     "telefone_celular",
     {   data_type     => "INT",
         default_value => undef,
-        is_nullable   => 1,
+        is_nullable   => 0,
         size          => 11
     },
-    "empresa",
+    "empresa_trabalha",
     {   data_type     => "VARCHAR",
         default_value => undef,
-        is_nullable   => 1,
+        is_nullable   => 0,
+        size          => 250,
+    },
+    "ramo_trabalha",
+    {   data_type     => "VARCHAR",
+        default_value => undef,
+        is_nullable   => 0,
         size          => 250,
     },
     "sabendo",
@@ -123,18 +136,6 @@ __PACKAGE__->add_columns(
         is_nullable   => 0,
         size          => 250,
     },
-    "ramo",
-    {   data_type     => "VARCHAR",
-        default_value => undef,
-        is_nullable   => 1,
-        size          => 250,
-    },
-    "encontro_id",
-    {   data_type     => "INT",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 11
-    },
     "observacao",
     {   data_type     => "VARCHAR",
         default_value => undef,
@@ -142,13 +143,25 @@ __PACKAGE__->add_columns(
         size          => 250,
     },
 );
-__PACKAGE__->set_primary_key( "email", "encontro_id" );
+__PACKAGE__->set_primary_key("id");
 
-__PACKAGE__->add_unique_constraint( constraint_pk => [qw/email encontro_id/],
+=head1 RELATIONS
+
+=head2 participars
+
+Type: has_many
+
+Related object: L<Schema::Result::Participar>
+
+=cut
+
+__PACKAGE__->has_many( "participars", "Schema::Result::Participar",
+    { "foreign.inscrito" => "self.id" },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-12 03:11:43
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:4eaVJE6h9DHw/+lmOMxueg
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 14:43:16
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:koZiC2YNOvkVcioCk51erQ
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;
+

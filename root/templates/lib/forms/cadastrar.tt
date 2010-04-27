@@ -1,0 +1,19 @@
+<form id="form22" method="post" action="../check/[% id %]">
+<fieldset class="main_fieldset"> 
+<div><label class="label" for="nome">Nome Completo: </label><input type="text" name="nome" id="nome" value="" /></div> 
+ 
+<div><label class="label" for="email">Email: </label><input type="text" name="email" id="email" value="" /></div> 
+ 
+<div><label class="label" for="telefone_comercial">Telefone Comercial: </label><input type="text" name="telefone_comercial" id="telefone_comercial" value="" /></div> 
+ 
+<div><label class="label" for="telefone_celular">Telefone Celular: </label><input type="text" name="telefone_celular" id="telefone_celular" value="" /></div> 
+ 
+<div><label class="label" for="ramo">Ramo de Trabalho: </label><input type="text" name="ramo" id="ramo" value="" /></div> 
+ 
+<div><label class="label" for="empresa">Nome da Empresa: </label><input type="text" name="empresa" id="empresa" value="" /></div> 
+ 
+<div><label class="label" for="sabendo">Ficou Sabendo: </label><input type="text" name="sabendo" id="sabendo" value="" /></div> 
+<input type="hidden" name="verificar" value="2" /> 
+<div><input type="submit" name="Participar" id="Participar" value="Participar" /></div> 
+</fieldset></form> 
+

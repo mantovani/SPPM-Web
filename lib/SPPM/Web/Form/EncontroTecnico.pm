@@ -25,6 +25,8 @@ has_field 'email' => (
     type             => 'Email',
     label            => 'Email',
     required         => 1,
+    unique           => 1,
+    unique_message   => 'Essa email já foi cadastrado',
     required_message => 'Obrigatório',
 );
 
@@ -44,12 +46,20 @@ has_field 'telefone_celular' => (
     required         => 1,
 );
 
-has_field 'ramo' => (
+has_field 'ramo_trabalha' => (
     type             => 'Text',
     label            => 'Ramo de Trabalho',
     required_message => 'Obrigatório',
     required         => 1,
 );
+
+has_field 'empresa_trabalha' => (
+    type             => 'Text',
+    label            => 'Empresa que Trabalha',
+    required_message => 'Obrigatório',
+    required         => 1,
+);
+
 has_field 'sabendo' => (
     type             => 'Text',
     label            => 'Como ficou sabendo ?',
