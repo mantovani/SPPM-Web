@@ -1,4 +1,4 @@
-package Schema::Result::Inscricao;
+package SPPM::Schema::Result::Inscricao;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -155,7 +155,7 @@ Related object: L<Schema::Result::Participar>
 
 =cut
 
-__PACKAGE__->has_many( "participars", "Schema::Result::Participar",
+__PACKAGE__->has_many( "participars", "SPPM::Schema::Result::Participar",
     { "foreign.inscrito" => "self.id" },
 );
 

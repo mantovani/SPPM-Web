@@ -5,11 +5,11 @@ model SPPM::Web::Model::Encontros extends
 
         $CLASS->config(
 
-            schema_class => 'Schema',
+            schema_class => 'SPPM::Schema',
 
             connect_info => {
              dsn      => 'dbi:mysql:dbname=sppm',
-             user     => 'root',
+             user     => 'sppm',
              password => '4rg63a',
         }
         

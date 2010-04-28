@@ -1,4 +1,4 @@
-package Schema::Result::EncontrosTecnico;
+package SPPM::Schema::Result::EncontrosTecnico;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -97,7 +97,7 @@ Related object: L<Schema::Result::Participar>
 
 __PACKAGE__->has_many(
   "participars",
-  "Schema::Result::Participar",
+  "SPPM::Schema::Result::Participar",
   { "foreign.encontro" => "self.id" },
 );
 

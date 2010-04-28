@@ -1,4 +1,4 @@
-package Schema::Result::Participar;
+package SPPM::Schema::Result::Participar;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -71,7 +71,7 @@ Related object: L<Schema::Result::EncontrosTecnico>
 
 __PACKAGE__->belongs_to(
   "encontro",
-  "Schema::Result::EncontrosTecnico",
+  "SPPM::Schema::Result::EncontrosTecnico",
   { id => "encontro" },
   {},
 );
@@ -86,7 +86,7 @@ Related object: L<Schema::Result::Inscricao>
 
 __PACKAGE__->belongs_to(
   "inscrito",
-  "Schema::Result::Inscricao",
+  "SPPM::Schema::Result::Inscricao",
   { id => "inscrito" },
   {},
 );

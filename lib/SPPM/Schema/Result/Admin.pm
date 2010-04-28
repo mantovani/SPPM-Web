@@ -1,4 +1,4 @@
-package Schema::Result::Admin;
+package SPPM::Schema::Result::Admin;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
