@@ -82,7 +82,7 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
             # - Verifica se já tem 50 inscritos na tabela.
 
             my $check_count = $ctx->stash->{'db_participar'}->search(encontro => $id)->count;
-            if ($check_count >= 1) {
+            if ($check_count >= 50) {
                 $ctx->stash->{'db_encontros'}->find({ id => $id })->update({ativo => 0 });
             }
 
