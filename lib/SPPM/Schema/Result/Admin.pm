@@ -1,4 +1,4 @@
-package SPPM::Schema::Result::Admin;
+package Schema::Result::Admin;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -8,11 +8,10 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
-SPPM::Schema::Result::Admin
+Schema::Result::Admin
 
 =cut
 
@@ -55,8 +54,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("nome");
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 04:18:32
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Mal18jYei4SE6k+R5b24yA
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 11:19:15
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1z/3+PsQAZqjas/nA5lu8Q
 
 
 

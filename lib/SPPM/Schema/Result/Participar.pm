@@ -1,4 +1,4 @@
-package SPPM::Schema::Result::Participar;
+package Schema::Result::Participar;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -8,12 +8,10 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components('ForceUTF8');
-
 
 =head1 NAME
 
-SPPM::Schema::Result::Participar
+Schema::Result::Participar
 
 =cut
 
@@ -65,13 +63,13 @@ __PACKAGE__->set_primary_key("encontro", "inscrito");
 
 Type: belongs_to
 
-Related object: L<SPPM::Schema::Result::EncontrosTecnico>
+Related object: L<Schema::Result::EncontrosTecnico>
 
 =cut
 
 __PACKAGE__->belongs_to(
   "encontro",
-  "SPPM::Schema::Result::EncontrosTecnico",
+  "Schema::Result::EncontrosTecnico",
   { id => "encontro" },
   {},
 );
@@ -80,20 +78,20 @@ __PACKAGE__->belongs_to(
 
 Type: belongs_to
 
-Related object: L<SPPM::Schema::Result::Inscricao>
+Related object: L<Schema::Result::Inscricao>
 
 =cut
 
 __PACKAGE__->belongs_to(
   "inscrito",
-  "SPPM::Schema::Result::Inscricao",
+  "Schema::Result::Inscricao",
   { id => "inscrito" },
   {},
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 04:18:32
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:e2LKh/xaz5mZ23BvannNdQ
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 11:19:15
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:h99+bfTtC2hXfyibapEWaA
 
 
 
