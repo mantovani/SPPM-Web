@@ -14,9 +14,16 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
     }
 
     final action index as '' under base {
-        $ctx->stash(encontros => [$ctx->stash->{'db_encontros'}->search({ativo => 1})]);
+
+        $ctx->stash(
+            encontros               => [$ctx->stash->{'db_encontros'}->search({ativo => 1})],
+            check_encontros         => $ctx->stash->{'db_encontros'}->find({ativo => 1}),
+            encontros_encerrados    => [$ctx->stash->{'db_encontros'}->search({ativo => 0})],
+            check_encerrados        => $ctx->stash->{'db_encontros'}->find({ativo => 0})
+            );
         $ctx->stash( template => 'encontrotecnico/listar.tt' );
         $ctx->forward('View::TT');
+
     }
 
     final action enjoy (Int $id) as 'inscrever' under base {
