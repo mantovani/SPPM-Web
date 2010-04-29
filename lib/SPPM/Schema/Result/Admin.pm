@@ -1,4 +1,4 @@
-package Schema::Result::Admin;
+package SPPM::Schema::Result::Admin;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -11,7 +11,7 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-Schema::Result::Admin
+SPPM::Schema::Result::Admin
 
 =cut
 
@@ -54,8 +54,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("nome");
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 11:19:15
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1z/3+PsQAZqjas/nA5lu8Q
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 18:41:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0GvsyAIwOAYFKgylpcPLzw
 
 
 

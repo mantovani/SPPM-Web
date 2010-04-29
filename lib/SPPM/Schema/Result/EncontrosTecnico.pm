@@ -1,4 +1,4 @@
-package Schema::Result::EncontrosTecnico;
+package SPPM::Schema::Result::EncontrosTecnico;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -11,7 +11,7 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-Schema::Result::EncontrosTecnico
+SPPM::Schema::Result::EncontrosTecnico
 
 =cut
 
@@ -48,6 +48,20 @@ __PACKAGE__->table("encontros_tecnicos");
   is_nullable: 0
   size: 19
 
+=head2 ativo
+
+  data_type: TINYINT
+  default_value: undef
+  is_nullable: 1
+  size: 1
+
+=head2 fotos
+
+  data_type: VARCHAR
+  default_value: undef
+  is_nullable: 1
+  size: 250
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -80,6 +94,15 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => 19,
   },
+  "ativo",
+  { data_type => "TINYINT", default_value => undef, is_nullable => 1, size => 1 },
+  "fotos",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 250,
+  },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -89,19 +112,19 @@ __PACKAGE__->set_primary_key("id");
 
 Type: has_many
 
-Related object: L<Schema::Result::Participar>
+Related object: L<SPPM::Schema::Result::Participar>
 
 =cut
 
 __PACKAGE__->has_many(
   "participars",
-  "Schema::Result::Participar",
+  "SPPM::Schema::Result::Participar",
   { "foreign.encontro" => "self.id" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 11:19:15
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ckyrspgnkyOqKf12Po0lbQ
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 18:41:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lu4sFJbPQUsX1/09/cPHCQ
 
 
 

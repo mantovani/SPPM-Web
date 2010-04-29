@@ -1,4 +1,4 @@
-package Schema::Result::Participar;
+package SPPM::Schema::Result::Participar;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
@@ -11,7 +11,7 @@ use base 'DBIx::Class::Core';
 
 =head1 NAME
 
-Schema::Result::Participar
+SPPM::Schema::Result::Participar
 
 =cut
 
@@ -63,13 +63,13 @@ __PACKAGE__->set_primary_key("encontro", "inscrito");
 
 Type: belongs_to
 
-Related object: L<Schema::Result::EncontrosTecnico>
+Related object: L<SPPM::Schema::Result::EncontrosTecnico>
 
 =cut
 
 __PACKAGE__->belongs_to(
   "encontro",
-  "Schema::Result::EncontrosTecnico",
+  "SPPM::Schema::Result::EncontrosTecnico",
   { id => "encontro" },
   {},
 );
@@ -78,20 +78,20 @@ __PACKAGE__->belongs_to(
 
 Type: belongs_to
 
-Related object: L<Schema::Result::Inscricao>
+Related object: L<SPPM::Schema::Result::Inscricao>
 
 =cut
 
 __PACKAGE__->belongs_to(
   "inscrito",
-  "Schema::Result::Inscricao",
+  "SPPM::Schema::Result::Inscricao",
   { id => "inscrito" },
   {},
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 11:19:15
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:h99+bfTtC2hXfyibapEWaA
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 18:41:58
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SpEWUG1Z5hRz+b2BhDZZ3g
 
 
 
