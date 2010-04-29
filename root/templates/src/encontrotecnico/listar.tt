@@ -10,15 +10,19 @@
 
             <table>
             <tr><th>Nome</th><th>Lugar</th><th>Data - Hora</th><th>Inscrever</th></tr>
-            [% FOREACH encontro IN encontros -%]
-                <tr>
-                    <td><font size="3">[% encontro.nome %]</font></td>
-                    <td><font size="3">[% encontro.local %]</font></td>
-                    <td><font size="3">[% encontro.data %]</font></td>
-                    <td><a href="[% c.uri_for('../','encontrotecnico','inscrever',encontro.id) %]"><font size="3">Participar!</font></a></td>
-                    <td></td>
-                </tr>
-            [% END -%]
+            
+                [% FOREACH encontro IN encontros %]
+                    <tr>
+                        <td><font size="3">[% encontro.nome %]</font></td>
+                        <td><font size="3">[% encontro.local %]</font></td>
+                        <td><font size="3">[% encontro.data %]</font></td>
+                        <td><a href="[% c.uri_for('../','encontrotecnico','inscrever',encontro.id) %]"><font size="3">Participar!</font></a></td>
+                        <td></td>
+                    </tr>
+                [% END %]
+
+
+            
             </table>
 
 		</div>

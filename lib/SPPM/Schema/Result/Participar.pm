@@ -13,7 +13,7 @@ __PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
-Schema::Result::Participar
+SPPM::Schema::Result::Participar
 
 =cut
 
@@ -65,7 +65,7 @@ __PACKAGE__->set_primary_key("encontro", "inscrito");
 
 Type: belongs_to
 
-Related object: L<Schema::Result::EncontrosTecnico>
+Related object: L<SPPM::Schema::Result::EncontrosTecnico>
 
 =cut
 
@@ -80,7 +80,7 @@ __PACKAGE__->belongs_to(
 
 Type: belongs_to
 
-Related object: L<Schema::Result::Inscricao>
+Related object: L<SPPM::Schema::Result::Inscricao>
 
 =cut
 
@@ -92,8 +92,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 14:43:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:0tACjU8XwEAk7mqudA0T4g
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 04:18:32
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:e2LKh/xaz5mZ23BvannNdQ
 
 
 

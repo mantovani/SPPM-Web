@@ -12,7 +12,7 @@ __PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
-Schema::Result::Admin
+SPPM::Schema::Result::Admin
 
 =cut
 
@@ -55,8 +55,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("nome");
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 14:43:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Lj+2EV41JXz2DGQprZB6LA
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 04:18:32
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Mal18jYei4SE6k+R5b24yA
 
 
 

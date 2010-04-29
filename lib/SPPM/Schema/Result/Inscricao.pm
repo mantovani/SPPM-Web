@@ -12,7 +12,7 @@ __PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
-Schema::Result::Inscricao
+SPPM::Schema::Result::Inscricao
 
 =cut
 
@@ -87,61 +87,60 @@ __PACKAGE__->table("inscricao");
 =cut
 
 __PACKAGE__->add_columns(
-    "id",
-    {   data_type         => "INT",
-        default_value     => undef,
-        is_auto_increment => 1,
-        is_nullable       => 0,
-        size              => 11,
-    },
-    "nome",
-    {   data_type     => "VARCHAR",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 250,
-    },
-    "email",
-    {   data_type     => "VARCHAR",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 250,
-    },
-    "telefone_comercial",
-    {   data_type     => "INT",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 11
-    },
-    "telefone_celular",
-    {   data_type     => "INT",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 11
-    },
-    "empresa_trabalha",
-    {   data_type     => "VARCHAR",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 250,
-    },
-    "ramo_trabalha",
-    {   data_type     => "VARCHAR",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 250,
-    },
-    "sabendo",
-    {   data_type     => "VARCHAR",
-        default_value => undef,
-        is_nullable   => 0,
-        size          => 250,
-    },
-    "observacao",
-    {   data_type     => "VARCHAR",
-        default_value => undef,
-        is_nullable   => 1,
-        size          => 250,
-    },
+  "id",
+  {
+    data_type => "INT",
+    default_value => undef,
+    is_auto_increment => 1,
+    is_nullable => 0,
+    size => 11,
+  },
+  "nome",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 0,
+    size => 250,
+  },
+  "email",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 0,
+    size => 250,
+  },
+  "telefone_comercial",
+  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+  "telefone_celular",
+  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+  "empresa_trabalha",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 0,
+    size => 250,
+  },
+  "ramo_trabalha",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 0,
+    size => 250,
+  },
+  "sabendo",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 0,
+    size => 250,
+  },
+  "observacao",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 250,
+  },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -151,16 +150,21 @@ __PACKAGE__->set_primary_key("id");
 
 Type: has_many
 
-Related object: L<Schema::Result::Participar>
+Related object: L<SPPM::Schema::Result::Participar>
 
 =cut
 
-__PACKAGE__->has_many( "participars", "SPPM::Schema::Result::Participar",
-    { "foreign.inscrito" => "self.id" },
+__PACKAGE__->has_many(
+  "participars",
+  "SPPM::Schema::Result::Participar",
+  { "foreign.inscrito" => "self.id" },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-27 14:43:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:koZiC2YNOvkVcioCk51erQ
+
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 04:18:32
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qXgBpajwgEXIHaBrlgfr2w
+
+
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;

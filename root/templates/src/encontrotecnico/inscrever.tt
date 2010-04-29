@@ -5,8 +5,9 @@
           <div class="top">
             <h2>Cadastrar</h2>
             <div class="whois">
-            
-		<p>Bem Vindo, para desfrutar do Encontro Técnico é só se cadastrar abaixo:</p>
+
+		
+        <p>Bem Vindo, para desfrutar do Encontro Técnico é só se cadastrar abaixo:</p>
 
         [% form.render %]
 

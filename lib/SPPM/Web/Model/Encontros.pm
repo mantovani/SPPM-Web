@@ -9,7 +9,7 @@ model SPPM::Web::Model::Encontros extends
 
             connect_info => {
              dsn      => 'dbi:mysql:dbname=sppm',
-             user     => 'sppm',
+             user     => 'root',
              password => '4rg63a',
         }
         
