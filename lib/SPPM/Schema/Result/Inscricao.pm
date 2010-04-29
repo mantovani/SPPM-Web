@@ -93,10 +93,10 @@ __PACKAGE__->table("inscricao");
 
 =head2 data_inscricao
 
-  data_type: DATETIME
-  default_value: undef
+  data_type: TIMESTAMP
+  default_value: CURRENT_TIMESTAMP
   is_nullable: 0
-  size: 19
+  size: 14
 
 =cut
 
@@ -164,10 +164,10 @@ __PACKAGE__->add_columns(
   },
   "data_inscricao",
   {
-    data_type => "DATETIME",
-    default_value => undef,
+    data_type => "TIMESTAMP",
+    default_value => \"CURRENT_TIMESTAMP",
     is_nullable => 0,
-    size => 19,
+    size => 14,
   },
 );
 __PACKAGE__->set_primary_key("id");
@@ -189,8 +189,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 18:41:58
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5gx8nGu2gvcA0vEZ5k1d6g
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 20:06:13
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mvkPiqlGfOUVOUdEseF6BA
 
 
 
