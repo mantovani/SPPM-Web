@@ -30,7 +30,8 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
         $ctx->stash->{'id'} = $id;
         use aliased 'SPPM::Web::Form::EncontroTecnico' => 'FormCadas';
         my $form = FormCadas->new(
-            item => $ctx->stash->{'db_inscricao'}->new_result({id => ''}),
+            item => $ctx->stash->{'db_inscricao'}->new_result({
+            }),
         );
 
         if ($ctx->req->method eq 'GET') {
@@ -55,7 +56,7 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
                 $ctx->forward('check_exists');
 
             } else {
-                $form->process(params => $ctx->req->params);
+                $form->process(params => $ctx->req->params, ip => $ctx->req->hostname);
                 if($form->validated) {
 
                   $ctx->forward('check_exists');

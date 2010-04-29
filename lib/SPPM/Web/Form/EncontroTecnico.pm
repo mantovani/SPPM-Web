@@ -67,6 +67,13 @@ has_field 'sabendo' => (
     required         => 1,
 );
 
+has 'ip' => ( isa => 'Str', is => 'rw' );
+
+before 'update_model' => sub {
+    my $self = shift;
+     $self->item->ip( $self->ip );
+};
+
 has_field 'Participar' => ( type => 'Submit' );
 no HTML::FormHandler::Moose;
 1;
