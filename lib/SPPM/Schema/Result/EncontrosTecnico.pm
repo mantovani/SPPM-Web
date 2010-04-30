@@ -63,6 +63,20 @@ __PACKAGE__->table("encontros_tecnicos");
   is_nullable: 1
   size: 250
 
+=head2 max_participantes
+
+  data_type: INT
+  default_value: undef
+  is_nullable: 1
+  size: 11
+
+=head2 release_evento
+
+  data_type: TEXT
+  default_value: undef
+  is_nullable: 1
+  size: 65535
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -104,6 +118,15 @@ __PACKAGE__->add_columns(
     is_nullable => 1,
     size => 250,
   },
+  "max_participantes",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  "release_evento",
+  {
+    data_type => "TEXT",
+    default_value => undef,
+    is_nullable => 1,
+    size => 65535,
+  },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -124,8 +147,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 20:06:13
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:D/YD+X+8RUVRRUxWE1/HYA
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-30 05:46:05
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:v+zEiOK00xTXfP4Fmw+xeg
 
 
 

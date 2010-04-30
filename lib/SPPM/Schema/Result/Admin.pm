@@ -55,8 +55,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("nome");
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-29 20:06:13
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VMxtKX1Quh4zOt8SOfLvgQ
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-30 05:46:05
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KEoi71D+c7l4Wb4l4vTWrw
 
 
 

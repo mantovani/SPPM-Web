@@ -38,7 +38,7 @@
             <p>Encontros Encerrados</p>
 
             <table>
-            <tr><th>Nome</th><th>Lugar</th><th>Data - Hora</th><th>Fotos</th></tr>
+            <tr><th>Nome</th><th>Lugar</th><th>Data - Hora</th><th>Fotos</th><th>TESTE</th></tr>
             
                 [% FOREACH encontro IN encontros_encerrados %]
                     <tr>

@@ -6,8 +6,14 @@
             <h2>Cadastrar</h2>
             <div class="whois">
 
+
+        <h4>Sobre o Evento</h4>
+
+        [% release.release_evento %]
 		
-        <p>Bem Vindo, para desfrutar do Encontro Técnico é só se cadastrar abaixo:</p>
+
+        <hr />
+        <p>Para desfrutar do Encontro Técnico é só se cadastrar abaixo:</p>
 
         [% form.render %]
 

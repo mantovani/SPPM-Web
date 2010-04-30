@@ -27,7 +27,14 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
     }
 
     final action enjoy (Int $id) as 'inscrever' under base {
+
+        $ctx->stash(
+            release => $ctx->stash->{'db_encontros'}->find({id => $id})
+        );
         $ctx->stash->{'id'} = $id;
+
+        # - Form
+
         use aliased 'SPPM::Web::Form::EncontroTecnico' => 'FormCadas';
         my $form = FormCadas->new(
             item => $ctx->stash->{'db_inscricao'}->new_result({
@@ -75,15 +82,19 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
         my $id = $ctx->stash->{'id'};
         my $inscrito = $ctx->stash->{'db_inscricao'}->find({email => $ctx->req->params->{'email'}});
 
-        # - Checa se o email do inscrito já está cadastrado no evento(id do evento => $id )
+        # - Checa se o email do inscrito já está cadastrado no evento(id do evento => $id ).
 
         if (not $ctx->stash->{'db_participar'}->search({encontro => $id})->find({inscrito => $inscrito->id})) {
-            my $participar = $ctx->stash->{'db_participar'}->create({encontro  => $id, inscrito => $inscrito->id});
+            $ctx->stash->{'db_participar'}->create({encontro  => $id, inscrito => $inscrito->id});
 
-            # - Verifica se já tem 50 inscritos na tabela.
+            # - Verifica se já passou o número máximo de participantes.
 
+            my $max_participantes = $ctx->stash->{'db_encontros'}->find({id => $id})->max_participantes;
             my $check_count = $ctx->stash->{'db_participar'}->search(encontro => $id)->count;
-            if ($check_count >= 50) {
+            if ($check_count >= $max_participantes) {
+
+                # - Ultrapassou agora o encontro_tecnicos não está mais disponível para outro cadastro.
+
                 $ctx->stash->{'db_encontros'}->find({ id => $id })->update({ativo => 0 });
             }
 
