@@ -5,8 +5,13 @@
           <div class="top">
             <h2>Encontro t&eacute;cnico</h2>
             <div class="whois">
-            
-		<p>Parabéns você foi inscrito com sucesso</p>
+           
+		<p>Parabéns você foi inscrito com sucesso!</p>
+        
+        <img src="/static/images/incentive_conhecimento.jpg"></img><br />
+        <font size="4">Você deseja contribuir financeiramente com os encontros técnicos da São Paulo Perl Mongers ?</font>
+
+        [% INCLUDE site/doacao.tt %]
 
 
 		</div>
