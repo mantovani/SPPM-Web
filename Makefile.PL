@@ -28,8 +28,8 @@ requires 'DateTime';
 requires 'B::Hooks::OP::Check';
 requires 'DBIx::Class::ForceUTF8';
 requires 'HTML::FormHandler::Moose';
-
-
+requires 'DateTime::Format::MySQL';
+requires 'Catalyst::Controller::reCAPTCHA';
 catalyst;
 
 install_script glob('script/*.pl');

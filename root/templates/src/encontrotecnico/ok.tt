@@ -6,14 +6,17 @@
             <h2>Encontro t&eacute;cnico</h2>
             <div class="whois">
            
-		<p>Parabéns você foi inscrito com sucesso!</p>
+		<p>Você foi inscrito com sucesso!</p>
         
-        <img src="/static/images/incentive_conhecimento.jpg"></img><br />
-        <font size="4">Você deseja contribuir financeiramente com os encontros técnicos da São Paulo Perl Mongers ?</font>
+        <p>Este evento &eacute; gratuito, por&eacute;m nos convidamos os 
+        participantes a contribuirem com o quanto sentirem-se a vontade,
+        pois o objetivo desta contribui&ccedil;&atilde;o &eacute; 
+        organizar mais eventos t&eacute;cnicos relacionados a linguagem, nos
+        sugerimos o valor de R$ 35,00 e no m&iacute;nimo R$ 0,00!</p>
 
-        [% INCLUDE site/doacao.tt %]
-
-
+        <p>Para mais informa&ccedil;&otilde;es, 
+        <a href="/vaquinha">conhe&ccedil;a a nossa vaquinha!</a>
+        
 		</div>
           </div>
         </div>

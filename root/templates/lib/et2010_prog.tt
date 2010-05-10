@@ -1,0 +1,75 @@
+
+<h2>Programação</h2>
+
+<h4>13:00 - Credenciamento</h4>
+<h4>13:30 - Abertura</h4>
+<h4>13:50 -  "HTTP, Requisição e Resposta" por Thiago Rondon. (Português)</h4>
+<p>Uma visão geral do funcionamento do protocolo http, e como isto pode
+auxiliar em estrategias de desenvolvimento web, técnicas para administradores
+de sistemas e de redes em relação ao protocolo web.<p>
+
+<p>Tags: Apache, nginx, lighttpd, plack, fastcgi, fcgid, firebug, javascript,
+css, search tecs, memcache, asset hosts, cache busters, CDN.</p>
+
+<h4>14:30 - "Web frameworks don't matter" por Tomas Doran. (Inglês)</h4>
+<p>A talk about the design and architecture of large applications and why your
+choice of web framework (and the amount of your code which is tied to your
+chosen framework) should be a small part of that. The talk will take a step
+beyond the Catalyst tutorial and the recently published book, and assume that
+the audience is writing (or designing) a non-trivial web application.</p>
+
+<p>Tags.: Catalyst, Moose, OO, Design, Loose coupling, Data modeling,
+Scaleability</p>
+
+<h4>15:20 - Formulários para a Web Moderna por Eden Cardin. (Português)</h4>
+
+<p>Técnicas para construção de formulários web, com validação e verbosidade,
+como listas de ítens selecionáveis, "wizards" e múltipla submissão.</p>
+
+<p>Tags: formulário, validação, wizard, catalyst, DBIx::Class, Moose</p>
+
+<h4>16:00 - Real time system performance monitoring por Tomas Doran.
+(Inglês).</h4>
+
+<p>Building the correct level of logging and activity auditing into an
+application, without having a significant effect on the application's
+performance is a non-trivial task.</p>
+
+<p>Tags: MooseX::Storage, Joose, Javascript, Flash, RabbitMQ, ExtJS, YUI,
+AMQP, JSON, AnyEvent, Coro</p>
+
+<h4>17:10 Large platform architecture in (mostly) perl - an illustrated tour
+por Tomas Doran. (Inglês)</h4>
+
+<p>I work for a company called state51 (www.state51.co.uk) in East London. We
+provide a technology platform enabling digital distribution of music. This
+platform is used by a number of companies to provide digital distribution
+services for a large sector of the music industry (large companies and
+independents).</p>
+
+<p>This talk will describe the architecture of our entire platform in depth.
+It
+will focus on various important subsystems within the platform, explaining
+what
+technology and architectures work well - covering the system constraints and
+requirements, then going on to explain how the system is architected to fulfil
+those requirements.</p>
+
+<p>I will look into the evolution of each major component of the system,
+focusing
+on how the system has had to change over it's lifetime to keep fulfilling
+client needs. This includes correction or mitigation of architectural mistakes
+made in the past.</p>
+
+<p>This talk will be of interest to anyone who would like to see the 'bigger
+picture' of a mature perl based technology platform. It will aim to explain my
+perspective on how to plan for changing business requirements, how to scale
+production systems, how to architect those systems to be easy to monitor and
+debug and how to achieve loose coupling and enable rapid change whilst keeping
+the system running.</p>
+
+<p>Tags: Web, HTTP, Architecture, MogileFS, nginx, lighttpd, mod_perl,
+memcached, Varnish, MySQL, Scaling, RabbitMQ, Catalyst, Moose, Tangram, LDAP,
+JSON, FTP, APIs, Caching, SOAP, perl on Win32, vmware.</p>
+
+

@@ -74,7 +74,7 @@ before 'update_model' => sub {
      $self->item->ip( $self->ip );
 };
 
-has_field 'Participar' => ( type => 'Submit' );
+has_field 'Participar' => ( type => 'Submit', value => "Enviar");
 no HTML::FormHandler::Moose;
 1;
 

@@ -8,7 +8,8 @@ use lib "$FindBin::Bin/../lib";
 
 use SPPM::Schema;
 
-my $schema = SPPM::Schema->connect('dbi:mysql:dbname=sppm', 'sppm', '4rg63a');
+my $schema =
+SPPM::Schema->connect('dbi:mysql:dbname=sppm:host=db.sao-paulo.pm.org', 'sppm_site', '4rg63a');
 
 sub run {
   my($sql) = @_;

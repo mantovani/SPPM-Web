@@ -1,0 +1,36 @@
+
+
+<h2>Perguntas e respostas.</h2>
+
+<h4>O que &eacute;?</h4>
+
+<p>É um evento voltado para gestores e técnicos que trabalham diariamente com
+Web.</p>
+
+
+<h4>Quando ?</h4>
+<p>Dia 10 de Julho de 2010 das 13:00hs às 18:30hs.</p>
+
+<h4>Onde ?</h4>
+<p>Na sede do IG na rua Amauri, 299 - São Paulo.</p>
+
+<h4>Quanto custa ?</h4>
+<p>Nada. Nossos patrocinadores e organizadores são ótimos, mas fique à vontade
+se desejar fazer uma contribuição voluntária (<a href="[% c.uri_for('/vaquinha') %]">vaquinha</a>) para ajudar a custear enventos
+futuros.
+
+<h4>O que eu ganho?</h4>
+<p>Você vai conhecer algumas das mais elegantes e eficientes tecnologias de
+desenvolvimento para a Web do momento, e como elas estão sendo aplicadas ao
+redor do mundo. Você ainda pode ser o felizardo ganhador de um dos brindes
+sorteados!</p>
+
+<h4>Vai ter comida, coffee-break, etc?</h4>
+<p>Não, mas do outro lado da rua tem um Starbucks e uma Pizza-Hutt.</p>
+
+<h4>Vou ter acesso a rede Wireless?</h4>
+<p>Não. Que coisa deselegante digitar enquanto alguém está falando!</p>
+
+<h4>Haverá Happy Hour depois?</h4>
+<p>Com certeza!</p>
+

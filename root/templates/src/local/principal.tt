@@ -5,6 +5,11 @@
        <center>
        </center> 
 	<div id="container_bottom">
+        <center>
+            <a href="[% c.uri_for('/encontrotecnico', 'inscrever', 1) %]">
+          <img src="/static/images/et_2010_jul_insc.jpg" border="0"></a>
+        </center>
+          <br/><br/>
           <div class="top">
             <div class="top_left">
               <div class="widget-sobre-o-que-e-tudo-isso-afinal widget">
@@ -63,18 +68,6 @@
 </div>
 
 		<div class="side">
-
-<center>
-
-<script
-src="http://s6.smrtlnks.com/users/GenerateBlueLinks.php?feedUrl=http%3A%2F%2Fwww.oreillynet.com%2Fpub%2Ffeed%2F29%3Ftopic%3D37&amp;title=Novos%20Livros%20de%20Perl&amp;skin=white&amp;width=400&amp;numItems=4&amp;type=grid&amp;display=thumbs&amp;auto=yes&amp;topLogo=oreilly.jpg&amp;logoLink=http://www.oreilly.com&amp;feedTitleLink=viewall&amp;columns=4&amp;xsl=oreilly.xsl&amp;blueSiteId=oreilly"
-type="text/javascript"></script>
-
-</center>
-
-        </div>
-
-        <div class="side">
 
 		<center>
           	<table><tr><td>

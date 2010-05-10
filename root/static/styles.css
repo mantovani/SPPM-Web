@@ -956,11 +956,40 @@ a.expand {
     float:left;
   }
 
+Palestrar
+{
+    font:12px Arial, Helvetica, sans-serif;
+    width: 15em;
+    float: right;
+    text-align: right;
+    margin-right: 0.5em;
+    display: block
+}
+
 label
 {
+    font:12px Arial, Helvetica, sans-serif;
     width: 15em;
     float: left;
     text-align: right;
     margin-right: 0.5em;
     display: block
 }
+
+
+fieldset{
+    border: 0;
+}
+
+fieldset.area{
+    border: 1px solid;
+    color: #333333;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+fieldset.area legend{
+    font-weight: bolder;
+}
+
+

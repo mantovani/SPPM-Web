@@ -1,23 +1,26 @@
 [% META title=" Cadastrar " current_page="encontrotecnico" %]
 
+
+
       <div id="container_top">
         <div id="container_bottom">
           <div class="top">
-            <h2>Cadastrar</h2>
+            <h1>Encontro T&eacute;cnico de Inverno da
+            S&atilde;o Paulo
+            Perl Mongers</h1>
             <div class="whois">
 
 
-        <h4>Sobre o Evento</h4>
-
-        [% release.release_evento %]
-		
-
-        <hr />
-        <p>Para desfrutar do Encontro Técnico é só se cadastrar abaixo:</p>
-
+        <h2>Cadastro</h2>
+        <br/>
         [% form.render %]
+        <br/>
+        [% INCLUDE et2010_prog.tt %]	
 
-		</div>
+
+        [% INCLUDE et2010_faq.tt %]	
+		
+        </div>
           </div>
         </div>
       </div>

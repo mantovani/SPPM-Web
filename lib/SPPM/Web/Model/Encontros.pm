@@ -8,8 +8,8 @@ model SPPM::Web::Model::Encontros extends
             schema_class => 'SPPM::Schema',
 
             connect_info => {
-             dsn      => 'dbi:mysql:dbname=sppm',
-             user     => 'root',
+             dsn      => 'dbi:mysql:dbname=sppm:host=db.sao-paulo.pm.org',
+             user     => 'sppm_site',
              password => '4rg63a',
         }
         
