@@ -14,12 +14,17 @@ subtype
     => where { length($_) >= 6 },
     => message {'Precisa ter pelo menos seis caracteres.'};
 
+subtype
+    'tamanho_max' => as 'Str',
+    => where { length($_) <= 40 },
+    => message {'O máximo de caracteres permitidos é quarenta.'};
+
 has_field 'nome' => (
     type             => 'Text',
     label            => 'Nome Completo',
     required_message => 'Obrigatório',
     required         => 1,
-    apply            => ['tamanho_min'],
+    apply            => [ 'tamanho_min', 'tamanho_max' ],
 );
 has_field 'email' => (
     type             => 'Email',
@@ -54,6 +59,7 @@ has_field 'ramo_trabalha' => (
     label            => 'Ramo de Trabalho',
     required_message => 'Obrigatório',
     required         => 1,
+    apply            => ['tamanho_max'],
 );
 
 has_field 'empresa_trabalha' => (
@@ -61,6 +67,7 @@ has_field 'empresa_trabalha' => (
     label            => 'Empresa que Trabalha',
     required_message => 'Obrigatório',
     required         => 1,
+    apply            => ['tamanho_max'],
 );
 
 has_field 'sabendo' => (
@@ -68,6 +75,7 @@ has_field 'sabendo' => (
     label            => 'Como ficou sabendo ?',
     required_message => 'Obrigatório',
     required         => 1,
+    apply            => ['tamanho_max'],
 );
 
 has 'ip' => ( isa => 'Str', is => 'rw' );
