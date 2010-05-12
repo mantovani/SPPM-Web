@@ -8,7 +8,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
@@ -55,8 +54,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("nome");
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-30 05:46:05
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KEoi71D+c7l4Wb4l4vTWrw
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-05-12 03:31:18
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:u5gOOARP9JTL3Fz/2FBKiQ
 
 
 

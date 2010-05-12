@@ -12,7 +12,7 @@ use Moose::Util::TypeConstraints;
 subtype
     'tamanho_min' => as 'Str',
     => where { length($_) >= 6 },
-    => message {'Precisa ter pelo menos seis caracteres'};
+    => message {'Precisa ter pelo menos seis caracteres.'};
 
 has_field 'nome' => (
     type             => 'Text',
@@ -30,20 +30,23 @@ has_field 'email' => (
     required_message => 'Obrigatório',
 );
 
-has_field 'telefone_comercial' => (
+has_field 'telefone' => (
     type             => 'Text',
-    apply            => [ { check => qr/[0-9]{8,12}/ } ],
-    label            => 'Telefone Comercial',
-    required_message => 'Obrigatório, só número sem espaços.',
+    label            => 'Telefone',
+    required_message => 'Obrigatório',
     required         => 1,
-);
-
-has_field 'telefone_celular' => (
-    type             => 'Text',
-    apply            => [ { check => qr/[0-9]{8,12}/ } ],
-    label            => 'Telefone Celular',
-    required_message => 'Obrigatório, só números sem espaços.',
-    required         => 1,
+    trim             => {
+        transform => sub {
+            my $string = shift;
+            $string =~ s/[\s\-\+]//g;
+            return $string;
+            }
+    },
+    apply => [
+        {   check   => qr/^[\d\s\-\+]{8,15}$/,
+            message => 'Tem que ter no minimo 8 números e no máximo 15.'
+        },
+    ],
 );
 
 has_field 'ramo_trabalha' => (
@@ -71,10 +74,10 @@ has 'ip' => ( isa => 'Str', is => 'rw' );
 
 before 'update_model' => sub {
     my $self = shift;
-     $self->item->ip( $self->ip );
+    $self->item->ip( $self->ip );
 };
 
-has_field 'Participar' => ( type => 'Submit', value => "Enviar");
+has_field 'Participar' => ( type => 'Submit', value => "Participar!" );
 no HTML::FormHandler::Moose;
 1;
 

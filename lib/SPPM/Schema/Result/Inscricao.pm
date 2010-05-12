@@ -8,7 +8,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
@@ -41,20 +40,6 @@ __PACKAGE__->table("inscricao");
   default_value: undef
   is_nullable: 0
   size: 250
-
-=head2 telefone_comercial
-
-  data_type: INT
-  default_value: undef
-  is_nullable: 0
-  size: 11
-
-=head2 telefone_celular
-
-  data_type: INT
-  default_value: undef
-  is_nullable: 0
-  size: 11
 
 =head2 empresa_trabalha
 
@@ -98,6 +83,13 @@ __PACKAGE__->table("inscricao");
   is_nullable: 0
   size: 14
 
+=head2 telefone
+
+  data_type: BIGINT
+  default_value: undef
+  is_nullable: 1
+  size: 15
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -123,10 +115,6 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => 250,
   },
-  "telefone_comercial",
-  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
-  "telefone_celular",
-  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
   "empresa_trabalha",
   {
     data_type => "VARCHAR",
@@ -169,6 +157,8 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
     size => 14,
   },
+  "telefone",
+  { data_type => "BIGINT", default_value => undef, is_nullable => 1, size => 15 },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -189,8 +179,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-30 05:46:05
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BmLjtTC7jozywNNFV4Dm+Q
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-05-12 03:31:18
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:p9DSzqI8vaJKS1nidmqDaA
 
 
 

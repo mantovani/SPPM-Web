@@ -8,7 +8,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components(qw/ForceUTF8 InflateColumn::DateTime/);
 
 =head1 NAME
 
@@ -147,8 +146,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-04-30 05:46:05
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:v+zEiOK00xTXfP4Fmw+xeg
+# Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-05-12 03:31:18
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EMSMY8kWsC8bzUnJ4EG5fw
 
 
 
