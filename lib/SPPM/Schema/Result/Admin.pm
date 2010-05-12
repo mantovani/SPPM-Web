@@ -8,6 +8,7 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
+__PACKAGE__->load_components('ForceUTF8');
 
 =head1 NAME
 
@@ -36,28 +37,23 @@ __PACKAGE__->table("admin");
 =cut
 
 __PACKAGE__->add_columns(
-  "nome",
-  {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 0,
-    size => 250,
-  },
-  "senha",
-  {
-    data_type => "VARCHAR",
-    default_value => undef,
-    is_nullable => 0,
-    size => 250,
-  },
+    "nome",
+    {   data_type     => "VARCHAR",
+        default_value => undef,
+        is_nullable   => 0,
+        size          => 250,
+    },
+    "senha",
+    {   data_type     => "VARCHAR",
+        default_value => undef,
+        is_nullable   => 0,
+        size          => 250,
+    },
 );
 __PACKAGE__->set_primary_key("nome");
 
-
 # Created by DBIx::Class::Schema::Loader v0.05003 @ 2010-05-12 03:31:18
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:u5gOOARP9JTL3Fz/2FBKiQ
-
-
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 1;
