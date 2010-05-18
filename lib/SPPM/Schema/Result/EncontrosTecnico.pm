@@ -8,7 +8,7 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-__PACKAGE__->load_components(qw/Core InflateColumn::DateTime/);
+__PACKAGE__->load_components(qw/Core InflateColumn::DateTime ForceUTF8/);
 
 =head1 NAME
 
