@@ -5,16 +5,16 @@
       <div id="container_top">
         <div id="container_bottom">
           <div class="top">
-            <h1>Encontro T&eacute;cnico de Inverno da
+            <h1>
             S&atilde;o Paulo
-            Perl Mongers</h1>
+            Perl Workshop 2010</h1>
             <div class="whois">
 
 
         <h2>Cadastro</h2>
         <br/>
         [% form.render %]
-        <br/>
+        <br/><br/>
         [% INCLUDE et2010_prog.tt %]	
 
 

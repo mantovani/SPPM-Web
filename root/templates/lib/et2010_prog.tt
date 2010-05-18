@@ -6,67 +6,92 @@
 <h4>13:50 -  "HTTP, Requisição e Resposta" por Thiago Rondon. (Português)</h4>
 <p>Uma visão geral do funcionamento do protocolo http, e como isto pode
 auxiliar em estrategias de desenvolvimento web, técnicas para administradores
-de sistemas e de redes em relação ao protocolo web.<p>
+de sistemas, redes e desenvolvedores em relação ao protocolo web.<p>
 
 <p>Tags: Apache, nginx, lighttpd, plack, fastcgi, fcgid, firebug, javascript,
 css, search tecs, memcache, asset hosts, cache busters, CDN.</p>
 
-<h4>14:30 - "Web frameworks don't matter" por Tomas Doran. (Inglês)</h4>
-<p>A talk about the design and architecture of large applications and why your
-choice of web framework (and the amount of your code which is tied to your
-chosen framework) should be a small part of that. The talk will take a step
-beyond the Catalyst tutorial and the recently published book, and assume that
-the audience is writing (or designing) a non-trivial web application.</p>
+<h4>14:30 - "Web frameworks não importam" por Tomas Doran. (Inglês)</h4>
+<p>Uma palestra sobre projeto e arquitetura de grandes aplicações e por que a
+sua escolha de web framework
+(e a quantidade do seu código que está dependente desta escolha) deve ser a
+menor parte disso.
+Esta palestra vai ser um passo acima do tutorial do Catalyst e do livro
+recentemente publicado, e assumir
+que a audiência tem escrito (ou projetado) aplicações web não triviais.
+</p>
+
+<p>Tópicos abordados:</p>
+<ul>
+<li>modelagem do domínio do problema.</li>
+<li>desenvolvimento, implantação e estratégias de teste</li>
+<li>arquitetura e padrões de projeto</li>
+<li>complexidade acidental: como reconhecer e reduzir.</li>
+<li>testes de carga e escabilidade e estratégias de caching</li>
+<li>próativamente garantir e monitorar a saúde contínua e performance da
+aplicação.</li>
+</ul>
 
 <p>Tags.: Catalyst, Moose, OO, Design, Loose coupling, Data modeling,
 Scaleability</p>
 
-<h4>15:20 - Formulários para a Web Moderna por Eden Cardin. (Português)</h4>
+<h4>15:20 - "Formulários para a Web Moderna" por Eden Cardin. (Português)</h4>
 
 <p>Técnicas para construção de formulários web, com validação e verbosidade,
 como listas de ítens selecionáveis, "wizards" e múltipla submissão.</p>
 
 <p>Tags: formulário, validação, wizard, catalyst, DBIx::Class, Moose</p>
 
-<h4>16:00 - Real time system performance monitoring por Tomas Doran.
+<h4>16:00 - "Monitoramento de performance em sistemas em tempo real"
+por Tomas Doran.
 (Inglês).</h4>
 
-<p>Building the correct level of logging and activity auditing into an
-application, without having a significant effect on the application's
-performance is a non-trivial task.</p>
+<p>Implantar o nível correto de logging e auditoria numa aplicação sem ter um
+efeito
+significante na performance é uma tarefa não trivial.
+Esta palestra vai introduzir o básico de message queueing e AMQP (The Advanced
+Message Queueing Protocol), incluindo alguns de padrões baseados em mensagens.
+Depois da teoria inicial, vai ser conduzida uma análise profunda e uma
+discussão
+da solução baseada em RabbitMQ (a qual o palestrante é o autor). Cada etapa no
+tempo de vida de uma mensagem será examinada e explicada para casos práticos,
+com referências à módulos CPAN que podem ser usados para construir um sistema 
+similar. Assim, será concluída com um demo do Firehose, uma aplicação escrita
+em Javascript para monitoramento e visualização altamente customizável de
+eventos 
+AMQP em tempo real.</p>
 
 <p>Tags: MooseX::Storage, Joose, Javascript, Flash, RabbitMQ, ExtJS, YUI,
 AMQP, JSON, AnyEvent, Coro</p>
 
-<h4>17:10 Large platform architecture in (mostly) perl - an illustrated tour
+<h4>17:10 - "Arquitetura de grandes plataformas em Perl - um passeio
+ilustrado" 
 por Tomas Doran. (Inglês)</h4>
 
-<p>I work for a company called state51 (www.state51.co.uk) in East London. We
-provide a technology platform enabling digital distribution of music. This
-platform is used by a number of companies to provide digital distribution
-services for a large sector of the music industry (large companies and
-independents).</p>
+<p>Tomas Doran trabalha para uma empresa chamada state51 (www.state51.co.uk)
+na zona leste de Londres.
+Eles fornecem uma plataforma tecnológica que possibilita a distribuição
+digital de música
+desde 1994. Esta plataforma é usada por algumas empresa para prover serviços
+de distribuição digital
+para uma grande parte da indústria de música (as grandes e as independentes
+empresas).</>
 
-<p>This talk will describe the architecture of our entire platform in depth.
-It
-will focus on various important subsystems within the platform, explaining
-what
-technology and architectures work well - covering the system constraints and
-requirements, then going on to explain how the system is architected to fulfil
-those requirements.</p>
+<p>Esta palestra descreverá a fundo a arquitetura de toda esta plataforma. Irá
+focar em vários importantes
+subsistemas dentro da plataforma, explicando quais tecnologias e como a
+arquitetura funciona - cobrindo
+o sistema de restrições e requisitos, então explicando como o sistema é
+projetado para atender estes.</p>
 
-<p>I will look into the evolution of each major component of the system,
-focusing
-on how the system has had to change over it's lifetime to keep fulfilling
-client needs. This includes correction or mitigation of architectural mistakes
-made in the past.</p>
-
-<p>This talk will be of interest to anyone who would like to see the 'bigger
-picture' of a mature perl based technology platform. It will aim to explain my
-perspective on how to plan for changing business requirements, how to scale
-production systems, how to architect those systems to be easy to monitor and
-debug and how to achieve loose coupling and enable rapid change whilst keeping
-the system running.</p>
+<p>Nesta palestra, todos terão a oportunidade de ver o estado da arte de uma
+madura plataforma tecnológica
+em Perl. O objetivo é explainar como planejar para mudanças nos requisitos de
+negócio, como escalonar
+os sistemas em produção, como arquitetar estes sistemas para serem fáceis de
+monitorar e debugar, e como
+obter livre acoplagem e rápidas mudanças enquanto mantém o sistema
+rodando.</p>
 
 <p>Tags: Web, HTTP, Architecture, MogileFS, nginx, lighttpd, mod_perl,
 memcached, Varnish, MySQL, Scaling, RabbitMQ, Catalyst, Moose, Tangram, LDAP,
