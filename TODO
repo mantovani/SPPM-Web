@@ -27,4 +27,5 @@ EQUINOCIO:
 
 - Opcao para postar comentarios.
 
-
+ENCONTRO TECNICO
+- Deixar a mensagem amigavel quando os encontros forem encerrados(ativo = 0), só enquanto a data do encontro não chegou ainda.
