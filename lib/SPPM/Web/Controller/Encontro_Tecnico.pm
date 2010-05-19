@@ -58,6 +58,19 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
                 
             }
         } elsif($ctx->req->method eq 'POST') {
+
+			# - Checa se o Encontro Ainda está ativo, antes de fazer qualquer coisa.
+
+			my $max_participantes = $ctx->stash->{'db_encontros'}->find({id => $id})->max_participantes;
+            my $check_count = $ctx->stash->{'db_participar'}->search(encontro => $id)->count;
+
+			 # - Se já tiver ultrapassado o limite manda para a página de inscricao de novo.
+            if ($check_count >= $max_participantes) {
+                $ctx->res->redirect($ctx->uri_for('../','encontrotecnico'));
+				$ctx->detach();
+			}
+
+
             if($ctx->stash->{'db_inscricao'}->find({email => $ctx->req->params->{'email'}})) {
 
                 $ctx->forward('check_exists');
