@@ -34,12 +34,14 @@
             </table>
         [% END %]
 
+
         [% IF check_encontros AND check_encerrados %]
             <br /><br />
             <hr />
-        [% END %]
+		[% END %]
 
         [% IF check_encerrados %]
+			[% INCLUDE site/msg_amivel.tt %]
             <p>Encontros Encerrados</p>
 
             <table>
@@ -50,7 +52,6 @@
                         <td><font size="3">[% encontro.nome %]</font></td>
                         <td><font size="3">[% encontro.local %]</font></td>
                         <td><font size="3">[% encontro.data.strftime('%d/%m/%Y') %]</font></td>
-                        <td><a href="[% c.uri_for('../','encontrotecnico','inscrever',encontro.id) %]"><font size="3">Participar!</font></a></td>
                         <td><font size="3">[% encontro.fotos %]</font></td>
                         <td></td>
                     </tr>
