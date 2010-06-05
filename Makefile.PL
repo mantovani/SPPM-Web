@@ -13,7 +13,7 @@ requires 'Catalyst::Plugin::Cache';
 requires 'Catalyst::Plugin::Unicode';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::View::TT';
-
+requires 'HTML::FormHandler::Model::DBIC';
 requires 'parent';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
