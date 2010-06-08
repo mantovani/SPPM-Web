@@ -23,7 +23,7 @@
                         <td><font size="3">[% encontro.nome %]</font></td>
                         <td><font size="3">[% encontro.local %]</font></td>
                         <td><font size="3">[% encontro.data.strftime('%d/%m/%Y') %]</font></td>
-                        <td><a href="[% c.uri_for('../','encontrotecnico','inscrever',encontro.id) %]"><font size="3">Participar!</font></a></td>
+                        <td><a href="[% c.uri_for('../','inscrever',encontro.id) %]"><font size="3">Participar!</font></a></td>
                         <td></td>
                     </tr>
                 [% END %]
