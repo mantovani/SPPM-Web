@@ -16,7 +16,7 @@ Web.</p>
 
 <h4>Quanto custa ?</h4>
 <p>Nada. Nossos patrocinadores e organizadores são ótimos, mas fique à vontade
-se desejar fazer uma contribuição voluntária (<a href="[% c.uri_for('/vaquinha') %]">vaquinha</a>) para ajudar a custear eventos
+se desejar fazer uma contribuição voluntária (<a href="[% c.uri_for('../', 'vaquinha') %]">vaquinha</a>) para ajudar a custear eventos
 futuros.
 
 <h4>O que eu ganho?</h4>
