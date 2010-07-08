@@ -54,7 +54,7 @@ controller SPPM::Web::Controller::Encontro_Tecnico {
                 $ctx->forward('View::TT');
             } else {
 
-                $ctx->res->redirect($ctx->uri_for('../','index'));
+                $ctx->res->redirect('/encontrotecnico');
                 
             }
         } elsif($ctx->req->method eq 'POST') {

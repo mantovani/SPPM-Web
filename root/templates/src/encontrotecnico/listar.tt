@@ -42,7 +42,7 @@
 
         [% IF check_encerrados %]
 			[% INCLUDE site/msg_amivel.tt %]
-            <p>Encontros Encerrados</p>
+            <p>Encontros com Inscrições Encerradas</p>
 
             <table>
             <tr><th>Nome</th><th>Lugar</th><th>Data - Hora</th><th>Fotos</th></tr>
