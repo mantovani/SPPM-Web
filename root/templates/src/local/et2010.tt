@@ -1,0 +1,34 @@
+[% META title=" Cadastrar " current_page="encontrotecnico" %]
+
+
+
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h1>
+            S&atilde;o Paulo
+            Perl Workshop 2010</h1>
+            <div class="whois">
+
+	<p><b>
+Obrigado pelo interesse ! <br/><br/>
+	As inscri&ccedil;&otilde;es foram encerradas para este encontro,
+
+	mas haver&aacute; pr&oacute;ximas oportunidades. Fique ligado 
+	no site da comunidade, assim como na lista de discuss&atilde;o para
+	novidades e noticias.
+	<br/>
+</p></b>
+
+	<br/><br/>
+        [% INCLUDE et2010_prog.tt %]	
+
+
+        [% INCLUDE et2010_faq.tt %]	
+		
+        </div>
+          </div>
+        </div>
+      </div>
+
+

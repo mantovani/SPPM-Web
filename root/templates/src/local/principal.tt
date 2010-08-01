@@ -5,10 +5,6 @@
        <center>
        </center> 
 	<div id="container_bottom">
-        <center>
-            <a href="[% c.uri_for('/..', 'encontrotecnico', 'inscrever', 1) %]">
-          <img src="/static/images/et_2010_jul_insc.jpg" border="0"></a>
-        </center>
           <br/><br/>
           <div class="top">
             <div class="top_left">
