@@ -48,8 +48,6 @@
           <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Artigos" /> </a></li>
           <li class="pipe"></li>
           <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Blogs" width="1" height="1" /> </a></li>
-          <li class="pipe"></li>
-          <li class="podcast"><a href="/podcast" [% IF template.current_page == 'podcast' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Podcast" width="1" height="1" /> </a></li>
 
           <li class="pipe"></li>
           <li class="tecnico"><a href="/encontrotecnico" [% IF template.current_page == 'encontrotecnico' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Encontro Tecnico" width="1" height="1" /> </a></li>
