@@ -1,31 +1,36 @@
 
-use CatalystX::Declare;
 
-controller SPPM::Web::Controller::Local {
+package SPPM::Web::Controller::Local;
 
-    action base as '' under '/base';
+use Moose;
+use MooseX::MethodAttributes;
+extends 'Catalyst::Controller';
 
-    final action local(Str $local) as '' under base {
+
+sub base :Chained('/base') : PathPart(''): CaptureArgs(0) {}
+
+sub local :Chained('base') : PathPart(''): Args(1) {
+	my ($self, $c, $local) = @_;
+
         my $legal_chars = quotemeta('.-_/');
 
         if ($local =~ /\.\./ || $local =~ /[^\w$legal_chars]/ ) {
-            $ctx->res->redirect('/');
-            $ctx->detach;
+            $c->res->redirect('/');
+            $c->detach;
         }
 
-        my $local_file = $ctx->path_to('root','templates', 'src',
+        my $local_file = $c->path_to('root','templates', 'src',
             'local', "$local.tt");
         
         if (! -e $local_file) {
-            $ctx->res->redirect('/');
-            $ctx->detach;
+            $c->res->redirect('/');
+            $c->detach;
         }
 
-        $ctx->stash( template => 'local/' . $local . '.tt' );
-        $ctx->forward('View::TT');
-
-    }
+        $c->stash( template => 'local/' . $local . '.tt' );
+        $c->forward('View::TT');
 
 }
 
+1;
 

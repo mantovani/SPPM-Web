@@ -1,91 +1,101 @@
 
-use CatalystX::Declare;
+package SPPM::Web::Controller::Equinocio;
 
-controller SPPM::Web::Controller::Equinocio {
-    use Calendar::Simple;
-    use DateTime;
-    use SPPM::Web::Pod;
-    use File::stat;
+use Moose;
+use MooseX::MethodAttributes;
+extends 'Catalyst::Controller';
 
-    action base as 'equinocio' under '/base' {
-        $ctx->stash->{equinocio_dir} = $ctx->path_to('root','equinocio');
-    }
+use Calendar::Simple;
+use DateTime;
+use SPPM::Web::Pod;
+use File::stat;
 
-    final action index as '' under base {
-        opendir DIR, $ctx->stash->{equinocio_dir}
+sub base : Chained('/base') PathPart('equinocio') CaptureArgs(0) {
+	my ($self, $c) = @_;
+        $c->stash->{equinocio_dir} = $c->path_to('root','equinocio');
+}
+
+sub index : Chained('base') : PathPart('') : Args(0) {
+	my ($self, $c) = @_;
+
+        opendir DIR, $c->stash->{equinocio_dir}
             or die "Error opening: $!";
         my @years = sort grep { /\d{4}/ } readdir DIR;
         closedir DIR;
 
         my $year = pop @years || DateTime->now->year;
-        $ctx->res->redirect( $ctx->uri_for('/equinocio', $year) );
+        $c->res->redirect( $c->uri_for('/equinocio', $year) );
+}
 
-    }
-
-    action equinocio (Int $year) as '' under base {
-        if ($year !~ /^\d{4}$/) {
-            $ctx->res->redirect( $ctx->uri_for('/') );
-            $ctx->detach;
+sub equinocio : Chained('base') : PathPart('') : CaptureArgs(1) {
+	my ($self, $c, $year) = @_;
+        
+	if ($year !~ /^\d{4}$/) {
+            $c->res->redirect( $c->uri_for('/') );
+            $c->detach;
         }
 
-        # Problems with $ctx->stash( x => y);
-        $ctx->stash->{year} = $year;
-        $ctx->stash->{now} = DateTime->now();
-        $ctx->stash->{calendar_mar} = calendar(3, $year);
-        $ctx->stash->{calendar_set} = calendar(9, $year);
-    }
+        $c->stash(
+		year => $year,
+		now => DateTime->now(),
+		calendar_mar => [ calendar(3, $year) ],
+		calendar_set => [ calendar(9, $year) ]
+	);
+}
 
-    under equinocio {
+sub year : Chained('equinocio') : PathPart('') : Args(0) {
+	my ($self, $c) = @_;
+	my $year_dir = join('/', $c->stash->{equinocio_dir}, 
+                $c->stash->{year});     
 
-        final action year as '' {
+	if ( ! -d $year_dir ) {
+		$c->res->redirect( $c->uri_for('/') );
+                $c->detach;
+	}
+	$c->stash(template => 'equinocio/year.tt');
 
-            my $year_dir = join('/', $ctx->stash->{equinocio_dir}, 
-                $ctx->stash->{year});     
+}
 
-            if ( ! -d $year_dir ) {
-                $ctx->res->redirect( $ctx->uri_for('/') );
-                $ctx->detach;
-            }
-            $ctx->stash(template => 'equinocio/year.tt');
+sub month : Chained('equinocio') : PathPart(''): CaptureArgs(1) {
+	my ($self, $c, $month) = @_;
 
-        }
+	unless (grep {/mar|set|test/} $month) {
+		$c->res->redirect( $c->uri_for('/') );
+                $c->detach;
+	}
+	$c->stash->{month} = $month;
+}
 
-        action month (Str $month) as '' {
-            unless (grep {/mar|set|test/} $month) {
-                $ctx->res->redirect( $ctx->uri_for('/') );
-                $ctx->detach;
-            }
-            $ctx->stash->{month} = $month;
-        }
+sub month_view : Chained('month') : PathPart(''): Args(0) {}
 
-        final action day (Int $day) as '' under month{
+sub day : Chained('month') : PathPart('') : Args(1) {        
+	my ($self, $c, $day) = @_;
+	my $year = $c->stash->{year};
+	my $month = $c->stash->{month};
             
-            my $year = $ctx->stash->{year};
-            my $month = $ctx->stash->{month};
-            
-            if ($day !~ /^\d\d?$/) {
-                $ctx->res->redirect( $ctx->uri_for('/equinocio') );
-                $ctx->detach;
-            }
+	if ($day !~ /^\d\d?$/) {
+		$c->res->redirect( $c->uri_for('/equinocio') );
+		$c->detach;
+	}
 
-            my $pod_file = join('/', $ctx->stash->{equinocio_dir}, 
-                $year, $month, "$day.pod");     
+	my $pod_file = join('/', $c->stash->{equinocio_dir}, 
+		$year, $month, "$day.pod");     
 
-            if (! -e $pod_file) {
-                $ctx->res->redirect( $ctx->uri_for('/') );
-                $ctx->detach;
-            }
-            $ctx->log->info($pod_file);
-            my $mtime = ( stat $pod_file )->mtime;
-            my $cached_pod = $ctx->cache->get("$pod_file $mtime");
+	if (! -e $pod_file) {
+		$c->res->redirect( $c->uri_for('/') );
+		$c->detach;
+	}
+	$c->log->info($pod_file);
+	my $mtime = ( stat $pod_file )->mtime;
+	my $cached_pod = $c->cache->get("$pod_file $mtime");
 
-            if (!$cached_pod) {
-                my $parser = SPPM::Web::Pod->new(
-                    StringMode      => 1,
-                    FragmentOnly    => 1,
-                    MakeIndex       => 0,
-                    TopLinks        => 0,
-                );
+	if (!$cached_pod) {
+		my $parser = SPPM::Web::Pod->new(
+			StringMode      => 1,
+			FragmentOnly    => 1,
+			MakeIndex       => 0,
+			TopLinks        => 0,
+		);
 
                 open my $fh, '<:utf8', $pod_file
                     or die "Failed to open $pod_file: $!";
@@ -94,20 +104,18 @@ controller SPPM::Web::Controller::Equinocio {
                 close $fh;
 
                 $cached_pod = $parser->asString;
-                $ctx->cache->set("$pod_file $mtime", $cached_pod, '12h' );
-            }
+                $c->cache->set("$pod_file $mtime", $cached_pod, '12h' );
+	}
 
-            $ctx->stash(
-                day => $day,
-                pod => $cached_pod,
+    	$c->stash(
+		day => $day,
+		pod => $cached_pod,
                 template => 'equinocio/day.tt',
-	    );
-            $ctx->forward('View::TT');
+    	);
+	$c->forward('View::TT');
 
-        }
-
-    }
 }
-
 # Thanks for Advent Calendar of Catalyst. :-)
+
+1;
 
