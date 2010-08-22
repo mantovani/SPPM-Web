@@ -50,3 +50,6 @@ sub artigo : Chained('base') : PathPart('artigo') : Args(2) {
 
     $c->forward('View::TT');
 }
+
+1;
+
