@@ -1,0 +1,343 @@
+
+
+=head1 Gearman: Framework de Aplicação Genérico.
+
+=head2 Introdução
+
+O Gearman é um framework que fornece ferramentas para computação distribuida permitindo fazer
+load balance do processamento. Você pode chamar funçõs entre linguagens. Por exemplo,
+O Gearman aborda a seguinte estrutura,
+
+-Cliente
+
+-Servidor
+
+-Trabalhador
+
+O Trabalhador, pode chamar uma função de qualquer linguagem que tenha uma biblioteca que 
+segue o procolo do Gearman. O Cliente apenas passa um parâmetro para o trabalhador. Eu não vou
+entrar em detalhes sobre a arquitetura agora, pois é o papel do tópico abaixo.
+
+Ele pode ser aplicado numa variedade de aplicações, você pode dividir o processamento de imagens do seu site
+por exemplo, um bom exemplo no site do Gearman, é como eles usam isso para processar 
+imagem L<http://gearman.org/index.php?id=getting_started>.
+
+Em outras palavras, o Gearman fornece um sistema nervoso distribuido para construir aplicações.
+Ele é um software Open Source, rápido, flexível, e multi-linguagem. Além de ser desenhado
+para ser escalavel.
+
+=head2 Arquitetura
+
+Existem três atores no Gearman, são eles o cliente, o trabalhador e o servidor.
+Uma boa maneira de ilustrar o funcionamento do framework,
+
+
+=begin pod:xhtml
+
+<center>
+<img src="http://sao-paulo.pm.org/static/images/equinocio/2010/set/gearman.png" alt="Gearman" />
+</center>
+
+=end pod:xhtml
+
+A computação distribuida consiste em multiplos computadores autonomos se comunicando através
+de uma conexão. Isso ajuda a resolver gargalos na sua aplicação por exemplo.
+
+Tanto o cliente como o trabalhor irão se conectar ao servidor, você pode ter 
+mil trabalhadores conectados no seu servidor, quando o seu cliente mandar uma lista
+de tarefas para serem realizadas o servidor irá dividir essas tarefas entre os trabalhadores
+disponíveis. Quando cada trabalhador terminar de processar o que foi pedido, ele devolve o retorno
+para o servidor que envia a resposta para o cliente.
+
+
+=head2 Um Passso Para o Lado
+
+O Gearman, é um sistema muito simples de aprender. O que veremos aqui é um exemplo básico
+de como podemos usar essa bala de prata. Para um melhor entendimento, é recomendável 
+que o leitor exerça os exemplos ao longo do artigo.
+
+=head2 Um Passo Para Frente
+
+Nesse artigo será utlizado o Gearman::XS, um bind a partir da biblioteca do servidor do Gearman,
+escrito na linguagem C.
+L<http://search.cpan.org/~dschoen/Gearman-XS-0.10/lib/Gearman/XS.pm>
+
+=head2 Compilando o Servidor
+
+Algumas distribuições como o Ubuntu vem com uma versão do Gearman, mas é muito desatualizado.
+E se você usar o C<Gearman::XS> com esse Gearman antigo, você terá situações indesejadas.
+Por isso recomenda-se usar a versão 0.13 do servidor,
+L<http://launchpad.net/gearmand/trunk/0.13/+download/gearmand-0.13.tar.gz>
+
+Para compilar o Gearman, você precisará ter o e2fsprogs-dev, infelizmente o Ubuntu
+não tem, então é necessário compilar também,
+L<http://sourceforge.net/projects/e2fsprogs/>
+
+Primeiro vamos compilar o e2fsprogs,
+
+	tar -xf e2fsprogs-1.41.12.tar.gz
+	cd e2fsprogs-1.41.12/
+	./configure --prefix=/opt/
+	make
+	make install-libs
+
+Se a sua máquina for uma máquina 64 bits, tem um bug por tanto compile com -fPIC
+L<http://www.gentoo.org/proj/en/base/amd64/howtos/index.xml?part=1&chap=3>
+
+    tar -xf e2fsprogs-1.41.12.tar.gz
+    cd e2fsprogs-1.41.12/
+    CFLAGS=-fPIC ./configure --prefix=/opt/
+    make
+    make install-libs
+
+Pronto, agora vamos compilar o Gearman,
+
+	export LD_LIBRARY_PATH="/opt/lib"
+	export PKG_CONFIG_PATH="/opt/lib/pkgconfig"
+
+Caso você tenha instalado no /opt/ como eu fiz exporte as duas variáveis de ambiente
+acima, para o Gearman achar a bilioteca que nós acabamos de instalar.
+
+	tar -xf gearmand-0.13.tar.gz
+	cd gearmand-0.13/
+	./configure --prefix=/opt/
+	make
+	make install
+
+OBS: Se der algum problema que falta alguma biblioteca B<tirando a do e2fsprogs é claro>, tem no
+repositório do Ubuntu, por tanto veja o nome da biblioteca que ele falou que precisa e faça,
+
+	sudo apt-get install nome-da-lib-dev
+
+Cheque se no /opt/sbin/ tem o gearmand, e execute-o,
+	
+	$./gearmand -vvv
+
+Se aparecer alguma mensagem de erro, é porque você precisa linkar algumas bibliotecas,
+
+	sudo ldconfig -v 
+
+Se deu tudo certo, você terá uma saída como,
+
+	mantovani@mantovani-laptop:/opt/sbin$ ./gearmand -vvv
+	 INFO Starting up
+	 INFO Listening on 0.0.0.0:4730 (6)
+	 INFO Creating wakeup pipe
+	 INFO Creating IO thread wakeup pipe
+	 INFO Adding event for listening socket (6)
+	 INFO Adding event for wakeup pipe
+	 INFO Entering main event loop
+
+
+Se o leitor percebeu, eu instalei as bibliotecas no /opt/, pois eu não quero misturar nada
+com as biliotecas do meu sistema, isso pode gerar problemas.
+
+Agora que temos o Gearman compilado podemos instalar o bind feito em Perl, C<Gearman::XS>.
+
+
+=head2 Finalmente Gearman::XS
+
+Aqui, recomenda-se que você tenha pelo menos um conhecimento básico sobre o CPAN, se você
+não se sente confortável com o CPAN, recomenda-se,
+L<http://blog.blabos.org/2009/08/instalando-modulos-do-cpan-via-locallib/>
+
+Bom, vamos instalar logo o C<Gearman::XS>, lembre-se que instalamos o Gearman no /opt/
+por tanto, precisamos dizer isso ao C<Gearman::XS>,
+
+	$cpan
+	cpan[1]>look Gearman::XS
+	...
+
+	$export GEARMAN_INCLUDE=/opt/include
+	$export GEARMAN_LIB=/opt/lib
+	$perl Makefile.PM
+	$make
+	$make test
+
+Se no final dos testes aparecer, B<PASS> é porque deu tudo certo,
+
+	$make install
+
+:D
+
+=head2 Criando Nossa Aplicação Básica
+
+Vamos falar sobre a nossa aplicação básica e como serealizar
+os dados.
+
+A nossa aplicação, será algo bem simples só como prova de conceito:
+
+Uma nova lei foi aprovada dizendo que todos os bares terão que controlar o nível
+de alcool no corpo de seus clientes.
+Os donos do bares terão que saber o sexo, o tempo que o cliente está bebendo,
+o peso da pessoa e o peso do alcool na bebida. Essas informações serão enviadas
+para um site do governo. Aqui entra o seu trabalho. Você precisa pegar essas
+informações fazer o cálculo e dizer se a pessoa pode continuar bebendo ou se
+ela precisa ir para casa.
+
+Você vai precisar do C<Acme::Drunke>
+
+=head2 O Nosso Trabalhador
+
+  use strict;
+  use warnings;
+  use Acme::Drunk;
+  use FreezeThaw;
+  use Gearman::XS qw(:constants);
+  use Gearman::XS::Worker;
+
+  my $worker = new Gearman::XS::Worker;
+
+  my $ret = $worker->add_server('127.0.0.1', '4730');
+  if ($ret != GEARMAN_SUCCESS)
+  {
+    printf(STDERR "%s\n", $worker->error());
+    exit(1);
+  }
+
+  $ret = $worker->add_function("checar", 10, \&ver_alcool, {});
+  if ($ret != GEARMAN_SUCCESS)
+  {
+    printf(STDERR "%s\n", $worker->error());
+  }
+
+  while (1)
+  {
+    $ret = $worker->work();
+    if ($ret != GEARMAN_SUCCESS)
+    {
+      printf(STDERR "%s\n", $worker->error());
+    }
+  }
+
+  sub ver_alcool {
+    my $job = shift;
+    my $infs  = thaw $job->workload();
+
+	sleep 5; # - Isso aqui é só para uma demonstração
+	# de um exemplo que eu vou fazer abaixo.
+
+	my $bac = drunk(
+    	gender         => $infs->{'gender'},
+    	hours          => $infs->{'hour'},
+    	body_weight    => $infs->{'body_weight'},
+    	alcohol_weight => $infs->{'alcohol_weight'},
+    );
+
+	warn "É esse trabalhador está trabalhando agora"
+
+    $bac >= 0.08 ? return(call_cab()) : return(walk_home());
+  }
+
+Se atente que estou usando o módulo C<FreezeThaw>, só pode passar um argumento
+para uma função, mas nós precisamos de quatro argumentos, então nós "encapsulmos"
+os argumentos em uma varíável, que vamos "desemcapsular" usando "thaw", isso que
+fizemos foi serealizar.
+Para que o leitor possa entender melhor sobre isso, eu recomendo a leitura dessa
+thread, L<http://mail.pm.org/pipermail/saopaulo-pm/2010/010393.html>
+
+
+=head2 O Nosso Cliente
+
+  use Gearman::XS qw(:constants);
+  use Gearman::XS::Client;
+  use FreezeThaw;
+  use strict;
+  use warnings;
+
+  my $client = new Gearman::XS::Client;
+
+  $ret = $client->add_server('127.0.0.1', '4730');
+  if ($ret != GEARMAN_SUCCESS)
+  {
+    printf(STDERR "%s\n", $client->error());
+    exit(1);
+  }
+
+  my @genders = qw/male female/;
+  my @hours = 1 .. 10;
+  my @body_weight = 130 .. 230;
+  my @alcohol_weight = 1 .. 10;
+
+  my @pids;
+ for (1 .. 20) 
+ {
+	push(@pids,my $pid = fork);
+
+	if($pid == 0 ) {
+		my $infs = {
+			gender 			=>	$genders[int(rand(@genders))],
+			hour			=>	$hours[int(rand(@hours))],
+			body_weight		=>	$body_weight[int(rand(@body_weight))],
+			alcohol_weight		=>	$alcohol_wieght[int(rand(@alcohol_weight))],
+		}
+	  	my ($ret, $result) = $client->do("checar", freeze $infs);
+  		if ($ret == GEARMAN_SUCCESS)
+  		{
+  		  printf("Result=%s\n", $result);
+  		}
+		exit(127);
+	}
+	waitpid($_,0) for @pids;
+  }
+
+Isso é só para simular que 20 donos de bar estão querendo processar os dadados
+ao mesmo tempo, aqui só vai passar as informações para os trabalhadores.
+
+=head2 Até Agora
+
+Até agora criamos o nosso trabalhador que irá processar as informações que o cliente
+irá passar, retornando se o cliente está ábil ou não para continuar no bar.
+
+=head2 Executando
+
+Agora esse é o ponto mais divertido que é quando nós vemos nossa aplicação funcionando,
+Abra uma B<Shell> e deixe o servidor do Gearman executando,
+
+	 mantovani@mantovani-laptop:/opt/sbin$ ./gearmand -vvv
+	 INFO Starting up
+	 INFO Listening on 0.0.0.0:4730 (6)
+	 INFO Creating wakeup pipe
+	 INFO Creating IO thread wakeup pipe
+	 INFO Adding event for listening socket (6)
+	 INFO Adding event for wakeup pipe
+	 INFO Entering main event loop
+
+
+Bom agora vamos iniciar nossso trabalhador, vamos iniciar cinco deles ao mesmo tempo
+para que o leitor veja com clareza como os trabalhos serão distribuídos. Abra
+cinco B<Shells>, e em cada shell execute o nosso trabalhador,
+
+	perl trabalhador.pl
+
+Muito bom, temos cinco trabalhadores a nossa disposição, vamos executar nosso cliente:
+
+	perl cliente.pl
+
+Agora fique navegando entre as cinco B<shells> abertas e o leitor perceberá como 
+os trabalhados estão sendo distribuidos.
+
+
+=head2 Conclusão
+
+O Gearman cuida de tudo para nós, o que nós precisamos fazer é apenas registrar
+as funções nos trabalhadores e depois mandar os argumentos. O Gearman
+se encarrega de distribuir essa informação, cuida de devolver a resposta
+para o cliente, sem nenhum tipo de esforço adicional
+
+=head2 Referências
+
+L<http://gearman.org/index.php?id=documentation>
+
+L<http://en.wikipedia.org/wiki/Distributed_computing>
+
+L<http://pt.wikipedia.org/wiki/Paradigma>
+
+L<http://pt.wikipedia.org/wiki/Sistema_de_processamento_distribu%C3%ADdo>
+
+L<http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-895-theory-of-parallel-systems-sma-5509-fall-2003/>
+
+=head2 Autor
+
+Daniel de Oliveira Mantovani L<daniel.oliveira.mantovani [a] gmail.com >
+

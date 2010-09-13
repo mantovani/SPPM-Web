@@ -1,0 +1,175 @@
+=head1 ORLite - Uma abordagem simples para utilizar SQLite
+ 
+Este artigo tratará sobre o uso do módulo ORLite, assim como sua 
+vasta gama de facilidades para construir, manter e manipular 
+bases de dados em SQLite.
+ 
+=head1 O que é SQLite?
+ 
+SQLite é um banco de dados leve de um só arquivo e muito poderoso 
+escrito em C. Ele funciona sem nenhuma configuração e é capaz de 
+gerenciar grandes massas de dados com grande performance, uma vez 
+que seu uso é local. 
+ 
+=head1 Introdução ao ORLite
+ 
+ORLite é um módulo que implementa um Object Relational Mapper 
+especifico para o uso com SQLite, isso é, ele foi concebido sub 
+medida para ser utilizado com SQLite. 
+ 
+Este módulo é super leve e tem excelente performance alem de 
+abstrair a construçãoo das querys SQL ja voltadas ao SQLite, dando 
+ao desenvolvedor mais tempo para pensar no que realmente interessa 
+e não na implementação das suas consultas ao banco.
+ 
+=head1 Como utilizar o Módulo
+ 
+O ORLite como dito é muito simples de ser utilizado, logo, se você 
+ja tem alguma prática com o Class::DBI ou o DBIx::Class não terá¡ 
+dificuldade alguma para trabalhar com ele. Caso você não conheça 
+nenhum dos módulos citados anteriormente, uma explicação simples e 
+rápida do que acontece por "debaixo dos panos" é que o ORLite provê
+uma abstração sobre as querys SQL e encapsula as funções como 
+INSERT, UPDATE, SELECT, DELETE e outra em métodos bem simples de 
+serem usados para prover o mínimo de complexidade ao desenvolvedor. 
+Alem disso outra coisa digna de nota é que o ORLite mapeia as 
+tabelas do sua base de dados e as disponibiliza como objetos 
+(segundo a documentação), o que ajuda ainda mais a simplicidade da 
+ferramenta.
+ 
+Vamos então ao nosso primeiro exemplo de uso do ORLite:
+
+Exemplo 01:
+	
+	package App;
+ 
+	# Carrega o modulo ORLite
+	use ORLite {
+		package => 'Model',
+		file  => 'database/example.db',
+	};
+ 
+... ou utilizando mais opções
+ 
+	use ORLite {
+		package => 'Model', 
+		file  => 'database/example.db',
+		create  => sub {
+			my $dbh = shift;
+			$dbh->do(qq{
+				CREATE TABLE "user" (
+					"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+					"name" VARCHAR(150),
+					"age" INTEGER, 
+					"email" VARCHAR(255)
+				);
+			});
+		},
+		prune  => 1,
+	};
+ 
+A aplicação acima carrega e configura o modulo definindo uma classe 
+base para que as demais classes criadas a herdem. As tabelas da sua 
+base de dados poderão ser acessadas como objetos nomeados como Camel.
+ 
+	Database table => user
+	ORLite object  => Model::User
+ 
+	Database table => profile_info
+	ORLite object  => Model::ProfileInfo
+ 
+Uouuuu! Isso facilita muito as coisas não acha? 
+ 
+Agora vejamos algumas operações simples de CRUD (Create Retrieve Update 
+Delete), como ficariam simples utilizando a estrutura proporcionada pelo 
+ORLite. Utilizando a mesma especificação do ORLite e supondo que temos 
+uma tabela user como proposto no exemplo 2, vejamos como ficariam 
+algumas operações.
+ 
+Exemplo 02:
+	
+	# Acabamos de criar um objeto que representa nossa tabela
+	my $user = Model::User->new(
+		name => "Joe Doe",
+		age => 34,
+		email => "joe@doe.com",
+	);
+ 
+	# Agora vejamos como ficaria nosso insert ;)
+	$user->insert;
+ 
+	# ou simplificando as coisas...
+	my $user = Model::User->new(
+		name => "Joe Doe",
+		age => 34,
+		email => "joe@doe.com",
+	)->insert;
+
+
+O ORLite cria objetos que representam as tabelas contidas na nossa base 
+de dados e estes objetos por sua vez recebem atributos, os quais 
+representam cada coluna de nossas tabelas.
+ 
+Agora vejamos como poderiamos obter um ou mais registros da nossa base de 
+dados através dos métodos mágicos do ORLite.
+ 
+Exemplo 03:
+
+	# Caso sua tabela tenha uma chave primária...
+	# você poderá recuperar seu registro através dele
+	my $user = Model::User->load(1);
+	
+	# ... ou você pode fazer uma consulta por todos os registros
+	# e obter todos os registros da sua tabela.
+	my @users = Model::User->select;
+	 
+	 
+	# e se eu tenho uma lista de objetos, então
+	foreach my $user (@users){
+		 print "ID ". $user->id ." => ". $user->name ."\n";
+	}
+ 
+Agora vamos a um pequeno exemplo de exclusão de registros da nossa base de 
+dados. Assim como o Insert a exclusão é muito simples bastando apenas a 
+chamada de um simples método.
+ 
+Exemplo 04:
+
+	# Aqui vamos obter um objeto que representa um registro na nossa tabela...
+	my $user = Model::User->load(1);
+ 
+	# opsss! acabo de excluir este carinha ; )
+	$user->delete;
+	 
+Viu como é simples? Agora para concluir o artigo, vamos assumir que você
+precise fazer algumas consultas parametrizadas, que normalmente faria 
+utilizando a clausula WHERE do SQL. Vamos ver como poderiamos fazer!
+ 
+Exemplo 05:
+
+	# Neste caso procuramos por registros especificos
+	my @users = Model::User->select( ' where name = ? ', 'Daniel Vinciguerra');
+ 
+	# note que o mesmo poderia ser feito com o delete hehehe...
+	Model::User->delete( 'where name = ? ', 'Daniel Vinciguerra');
+ 
+ 
+=head1 Conclusão
+ 
+Como vimos, utilizando o ORLite toda a complexidade com uso de querys SQL 
+foi abstraída deixando somente métodos para uma interação simplificada com 
+os desenvolvedores. O ORLite pode ser um grande aliado quando ha a 
+necessidade de utilizar uma base de dados SQLite em seu sistema e pode 
+economizar e muito o tempo de desenvolvimento dele.
+ 
+Bom concluimos aqui este artigo, que por ser de cunho introdutório, passa uma 
+idéia simples do uso deste ótimo modulo para auxiliar-nos na manipulação de 
+dados do SQLite. Mais informações podem ser encontradas nos links abaixo.
+ 
+Site Oficial SQLite: http://www.sqlite.org/
+
+Documentação ORLite: http://search.cpan.org/~adamk/ORLite-1.45/lib/ORLite.pm
+ 
+=head1 Autor
+ 
+Daniel Vinciguerra <dan.vinciguerra at gmail.com>

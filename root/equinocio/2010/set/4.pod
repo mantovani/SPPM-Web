@@ -1,0 +1,533 @@
+=head1 YAC (YACCMS (Yet Another Catalyst CMS))
+
+Neste ensaio procuramos apresentar o desenvolvimento inicial do YAC, o CMS mais simples possivel.
+
+Um CMS bE<aacute>sico e extensE<iacute>vel para a comunidade de desenvolvedores perl.  Ajude a realizar este trabalho!
+
+ApE<oacute>s diversos estudos escolhemos o framework Catalyst como base para todo o projeto por sua grande compatibilidade com as melhores prE<aacute>ticas e ferramentas da programaE<ccedil>E<atilde>o moderna.
+
+A melhor caracterE<iacute>stica E<eacute> a sua extensibilidade. Para criar uma extensE<atilde>o ou componente do Catalyst basta usar o Moose, um framework pE<oacute>s-moderno no paradigma POO, no CPAN.
+
+Procuramos dividir o trabalho em 5 etapas:
+
+=over 4
+
+=item Projeto
+
+Estudo dos CMSs em uso e suas caracterE<iacute>sticas, objetivando encontrar lacunas e as principais demandas dos usuE<aacute>rios.
+DefiniE<ccedil>E<atilde>o dos primeiros cases, modelos e conceitos.
+
+=item Infra estrutura
+
+Passos bE<aacute>sicos para o inE<iacute>cio de um projeto de acordo com as melhores prE<aacute>ticas em perl
+
+=item ImplementaE<ccedil>E<atilde>o bE<aacute>sica do YAC
+
+Usando os helpers do Catalyst implementar a estrutura bE<aacute>sica do YAC
+
+=item ImplementaE<ccedil>E<atilde>o do gancho para extensE<otilde>es
+
+Arquitetura e orientaE<ccedil>E<otilde>es para extender o YAC.
+
+=item ImplementaE<ccedil>E<atilde>o da primeira extensE<atilde>o
+
+Extender view e control implementando o plugin fckeditor
+
+=back
+
+=head1 Primeiros passos
+
+=head2 Projeto
+
+=head3 Uma visE<atilde>o do produto
+
+Um CMS (Content Management System) ou Sistema de Gerenciamento de conteE<uacute>do pode ser uma ferramenta web usada em alguns negE<oacute>cios na Internet para publicaE<ccedil>E<atilde>o e administraE<ccedil>E<atilde>o de multimE<iacute>dia. O lE<iacute>der deste mercado E<eacute> certamente o B<Drupal>, um CMS baseado em php, produto de referE<ecirc>ncia usado por todos, considerado ferramenta chave na campanha de Obama E<agrave> presidE<ecirc>ncia dos Estados Unidos. O nE<uacute>mero de usuE<aacute>rios do CMS B<Drupal> ampliou consideravelmente (inclusive como escolha de designers e desenvolvedores), assim como o nE<uacute>mero de contribuiE<ccedil>E<otilde>es provindas da comunidade, um grande esforE<ccedil>o de programaE<ccedil>E<atilde>o fruto da demanda significativa por estes cE<oacute>digos devido ao seu sucesso. 
+
+Geralmente a multimE<iacute>dia servida em um CMS precisa se integrar com outros sistemas como CRMs, ERPs ou outros sistemas legados da empresa. A maior oportunidade em CMS's para programadores estE<aacute> justamente no desenvolvimento destas ferramentas de integraE<ccedil>E<atilde>o, sistemas de plugin e extensE<otilde>es. Este E<eacute> o caso do  B<Drupal>. Sua simplicidade minimalE<iacute>stica E<eacute> seu maior valor. Programadores podem desenvolver ganchos de seus sistemas no CMS e usuE<aacute>rios finais podem plugE<aacute>-los no website instantaneamente.
+
+O segredo: O designer (ou qualquer um) pode criar um website funcional sem qualquer cE<oacute>digo. Um CMS precisa de uma interface de usuE<aacute>rio simples e clara. Mas a integraE<ccedil>E<atilde>o com outros sistemas, talvez o principal foco do desenvolvedor esteja nesta aplicaE<ccedil>E<atilde>o externa, precisa ser simples tambE<eacute>m. Resultado final: Produtividade.
+
+Nos mundos Java, Python, Ruby e Asp encontramos similares: Typo, OpenCms, Django, Plone. Alguns simples, outros com mais recursos. 
+
+=head3 Concorrentes
+
+=over 4
+
+=item * Drupal
+
+Php
+L<http://drupal.org/>
+
+=item * Typo
+
+Ruby
+L<http://wiki.github.com/fdv/typo/>
+
+=item * OpenCms
+
+Java
+L<http://www.opencms.org/>
+
+=item * Django
+
+Python
+L<http://www.djangoproject.com/>
+
+=item * Plone
+
+Python
+L<http://plone.org/>
+
+=back
+
+=head3 OpE<ccedil>E<otilde>es em Perl
+
+Uma das principais caracterE<iacute>stica do Perl e eu diria uma virtude de qualquer pessoa inteligente E<eacute> poder fazer a mesma coisa de diversas formas. 
+
+Entre as ferramentas Perl nE<atilde>o podemos deixar de falar do MovableType. O YAC nE<atilde>o E<eacute> concorrente direto do MovableType, que se integra no Catalyst e da mesma forma irE<aacute> integrar-se em nossa implementaE<ccedil>E<atilde>o. O paradigma do YAC E<eacute> diferente pelo foco na simplicidade e minimalismo. SerE<aacute> tranquilo iniciar um projeto com YAC e integrar o MovableType a qualquer momento.
+
+=head3 ConclusE<atilde>o
+
+O projeto Catalyst seria muito enriquecido com esta distribuiE<ccedil>E<atilde>o. Um CMS bE<aacute>sico e extensivel, com os olhos no usuE<aacute>rio final e interfaces que podem facilitar tambE<eacute>m o trabalho dos desenvolvedores. Um CMS mais simples que B<Drupal> mas com o poder do B<CPAN> e do B<Catalyst>.
+
+Vamos considerar tambE<eacute>m a integraE<ccedil>E<atilde>o com as ferramentas perl disponE<iacute>vies via cpan como Reaction, Mojo e Dancer. 
+
+=head2 Infra estrutura
+
+=over 4
+
+=item *
+instalar o Catalyst e criar a base do YAC 
+
+    $> sudo cpan Catalyst
+    $> sudo cpan Catalyst::Model::DBIC::Schema
+    $> catalyst.pl YAC
+    $> cd YAC
+
+=item *
+criar controles
+
+    $> ./script/yac_create.pl controller Edit
+    $> ./script/yac_create.pl controller Hack
+    $> ./script/yac_create.pl controller Admin
+
+=item *
+criar view
+
+    $> ./script/yac_create.pl view Stack TT
+    $> ./script/yac_create.pl view Back TT
+
+=item *
+criar modelos
+
+Vamos implementar o modelo no banco de dados sqlite! Ideal para esta aplicaE<ccedil>E<atilde>o.
+
+L<http://www.sqlite.org/>
+
+Mas poderE<iacute>amos usar mysql, postgres ou outro banco qualquer que o perl suportar.
+
+=back
+
+Preferimos o editor vim:
+
+    $> vi yac.sql
+
+Edite o arquivo yac.sql e coloque o cE<oacute>digo abaixo:
+
+    --
+    -- Cria a base de dados mais simples possE<iacute>vel para um cms
+    -- Tabelas: users e stacks
+    --
+    PRAGMA foreign_keys = ON;
+    -- stack_id aponta o stack pai ou 0 se stack raiz
+    CREATE TABLE stack (
+            id           INTEGER PRIMARY KEY,
+            stack_id     INTEGER,
+            content      TEXT
+    );
+    -- 'stack_userr' E<eacute> uma tabela relacionamento muitos-muitos entre stacks e userss
+    CREATE TABLE stack_user (
+            stack_id  INTEGER REFERENCES stack(id) ON DELETE CASCADE ON UPDATE CASCADE,
+            user_id   INTEGER REFERENCES user(id)  ON DELETE CASCADE ON UPDATE CASCADE,
+            PRIMARY KEY (stack_id, user_id)
+    );
+    CREATE TABLE user (
+            id          INTEGER PRIMARY KEY,
+            first_name  TEXT,
+            last_name   TEXT,
+            login       TEXT,
+            password    TEXT,
+            role        INTEGER
+    );
+    ---
+    --- Dados de exemplo
+    ---
+    INSERT INTO stack VALUES (1, 0, '<h1>Sou a homepage</h1><p>menu');
+    INSERT INTO stack VALUES (2, 1, '<li><a href="/caminho/do/link1">menu1</a>');
+    INSERT INTO stack VALUES (3, 1, '<li><a href="/caminho/do/link2">menu2</a>');
+    INSERT INTO stack VALUES (4, 1, '<li><a href="/caminho/do/link3">menu3</a>');
+    INSERT INTO stack VALUES (5, 1, '<li><a href="/caminho/do/link4">menu4</a>');
+    INSERT INTO user VALUES (1, 'Greg', 'Bastien', 'greg@cpan.org', 'novasenha', 1);
+    INSERT INTO user VALUES (2, 'Sara', 'Nasseh', 'sara@pan.org', 'novasenha', 1);
+    INSERT INTO user VALUES (3, 'Christian', 'Degu', 'degu@cpan.org', 'novasenha', 1);
+    INSERT INTO user VALUES (4, 'Richard', 'Stevens', 'stev@cpan.org', 'novasenha', 1);
+    INSERT INTO user VALUES (5, 'Douglas', 'Comer', 'comer@gmail.com', 'novasenha', 2);
+    INSERT INTO user VALUES (9, 'Ricardo', 'Filipo', 'filipo@kobkob.com.br', 'novasenha',3);
+    INSERT INTO stack_user VALUES (1, 1);
+    INSERT INTO stack_user VALUES (1, 2);
+    INSERT INTO stack_user VALUES (1, 3);
+    INSERT INTO stack_user VALUES (2, 4);
+    INSERT INTO stack_user VALUES (3, 5);
+    INSERT INTO stack_user VALUES (4, 6);
+    INSERT INTO stack_user VALUES (4, 7);
+    INSERT INTO stack_user VALUES (5, 8);
+
+Agora vamos criar a base de dados
+
+    $> sqlite3 yac.db < yac.sql
+    $> ./script/yac_create.pl model YAC DBIC::Schema create=static dbi:SQLite:
+
+    $> ./script/yac_create.pl model YAC DBIC::Schema YAC::Schema \
+        create=static dbi:SQLite:yac.db \
+        on_connect_do="PRAGMA foreign_keys = ON"
+
+=head2 O CMS mE<iacute>nimo
+
+=head3 Arquitetura
+
+A unidade bE<aacute>sica do YAC E<eacute> o B<Stack>, um objeto com 3 mE<eacute>todos: 
+
+=over 2
+
+=item * url 
+
+A url E<uacute>nica deste stack. Acessar a url retornarE<aacute> o mesmo que o mE<eacute>todo content();
+
+=item * content 
+
+Os dados do conteE<uacute>do. Uma string. Provavelmente em html.
+
+=item * stacks
+
+Array com os stacks contidos neste stack
+
+=back
+
+SerE<aacute> possE<iacute>vel herdar um Stack definindo-se novos mE<eacute>todos.
+
+AlE<eacute>m da interface default (Play), a mE<aacute>quina de estados do YAC apresenta ainda 3 outras interfaces.
+
+=over 2
+
+=item Play 
+
+Default, apresenta os Stacks.
+
+=item Edit
+
+Interface de ediE<ccedil>E<atilde>o de Stack.
+
+=item Hack 
+
+Interface de desenvolvimento de Stack.
+
+=item Admin
+
+Interface de administraE<ccedil>E<atilde>o e gestE<atilde>o de usuE<aacute>rios.
+
+=back
+
+=head3 Exemplo
+
+    use YAC::Stack;
+
+Instanciar um Stack:
+ 
+    my $coolStack = new YAC::Stack;
+  
+Montar o Stack, editando url e conteudo
+
+    $coolStack->url ('my/coolStack');
+    my $url = $coolStack->url();
+
+    $html = "<p>Oi gente!";
+    $coolStack->content($html);
+    
+Acessar o Stack na Web
+
+    use LWP::Curl;
+
+    my $browser = LWP::Curl->new();
+    my $hello = $browser->get('my/coolStack');
+    my $content = "$hello <p>Benvindos ao YAC!";
+
+Um B<Stack> entE<atilde>o pode ser apresentado, editado ou construE<iacute>do e E<eacute> acessado em determinada url.
+
+=head1 TODO
+
+=head2 ExtensE<otilde>es
+
+=over 4
+
+=item *
+
+definir ganchos para as extensE<otilde>es
+
+=back
+
+=head2 ExtensE<atilde>o exemplo
+
+=over 4
+
+=item *
+
+implementar a extensE<atilde>o fckeditor
+
+=back
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+
+=head1 NOME
+
+YAC (YACCMS (Yet Another Catalyst CMS))
+
+B<Colofon:>
+
+YAC lembra "Yeast Artificial Chromosome. Yeah!
+A levedura E<eacute> o nosso mascote.
+See L<http://en.wikipedia.org/wiki/Yeast> 
+
+=head1 VERSE<Atilde>O
+
+VersE<atilde>o 0.01    
+
+=head1 AUTOR
+
+Monsenhor, C<< <ricardo.filipo at gmail.com> >>
+
+=head1 SINOPSE
+
+O CMS mais simples que existe.
+
+    use YACCMS;
+
+    my $web = new YACCMS;
+    $web->run();
+    # go to web!
+
+=head2 Design Pattern 
+
+O ponto de vista do usuE<aacute>rio leigo E<eacute> o foco do YAC. Eu nE<atilde>o tenho dE<uacute>vida que seria muito mais fE<aacute>cil para o nosso pequeno YAC se nE<atilde>o tivesse que lidar com usuE<aacute>rios. Especialmente os que sE<atilde>o leigos nas aventuras da TI. Mas nada disto teria sentido se o YAC nE<atilde>o fosse pensado para ser usado por alguE<eacute>m.
+
+Na verdade se houver alguma complexidade no YAC estarE<aacute> relacionada com o desenvolvimento de interfaces e agentes voltados E<agrave> facilidade do usuE<aacute>rio. O nosso objetivo E<eacute> permitir que o usuE<aacute>rio pense e trabalhe em seus assuntos, sem ter que se preocupar com detalhes de como isto se realiza. Infelizmente o YAC ainda nE<atilde>o pode entender o usuE<aacute>rio por telepatia, sim, seria certamente a melhor abordagem caso jE<aacute> existisse a tecnologia, entE<atilde>o nos contentaremos com as interfaces em uso, como Html e Ajax.
+
+Produtos como Drupal, lE<iacute>der do mercado, apresentam, apesar de sua grande maleabilidade e integrabilidade com outros sistemas, uma interface engessada e ainda complexa para um usuE<aacute>rio mE<eacute>dio. A proposta do YAC E<eacute> ser o mais simples possE<iacute>vel, o mais bE<aacute>sico possE<iacute>vel. O objetivo do YAC E<eacute> administrar apenas cada elemento unitE<aacute>rio de cada vez. A unidade E<eacute> o Stack.
+
+Em nossa opiniE<atilde>o o melhor desenho para um CMS deve ser a Pilha. Mas pensamos a pilha como uma colagem, os objetos nE<atilde>o precisam ser todos da mesma forma material ou tamanho. A estrutura de camadas do B<css> ou folhas de estilo funciona assim. Cada objeto depositado na pilha (a tela do site) E<eacute> um url definido como um elemento do YAC, uma pilha de pilhas.
+
+O nosso mascote, o fungo, apresenta uma estrutura muito parecida. Uma colE<ocirc>nia de fungos forma desenhos, cores e formas de acordo com o ambiente. Cada pequeno fungo acha seu lugar e a pilha de fungos forma como que um indivE<iacute>duo E<uacute>nico, um local de vida, um site.
+
+=head2 Stack
+
+  ----------
+  | Stack  |----->  URL                           # Tela do site
+  ----------
+      |       ----------
+      |---->  | Stack  |----->  URL               # CabeE<ccedil>alho
+      |       ----------           
+      |          |       ----------
+      |          |---->  | Stack  |----->  URL    # Logomarca
+      |          |       ----------           
+      |          |       ----------
+      |          |---->  | Stack  |----->  URL    # Menu
+      |                  ----------          
+      |       ----------
+      |---->  | Stack  |----->  URL               # Texto em html
+              ----------           
+
+
+Um Stack estE<aacute> relacionado a uma URL, retorna um array de Stacks e pode ser herdado e livremente modificado.
+
+Cada Stack pode ser apresentado, editado ou construido (hack). AlE<eacute>m disso um Stac possui um usuE<aacute>rio responsE<aacute>vel.
+
+=head1 ME<Eacute>TODOS
+
+=head2 new
+
+Retorna uma instE<acirc>ncia do controlador do aplicativo.
+Agora voE<ecirc> pode rodar ou parar o YAC.
+
+=head2 run
+
+Roda o daemon http na porta $port. Default em 80.
+    
+    my $port = 80 ;
+    $web->run ($port) ;
+
+=head2 stop
+
+    $web->stop();
+
+Para o daemon.
+
+=head1 YAC 
+
+=head2 ImnplementaE<ccedil>E<atilde>o em Catalyst
+
+YAC - Baseado em Catalyst
+
+=head1 SINOPSE
+
+    script/yac_server.pl
+
+=head1 DESCRIE<Ccedil>E<Atilde>O
+
+=head2 Estrutura de Controle
+
+O YAC pode carregar uma das 4 mE<aacute>quinas:
+
+    . Play
+    . Edit
+    . Admin
+    . Hack
+
+Cada mE<aacute>quina exige que o usuE<aacute>rio possua determinados funE<ccedil>E<atilde>o e direitos de acesso.
+
+=over 4
+
+=item * ME<aacute>quina Play
+
+A ME<aacute>quina Play ou controlador Root serE<aacute> sempre a I<default>. Aqui o usuE<aacute>rio poderE<aacute> visualizar os conteE<uacute>dos em mE<iacute>dia e acessar os menus bE<aacute>sicos para navegaE<ccedil>E<atilde>o. 
+
+=item * ME<aacute>quina Edit
+
+Um usuE<aacute>rio logado com direitos de ediE<ccedil>E<atilde>o pode acessar a mE<aacute>quina Edit para editar seu trabalho.
+ 
+O editor default E<eacute> html. Outros editores como link, cE<oacute>digo, imagem, animaE<ccedil>E<atilde>, xml, svg, json e outros podem ser adicionados como extensões.
+
+O menu E<eacute> o mesmo que o da mE<aacute>quina Play mais os menus de dados pessoais e de ediE<ccedil>E<atilde>o. TambE<eacute>m serE<atilde>o acrescentadas interfaces para ediE<ccedil>E<atilde>o de dados pessoais e outros em extensE<otilde>es. Estes novos editores serE<atilde>o integrados na mesma interface.
+
+=item * ME<aacute>quina Admin
+
+Com direitos de administrador o usuE<aacute>rio poderE<aacute> acessar a mE<aacute>quina Admin.
+
+Apresenta interfaces para editar e administrar usuE<aacute>rios, seus dados e trabalhos. Permite atividades administrativas no CMS's como startup/shutdown do servidor e habilitar/desabilitar extensE<otilde>es. 
+
+Menus sE<atilde>o os mesmos da mE<aacute>quina Edit mais os menus de usuE<aacute>rios e administrativos.
+
+=item * ME<aacute>quina Hack
+
+Com direitos de hacker o usuE<aacute>rio poderE<aacute> usar a ME<aacute>quina Hack.
+
+Apresenta interfaces para o desenvolvimento de plugins, acesso ao Catalyst: hooks e helpers. Objetiva o design e construE<ccedil>E<atilde>o da arquitetura do CMS como criar widgets, desenvolver novas funcionalidades ou uma nova extensE<atilde>o. 
+
+Uma idE<eacute>ia interessante E<eacute> desenvolver interface para servidores de versionamento, como git, svn e cvs.
+
+=back
+
+=head2 Modelo
+
+=over 4
+
+=item * Stack
+
+O acesso ao conteE<uacute>do. A E<uacute>nica coisa sem a qual o YAC nE<atilde>o existe.
+
+Voce certamente vai criar stacks sensacionais!! 
+
+Os stacks especiais implementados no core do YAC: Content, Control e Widget.
+
+=over 4 
+
+
+=item Control
+
+O gerenciador de menus. Tem mais 2 metodos: url e name
+
+=item Content
+
+ConteE<uacute>do em html.
+
+=item Widget
+
+ConteE<uacute>do em javascript.
+
+=back
+
+
+=item * Auth
+
+Classe de autenticaE<ccedil>E<atilde>o. Trata usuE<aacute>rios, regras e direitos.
+
+=item * User
+
+Classe que representa o usuE<aacute>rio.
+
+=item * Layout
+
+Objetos Layout sE<atilde>o templates do view TT, do Catalyst, armazenados em banco de dados.
+
+=item * Extension
+
+ExtensE<otilde>es sE<atilde>o classes do Moose.
+
+=back
+
+=head2 Core Extensions
+
+=over 4
+
+=item *
+
+Media Player
+
+=item *
+
+Imagens em slides e carrossel
+
+=item *
+
+DiE<aacute>logos e hooks para o jqueryUI
+
+=item *
+
+fkceditor
+
+=item *
+
+jsLinb visual editor 
+
+=back 
+
+
+=head1 AGRADECIMENTOS
+
+Aos amigos do do SP-pm, Rio-pm e Cascavel-pm pelo incentivo. Obrigado!
+
+=head3 Bibliografia
+
+   L<http://en.wikipedia.org/wiki/Content_management_system>
+   L<http://en.wikipedia.org/wiki/List_of_content_management_systems>
+   L<http://www.movabletype.org>
+   L<http://search.cpan.org/~okko/Catalyst-Controller-MovableType-0.003/>
+   L<http://en.wikipedia.org/wiki/OpenCms>
+   L<http://en.wikipedia.org/wiki/Drupal>
+   L<http://en.wikipedia.org/wiki/Plone_(software)>
+   L<http://en.wikipedia.org/wiki/Typo_(software)>
+   L<http://search.cpan.org/dist/Reaction/>
+   L<http://search.cpan.org/dist/Mojolicious/>
+   L<http://search.cpan.org/dist/Dancer/>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Monsenhor (Ricardo Filipo).
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.

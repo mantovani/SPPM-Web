@@ -1,0 +1,241 @@
+
+=begin pod:xhtml
+
+<script type="text/javascript" src="/static/images/equinocio/2010/set/perlito/perlito.js"></script>
+
+<script>
+function print(s) {
+document.getElementById(vout).value += s + "\n";
+}
+function execute(vin,o) {
+vout=o;
+document.getElementById(vout).value = "";
+try {
+var js = Perlito.f_compile_p6_to_js( document.getElementById(vin).value );
+eval(js);
+}
+catch(err) {
+print("Erro:\n");
+print(f_perl(err) + "\n");
+}
+}
+function show_js(vin,o) {
+vout=o;
+document.getElementById(vout).value = "";
+try {
+var js = Perlito.f_compile_p6_to_js( document.getElementById(vin).value );
+print(js);
+}
+catch(err) {
+print("Erro:\n");
+print(f_perl(err) + "\n");
+}
+}
+function show_ast(vin,o) {
+vout=o;
+document.getElementById(vout).value = "";
+try {
+var ast = Perlito$Grammar.f_exp_stmts(document.getElementById(vin).value, 0);
+print(f_perl(f_scalar(ast)));
+}
+catch(err) {
+print("Erro:\n");
+print(f_perl(err) + "\n");
+}
+}
+</script>
+
+=end pod:xhtml
+
+=head1 Perlito Perl6
+
+L<Perl 6|http://perl6.org> é uma especificação de linguagem escrita e avaliada
+pela própria comunidade ao longo da última década. A medida que as pessoas envolvidas
+foram concordando com os principais aspectos dessa especificação, algumas implementações
+começaram a surgir, ajudando a comunidade a testar funcionalidades e verificar o que
+de fato era prático e o que deveria ser repensado.
+
+Nos últimos meses, a atenção do mundo  voltou-se para o L<Rakudo Star|http://rakudo.org >,
+uma implementação L<útil e usável do Perl 6|http://www.perl.org.br/Artigos/RakudoStar>.
+Mas o poderoso Rakudo está longe de ser o único compilador Perl 6 por aí...
+
+No artigo de hoje, vamos chamar sua atenção para outra implementação muito interessante, o
+L<Perlito|http://perlito.org>, também conhecido como MiniPerl6.
+
+=head2 O que o Perlito tem de especial?
+
+Ao contrário de implementações mais robustas - e mais lentas - como o Rakudo, o Perlito não
+implementa todos os detalhes do Perl 6. Pelo contrário, a idéia do projeto é oferecer apenas
+um "subconjunto útil" da linguagem, em um compilador pequeno e eficiente.
+
+Como resultado, o Perlito gera programas relativamente rápidos, e pode ser utilizado como
+linguagem para bootstrapping, ou como uma implementação ideal para seus primeiros passos
+em Perl 6.
+
+Outra característica marcante do Perlito é que seu programa em Perl 6 pode ser compilado
+para a linguagem de sua escolha, seja Perl 5, Python, Ruby, Lisp, Go, ou várias
+outras opções. De fato, um dos backends mais interessantes do Perlito é em JavaScript,
+e permite que você programe em Perl 6 diretamente de seu navegador web - até por smartphones!
+
+=head2 Perl6 em Javascript - Perlito no browser
+
+Esta página carregou a versão para Javascript do Perlito. Para utilizá-la, clique no botão "Execute" abaixo de cada exemplo.
+
+É possível editar os exemplos, experimente. Você certamente encontrará erros do compilador - este é um trabalho em desenvolvimento, e a implementação ainda tem alguns problemas.
+
+Exemplo: interpolação de string, comando "say"
+
+=begin pod:xhtml
+
+<center>
+<textarea id="s1" cols="50" rows="5">my $name = "São Paulo PM";
+say "hello, $name!"
+</textarea><br>
+<textarea id="r1" readonly="true" cols="50" rows="5"></textarea><br>
+<input value="Execute" onclick='execute("s1","r1")' type="button">
+<input value="Mostra javascript" onclick='show_js("s1","r1")' type="button">
+</center>
+
+=end pod:xhtml
+
+Exemplo: comando "for", estruturas de dados
+
+=begin pod:xhtml
+
+<center>
+<textarea id="s2" cols="50" rows="10">my $names = { 
+    "2010-09-01" =&gt; "Luis", 
+    "2010-09-02" =&gt; "Daniel", 
+    "2010-09-03" =&gt; "André" 
+};
+my $datas = $names.keys;
+say "Equinócio 2010:";
+for @$datas -&gt; $data {
+    say "$data - artigo de " ~ $names{$data}
+}
+</textarea><br>
+<textarea id="r2" readonly="true" cols="50" rows="5"></textarea><br>
+<input value="Execute" onclick='execute("s2","r2")' type="button">
+<input value="Mostra javascript" onclick='show_js("s2","r2")' type="button">
+</center>
+
+=end pod:xhtml
+
+Exemplo: gramática e objeto "Match"
+
+=begin pod:xhtml
+
+<center>
+<textarea id="s3" cols="50" rows="15">grammar Perlito::Grammar {
+    token primeiro_nome { &lt;.word&gt;+ }
+    token segundo_nome  { &lt;.word&gt;+ }
+    token nome { 
+        &lt;primeiro_nome&gt; \s+ &lt;segundo_nome&gt; 
+    }
+}
+
+my $name = "Flavio Glock";
+my $match = Perlito::Grammar.nome($name, 0);
+say "Você é $name?";
+say "Benvindo ", $match{"primeiro_nome"}, "!";
+</textarea><br>
+<textarea id="r3" readonly="true" cols="50" rows="5"></textarea><br>
+<input value="Execute" onclick='execute("s3","r3")' type="button">
+<input value="Mostra javascript" onclick='show_js("s3","r3")' type="button">
+</center>
+
+=end pod:xhtml
+
+=head2 Perl6 em Perl5 - Perlito no CPAN
+
+A distribuição do Perlito no CPAN se chama "v6". Para instalar:
+
+	cpan install v6
+
+
+Com v6.pm instalado, é possível executar scripts com o perl 5 que você tem no seu computador:
+
+	#!/usr/local/bin/perl
+	use v6-perlito;
+
+	"hello, world".say;
+
+
+=head2 Perlito shell
+
+A distribuição "v6" inclui o script "perlito", que permite a execução interativa:
+
+	perlito
+	>
+	> my @v
+	> @v = 1..4
+	> say @v.perl
+	[1, 2, 3, 4]
+	> for @v { say "hello, $_" }
+	hello, 1
+	hello, 2
+	hello, 3
+	hello, 4
+
+=head2 Funcionamento do compilador
+
+O compilador consiste de uma gramática, como a que vimos no exemplo acima, que descreve as diversas estruturas da linguagem Perl 6. O resultado da gramática é um objeto que contém a "árvore de sintaxe abstrata" (AST) do script. A árvore de sintaxe é então percorrida por um gerador de código, que escreve o programa executável.
+
+Exemplo: clique no botão para ver a árvore de sintaxe
+
+=begin pod:xhtml
+
+<center>
+<textarea id="s4" cols="50" rows="2">123;
+</textarea><br>
+<textarea id="r4" readonly="true" cols="50" rows="2"></textarea><br>
+<input value="Mostra árvore de sintaxe" onclick='show_ast("s4","r4")' type="button">
+</center>
+
+=end pod:xhtml
+
+Exemplo: clique no botão para gerar a árvore de sintaxe deste script
+
+=begin pod:xhtml
+
+<center>
+<textarea id="s5" cols="50" rows="5">my $name = "Perlito";
+say $name
+</textarea><br>
+<textarea id="r5" readonly="true" cols="50" rows="12"></textarea><br>
+<input value="Mostra árvore de sintaxe" onclick='show_ast("s5","r5")' type="button">
+</center>
+
+=end pod:xhtml
+
+A arquitetura do compilador Perlito é derivada do compilador "MiniPerl6", desenvolvido em 2006. O desenho abaixo mostra a relação entre os diversos componentes do MiniPerl6. O Perlito acrescenta a esta estrutura um parser de precedência.
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2010/set/perlito/mp6bootstrap.png">
+</center>
+
+=end pod:xhtml
+
+=head2 Desenvolvimento do Perlito
+
+O compilador Perlito é a ferramenta que traduz o seu script para um formato em que possa ser executado: Javascript, Perl5, Python, Ruby, Lisp, ou binário ".exe", "elf" ou ".class".
+
+A versão completa do compilador está disponível no site github: L<http://github.com/fglock/Perlito>
+
+As versões estáveis estão disponíveis em L<http://github.com/fglock/Perlito/downloads>
+
+=head2 Distribuições
+
+v6.pm "Perl6 em Perl5" disponível no CPAN: L<http://search.cpan.org/dist/v6>
+
+Perlito em Javascript: disponível em L<http://perlcabal.org/~fglock/perlito.js>. Esta é a versão utilizada nos exemplos deste artigo.
+
+=head2 AUTOR
+
+Flávio S. Glock <fglock@gmail.com>
+
+=cut
+
+
