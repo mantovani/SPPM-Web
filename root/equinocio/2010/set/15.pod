@@ -1,0 +1,272 @@
+d=pod
+
+=encoding utf8
+
+=head1 Instalação de uma aplicação Mojolicious usando FastCGI no Dreamhost
+
+O Dreamhost é uma empresa de web hosting que fornece vários serviços
+relacionados a hospedagem de sites, tanto com servidores privados quanto com
+hosts compartilhados.
+
+Neste texto trataremos da instalação de uma aplicação Mojolicious
+(L<Mojolicious::Lite> para ser mais preciso) utilizando FastCGI em um host
+compartilhado do Dreamhost, no qual não temos acesso à senha de administrador
+ou qualquer privilégio especial.
+
+=head2 Criação de usuário e domínio
+
+O primeiro passo para a instalação de uma aplicação web é ter no servidor uma
+conta de usuário com shell e um domínio apontando para algum diretório dessa
+conta.
+
+Várias aplicações e vários domínios podem ser configurados sob a mesma conta
+de usuário, mas neste exemplo vamos utilizar tanto uma conta quanto um
+domínio novos para demonstrar todos os passos.
+
+=head3 Usuário
+
+Um novo usuário pode ser criado através do painel administrativo do Dreamhost.
+
+Na opção B<Type of User Account> (tipo de conta) vamos marcar a opção
+B<Shell: allows SFTP/FTP plus shell access>. Com isso vamos dar a esse novo
+usuário acesso ao servidor via ssh.
+
+É opcional, mas vamos ativar também a opção B<Enhanced security> para deixar
+esta conta completamente isolada das demais. Com isso nem mesmo os seus outros
+usuários terão acesso aos arquivos dessa conta.
+
+=head3 Domínio
+
+Um domínio ou subdomínio também pode ser configurado através do painel de
+controle do Dreamhost.
+
+Neste caso vamos utilizar um sub-domínio, mas poderia ser um doutro domínio
+qualquer.
+
+Na opção B<Domain to host> vamos adicionar o nome do sub-domínio
+B<test.blabos.org>.
+
+Na opção B<Do you want the www in your URL?> vamos marcar B<Remove WWW>.
+
+Já na opção B<PHP mode> vamos marcar B<PHP 5 FastCGI>. Isso vai ativar o
+suporte a FastCGI no diretório para onde aponta o nosso sub-domínio.
+
+B<NOTA>: Na wiki do próprio Dreamhost eles avisam que dão suporte somente para
+FastCGI com PHP. No nosso caso, vamos utilizar FastCGI com Perl, então estamos
+por nossa própria conta e risco.
+
+Em B<Web directory> configure o diretório que achar mais adequado. É para esse
+diretório que o sub-domínio vai apontar e nele que vamos instalar a aplicação
+Mojolicious depois.
+
+A atualização do DNS deve levar algumas horas, portanto configure tanto o
+usuário quanto o domínio com uma certa antecedência (um ou dois dias, por
+exemplo).
+
+Após as atualizações surtirem efeito, você será capaz de logar no sub-domínio
+via ssh e acessá-lo (o diretório configurado anteriormente) via browser.
+
+=head2 Configuração do Perl com local::lib
+
+Configurar o módulo local::lib corretamente vai nos permitir instalar outros
+módulos Perl do L<http://cpan.org> diretamente no diretório do nosso usuário
+sem privilégios.
+
+Para isso vamos logar no servidor e executar a primeira parte deste tutorial
+L<http://sao-paulo.pm.org/equinocio/2010/mar/2>.
+
+B<NOTA>: O detalhe extra aqui é que diferentemente do tutorial, no Dreamhost
+o arquivo onde devemos configurar as variáveis de ambiente é o .bash_profile
+e não o .bashrc.
+
+=head2 Instalação do Mojolicious
+
+Após configurado o módulo local::lib vamos instalar o módulo
+L<Mojolicious::Lite> com o comando:
+
+    [server]$ cpan Mojolicious::Lite
+
+O Mojolicious só depende de módulos CORE do Perl, então esse passo deve ser
+bem rápido.
+
+Feito isso vamos criar nossa pequena aplicação web de teste dentro do
+diretório para onde aponta o sub-domínio, que no nosso caso é
+test.blabos.org:
+
+    [server]$ cd test.blabos.org
+    [server]$ ls
+    favicon.gif  favicon.ico  quickstart.html
+    [server]$ mkdir TestApp
+    [server]$ cd TestApp/
+    [server]$ vi app.pl
+
+Vamos criar nossa aplicação de teste contendo somente as linhas:
+
+    #!/usr/bin/perl
+
+    use strict;
+    use warnings;
+    use Mojolicious::Lite;
+
+    get '/' => sub {
+        my $self = shift;
+        
+        $self->stash({
+            'message' => 'Hello World!!!',
+        });
+        
+    } => 'index';
+
+    shagadelic;
+
+    __DATA__
+    @@ index.html.ep
+    <center><h1><%= $message %></h1></center>
+
+Depois precisamos dar permissão de execução para ela:
+
+    [server]$ chmod +x app.pl
+
+Então podemos executá-la utilizando seu servidor web interno:
+
+    [server]$ ./app.pl daemon
+    Sat Sep 11 19:56:19 2010 info Mojo::Server::Daemon:363 [17141]: Server
+    listening (http://*:3000)
+    Server available at http://*:3000.
+
+Ainda não podemos acessá-la pelo sub-domínio configurado, mas podemos fazer
+um teste apontando para o servidor dentro do Dreamhost. Isso pode ser
+feito com um browser ou usando as técnicas mostradas no texto sobre HTTP:
+
+    user@host:~$ nc server.dreamhost.com 3000
+    GET / HTTP/1.1
+    Host: server.dreamhost.com:3000
+
+    HTTP/1.1 200 OK
+    Connection: Keep-Alive
+    Content-Type: text/html
+    X-Powered-By: Mojolicious (Perl)
+    Date: Sun, 12 Sep 2010 03:04:56 GMT
+    Content-Length: 41
+    Server: Mojolicious (Perl)
+
+    <center><h1>Hello World!!!</h1></center>
+
+Neste ponto apenas garantimos que nossa aplicação não contém erros de
+sintaxe e que ela é totalmente funcional, ainda precisamos configurar o
+ambiente FastCGI.
+
+=head2 Configuração do arquivo .htaccess e a aplicação
+
+Para configurar o ambiente FastCGI, precisamos criar um arquivo .htaccess no
+diretório para onde o sub-domínio aponta. Esse arquivo nos permite passar
+configurações para o servidor web (Apache) que valem somente para esse
+diretório e sem precisar de acesso administrativo. Para maiores detalhes
+sobre o arquivo .htaccess, consulte a documentação do Apache.
+
+Agora começa a parte delicada.
+
+=head3 .htaccess
+
+De acordo com a documentação na wiki do Dreamhost o arquivo .htaccess precisa
+ter exatamente o conteúdo abaixo:
+
+    Options +ExecCGI
+    AddHandler fastcgi-script .fcgi
+    RewriteEngine On
+    RewriteRule ^(TestApp/dispatch\.fcgi/.*)$ - [L]
+    RewriteRule ^(.*)$ TestApp/dispatch.fcgi/$1 [PT,L]
+
+=head3 Aplicação
+
+Além disso, por causa da política de controle de processos no servidor
+compartilhado, o script executável da aplicação B<DEVE> ser renomeado para
+B<dispatch.fcgi>
+
+    [server]$ mv app.pl dispatch.fcgi
+
+A aplicação também precisa ser parametrizada corretamente para poder utilizar
+o FastCGI e precisa obter explicitamente os caminhos para os módulos que
+foram instalados no diretório do usuário. Assim o código da aplicação fica:
+
+    #!/usr/bin/perl
+    
+    use lib qw{
+        /home/user/perl5/lib/perl5
+        /home/user/perl5/lib/perl5/x86_64-linux-gnu-thread-multi
+    };
+
+    use strict;
+    use warnings;
+    use Mojolicious::Lite;
+
+    get '/' => sub {
+        my $self = shift;
+        
+        $self->stash({
+            'message' => 'Hello World!!!',
+        });
+        
+    } => 'index';
+
+    shagadelic('fastcgi');
+
+    __DATA__
+    @@ index.html.ep
+    <center><h1><%= $message %></h1></center>
+
+Um outro detalhe também documentado na wiki do Dreamhost é que o executável e
+o diretório onde ele está precisam pertencer ao mesmo usuário e grupo da
+conta que criamos. Além disso, ambos precisam ter a permissão de escrita
+ativada para o grupo.
+
+Nos nossos testes essa configuração foi irrelevante, mas como está
+documentado, vamos mantê-la:
+
+    [server]$ chmod -R g+w TestApp/
+
+A nossa estrutura de diretórios a partir do diretório raiz do sub-domínio
+deve ser algo como:
+
+    [server]$ tree -a
+    .
+    |-- .htaccess
+    |-- TestApp
+    |   `-- dispatch.fcgi
+    |-- favicon.gif
+    |-- favicon.ico
+    `-- quickstart.html
+
+Os arquivos favicon.gif, favicon.ico e quickstart.html são instalados pelo
+Dreamhost quando da criação do sub-domínio e não tem nada a ver com a nossa
+aplicação.
+
+Agora podemos testar a aplicação diretamente no sub-domínio:
+    
+    user@host:~$ nc test.blabos.org 80
+    GET / HTTP/1.1
+    Host: test.blabos.org
+
+    HTTP/1.1 200 OK
+    Date: Sun, 12 Sep 2010 03:27:27 GMT
+    Server: Apache
+    X-Powered-By: Mojolicious (Perl)
+    Content-Length: 41
+    Vary: Accept-Encoding
+    Content-Type: text/html
+
+    <center><h1>Hello World!!!</h1></center>
+
+=head2 Agradecimentos
+
+Agradeço ao Breno G. de Oliveira pela paciênca, disponibilidade e suporte quando precisamos colocar a aplicação para funcionar. Muito obrigado!
+
+=head2 AUTOR
+
+Blabos de Blebe é programador desde 1999 e atualmente também aluno do curso de Ciência da Computação no Centro Universitário da FEI em São Bernardo do Campo.
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da L<Creative Commons by-sa|http://creativecommons.org/licenses/by-sa/3.0/br/">
+
+=cut

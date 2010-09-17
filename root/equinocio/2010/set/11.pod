@@ -58,7 +58,7 @@ Neste artigo irei demonstrar como funciona o tipo de relacionamento mais comum n
 
 =head2 Definindo os relacionamentos nas classes
 
-Começemos definindo as classes:
+Começamos definindo as classes:
 
 MyDB/Schema/Result/Employee.pm
 
@@ -129,23 +129,27 @@ MyDB/Schema/Result/JobHistory.pm
 		print "Department " . $dep->department_name." City: " . $dep->locations->city.$/;
 	}
 	
-No bloco de código acima nós estamos fazendo um join da tabela Department com a tabela Locations, porém se nós sertamos DBIC_TRACE=1, perceberemos que nós executamos a query nas duas tabelas porém só retornamos os dados da tabela Department, e ao acessarmos a coluna city da tabela Location, uma consulta é feita para cada linha retornada da tabela Department, e este realmente não é nosso objetivo:
+No bloco de código acima nós estamos fazendo um join da tabela Department com a tabela Locations, porém se nós setarmos DBIC_TRACE=1, perceberemos que nós executamos a query nas duas tabelas porém só retornamos os dados da tabela Department, e ao acessarmos a coluna city da tabela Location, uma consulta é feita para cada linha retornada da tabela Department, e este realmente não é nosso objetivo:
 
 
-	SELECT me.department_id, me.department_name, me.manager_id, me.location_id FROM
-	departments me JOIN locations locations ON locations.location_id = me.location_i
-	d WHERE ( locations.country_id = ? )  ORDER BY department_name, locations.city:
-	'US'
+	SELECT me.department_id, me.department_name, me.manager_id, me.location_id 
+	FROM departments me 
+	JOIN locations locations ON locations.location_id = me.location_id 
+	WHERE ( locations.country_id = ? )  
+	ORDER BY department_name, locations.city
+	:'US'
 	
-	SELECT me.location_id, me.street_address, me.postal_code, me.city, me.state_prov
-	ince, me.country_id FROM locations me WHERE ( me.location_id = ? ) : '1700'
-	Department #1 Accounting City: Seattle
+	SELECT me.location_id, me.street_address, me.postal_code, me.city, me.state_province, me.country_id 
+	FROM locations me 
+	WHERE ( me.location_id = ? ) 
+	: '1700'
 	
-	SELECT me.location_id, me.street_address, me.postal_code, me.city, me.state_prov
-	ince, me.country_id FROM locations me WHERE ( me.location_id = ? ) : '1700'
-	Department #2 Administration City: Seattle
-	
-	E assim por diante ...
+	SELECT me.location_id, me.street_address, me.postal_code, me.city, me.state_province, me.country_id 
+	FROM locations me 
+	WHERE ( me.location_id = ? ) 
+	: '1700'
+		
+	E assim em diante ...
 
 =head2 Prefetch Joins	
 	
@@ -168,11 +172,12 @@ Para evitar situações com a descrita acima, o DBIx::Class nos oferece os prefe
 	
 Abaixo veja a única query gerada pelo bloco de código acima:
 	
-	SELECT me.department_id, me.department_name, me.manager_id, me.location_id, loca
-	tions.location_id, locations.street_address, locations.postal_code, locations.ci
-	ty, locations.state_province, locations.country_id FROM departments me JOIN loca
-	tions locations ON locations.location_id = me.location_id WHERE ( locations.coun
-	try_id = ? )  ORDER BY department_name, locations.city: 'US'
+	SELECT me.department_id, me.department_name, me.manager_id, me.location_id, locations.location_id, locations.street_address, locations.postal_code, 
+	locations.city, locations.state_province, locations.country_id 
+	FROM departments me 
+	JOIN locations locations ON locations.location_id = me.location_id 
+	WHERE ( locations.country_id = ? )  ORDER BY department_name, locations.city
+	: 'US'
 
 =head2 Multiple joins
 
@@ -196,13 +201,14 @@ O DBIx::Class também nos permite joins múltiplos em várias tabelas, bastando 
 
 Abaixo a query gerada pelo código acima que pretende listar empregados com departament_name 'Finance', com job_title 'Accountant' e salary maior ou igual a 100:
 
-	SELECT me.employee_id, me.first_name, me.last_name, me.email, me.phone_number, m
-	e.hire_date, me.salary, me.commission_pct, me.manager_id, me.department_id, me.j
-	ob_id, department.department_id, department.department_name, department.manager_
-	id, department.location_id FROM employees me JOIN departments department ON depa
-	rtment.department_id = me.department_id JOIN jobs job ON job.job_id = me.job_id
-	WHERE ( ( department.department_name = ? AND job.job_title = ? AND salary >= ? )
-	 )  ORDER BY department.department_name, salary: 'Finance', 'Accountant', '100'
+	SELECT me.employee_id, me.first_name, me.last_name, me.email, me.phone_number, me.hire_date, me.salary, me.commission_pct, me.manager_id, me.department_id, 
+	me.job_id, department.department_id, department.department_name, department.manager_id, department.location_id 
+	FROM employees me 
+	JOIN departments department ON department.department_id = me.department_id 
+	JOIN jobs job ON job.job_id = me.job_id
+	WHERE ( ( department.department_name = ? AND job.job_title = ? AND salary >= ? ) )
+	ORDER BY department.department_name, salary
+	: 'Finance', 'Accountant', '100'
 
 =head2 Multi-step joins
 
@@ -236,13 +242,13 @@ Abaixo a query gerada que faz join nas tabelas jobhistory, departments e também
 	e.hire_date, me.salary, me.commission_pct, me.manager_id, me.department_id, me.j
 	ob_id, department.department_id, department.department_name, department.manager_
 	id, department.location_id, jobhistorys.employee_id, jobhistorys.start_date, job
-	historys.end_date, jobhistorys.job_id, jobhistorys.department_id FROM employees
-	me JOIN departments department ON department.department_id = me.department_id JO
-	IN locations locations ON locations.location_id = department.location_id JOIN jo
-	b_history jobhistorys ON jobhistorys.employee_id = me.employee_id WHERE ( ( jobh
-	istorys.start_date >= ? AND locations.country_id = ? AND salary >= ? ) )  ORDER
-	BY department.department_name, jobhistorys.start_date, salary: '01-JAN-80', 'US'
-	, '100'
+	historys.end_date, jobhistorys.job_id, jobhistorys.department_id 
+	FROM employees me 
+	JOIN departments department ON department.department_id = me.department_id 
+	JOIN locations locations ON locations.location_id = department.location_id 
+	JOIN job_history jobhistorys ON jobhistorys.employee_id = me.employee_id 
+	WHERE ( ( jobhistorys.start_date >= ? AND locations.country_id = ? AND salary >= ? ) )  
+	ORDER BY department.department_name, jobhistorys.start_date, salary: '01-JAN-80', 'US'	, '100'
 
 
 =head2 Pesquisas relacionadas
@@ -261,11 +267,10 @@ Nós também podemos usar dos relacionamentos para fazer pesquisas entre tabelas
 
 Abaixo a query gerada pelo código acima:
 
-	SELECT employees.employee_id, employees.first_name, employees.last_name, employe
-	es.email, employees.phone_number, employees.hire_date, employees.salary, employe
-	es.commission_pct, employees.manager_id, employees.department_id, employees.job_
-	id FROM departments me JOIN employees employees ON employees.department_id = me.
-	department_id WHERE ( department_name LIKE ? ) : '%Account%'
+	SELECT employees.employee_id, employees.first_name, employees.last_name, employees.email, employees.phone_number, employees.hire_date, employees.salary, 
+	employe	es.commission_pct, employees.manager_id, employees.department_id, employees.job_id 
+	FROM departments me 
+	JOIN employees employees ON employees.department_id = me.department_id WHERE ( department_name LIKE ? ) : '%Account%'
 
 =head2 Criando registros relacionados
 
