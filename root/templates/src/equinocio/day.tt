@@ -5,6 +5,13 @@
           <div class="top">
             <div class="whois">
 
+
+<center>
+<a href="http://yapcbrasil.org.br?utm_campaign=YAPC-Brasil-2010&amp;utm_source=sppm&amp;utm_medium=banner&amp;utm_content=468x60"><img src="http://yapcbrasil.org.br/2010/banners/468x60.gif" alt="YAPC Brasil 2010"></a>
+</center>
+
+<br><br>
+
 [% pod %]
 <ul id="pager">
 [% yesterday = day - 1 %]
