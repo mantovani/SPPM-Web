@@ -1,4 +1,6 @@
-      <div id="container_top">
+[% template = {title => eqtitle} %]
+
+	<div id="container_top">
         <div id="container_bottom">
           <div class="top">
             <div class="whois">
