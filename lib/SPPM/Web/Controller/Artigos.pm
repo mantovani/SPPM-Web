@@ -1,12 +1,12 @@
+package SPPM::Web::Controller::Artigos;
 
 use Catalyst;
-
 use File::stat;
 use POSIX qw(strftime);
 use DateTime;
 use SPPM::Web::Pod;
 
-sub artigo : Chained('base') : PathPart('artigo') : Args(2) {
+sub artigo : Chained('/base') : PathPart('artigo') : Args(2) {
     my ( $self, $c, $year, $article ) = @_;
     my $legal_chars = quotemeta('.-_/');
 
