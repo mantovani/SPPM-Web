@@ -1,0 +1,396 @@
+=pod
+
+=encoding utf8
+
+=head1 PDF e suas utilidades
+
+Quem um dia nunca utilizou um PDF? Hoje o PDF é um formato muito utilizado em diversas áreas.
+Na internet, serviços como o Google Docs utilizam o PDF para fazer a impressão,
+pois garante uma boa qualidade e como é feito pelo lado do servidor por um driver conhecido,
+há uma certa certeza de como vai ser a saída independente do browser do cliente.
+
+Dentro de empresas de impressão, o formato PDF é um formato bem reconhecido pelas impressoras e pode 
+atingir níveis de qualidades altos, incluindo imagens, linhas, pontos, retângulos, textos, etc...
+
+Existem vários programas, pagos ou não, que geram PDF. No Windows, existem
+drivers de impressoras que fazem a impressão em arquivo PDF, então pode-se imprimir qualquer coisa para PDF.
+Entre esses programas, podemos citar o Adobe Photoshop, CorelDRAW, Adobe Illustrator (preservando os vetores), 
+no linux, podemos citar o Gimp, que importa os PDFs escolhendo DPI e transformando no formato interno XCF.
+
+
+=head2 Características comuns do PDF
+
+Uma das característica presente em todas as bibliotecas de PDF é que as medidas
+(para desenhar ou posicionar) são em pontos (pt).
+
+Para alegria de muitos, pode-se utilizar a divisão de algumas constantes (para 72 DPI) 
+para indicar a unidade de medida (mm, pt, in).
+
+O código é o seguinte:
+
+
+	use constant mm => 25.4 / 72;
+	use constant in => 1 / 72;
+	use constant pt => 1;
+
+
+
+Com o código acima é possivel escrever que determinado objeto tem 2 centimetros utilizando a sintaxe
+C<$medida_em_pontos = 20/mm>.
+
+
+Uma coisa importante é saber que o padrão do PDF é 72 DPI, mas que ele pode conter imagens com vários DPIs numa mesma página.
+
+
+=head2 Manipulando PDFs com perl
+
+No CPAN existe uma enorme quantidade de módulos para manipulação de PDF.
+Uma simples pesquisa por PDF encontra 817 pacotes.
+
+Infelizmente, nem todos são rápidos, nem atende sua necessidade. Se a sua necessidade é alterar 
+PDFs já existentes, uma ótima escolha é o C<PDF::Reuse>, com ele é possível editar arquivos grandes
+com imagens, e mais de 9,000 paginas com certa velocidade. Tem uma grande vantagem se for comparado ao
+C<PDF::Haru>, pois pode-se mesclar vários PDFs em um novo, fazendo rotação, escala, etc...
+
+Nele também é possível utilizar comando em baixo nível que vão diretamente ao arquivo PDF. Esses
+comandos são adicionados pela função C<prAdd>.
+
+=head1 PDF::Reuse
+
+Agora que já temos uma noção sobre este pacote, vamos a alguns exemplos.
+
+=head2 Hello Word PDF::Reuse
+
+
+
+	use PDF::Reuse;                       # Mandatory  
+	prFile('saida.pdf');                    # Mandatory, with or without a file name
+	prText(250, 650, 'Hello World !');       
+	prEnd();                              # Mandatory
+
+
+Esse código foi basicamente removido da pagina L<PDF::Reuse::Tutorial> do CPAN.
+
+
+Podemos alterar ele para imprimir essa o hello no centro de uma folha com 100/100mm assim:
+
+	use PDF::Reuse;
+	use constant mm => 25.4 / 72;
+	prFile('saida.pdf');
+	prMbox( 0, 0, 100/mm, 100/mm );
+	prText((100/mm) / 2, (100/mm) / 2, 'Hello World !', 'center');
+	prEnd();
+
+
+=head3 Mesclando PDFs com PDF::Reuse
+
+Adicionar outros arquivo ao PDF é feito através do comando prForm:
+
+	prForm ( { file     => $pdfFile,       # template file
+		page     => $page,          # page number (of imported template)
+		adjust   => $adjust,        # try to fill the media box
+		effect   => $effect,        # action to be taken
+		tolerant => $tolerant,      # continue even with an invalid form
+		x        => $x,             # $x points from the left
+		y        => $y,             # $y points from the bottom
+		rotate   => $degree,        # rotate 
+		size     => $size,          # multiply everything by $size
+		xsize    => $xsize,         # multiply horizontally by $xsize
+		ysize    => $ysize } )      # multiply vertically by $ysize
+ 
+
+Arquivos salvos no photoshop por algum motivo não abrem, exceto se desmarcar todas as opções na hora de salvar (ex: compactar para WEB).
+Um ponto positivo do comando prForm é poder modificar (esticar, rotacionar, etc..) o arquivo, e também é posiciona-lo, pois este fragmento é colocado através de um XObject.
+
+
+O comando prSinglePage adiciona um pagina apenas, e não deve ser usado para incluir um PDF inteiro por loop, para isso, existe a função prDoc.
+
+Entretanto, descobri que se utilizar prDoc ou prSinglePage, torna-se "impossível" abrir o PDF novamente pelo próprio reuse, portanto, sugiro, que se for necessário remodular o PDF depois de pronto (por exemplo, trocar de A4 para um A3) utilizar o prForm, ou terá dor de cabeças!
+ 
+A função prDoc, do mesmo jeito que a prSinglePage, não permite esticar ou posicionar o PDF, pois ela não inclui o PDF dentro de um objeto*
+
+
+*: nao li o codigo, é uma suposição, com grandes chances de estar certo!
+
+
+Muitos exemplos do uso da biblioteca pode ser encontrado no próprio CPAN: L<PDF::Reuse::Tutorial>
+
+=head1 PDF::API2
+
+A L<PDF::API2> é uma boa biblioteca, com comandos fáceis e ja tem "tudo" pronto (rotate, translste...) porém é lenta.
+Eu não usaria para um serviço web (nem mesmo 1 página), nem para fazer mais de 2 páginas em um código em produção.
+
+Porém, com base nela podemos turbina o L<PDF::Haru>, inicialmennte colocando suporte a códigos de barras e a matrizes sem dor de cabeça.
+
+
+=head2 Aviso sobre a cópia do código do PDF::API2
+
+Com o devido pacote instalado, foi "roubado" algumas classes.
+
+Não sei se isso é legal, mas deve ser, pois é tudo opensource!
+
+
+=head1 PDF::Haru
+
+O Haru é uma lib feita em c, por isso, é muito rápida. Uma das desvantagens de utilizar é não poder incluir outros PDFs dentro, mas isso pode ser alterado posteriormente com o Reuse, ou usando um PNG.
+
+=head2 Instalando o PDF::Haru
+
+O primeiro passo e ter a lib haru instalada na máquina. O site do haru é L<http://libharu.sourceforge.net/>. Eu fiz o download da versão mais nova que estava no SourceForge (2.0.8).
+
+Depois de rodar o configure/make/make demo/make install você deve instalar pelo CPAN o modulo PDF::Haru.
+
+Se der sorte, o script abaixo irá funcionar sem erros
+
+	cd /pasta/download;
+	tar -xvf libharu_2_0_8.tgz;
+	cd libharu-2.0.8/
+	./configure
+	make
+	make demo
+	sudo make install
+	cpan PDF::Haru
+
+
+=head2 Criando uma interface agradável
+
+Uma das primeiras coisas que complica no PDF::Haru é a complexidade nas operações para posicionamento. Para um simples texto rotacionado é necessárias várias contas:
+
+	/*
+	* Rotating text
+	*/
+	angle1 = 30;                   /* A rotation of 30 degrees. */
+	rad1 = angle1 / 180 * 3.141592; /* Calcurate the radian value. */
+
+	show_description (page, 320, ypos - 60, "Rotating text");
+	HPDF_Page_BeginText (page);
+	HPDF_Page_SetTextMatrix (page, cos(rad1), sin(rad1), -sin(rad1), cos(rad1), 330, ypos - 60);
+	HPDF_Page_ShowText (page, "ABCabc123");
+	HPDF_Page_EndText (page);
+
+
+Claro, esse foi um exemplo em C, mas não seria muito diferente em perl.
+
+
+=head3 Download dos arquivos
+
+Decidi criar um arquivo com algumas classes para facilitar a criação dos PDFs.
+
+Para tanto, antes, copiei o arquivo Matrix.pm do API2 criando o LibPDF/Matrix.pm
+
+Faça o download do arquivo ZIP com o conteúdo para continuar o artigo.
+
+L<http://sao-paulo.pm.org/static/files/equinocio/2010/set/artigo_pdf.zip>
+
+Os arquivos são:
+
+=over
+
+LibPDF/Form/BarCode.pm
+
+LibPDF/Form/Hybrid.pm
+
+LibPDF/Form/BarCode/codabar.pm
+
+LibPDF/Form/BarCode/code3of9.pm
+
+LibPDF/Form/BarCode/code128.pm
+
+LibPDF/Form/BarCode/ean13.pm
+
+LibPDF/Form/BarCode/int2of5.pm
+
+LibPDF/Matrix.pm
+
+LibPDF.pm
+
+
+=back
+
+
+=head3 Testando o LibPDF
+
+Criei um arquivo com alguns testes, nele criamos alguns textos em 1000 paginas.
+
+	use strict;
+	use LibPDF;
+	use PDF::Haru;
+	use Data::Dumper;
+	print "pdf start..\n";
+
+	my $pdf = new LibPDF;
+
+	my $font_r = $pdf->haru->GetFont("Helvetica", "WinAnsiEncoding");
+	my $font_b = $pdf->haru->GetFont("Helvetica-Bold", "WinAnsiEncoding");
+	my $font_i = $pdf->haru->GetFont("Helvetica-Oblique", "WinAnsiEncoding");
+
+	for (1..1000){
+		my $page = $pdf->haru->AddPage();
+		$page->SetSize(HPDF_PAGE_SIZE_LETTER, HPDF_PAGE_PORTRAIT);
+		my $font_w = 0;
+		#$page->SetWidth(200/mm);
+		#$page->SetHeight(600/mm);
+
+		for my $a ('left', 'center', 'right'){
+			for (0,10,20,30,40,50,60){
+				new PDFSimpleText()->plot({
+					page => $page,
+					text => "$_ The quick brown fox jumps over the lazy dog.",
+					font => $font_w++ % 2 ? $font_r : $font_b,
+					size => 8 + ($_/10), # /
+					transform => {
+						translate => [10/mm, ($a eq 'left'? 0 : $a eq 'center' ? 180 : $a eq 'right' ? 300 : 350) + $_/mm ] # /
+					},
+					charspacing => 1.5,
+					wordspacing => 2.5,
+					align => $a,
+					#limit_width => 60/mm
+				});
+			}
+		}
+
+	}
+	print "saving...\n";
+	$pdf->haru->SaveToFile("filename.pdf");
+	print "done!\n";
+
+	print "PDF_SIZE = ".(-s "filename.pdf")." bytes \n";
+
+	undef($pdf);
+
+
+
+O código muito rápido, criou tudo em 0m2.461s (usando um núcleo do processador, 2.67GHz) 
+
+Diferentemente do PDF::Reuse, podemos usar thread para criar o PDF usando os 8 núcleos, mas isso fica para outro dia!
+
+=head3 Imagens
+
+Para uma melhor performance, a diminuir o tamanho do arquivo, para inserir uma imagem, adiciona-se apenas uma vez no PDF e depois usa sua referencia.
+
+	my $image = new PDFImage({
+		pdf  => $pdf,
+		file => 'teste_dpi.png'
+	});
+
+... no contexto página ...
+
+	$image->add2page({
+		page  => $page,
+		dpi   => 300,
+		transform => {
+			translate => [0, 200/mm]
+		}
+	});
+
+Lembre-se de ajustar o DPI da sua imagem.
+
+
+=head3 Textos justificados
+
+Com base na idéia/código do L<http://rick.measham.id.au/pdf-api2/>, montei outra classe para construir textos com e sem negritos, usando tags HTML (tipo o L<PDF::TextBlock>, mas sem o bug do center/right e com algumas coisas a mais, tipo o debug_rect ou o all_text)
+
+	new PDFRectText()->plot({
+		page => $page,
+		text => "The quick brown fox jumps over the <b>lazy dog. </b>more text on this line\n\nSecond pharagraphy ".
+		"with a lot of random words <b>on</b>with a lot of random words <b>on</b>with a lot of random words <b>on</b>with a lot of random words <b>on</b>with a lot of random words <b>on</b>with a lot of random words <b>on</b>with a lot of random words <b>on</b> here!\nNext line!<b>BIG</b>.\n\nThis is a new pharagraphy, but short.\n\n\n\n\nLot of pharagraphy after!",
+		font => $font_r,
+		size => 15,
+		lead => 10,
+		parspace => 1/mm,
+
+		fonts => {
+			default => {
+				font => $font_r,
+				size => 8
+			},
+			b => {
+				font => $font_b,
+				size => 8
+			}
+		},
+		transform => {
+			translate => [40/mm, 40/mm],
+		},
+
+		charspacing => 1.5,
+		wordspacing => 2.5,
+		align => 'center',
+		max_width => 40/mm,
+		max_height => 150/mm,
+	
+		debug_rect => 1,
+		#all_text => 0
+	});
+
+O all_text  faz com que se o texto sair da area definida por max_widht/max_height, a fonte seja diminuída até caber. 
+
+=head3 Barcodes
+
+Para utilizar os barcodes, usamos o metodo plot do PDFBarcode. Para trocar o tipo, e bem simples, basta alterar a chave "type"
+
+	new PDFBarcode()->plot({
+		page => $page,
+		type => 'code128',
+		transform => {
+			translate => [100/mm, 50/mm ]
+		},
+		options => [
+			-ean  => 0 ,
+			-font => $font_r, # the font to use for text
+			-type => 'a', # the type of barcode
+			-code => "0000ML000004815", # the code of the barcode
+			-extn => undef, # the extension of the barcode
+			-umzn => 30, # (u)pper (m)ending (z)o(n)e
+			-lmzn => 0, # (l)ower (m)ending (z)o(n)e
+			-zone => 30, # height (zone) of bars
+			-quzn => 0 , # (qu)iet (z)o(n)e
+			-ofwt => .1, # (o)ver(f)low (w)id(t)h
+			-font_size => 9, # (f)o(n)t(s)i(z)e
+			-text => undef
+		]
+	});
+
+As opções em options são as mesmas do API2. Mas a pobre documentação não diz exatamente o que é o que, mas a descrição ao lado ajuda.
+
+=head2 Conceitos gerais da LibPDF
+
+* O hash transform chama o método transform do objeto (dentro de um save/restore de contexto gráfico/texto)
+
+* A opção not_relative foi criada para poder manipular as imagens, que são alinhadas de baixo para cima (plano cartesiano)
+
+* o PDFRectText pode receber a chave de alinhamento B<pos_relative_to_center>, assim, a posicao do translate é relativa ao centro do box.
+
+* o PDFRectText pode receber a chave B<debug_rect>, que mostra o box do texto, facilitando muito na hora de alinhar.
+
+* Se divirtam com este arquivo de teste.pl, lá tem todas as funções do LibPDF.
+
+* Leiam o source do LibPDF e aprendam sobre o Haru!
+
+=head2 Conclusão
+
+Podemos criar PDF de varias formas com Perl, devemos sempre analisar o problema antes e descobrir
+qual vai ser a melhor biblioteca para o uso.
+
+=head2 Sobre o autor
+
+I<Renato CRON>, L<http://renatocron.com>
+
+Acessem meu blog!
+
+=head2 ACKNOWLEDGEMENTS
+
+Ao Luis Motta Campos pois copiei o texto da licença abaixo!
+
+Ahh, o HTMLEditor para Android também, escrevi alguns pedaços no busão/mêtro!
+
+=head2 LICENSE AND COPYRIGHT
+
+Este artigo é Software Livre; você pode redistribuí-lo e/ou modificá-lo sob os termos da GNU Public License como publicada pela Free Software Foundation; versão 2 datada a Junho, 1991, ou qualquer versão mais recente, à sua discrição.
+
+Este artigo é distribuído na esperança de que ele pode ser útil, mas SEM QUALQUER GARANTIA; mesmo a garantia implicada de COMERCIABILIDADE ou ADEQUAÇÃO PAR UMA FINALIDADE EM PARTICULAR. Veja a GNU Public License para mais detailhes.
+
+Uma cópia da GNU General Public License (deveria) estar disponível com este artigo; se não, escreva para a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+
+=cut

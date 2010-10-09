@@ -1,0 +1,544 @@
+=pod
+
+B<IntegraE<ccedil>E<atilde>o Java/Perl - TomCat/Apache. (Parte I)>
+
+B<Trabalhando com RelatE<oacute>rios, GrE<aacute>ficos e Imagens.>
+
+B<>
+
+O objetivo deste artigo E<eacute> propiciar ao leitor um olhar
+diferenciado sobre as linguagens scripts, que por vezes sE<atilde>o
+marginalizadas, e demonstrar que E<eacute> perfeitamente
+possE<iacute>vel haver integraE<ccedil>E<atilde>o entre as Linguagens
+Java e Perl, alE<eacute>m do container TomCat e do servidor de
+aplicaE<ccedil>E<atilde>o Web Apache, tornando-se uma alternativa muito
+eficaz, eficiente e extremamente rE<aacute>pida.
+
+O modelo utilizado neste artigo envolve o modelo MVC, Model View
+Control, B<figura 1>, que E<eacute> um modelo que separa as tarefas de
+acesso aos dados e lE<oacute>gica de negocio, da lE<oacute>gica de
+apresentaE<ccedil>E<atilde>o e de interaE<ccedil>E<atilde>o com o
+usuE<aacute>rio, utilizando-se Java/TomCat. [IMAGE]
+
+B<Figura 1. >MVC
+
+Por outro lado, o artigo mostrarE<aacute> tambE<eacute>m o uso do CGI
+E<150> Common Gateway Interface, B<figura 2>, que E<eacute> uma
+tecnologia que gera paginas dinE<acirc>micas, permitindo que um
+navegador passe parE<acirc>metros para um programa alojado num servidor
+web, utilizando Apache/Perl.
+
+[IMAGE]
+
+B<Figura 2. >CGI
+
+Ao final deste artigo, espera-se que o leitor seja capaz criar
+relatE<oacute>rios em vE<aacute>rios formatos, tais como PDF, XML, XLS,
+DOC, PPT, JPG, PNG bem como tambE<eacute>m trabalhar com
+grE<aacute>ficos e imagens.
+
+B<Ferramentas NecessE<aacute>rias>
+
+Segue uma lista dos programas necessE<aacute>rios para
+execuE<ccedil>E<atilde>o dos exemplos constantes deste artigo:
+
+E<149> jakarta-tomcat-5.0.27
+
+E<149> j2sdk-1_4_2_18-windows-i586-p.
+
+E<149> ActivePerl-5.8.8.822-MSWin32-x86-280952 ou ActivePerl 5.8.7.815.
+
+E<149> apache_2.0.55-win32-x86-no_ssl.
+
+E<149> netbeans-5_5_1-windows-pt_BR.
+
+E<149> txpptb473.
+
+E<149> mysql-connector-java-5.1.5-bin.
+
+E<149> MySQL Servers and Clients 4.0.12.
+
+E<149> AdbeRdr709_pt_BR. (Ou superior).
+
+B<Preparando o ambiente>
+
+Instalar as ferramentas na seguinte ordem:
+
+1. j2sdk-1_4_2_18-windows-i586-p,
+
+2. jakarta-tomcat-5.0.27
+
+3. netbeans-5_5_1-windows-pt_BR
+
+4. apache_2.0.55-win32-x86-no_ssl
+
+5. txpptb473
+
+6. MySQL Servers and Clients 4.0.12
+
+7. ActivePerl-5.8.8.822-MSWin32-x86-280952 ou ActivePerl 5.8.7.815.
+
+A estrutura de pastas deverE<aacute> ser a seguinte apE<oacute>s a
+instalaE<ccedil>E<atilde>o dos programas:
+
+C:\j2sdk1.4.2_18
+
+C:\Arquivos de programas\Apache Software Foundation\Tomcat 5.0
+
+C:\Arquivos de programas\Apache Software Foundation\Apache2.2
+
+C:\mysql
+
+C:\Perl
+
+O prE<oacute>ximo passo serE<aacute> definir os locais, B<figura 3>,
+onde serE<atilde>o disponibilizados os arquivos fontes do PERL bem como
+tambE<eacute>m as pastas que receberE<atilde>o os arquivos que
+serE<atilde>o ser gerados pelo Sistema.
+
+Como sugestE<atilde>o fica a seguinte estrutura que deverE<aacute> ser
+criada dentro da pasta htdocs.
+
+E<middot> PDF (Pasta que ficarE<atilde>o todos os pdf gerados).
+
+E<middot> HTML (Pasta que ficarE<atilde>o os HTML gerados).
+
+Dentro da pasta CGIBIN a estrutura sugerida E<eacute> a seguinte:
+
+E<149> RelatE<oacute>rios (todos os arquivos Perl que geram
+relatE<oacute>rio).
+
+E<149> GrE<aacute>ficos (todos os arquivos Perl que geram
+grE<aacute>ficos).
+
+E<149> Rotinas (todos os arquivos Perl que executem alguma rotina de
+processamento).
+
+[IMAGE]
+
+B<Figura 3. >Pasta htdocs e CGI-BIN.
+
+ApE<oacute>s a instalaE<ccedil>E<atilde>o de todas as ferramentas e
+criaE<ccedil>E<atilde>o das pastas necessE<aacute>rias para rodar os
+exemplos, o prE<oacute>ximo passo E<eacute> fazer a
+atualizaE<ccedil>E<atilde>o de alguns objetos do Perl. Para isso
+faE<ccedil>am os seguintes passos, para quem instalou a versE<atilde>o
+ActivePerl5.8.8.822:
+
+E<149> Prompt de comando
+
+E<149> PPM
+
+IrE<aacute> aparecer uma janela com a seguinte imagem:
+
+B<[IMAGE]>
+
+B<Figura 4. >PPM
+
+Clicar no primeiro E<iacute>cone do lado esquerdo, abaixo do File, que
+habilitarE<aacute> a opE<ccedil>E<atilde>o para selecionar todos os
+pacotes, que estE<atilde>o disponE<iacute>veis. Clicando no segundo,
+abaixo do Edit, E<iacute>cone aparecerE<atilde>o todos os pacotes que
+jE<aacute> estE<atilde>o instalados.
+
+No Prompt, perto da lupa escolher os seguintes pacotes que
+deverE<atilde>o ser instalados caso nE<atilde>o estejam.
+
+E<149> DBI
+
+E<149> DBD
+
+E<149> MySQL
+
+E<149> PDF
+
+E<149> IMAGEINFO
+
+E<149> XML
+
+E<149> Open Office
+
+E<149> WIN32
+
+E<149> Spreadsheet
+
+E<149> ExcelTemplate
+
+E<149> OODoc
+
+E<149> OODocTemplate
+
+E<149> imagesize
+
+E<149> Open OfficeOODoc
+
+Feito isso o Perl estarE<aacute> pronto para funcionar atendendo os
+requisitos necessE<aacute>rios.
+
+Para quem optar por instalar a versE<atilde>o ActivePerl 5.8.7.815,
+deverE<aacute> entrar no prompt de comando e digitar ppm. Os mesmos
+pacotes da versE<atilde>o ActivePerl5.8.8.822, deverE<atilde>o ser
+instalados nesta versE<atilde>o.
+
+Para pesquisar os pacotes digite:
+
+E<middot> s nomedopacote
+
+Para instalar um determinado pacote digite:
+
+E<middot> i nomedopacote
+
+Exemplo para pesquisar os pacotes:
+
+E<middot> s oodoc
+
+Searching in Active Repositories
+
+1. OODoc [0.93] OODoc
+
+2. OODocTemplate [0.01] OODocTemplate
+
+3. OpenOfficeOODoc [2.029] OpenOfficeOODoc
+
+Exemplo para instalar o pacote:
+
+E<middot> i OODocTemplateB<>
+
+B<>
+
+B<ConclusE<atilde>o>
+
+Neste primeiro artigo foi feita a apresentaE<ccedil>E<atilde>o do
+trabalho que serE<aacute> desenvolvido, bem como fazer as
+configuraE<ccedil>E<otilde>es bE<aacute>sicas necessE<aacute>rias do
+ambiente que serE<aacute> utilizado para o desenvolvimento, das
+ferramentas que serE<atilde>o utilizadas no decorrer do trabalho que
+serE<aacute> desenvolvido com os leitores.
+
+Na prE<oacute>xima etapa iniciaremos os primeiros programas feitos em
+Perl, que serE<atilde>o a base dos modelos dos relatE<oacute>rios.
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<IntegraE<ccedil>E<atilde>o Java/Perl - TomCat/Apache. (Parte II)>
+
+B<Trabalhando com RelatE<oacute>rios, GrE<aacute>ficos e Imagens.>
+
+B<>
+
+Dando continuidade E<agrave> parte I do artigo, apE<oacute>s montada
+toda a estrutura de pastas o prE<oacute>ximo passo E<eacute> definir um
+padrE<atilde>o para os relatE<oacute>rios, ou seja, fazer o layout de
+como os relatE<oacute>rios serE<aacute> apresentado. ApE<oacute>s esta
+definiE<ccedil>E<atilde>o deverE<aacute> ser criado todos os arquivos
+com extensE<atilde>o pdf e jpg que serE<atilde>o inseridos em todos os
+relatE<oacute>rios em tempo de execuE<ccedil>E<atilde>o.
+
+SerE<aacute> apresentado a seguir um modelo padrE<atilde>o, que
+serE<aacute> utilizado no decorrer do artigo, e para tanto
+serE<atilde>o definidos a logomarca da empresa bem como todos os dados
+cadastrais da mesma, B<Figura 01>. Esta imagem devera ser salva no
+formato JPG, que E<eacute> o formato padrE<atilde>o que serE<aacute>
+utilizado pelo programa gerador do cabeE<ccedil>alho padrE<atilde>o dos
+relatE<oacute>rios. Todas estas imagens criadas deverE<atilde>o ser
+salvas numa pasta chamada padrE<atilde>o.
+
+[IMAGE]
+
+B<Figura 1.> Logo Marca e dados cadastrais.
+
+Para isso, vocE<ecirc> devera utilizar algum utilitE<aacute>rio de para
+fazer desenho ou trabalhar com imagem, neste artigo serE<aacute>
+utilizado o Paint, B<figura 02,> do Windows.
+
+B<>
+
+[IMAGE]
+
+B<Figura 2. >Acessar o Paint.
+
+ApE<oacute>s definido o cabeE<ccedil>alho, o prE<oacute>ximo passo
+serE<aacute> criar um arquivo que conterE<aacute> o rodapE<eacute> do
+relatE<oacute>rio, B<figura 3,> e que ficarE<aacute> ao final do
+relatE<oacute>rio.
+
+[IMAGE]
+
+B<Figura 3>. Rodape.jpg
+
+Feito isso todos os arquivos com as imagens necessE<aacute>rias e
+sugeridos para se criar um relatE<oacute>rio estarE<atilde>o prontos, e
+poderE<atilde>o ser reutilizados sempre que necessE<aacute>rio. Estes
+arquivos fazendo uma analogia sE<atilde>o objetos.
+
+B<Editando e executando os programas>
+
+Agora chegou E<agrave> hora de colocar a mE<atilde>o na massa, vamos
+comeE<ccedil>ar a programar, para tanto utilize o editor de textpad
+para fazer estes programas, os mesmos deverE<atilde>o ser salvos na
+pasta padrE<atilde>o, a mesma pasta que contem as imagens salvas
+anteriormente.
+
+O dois primeiro programa que faremos irE<aacute> fazer uso das imagens
+criadas anteriormente e seguem abaixo:
+
+B<Programa para criar subcabecalho.>
+
+#!/perl/bin/perl
+
+#Autor: Hailton David Lemos
+
+use PDF::Reuse;
+
+use Image::Info qw(image_info dim);
+
+use strict;
+
+prFile('subheader.pdf');
+
+my $file = 'cabecalho.jpg';
+
+my $info = image_info($file);
+
+my ($width, $height) = dim($info);
+
+my $intName = prJpeg("$file", $width, $height);
+
+$width = $width * 0.55;
+
+$height = $height * 0.45;
+
+my $yImage = 760;
+
+my $xImage = 15;
+
+my $string = "q\n";
+
+$string .= "$width 0 0 $height $xImage $yImage cm\n";
+
+$string .= "/$intName Do\n";
+
+$string .= "Q\n";
+
+prAdd($string);
+
+prEnd();
+
+B<Programa 1 E<150> >subheader.pl
+
+B<Programa para criar subcabecalho.>
+
+I<#! /perl/bin/perl>
+
+I<#Autor: Hailton David Lemos>
+
+I<use>I< PDF::Reuse;>
+
+I<use>I< strict;>
+
+I<prFile>I<(>I<'header.pdf');>
+
+I<prForm>I<(>I<"subheader.pdf");>
+
+I<prFontSize>I<(>I<9);>
+
+I<my>I< $string = "10 740 582 15 re\n";>
+
+I<$string .= "0.95 g \n";>
+
+I<$string .= "b\n";>
+
+I<prAdd>I<(>I<$string);>
+
+I<prEnd>I<(>I<);>
+
+B<Programa>B< 2 E<150>>header.pl
+
+Estes programas, B<Programa 1 >eB< Programa 2,> serE<atilde>o os
+responsE<aacute>veis pela criaE<ccedil>E<atilde>o do cabeE<ccedil>alho
+dos relatE<oacute>rios.
+
+Uma vez feita esta operaE<ccedil>E<atilde>o vE<aacute> ao prompt de
+comando, e digite: B<cd\padrao,> logo apE<oacute>s iremos executar
+nossos programas escritos em Perl, para tanto basta agora digitar
+B<perl>B< subheader.pl> e depois B<perl>B< header.pl, >nesta ordem,B<
+>feito isso teremos dois arquivos pdf criados na pasta, o header.pdf e
+o subheader.pdf.
+
+O relatE<oacute>rio deverE<aacute> ser envolto por uma moldura,
+B<Programa 1,> e tambE<eacute>m devera ter uma marca
+dE<146>E<aacute>gua, B<Programa 2,> o que ira garantir a autenticidade
+do mesmo, e para tanto agora iremos fazer nossos primeiros programa
+escrito em Perl, nE<atilde>o fiquem ansiosos jE<aacute>, jE<aacute>
+estaremos trabalhando com Java.
+
+B<>
+
+B<Programa para criar retE<acirc>ngulo que irE<aacute> circundar pagina
+pdf.>
+
+#! /perl/bin/perl
+
+#Autor: Hailton David Lemos
+
+use PDF::Reuse;
+
+use PDF::Reuse::Barcode;
+
+use strict;
+
+prFile('mascara.pdf');
+
+my $string = "10 70 582 780 re\n";
+
+$string .= "1 g \n";
+
+$string .= "b\n";
+
+prAdd($string);
+
+prEnd();B<>
+
+B<Programa 3 E<150> >mascara.pl
+
+B<>
+
+B<Programa para criar marca dE<146>E<aacute>gua.>
+
+#!/perl/bin/perl
+
+#Autor: Hailton David Lemos
+
+use PDF::Reuse;
+
+use PDF::Reuse::Barcode;
+
+use strict;
+
+prFile('watermark.pdf');
+
+prAdd('0.95 g');
+
+prFontSize(100);
+
+prText(70, 210, "PORTAL JAVA", 'left', 45);
+
+my $string = "10 720 582 20 re\n";
+
+$string .= "0.95 g \n";
+
+$string .= "b\n";
+
+prAdd($string);
+
+prEnd();
+
+B<Programa 4 E<150> >marcaDagua.pl
+
+B<>
+
+Uma vez feita esta operaE<ccedil>E<atilde>o vE<aacute> ao prompt de
+comando novamente, e digite: B<cd\padrao,> logo apE<oacute>s iremos
+executar nossos programas escritos em Perl, para tanto basta agora
+digitar B<perl>B< mascara.pl> e depois B<perl>B< marcaDagua.pl, >feito
+isso teremos dois arquivos pdf criados na pasta, o mascara.pdf e o
+watermark.pdf.
+
+B<>
+
+Feitos todos os passos corretamente, teremos jE<aacute> a base para
+iniciarmos a criaE<ccedil>E<atilde>o de relatE<oacute>rios, sua pasta
+padrE<atilde>o devera estar como a B<figura 4.>
+
+[IMAGE]
+
+B<Figura 4. >Pasta padrE<atilde>o.
+
+B<ConclusE<atilde>o>
+
+No prE<oacute>ximo artigo daremos continuidade ao nosso framework, com
+a criaE<ccedil>E<atilde>o de outros modelos sem a
+utilizaE<ccedil>E<atilde>o de imagens, como foi feito atE<eacute>
+agora.
+
+Nesta primeira etapa estamos utilizando apenas a
+execuE<ccedil>E<atilde>o do Perl atravE<eacute>s da linha de comando,
+mas assim que aprofundarmos mais no assunto iremos comeE<ccedil>ar a
+utilizar o Java, aguardem.
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+B<>
+
+[IMAGE]B<HAILTON DAVID LEMOS >(hailton.david@gmail.com)
+TecnE<oacute>logo em Internet e Redes, Bacharel em
+AdministraE<ccedil>E<atilde>o de Empresas, Licenciando em
+CiE<ecirc>ncias BiolE<oacute>gicas, Especialista em: Tecnologia da
+InformaE<ccedil>E<atilde>o, Planejamento e GestE<atilde>o
+EstratE<eacute>gica, MatemE<aacute>tica e EstatE<iacute>stica,
+TE<eacute>cnica em Analise e Desenvolvimento de Software,
+EducaE<ccedil>E<atilde>o para Diversidade e Cidadania. Trabalha com
+desenvolvimento de Sistema hE<aacute> mais de 25 anos, atualmente
+desenvolve sistemas especialistas voltados E<agrave>
+BioinformE<aacute>tica, Normas e PadrE<otilde>es de qualidade,
+Planejamento EstratE<eacute>gico e Tomada de DecisE<atilde>o.
+
+B<Tecnologias que estou utilizando atualmente:> Java, Perl, Ruby,
+Plataforma .NT, Natural, ImageMagick, Javascript, Jscript, Vbscript,
+Ajax, VBA, SQL, HTML, ASP, Xml, OWC, OWL, CML, BioPolymer, Mysql, DB2,
+Adabas, Postgresql, Access, Windows, Linux.B<>
+
+B<>
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+#From file artigo.htm
+# 97929 bytes of input
+#Wed Aug  4 08:47:31 2010 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

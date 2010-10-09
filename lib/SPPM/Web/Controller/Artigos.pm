@@ -1,6 +1,7 @@
 package SPPM::Web::Controller::Artigos;
 
 use Catalyst;
+
 use File::stat;
 use POSIX qw(strftime);
 use DateTime;
@@ -42,6 +43,13 @@ sub artigo : Chained('/base') : PathPart('artigo') : Args(2) {
         $cached_pod = $parser->asString;
         $c->cache->set( "$pod_file $mtime", $cached_pod, '12h' );
     }
+
+        my $tree  = HTML::TreeBuilder::XPath->new_from_content($cached_pod);
+        my $title = $tree->findnodes('//h1')->[0]->as_text;
+        $c->stash->{'eqtitle'} = $title;
+        $tree->delete;
+
+
 
     $c->stash(
         pod      => $cached_pod,

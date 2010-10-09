@@ -1,4 +1,6 @@
-[% META title=" Artigos " current_page="artigos" %]
+[% template = {title => eqtitle} %]
+
+[% META current_page="artigos" %]
 
       <div id="container_top">
         <div id="container_bottom">

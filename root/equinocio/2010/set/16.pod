@@ -24,7 +24,7 @@ o tempo local, abaixo mostra como você pode obter os elementos:
 	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
 		localtime(time);
  
-O ano retorna o número de anos deis de 1900, ou seja se você obter, 110
+O ano retorna o número de anos desde 1900, ou seja se você obter, 110
 basta somar com 1900 e você terá o ano em quatro digitos:
 
 	$year += 1900;
