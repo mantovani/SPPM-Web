@@ -1,11 +1,6 @@
-
-
 package SPPM::Web::Controller::Local;
 
-use Moose;
-use MooseX::MethodAttributes;
-extends 'Catalyst::Controller';
-
+use Catalyst;
 
 sub base :Chained('/base') : PathPart(''): CaptureArgs(0) {}
 
