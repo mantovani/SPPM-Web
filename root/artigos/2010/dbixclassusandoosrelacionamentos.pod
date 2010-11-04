@@ -1,0 +1,310 @@
+﻿=pod
+
+=encoding utf8
+
+=head1 DBIx::Class - Usando os relacionamentos
+
+=head1 Introdução - MER/DBIx-Class
+
+
+O DBIx Class é um dos grandes e mais sólidos projetos que compõem o tão falado Perl moderno, o projeto foi criado por Matt S.Trout(Autor do livro “The Definitive Guide to Catalyst”) e tem um time de desenvolvedores de peso no seu core team, entre eles os brazucas Eden Cardim e Wallace Reis.
+
+O DBIx Class se propõe a ser um ORM (Object Relational Mapper) extensível e flexível. Esse tipo de abordagem tem como maior objetivo possibilitar que o desenvolver dê prioridade as regras de negócio do projeto e não se preocupe com as peculiaridades de cada RDBMS . O DBIx Class nos permite simples facilidades como escrever consultas em forma de código Perl, extrair automaticamente classes da estrutura já existente no banco de dados e também uma integração com o AutoCrud, um AJAX web front-end para o Catalyst. Em contra partida alguns acham que a curva de aprendizado é alta demais em relação aos benefícios, e que seria mais simples e produtivo utilizar as queries SQL para consultas complexas.
+
+Nesse artigo pretendo demonstrar as funcionalidades e vantagens oferecidas ao utilizar o DBIx::Class ao utilizar os relacionamentos de um modelo relacional.
+
+O DBIx::Class oferece métodos que permitem criar relacionamentos entre as tabelas existentes do seu MER(Modelo Entidades e Relacionamentos).
+
+Nesse artigo vamos entrar em detalhes no relacionamento “um  para muitos” ou “has many”, que é o tipo de relacionamento mais usual nos modelos relacionais, vamos mostrar como defini-los nas classes do DBIx::Class, como realizar consultas JOIN (onde são feitas junção de duas ou mais tabelas que se relacionam) e também como criar e excluir automaticamente registros que se relacionam.
+
+=head1 Tipos de relacionamentos
+
+A grande conveniência da utilização dos relacionamentos no DBIx::Class é que ele cria acessores nas classes para serem utilizados nos códigos. Começemos listando os possíveis tipos de relacionamentos do DBIx::Class:
+
+=head2 belongs_to
+
+Cria um relacionamento no qual a classe define quais são suas chaves estrangeiras.
+
+=head2 has_many
+
+Cria um relacionamento um-para-muitos no qual a chave estrangeira referencia para a chave-primaria da classe, este tipo de relacionamento pode referenciar para zero ou mais registros na chave estrangeira(ex: LEFT JOIN).
+
+=head2 might_have
+
+Cria um relacionamento um-para-muitos opcional, que pode existir ou não.
+
+=head2 has_one
+
+Cria um relacionamento um-para-um com uma classe.
+
+=head2 many_to_many
+
+Cria uma ponte entre dois resultsets oferecendo as mesmas conveniências de acessors que os outros tipos de relacionamentos tem.
+
+
+=head1 Ambiente/Tabelas/Schemas
+
+Abaixo uma imagem do schema que iremos utilizar neste artigo, optei por utilizar o schema Human Resources (L<http://download.oracle.com/docs/cd/B12037_01/server.101/b10771/scripts003.htm/>) que são schemas demo que vem com os bancos Oracle, fiz essa opção por este nos oferecer um schema com tabelas já relacionadas e populadas, prontas para uso, o que me permitiu focar o desenvolvimento apenas na definição dos relacionamentos no DBIx::Class.
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2010/set/cncpt292.gif"> 
+</center>
+
+=end pod:xhtml
+
+Neste artigo irei demonstrar como funciona o tipo de relacionamento mais comum nos modelos relacionais, o relacionamento um-para-muitos.
+
+=head2 Definindo os relacionamentos nas classes
+
+Começamos definindo as classes:
+
+MyDB/Schema/Result/Employee.pm
+
+	package MyDB::Schema::Result::Employee;
+	use base qw/DBIx::Class/;
+	__PACKAGE__->load_components(qw/Core PK::Auto/);
+	__PACKAGE__->table('employees');
+	__PACKAGE__->add_columns(qw/employee_id first_name last_name email phone_number hire_date salary commission_pct manager_id department_id job_id/);
+	__PACKAGE__->set_primary_key('employee_id');
+	__PACKAGE__->belongs_to( department => 'MyDB::Schema::Result::Department', 'department_id');
+	__PACKAGE__->belongs_to( job => 'MyDB::Schema::Result::Job', 'job_id');
+	__PACKAGE__->belongs_to( jobhistorys => 'MyDB::Schema::Result::JobHistory', 'employee_id');
+
+MyDB/Schema/Result/Department.pm
+
+	package MyDB::Schema::Result::Department;
+	use base qw/DBIx::Class/;
+	__PACKAGE__->load_components(qw/Core PK::Auto/);
+	__PACKAGE__->table('departments');
+	__PACKAGE__->add_columns(qw/department_id department_name manager_id location_id/);
+	__PACKAGE__->set_primary_key('department_id');
+	__PACKAGE__->has_many( employees => 'MyDB::Schema::Result::Employee','department_id');
+
+MyDB/Schema/Result/Location.pm
+
+	package MyDB::Schema::Result::Location;
+	use base qw/DBIx::Class/;
+	__PACKAGE__->load_components(qw/Core PK::Auto/);
+	__PACKAGE__->table('locations');
+	__PACKAGE__->add_columns(qw/location_id street_address postal_code city state_province country_id/);
+	__PACKAGE__->set_primary_key('location_id');
+	__PACKAGE__->has_many( departments => 'MyDB::Schema::Result::Department','department_id');
+
+MyDB/Schema/Result/Job.pm
+
+	package MyDB::Schema::Result::Job;
+	use base qw/DBIx::Class/;
+	__PACKAGE__->load_components(qw/Core PK::Auto/);
+	__PACKAGE__->table('jobs');
+	__PACKAGE__->add_columns(qw/job_id job_title min_salary max_salary/);
+	__PACKAGE__->set_primary_key('job_id');
+	__PACKAGE__->has_many( employees => 'MyDB::Schema::Result::Employee', 'employee_id');
+
+MyDB/Schema/Result/JobHistory.pm
+
+	package MyDB::Schema::Result::JobHistory;
+	use base qw/DBIx::Class/;
+	__PACKAGE__->load_components(qw/Core PK::Auto/);
+	__PACKAGE__->table('job_history');
+	__PACKAGE__->add_columns(qw/employee_id start_date end_date job_id department_id/);
+	__PACKAGE__->set_primary_key(qw/employee_id/);
+	__PACKAGE__->has_many( employee => 'MyDB::Schema::Result::Employee', 'employee_id');
+
+=head1 Usando o DBIx::Class e os relacionamentos
+
+=head2 Utilizando Joins
+
+	my $rs = $schema->resultset('Department')->search(
+			{
+			  'locations.country_id' => 'US'
+			},
+			{
+			  join => 'locations',
+			  order_by => [qw/ department_name locations.city /]
+			}
+		);
+	while (my $dep = $rs->next) {
+		print "Department " . $dep->department_name." City: " . $dep->locations->city.$/;
+	}
+	
+No bloco de código acima nós estamos fazendo um join da tabela Department com a tabela Locations, porém se nós setarmos DBIC_TRACE=1, perceberemos que nós executamos a query nas duas tabelas porém só retornamos os dados da tabela Department, e ao acessarmos a coluna city da tabela Location, uma consulta é feita para cada linha retornada da tabela Department, e este realmente não é nosso objetivo:
+
+
+	SELECT me.department_id, me.department_name, me.manager_id, me.location_id 
+	FROM departments me 
+	JOIN locations locations ON locations.location_id = me.location_id 
+	WHERE ( locations.country_id = ? )  
+	ORDER BY department_name, locations.city
+	:'US'
+	
+	SELECT me.location_id, me.street_address, me.postal_code, me.city, me.state_province, me.country_id 
+	FROM locations me 
+	WHERE ( me.location_id = ? ) 
+	: '1700'
+	
+	SELECT me.location_id, me.street_address, me.postal_code, me.city, me.state_province, me.country_id 
+	FROM locations me 
+	WHERE ( me.location_id = ? ) 
+	: '1700'
+		
+	E assim em diante ...
+
+=head2 Prefetch Joins	
+	
+Para evitar situações com a descrita acima, o DBIx::Class nos oferece os prefetch joins, que consultam os dados das tabelas relacionadas antecipadamente:
+
+	my $rs = $schema->resultset('Department')->search(
+			{
+			  'locations.country_id' => 'US'
+			},
+			{
+			  join => 'locations', # join the locations table
+			  order_by => [qw/ department_name locations.city /],
+			  prefetch => 'locations'
+			}
+		);
+
+	while (my $dep = $rs->next) {
+		print "Department #$i " . $dep->department_name." City: " . $dep->locations->city.$/;
+	}
+	
+Abaixo veja a única query gerada pelo bloco de código acima:
+	
+	SELECT me.department_id, me.department_name, me.manager_id, me.location_id, locations.location_id, locations.street_address, locations.postal_code, 
+	locations.city, locations.state_province, locations.country_id 
+	FROM departments me 
+	JOIN locations locations ON locations.location_id = me.location_id 
+	WHERE ( locations.country_id = ? )  ORDER BY department_name, locations.city
+	: 'US'
+
+=head2 Multiple joins
+
+O DBIx::Class também nos permite joins múltiplos em várias tabelas, bastando passar uma arrayref ao invés de um scalar como atributo no join:
+	
+	my $rs = $schema->resultset('Employee')->search(
+			{
+			  'salary' => {'>=', '100'},
+			  'department.department_name' => 'Finance',
+			  'job.job_title' => 'Accountant',
+			},
+			{
+			  join => [qw/ department job /],  
+			  prefetch => 'department',
+			  
+			  #prefetch => [qw/ department job /],
+
+			  order_by => [qw/department.department_name salary/],
+			},
+		);
+
+Abaixo a query gerada pelo código acima que pretende listar empregados com departament_name 'Finance', com job_title 'Accountant' e salary maior ou igual a 100:
+
+	SELECT me.employee_id, me.first_name, me.last_name, me.email, me.phone_number, me.hire_date, me.salary, me.commission_pct, me.manager_id, me.department_id, 
+	me.job_id, department.department_id, department.department_name, department.manager_id, department.location_id 
+	FROM employees me 
+	JOIN departments department ON department.department_id = me.department_id 
+	JOIN jobs job ON job.job_id = me.job_id
+	WHERE ( ( department.department_name = ? AND job.job_title = ? AND salary >= ? ) )
+	ORDER BY department.department_name, salary
+	: 'Finance', 'Accountant', '100'
+
+=head2 Multi-step joins
+
+Suponhemos que nós necessitemos fazer join entre mais que um relaciomento, exemplificando: digamos que para nosso caso nós queiramos buscar todos empregados que tenha country_id 'US', alary maior ou igual a 100 e start_date maior ou igual a 01-JAN-80. Repare que as tabelas Employee e Locations não se relacionam diretamente, Departament está entre elas, é quando existe essa necessidade que nós devemos utilizar o multistep join:
+
+	my $rs = $schema->resultset('Employee')->search(
+				{
+				  'locations.country_id' => 'US',
+				  'salary' => {'>=', '100'},
+				  'jobhistorys.start_date' => {'>=', '01-JAN-80'},
+				  
+				},
+				{
+				  join => [
+					{
+					  'department' => 'locations',
+					},
+					'jobhistorys',
+				  ],
+				prefetch => [qw/ department jobhistorys/],
+				order_by => [qw/department.department_name jobhistorys.start_date salary/],
+				},
+			);
+	while (my $dep = $rs->next) {
+		print "Departamento: ".$dep->department->department_name." Nome " . $dep->first_name." Salary ".$dep->salary." Start date ".$dep->jobhistorys->start_date.$/;	 
+	}	
+
+Abaixo a query gerada que faz join nas tabelas jobhistory, departments e também na locations, graças a utilização do multistep join:
+	
+	SELECT me.employee_id, me.first_name, me.last_name, me.email, me.phone_number, m
+	e.hire_date, me.salary, me.commission_pct, me.manager_id, me.department_id, me.j
+	ob_id, department.department_id, department.department_name, department.manager_
+	id, department.location_id, jobhistorys.employee_id, jobhistorys.start_date, job
+	historys.end_date, jobhistorys.job_id, jobhistorys.department_id 
+	FROM employees me 
+	JOIN departments department ON department.department_id = me.department_id 
+	JOIN locations locations ON locations.location_id = department.location_id 
+	JOIN job_history jobhistorys ON jobhistorys.employee_id = me.employee_id 
+	WHERE ( ( jobhistorys.start_date >= ? AND locations.country_id = ? AND salary >= ? ) )  
+	ORDER BY department.department_name, jobhistorys.start_date, salary: '01-JAN-80', 'US'	, '100'
+
+
+=head2 Pesquisas relacionadas
+
+Nós também podemos usar dos relacionamentos para fazer pesquisas entre tabelas relacionadas utilizando o método search_related:
+
+	my $rs = $schema->resultset('Department')->search(
+		{ department_name => { like => '%Account%' } }
+	  );
+	  
+	my @dep_employees = $rs->search_related('employees')->all;		
+
+	foreach (@dep_employees)	{
+		print $_->first_name.$/;
+	}
+
+Abaixo a query gerada pelo código acima:
+
+	SELECT employees.employee_id, employees.first_name, employees.last_name, employees.email, employees.phone_number, employees.hire_date, employees.salary, 
+	employe	es.commission_pct, employees.manager_id, employees.department_id, employees.job_id 
+	FROM departments me 
+	JOIN employees employees ON employees.department_id = me.department_id WHERE ( department_name LIKE ? ) : '%Account%'
+
+=head2 Criando registros relacionados
+
+	my $employye = $schema->resultset('Employee')->create(
+				{
+				  first_name => 'Marcio Vitor',
+				  last_name =>  'De Matos',
+				  salary => '2000',
+				  department_id => '90',
+				  job_id => 'AC_MGR',
+				  email => 'mvitor@flynight.com',
+				  phone_number => '25115959',
+				  hire_date => '20=JAN-09', 
+				  commission_pct => '10',
+				  manager_id  => '100',		  
+				},
+			);
+	$employee->insert;
+	my $author = $employye->create_related('jobhistorys', { start_date => '20=JAN-09',
+															job_id => 'AC_MGR',});
+
+=head2 Deletes relacionados
+
+	$employee ->delete_related('jobhistorys', 'jobhistorys.start_date' => {'>=', '01-JAN-80'});
+
+
+=head1 Agradecimentos
+
+A toda São Paulo Perl Mongers pelo duro trabalho realizado para a popularização dessa poderosa ferramenta que é o Perl
+
+=head1 AUTOR
+
+Marcio Vitor De Matos (mvitor) <cromojml@gmail.com>
+
+=cut
+
+

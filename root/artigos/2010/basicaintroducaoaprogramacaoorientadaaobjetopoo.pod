@@ -1,0 +1,268 @@
+
+=encoding utf8
+
+=head1 Básica Introdução à Programação Orientada a Objeto (POO)
+
+Quem começa a dar os primeiros passos na programação, aprendendo lógica, vê-se
+estudando programação estruturada (ainda que nesse momento esse tipo de coisa
+ainda não seja clara), ao ser apresentado a uma IDE (Ambiente de
+Desenvolvimento Integrado), muitas vezes, associa os componentes de
+construção de interfaces gráficas, como janela, botões etc,como sendo os
+B<objetos> da B<POO>.
+
+Aqueles componentes, embora, muitas vezes, derivados de B<POO> não tem
+relação direta com ela. Em B<POO> um B<objeto> é uma B<abstração> para algo
+do mundo real, bem menos palpável do que o ponteiro do seu mouse sugere. Por
+exemplo, o ar, que embora não seja palpável, possui algumas características
+e comportamentos que permite percebê-lo, como I<composição>, I<temperatura>,
+I<movimento>, I<direção>, I<velocidade> etc, estas características e
+comportamentos podem ser B<abstraídos> em uma B<classe>.
+
+Em outras palavras, B<Programação Orientação a Objetos>, refere-se ao
+paradigma de programação onde o desenvolvimento do software é regido pelas
+definições e relacionamentos entre os B<objetos> que compõem o mesmo. Tem como
+característica uma maior manutenibilidade em relação a outros métodos de
+desenvolvimento, e uma maior proximidade entre a análise do problema e a
+implementação da solução.
+
+Assim como em programação estruturada, onde costuma-se construir o algoritmo por
+meio de diagramas de blocos e português estruturado (portugol), na B<POO>
+usa-se a linguagem B<UML> (Linguagem de Modelagem Unificada), para se estruturar
+as diversas partes que irão compor o software a ser desenvolvido, essa
+linguagem é composta apenas de diagramas.
+
+O CPAN dispõe de uma grande quantidade de módulos que permitem o manuseio de
+vários aspectos da B<UML>, inclusive há módulos que permitem criar diagramas
+B<UML> a partir de projetos já existentes, por exemplo, o
+C<http://search.cpan.org/perldoc?UML::Class::Simple>.
+
+
+=head2 Conceitos Básicos da POO
+
+No começo do artigo eu mencionei a tal da B<classe> que é concebida por meio
+de B<abstração>, pois bem, uma B<classe> é formada por B<atributos> e
+B<métodos>. Os B<atributos> são as características da B<classe>, já os
+B<métodos> são os comportamentos que a B<classe> possui.
+
+B<atributos> e B<métodos> podem ser arranjados dentro de uma classe afim
+de permitir que somente ela seja responsável pelo conhecimento daquele objeto
+(B<encapsulamento>), tornando possível oferecer uma B<interface> mais amigável
+para se interagir com ela, uma vez que quer fizer uso dessa classe precisa
+apenas solicitar algo e esperar que ela o faça, sem se preocupar com o "como"
+a coisa é feita.
+
+Ao se B<instanciar> uma B<classe>, o B<método> B<construtor> da B<classe> é
+acionado, alocando todos os recursos necessários para utilização desta,
+nascendo assim o B<objeto>. Que desaparecerá ao ser invocado o B<método>
+B<destrutor>, que em algumas situações pode ser automático (B<coletor de lixo>
+ou B<garbage collector>).
+
+Os B<objetos> relacionam-se de diversos modos diferentes, como
+B<Associação>, B<Agregação>, B<Composição>, B<Generalização>, este último é
+possível através da B<herança>, ou seja, quando uma B<subclasse> filha herda
+características e comportamentos de uma B<classe> pai; existem casos em que
+uma B<subclasse> possui várias B<classes> pai, esse fenômeno é chamado de
+B<herança múltiplas>.
+
+Estes relacionamentos permitem criar hierarquias de B<classes>
+extremamente organizadas e reaproveitáveis, por exemplo, eu posso ter uma
+B<classe> pai chamada I<Ar> com todos os B<atributos> e B<métodos> descritos
+no início do artigo e criar B<subclasses> derivadas dela, como I<Furacao>,
+I<Ventania>, B<Brisa>, que possuem características próprias, mas todas possuem
+coisas em comum com a classe I<Ar>, sem ter que reescrever em cada classe tudo
+que já está programado dentro da B<classe> pai I<AR>.
+
+Os B<objetos> comunicam-se através da troca de B<mensagens>, essa B<mensagem>
+é um conjunto de parâmetros reconhecidos pela B<interface> da B<classe>, e que
+acionam B<métodos> ou mudam B<estados> nela.
+
+Uma B<classe> pode ser implementada de forma responder de formas diferentes
+caso seja solicitado um mesmo B<método> com parâmetros diferentes, isso recebe
+o nome de B<polimorfismo>.
+
+
+=head2 POO e Perl
+
+Perl não foi criada para atender a um único paradigma e deixa o programador
+livre para pensar e buscar formas diferentes para resoluções de problemas. Sua
+grande versatilidade a torna uma linguagem multiparadigma, e a Orientação a
+Objetos é um dos paradigmas suportado pela linguagem Perl.
+
+O suporte nativo a OO em Perl é incompleto, e ainda assim, muito interessante. Para
+usá-lo é necessário um bom conhecimento de sub-rotinas (B<perlsub>), referências
+(B<perlref>) e módulos/pacotes (B<perlmod>), como recomenda a própria página de manual
+B<perlboot> (um tutorial para programadores Perl iniciantes B<OO>).
+
+Em Perl as classes são chamadas de módulos ou pacotes e declarados com o
+comando "package", no método construtor é criado com ajuda do comando "bless",
+e a herança é se baseia na manipulação do array "@ISA", existe também o método
+"DESTROY".
+
+=head2 Simples Exemplo
+
+Uma implementação simples da classe I<Ar> e uma subclasse derivada dela,
+I<Furacao>:
+      
+     		
+    
+    #==============================================================================
+    # Declaracao do nome da Classe
+    #==============================================================================
+    package Ar;
+
+    use strict;
+    use warnings;
+
+    #==============================================================================
+    # Declaracao do Metodo Construtor
+    #==============================================================================
+    sub new {
+        my $class = shift();
+
+        # declarando os atributos da classe e alguns valores default
+        my $self = {
+            composicao  => [qw(H20 CO2)],
+            temperatura => q(20°C),
+            movimento   => q(indefinido),
+            direcao     => q(indefinida),
+            velocidade  => q(indefinido),
+        };
+
+        return ( bless( $self, $class ) );
+    }
+
+    #==============================================================================
+    # "Geters" and "Seters"
+    #==============================================================================
+    sub composicao {
+        my $self = shift();
+        my $var  = shift();
+        if ( defined($var) ) {
+            $self->{composicao} = $var;
+        }
+        else {
+            return ( $self->{composicao} );
+        }
+    }
+
+    sub temperatura {
+        my $self = shift();
+        my $var  = shift();
+        if ( defined($var) ) {
+            $self->{temperatura} = $var;
+        }
+        else {
+            return ( $self->{temperatura} );
+        }
+    }
+
+    sub movimento {
+        my $self = shift();
+        my $var  = shift();
+        if ( defined($var) ) {
+            $self->{movimento} = $var;
+        }
+        else {
+            return ( $self->{movimento} );
+        }
+    }
+
+    sub direcao {
+        my $self = shift();
+        my $var  = shift();
+        if ( defined($var) ) {
+            $self->{direcao} = $var;
+        }
+        else {
+            return ( $self->{direcao} );
+        }
+    }
+
+    sub velocidade {
+        my $self = shift();
+        my $var  = shift();
+        if ( defined($var) ) {
+            $self->{velocidade} = $var;
+        }
+        else {
+            return ( $self->{velocidade} );
+        }
+    }
+
+    #==============================================================================
+    # Declaracao da SubClasse filha Furacao
+    #==============================================================================
+    package Furacao;
+
+    #==============================================================================
+    # Herdando tudo Classe "Ar"
+    #==============================================================================
+    use vars qw(@ISA);
+    @ISA = qw(Ar);
+
+    #==============================================================================
+    # Metodo Construtor
+    #==============================================================================
+    sub new {
+        my $class = shift();
+        my $self  = Ar->new();
+
+        # redefinindo valores default
+        $self->{velocidade}    = q(200km/h);
+        $self->{direcao}       = q(leste);
+        $self->{movimento}     = q(circular);
+        $self->{classificacao} = 3;
+
+        return ( bless( $self, $class ) );
+    }
+
+    #==============================================================================
+    # Declarando uma novo metodo
+    #==============================================================================
+    sub classificacao {
+        my $self = shift();
+        my $var  = shift();
+        if ( defined($var) ) {
+            $self->{classificacao} = $var;
+        }
+        else {
+            return ( $self->{classificacao} );
+        }
+    }
+
+    1;
+
+
+Neste exemplo, todos as características programados na classe I<Ar> são
+herdados na subclasse I<Furacao>, alguns valores padrão são sobrescritos para
+caracterizar um Furacao, a classe pai, I<Ar> é estendida na subclasse filha
+I<Furacao> com a adição de um novo método, "classificacao", que de fato só faz
+sentido para o furacão.
+
+
+=head2 Conclusão
+
+A linguagem Perl evolui a ela mesma, e essa forma de programar OO em Perl já
+está muito ultrapassada. Hoje existem no CPAN inúmeros módulos que permitem um
+total aproveitamento da Orientação a Objetos em Perl, de maneira profissional
+e extremamente produtiva e que requer poucos conhecimentos da linguagem em
+si, o único pré-requisito real é o conhecimento da língua inglesa para leitura
+dos manuais.
+
+O exemplo mais famoso é o Moose (C<http://search.cpan.org/perldoc?Moose>) que
+não poderia deixar de ser citado.
+
+
+=head1 Links Relacionados
+
+http://pt.wikipedia.org/wiki/Orienta%C3%A7%C3%A3o_a_objetos
+
+http://perl.org.br/Perldoc/V500807/Perlreftut
+
+http://perl.org.br/Perldoc/V500807/Perlboot
+
+
+=head1 Autor
+
+Ronaldo Ferreira de Lima aka jimmy (jimmy dot tty at gmail dot com).
+

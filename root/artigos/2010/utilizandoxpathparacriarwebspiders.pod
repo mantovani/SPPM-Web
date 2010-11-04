@@ -1,0 +1,474 @@
+=pod
+
+=encoding utf8
+
+=head1 Utilizando XPath para criar web spiders
+
+=head1 INTRODUÇÃO
+
+
+=head2 O que é XPath ?
+ 
+ 
+XPath é uma recomendação W3C para implementar padrões de sintaxe, semântica, funções etc. para a pesquisa e recuperação de dados em nós de documentos XML (mas que é extensível para qualquer linguagem de marcação(XML, HTML, XHTML, etc).
+
+Existem duas versões dessa recomendação, sendo que a primeira é de 1999 L<http://www.w3.org/TR/xpath/> ( Por James Clark L<jjc@jclark.com> e Steve DeRose  L<Steven_DeRose@Brown.edu>  ) 
+
+A segunda, de 2007 L<http://www.w3.org/TR/xpath20/>( por Anders Berglund (XSL WG), IBM Research <alrb@us.ibm.com>, Scott Boag (XSL WG), IBM Research <scott_boag@us.ibm.com>, Don Chamberlin (XML Query WG), IBM Almaden Research  Center, via http://www.almaden.ibm.com/cs/people/chamberlin/, Mary F. Fernández (XML Query WG), AT&T Labs  <mff@research.att.com>, Michael Kay (XSL WG), Saxonica, via http://www.saxonica.com/ ,Jonathan Robie (XML Query WG),  DataDirect Technologies, via http://www.ibiblio.org/jwrobie/, Jérôme Siméon (XML Query WG), IBM T.J.  Watson Research Center <simeon@us.ibm.com> ). 
+
+A SEGUNDA VERSÃO é bem menos utilizada, e tem bem menos implementações do que a primeira. Eu não pretendo escrever sobre a segunda versão neste artigo, simplesmente porque o módulo que irei utilizar para exemplificar a implementação de um spider, utiliza a PRIMEIRA VERSÃO da recomendação e não a segunda.
+
+No entanto é necessário introduzir à PRIMEIRA VERSÃO, já que é a versão implementada no módulo HTML::TreeBuilder::XPath ( no qual falarei mais adiante ), e também é a mais amplamente utilizada e implementada na maioria das linguagens.
+
+
+=head1 ENTENDENDO XPATH 1.0 UM POUCO MAIS
+
+Para entender XPath, segui uma abordagem, que é divida em quatro partes:
+
+=over
+
+=item Sintaxe e Semântica: 
+
+O que se pode escrever, e como se deve escrever em XPath;
+
+=item Especificadores de Eixo( Axis Especifiers ): 
+
+Refere-se a 'direção' da navegação entre os nós de um documento;
+
+=item Predicados: 
+
+Refere-se, principalmente, a definição de atributos e características desses atributos que identificam um nó em particular( name, id etc );
+
+=item Funções e Operadores: 
+
+Refere-se aos tipos de dados, simbologia de operadores aceitos na linguagem e os quatro tipos fundamentais de funções no XPath: Funções de String, Booleano, Funções de Nó e Funções de Números. 
+
+=back
+
+Abaixo, tentarei explicar cada uma dessas divisões, juntamente com a introdução ao HTML::TreeBuilder::XPath, de Michel Rodriguez, <mirod@cpan.org> 
+ 
+=head2 Sintaxe e semântica
+
+De modo geral, a sintaxe do XPath é muito próximo a sintaxe da maior parte dos sistemas de arquivo baseados em árvore. Cada nó da 'árvore' tem um nome, que representa uma tag HTML, ou XML , ou qualquer documento baseado em tags. Para esse artigo, vou me restringir a utilização de XPath para documentos HTML. 
+
+Para isso existem definições de predicados, operadores e funções. Não vou falar de TUDO, apenas de alguns detalhes que serão importantes para entender como trabalhar com XPath e aplicar esse conhecimento para utilizar o módulo HTML::TreeBuilder::XPath.
+
+Então, como representar isso com XPath? Dado o código HTML abaixo, suponhamos que eu queira chegar no elemento(tag) <UL>
+
+	<HTML>
+	<HEAD>
+		<TITLE>Test</TITLE>
+	</HEAD>
+	<BODY>
+		<DIV>
+			<UL>
+				<LI>SOMETHING</LI>
+			</UL>
+		</DIV>
+	 </BODY>
+	 </HTML>
+ 
+XPath representaria <UL> dessa maneira: /HTML/BODY/DIV/UL
+
+É só isso? Não, claro que não! Existem muitas 'features' que ajudam a minimizar o trabalho de se escrever os caminhos, por exemplo: outra forma de representar esse <UL>, seria dessa forma: /HTML/BODY//UL . Essas barras '//' é um detalhe de sintaxe que significa 'qualquer nó abaixo, a partir do último elemento do caminho'. Semanticamente, quer dizer a mesma coisa  que o primeiro caminho, mas de maneira resumida, o que economizaria espaço no seu código dixando-o mais legível ;-) .
+ 
+XPath prevê a utilização de atributos dentro dos elementos, que ajudam a identificar, e por consequência, facilitar a especificação de um nó. Considere o código abaixo:
+
+	<HTML>
+	<HEAD>
+		<TITLE>Test</TITLE>
+	</HEAD>
+	<BODY>
+	<DIV>
+		<UL id="list1">
+			<LI>SOMETHING</LI>
+		</UL>
+	</DIV>
+	 </BODY>
+	 </HTML>
+
+Você pode representar o <UL> que está identificado com o atributo 'id', dessa maneira: /HTML//UL/LI[@id="list1"] ou dessa maneira: /HTML//*[@id="list1"] , onde:
+
+=over
+ 
+=item
+ 	 - HTML// significa 'todos os descendentes a partir do nó HTML'
+
+=item 	
+ 	 - []     indica que você vai definir um Predicado( continue lendo ).
+
+=item
+ 	 - @		indica que você vai se referir a um atributo( isso DEVE estar dentro de um Predicado )
+
+=item
+ 	 - * É um operador que significa, literalmente, 'qaisquer nós'.
+ 
+=back
+
+=head2 Especificadores de Eixo
+
+Para entender os especificadores de eixo, é necessário um pouco mais de detalhes da sintaxe. O esquema abaixo foi tirado do site da Wikipedia citado no final do artigo.
+
+
+ Syntaxe completa		Abreviação					Notas
+-------------------------------------------------------------------------------------------
+ ancestor		
+ ancestor-or-self		
+ attribute				@						@abc is short for attribute::abc
+ child											xyz is short for child::xyz
+ descendant		
+ descendant-or-self		//						// is short for /descendant-or-self::node()/
+ following		
+ following-sibling		
+ namespace		
+ parent					..						.. is short for parent::node()
+ preceding		
+ preceding-sibling		
+ self					.						. is short for self::node()
+ 
+ 
+Normalmente a sintaxe abreviada é a utilizada, e é a que eu utilizo também. 
+
+Os especificadores de eixo existem para 'navegar' no documento, mas as abreviações são de fato tudo o que você precisa, a não ser que algum caso específico exija que você utilize um operador que não tenha abreviação, por exemplo, você pode perguntar para que serve o operador 'ancestor'. Ele se refere ao nó  'raiz' do documento. Se você se referir a ele no seu caminho, significa que você vai 'voltar' de onde  você estiver no documento(seja onde for), para o nó raiz.
+
+Como esse artigo é voltado para spiders, não tem muito sentido você navegar em um documento HTML utilizando um especificador desses, porque normalmente o sentido que você usa é sempre da raíz para os elementos, e não o contrário. 
+
+Para mais detalhes sobre isso, veja o artigo do Wikipedia mencionado na seção FONTES.
+
+=head2 Predicados
+
+Predicados são representações de detalhes de um nó. Os predicados são representados primeiramente pelo nome do nó + [ + algum predicado + ], como no exemplo:
+
+	LI[@id="list1"]
+
+O objetivo é dar ferramentas para otimizar a identificação de um nó, otimizando o tempo de pesquisa na árvore.
+
+Algumas implementações permitem até mesmo expressões regulares: LI[@id=~"/list/"], por exemplo. :D 
+ 
+
+=head2 Funções e Operadores
+
+A flexibilidade do XPath também permite a implementação de funções. Eu não cheguei a usar portanto não pretendo escrever muita coisa a respeito por enquanto. 
+
+As funções definidas pela recomendação w3C estão divididas em categorias:
+
+=over 4
+
+=item 	* Funções de Conjunto de Nós( Node Set Functions )
+Utiliza especificadores de eixo(ou posição se preferirem), como 'self', 'acient' etc. para se referirem a um ou mais nós
+
+=item 	* Funções de String( String Functions )
+Utilizados principalmente para resumir informações de identificação de nós, normalmente oriundas de um atributo. Envolve ações comuns em funções de string como concatenação, substring etc.
+
+=item 	* Funções Booleanas( Boolean Functions )
+Como não existem operadores booleanos, as funções booleanas como not() auxiliam as outras categorias de função
+
+=item 	* Funções de Números( Number Functions )
+Funções utilitárias para lidar com números reais e inteiros.
+
+
+=back
+ 
+Mais detalhes na documentação da W3C(veja a sessão FONTES ).
+
+
+
+
+=head1 WWW::Mechanize + HTML::TreeBuilder::XPath
+
+Finalmente!!!! Podemos começar!
+
+Primeiramente:
+
+
+=head2 Motivações para se usar XPath quando se constrói um spider, crawler, web scrapper etc., ao invés de simplesmente HTML::TreeBuilder 'puro':
+
+=over 3
+
+=item 	* Simplicidade e Produtividade: 
+
+A sintaxe do XPath é muito intuitiva e familiar. Isso porque os acessos aos elementos são muito similares a como se acessa um diretório, por causa da estrutura em árvore. Se você pode usar essa analogia para chegar a qualquer elemento dentro de um documento HTML/XML.
+
+Isso também o torna extremamente rápido para encontrar o que você quer dentro do HTML, economizando tempo de trabalho e portanto tornando quem o usa mais produtivo.
+
+=item	* Economia de espaço e legibilidade de código: 
+
+Mesmo quem nunca 'bateu' o olho num código XPath, a primeira vista faz uma boa idéia do que está ocorrendo. Normalmente você utiliza apenas um método para chegar no que você quer, ou seja, o método 'findnodes'. 
+
+=item 	* Facilidade de manutenção: 
+
+=back
+
+Agora sim! Hey ho, Let's go!
+
+
+=head2 Mão-na-massa - Spider para os canais do UOL.
+
+EXTREMAMENTE recomendável que você utilize o firebug, ou pode ter que usar óculos mais cedo de tanto ler HTML. Se não tiver, pode usar o inspect do google-chrome. Se não tiver nada disso, bom, marque a consulta no 'oftalmo', vai precisar em breve...
+
+O trecho do HTML que representa os links para os canais do UOL é o seguinte:
+
+	<div id="corpo"> 
+		<div id="conteudo"> 
+		<div id="modulos"><div class="content"> 
+    		<div id="data-ultnot"> 
+    			<div id="data"><script>var dia="21";dia=dia.replace(/^0/,'');(dia=="1")?dd="1&ordm;":dd=dia;d.write(dd);</script> de agosto de 2010</div> 
+    			<div id="topo-direita"><a href="http://click.uol.com.br/?rf=hu-visite-barrauol&u=http://barra.uol.com.br/">Barra UOL</a>&nbsp;|&nbsp;&nbsp;<a id="faca-sua-home-header" href=# onclick="defineHome(this);"><img src="http://h.imguol.com/h1/icone-uolhome.gif" width=14 height=14 border=0 align="absmiddle"> Faça do UOL a sua home page</a>&nbsp;|<a id="travarReload" href="javascript:void(0)" onclick="switchReload(this)"><span class='icone'></span>Parar de atualizar</a></div> 
+    		</div> 
+ 
+ 
+        <div id="mod-manchete" class="opc-box"> 
+ 
+	<div id="mod-hn-manchete">			
+		<div class="chapeu"><a name="mancheteA" href=></a></div> 
+		<h3><a name="mancheteA" href=></a></h3> 
+		
+	</div> 
+ 
+ </div> 
+ <div id="mod-rotativo" class="opc-box"> 
+	
+	
+	
+	<div class="opc-box-col1"> 
+		
+		<div id="rotCham"> 
+		  <ul> 
+			
+    <li>
+
+
+
+Puxa vida! E agora?
+
+Pois é, você tem vários caminhos:
+
+=over
+
+=item 	* Identar essa meleca na mão 
+
+=item	* Usar um identador automático
+
+=item 	* Usar o Firebug ou outro similar que já identa o código pra você
+
+=item	* Se usar o Firefox, pode instalar o XPather e obter o caminho com alguns cliques de mouse
+
+=over
+
+( Não se esqueça de tirar os tbody(se existirem) do caminho. Eles não funcionam no HTML::TreeBuilder::XPath )
+ 
+Dessa vez eu vou optar por usar o Firebug, porque quero demonstrar como você pode otimizar o XPath, ao invés de simplesmente copiar e colar sem maiores explicações.
+
+OK! Resumo da 'ópera' com o Firebug:
+
+ <!--Um monte de coisa que não interessa -->
+ <div id="menu">
+	+<dl class="mn-bp">
+	<ul>
+		<li> <!-- ISSO AQUI EH O QUE EU TO PROCURANDO!!!! -->
+			<a href="http://click.uol.com.br/?rf=home-menu&u=http://fotos.uol.com.br/" name="menu" onclick="s_objectID="http://click.uol.com.br/?rf=home-menu&u=http://fotos.uol.com.br/_1";return this.s_oc?this.s_oc(e):true">Álbum de Fotos</a>
+
+	<!-- mais lis aqui ... -->
+
+	</ul>
+	<!-- MAIS COISAS QUE NAO INTERESSAM POR ENQUANTO -->
+
+
+Tá! Mas esse é um link, e o resto?
+
+Bom, o resto é repetição desse primeiro. O importante é manter em mente que você sabe o caminho até os links. E eles passam por uma <ul> que tem vários <li>, que tem os links que você quer.
+
+Agora, é necessário colocar o caminho todo até o link? Depende! Nesse caso não, porque o HTML está bem estruturado, as tags estão identificadas e tem uma semântica que faz sentido, sem HTML quebrado(tag sem fechar, basicamente), e coisas  do tipo. 
+
+Mas existem casos e casos. Se aprende isso a medida da necessidade. Se o seu cliente quiser um parser num site porco, você provavelmente terá que colocar o caminho todo para garantir a consistência de informações para o HTML::TreeBuilder::XPath.
+
+Afinal de contas é um parser e não uma orbe com poderes mágicos... :D
+
+De qualquer forma, existem muitas maneiras, como já mencionei na parte introdutória, de se representar um elemento com XPath.
+ 
+Normalmente a melhor maneira é a que fica mais fácil e curta, simples assim. Nesse caso:
+
+	/html//div[@id='menu']/ul[1]/li/a
+
+Aí o Mantovanni pode dizer: - Tem um caminho mais curto, NARF!
+
+	/*[@id='menu']/ul[1]/li/a
+
+ 
+É eu sei! Mas não tô aqui pra jogar 'XPATH GOLF' e preciso explicar alguns 'porques', por isso eu prefiro a primeira maneira, do que a segunda. Saibam que se trata da mesma coisa, semanticamente, ok?
+ 
+Por via de regra, utilize o caminho que o XPather ou outra ferramenta lhe der, e faça suas otimizações. Isso porque a idéia por trás disso é facilitar a vida de quem desenvolve utilizando XPath, e ferramentas não faltam para isso. Então 'EXPERIMENTA'!
+ 
+Mas vocês podem me perguntar, e esse predicado no ul?? [1], o que significa?
+ 
+É um outro tipo de predicado. Nesse caso, significa exatamente isso que você está pensando, ou seja, é o primeiro ul dentro da div que eu quero, não o segundo, e nem o terceiro. De modo análogo aos arrays em perl, com a diferença que o primeiro elemento é indexado por 1 e não por 0.
+ 
+Isso é importante, porque se tiver outro ul com links, sendo que não é a informação que eu quero, o script traria também. Novamente a analogia com estruturas de dados árvores é sempre útil.
+ 
+Legal! eu tenho um XPath do que eu quero, como implementar usando HTML::TreeBuilder::XPath ?
+ 
+Veja o código abaixo:
+
+ #! /usr/bin/perl
+
+
+ use strict;
+ use warnings;
+ use feature qw/ say /;
+ use HTML::TreeBuilder::XPath;
+ use WWW::Mechanize;
+
+ #O que vamos parsear??
+ my $m = WWW::Mechanize->new;
+ eval{$m->get("http://www.uol.com.br");};
+ if($m->success){
+	#recebendo e tirando possíveis terminadores inválidos
+	my $html = $m->content;
+	$html =~ s/(\n\r|\r\n)|\r/\n/g;
+	
+	#Instanciando HTML::TreeBuilder::XPath;
+	my $tree = HTML::TreeBuilder::XPath->new_from_content($html);
+
+	&get_stuff(\$tree); #Cuidado, é uma referência! Let's do it!
+
+	$tree = $tree->delete; #EXTREMAMENTE ESSENCIAL PARA EVITAR MEMORY LEAK!!!!!!! 
+ } 
+ else {
+   #TRATE O ERRO AQUI. ESTOU COM PREGUIÇA
+ }
+
+#### FIM MAIN ####
+ 
+ sub get_stuff {
+	my $tree = shift;
+
+	#Agora é o pulo-do-gato!
+	my @links = ${$tree}->findnodes("/html//div[\@id='menu']/ul[1]/li/a");
+	if(@links > 0){
+		map{
+			if(ref($_) =~ /HTML::Element/){
+				#Agora estamos lidando com HTML::Element
+				my $link = $_; #Nao trabalhe diretamente com $_ , use-o com moderação...
+				print "\n\n" .$link->as_HTML; #HTML FULL
+				print "\n" . $link->attr("href"); #so o atributo href do link.
+			}
+		}@links;
+
+	}
+	else{
+		say 'FAIL!';
+		
+	}
+
+ }
+
+
+A respeito de navegação entre nós, é importante dizer que uma vez que eu tenha um objeto HTML::TreeBuilder::XPath, e todos os elementos que eu quero estão em níveis abaixo ou no mesmo nível em relação a árvore, não é necessário passar o caminho todo novamente para acessar os elementos, por exemplo:
+
+
+ my @links = ${$tree}->findnodes("/html//div[\@id='menu']/ul[1]/li/a");
+	if(@links > 0){
+		map{
+			if(ref($_) =~ /HTML::Element/){
+				#Agora estamos lidando com HTML::Element
+				my $link = $_; #Nao trabalhe diretamente com $_ , use-o com moderação...
+				print "\n\n" .$link->as_HTML; #HTML FULL
+				print "\n" . $link->attr("href"); #so o atributo href do link.
+			}
+		}@links;
+
+	}
+
+Suponhamos que eu quisesse um texto que estivesse na div 'menu'. Seguindo a lógica, eu teria que mudar o meu XPath dessa maneira: /html//div[\@id='menu']
+
+Então eu recuperaria o texto com um trecho de código assim:
+
+ my ( $text ) = ${$tree}->findnodes("/html//div[\@id='menu']");
+ if($text){
+	say "TEXT: " . $text->as_text;
+ }
+
+Mas e agora?? Por que eu preciso receber o valor disso dessa maneira?
+
+Simples, porque o método findnodes SEMPRE retorna um array! Como eu não preciso de um array no momento, eu uso essa técnica para 'enganar' o findnodes... :D
+
+Beleza! Agora eu quero os meus links. Como fazer?
+
+  if($text){
+	say "TEXT: " . $text->as_text;
+
+	#Agora eu quero um array. Afinal vou receber um monte de links....
+	my @links = $text->findnodes(".//ul[1]/li/a");
+ }
+
+E você pode descer dessa maneira o quanto precisar, sem reinstanciar nada!!!
+
+Uau!!! Mas espere! $text não é um objeto HTML::Element ? Sim, exatamente!
+ 
+Ou o autor usou introspecção para adicionar o método, ou modificou a classe HTML::Element, ainda não sei responder isso!
+
+Voltando, './/' são dois especificadores de eixo(posição). O primeiro é o . que refere-se ao nó onde eu estou no momento, o segundo é o especificador 'descedent', ou simplesmente '//', que refere-se a todos os nós descendentes a partir de algum ponto. Que ponto? self, ou se preferir, '.'.
+
+Show né? E se eu quisesse voltar dois níveis a partir do li, por exemplo? Qual seria o XPath?
+ 
+ .parent/parent  #agora eu estou em div novamente.
+
+Ou, você poderia usar o método look_up do HTML::Element, e apontar para algum identificador de um nó que estivesse acima do que você está tratando no momento. Assim:
+
+ $text->look_up(_tag => 'div' id=>'menu');
+
+
+Lembrando que TODOS os métodos do HTML::Element que você usava como o HTML::TreeBuilder(look_down, attr etc), estão disponíveis. Até se acostumar com o XPath, você pode sempre 'apelar' e simplesmente utilizar os métodos que você estava acostumado.
+
+É isso pessoal, qualquer dúvida, crítica, sugestão, xinga o Thiago, que depois ele me xinga.
+
+Abraço!
+
+=head1 AUTOR
+
+Andre Garcia Carneiro <andregarciacarneiro@gmail.com>
+
+=head2 Agradecimentos
+
+=over
+
+=item Thiago Rondom
+
+=item Daniel Mantovanni
+
+=item Comunidade Perl
+
+
+=back
+
+=LICENÇA
+
+Você pode obter, alterar e republicar esse artigo sobre os mesmos termos da licença ARTISTIC2
+
+
+=head1 FONTES
+
+=over
+
+=item http://en.wikipedia.org/wiki/XPath_1.0
+
+=item http://www.w3schools.com/XPath/default.asp
+
+=item http://www.w3.org/TR/xpath/
+
+=back
+
+
+
+=cut
+
+
+
+
+
+
+
+
+
+
+

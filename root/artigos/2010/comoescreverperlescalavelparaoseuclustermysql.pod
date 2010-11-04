@@ -1,0 +1,134 @@
+
+=head1 Como Escrever Perl Escalável para o seu Cluster MySQL
+
+
+=head1 INTRODUÇÃO
+
+Escalabilidade é uma das características mais importantes de um I<web-site> saudável e que dá mais lucros do que dor-de-cabeça. É a característica que possibilita que um engenheiro de software aumente a capacidade de atendimento simplesmente adicionando mais servidores ao parque instalado da empresa, com I<overhead> aproximadamente linear. Ter uma arquitetura escalável é condição importante para o sucesso e lucratividade de um negócio na Internet, especialmente se o modelo de negócio requer utilização em massa para atingir I<break-even>.
+
+Um I<web-site> na Internet normalmente precisa de uma base de dados - é a escolha natural para armazenar e recuperar as informações necessárias para manter o serviço em funcionamento.
+
+A maior parte das bases de dados utilizadas na atualidade tiveram sua origem na década de 1970, e são baseadas no Modelo de Dados Relacional. Elas não são a única opção de bases de dados no mercado, mas são certamente populares.
+
+Uma importante característica de uma base de dados é quanto ela implementa dos princípios I<A.C.I.D.> (I<Atomicity>, I<Consistency>, I<Isolation>, e I<Durability>. Ou, em Português: Atomicidade, Consistência, Isolação, e Durabilidade).
+
+Dentre as bases de dados mais populares do mercado hoje em dia, a MySQL e seus múltiplos I<storage engines> é certamente uma das mais conhecidas. Combinada com um sistema de replicação espartano mas funcional, ela oferece alguma flexibilidade em termos de estruturação e arquitetura de I<clusters> de bases de dados, um componente importante para garantir a alta disponibilidade do serviço de armazenamento de dados requerido para manter um I<website> funcionando.
+
+Infelizmente, um I<Cluster> Replicado MySQL parece simples, mas não é. Há armadilhas e idiossincrasias o bastante para garantir que o seu I<website> vai dar mais dores-de-cabeça do que lucros, se o estimado leitor não tomar certos cuidados e não mantiver sua atenção e foco enquanto desenhar seu sistema.
+
+Neste artigo, eu chamo a atenção para as armadilhas e idiossincrasias associadas com bases de dados replicadas MySQL usando a arquitetura mais comum em I<websites>, a Replicação I<Master-Slave>, com dicas e cuidados para desenhar, manter e facilitar o crescimento do seu negócio sem perder a escalabilidade do seu sistema.
+
+=head1 Replicação I<Master-Slave> com Bases de Dados MySQL
+
+=head2 Aviso
+
+Isto não é um tutorial sobre como configurar replicação em bases de dados MySQL. Isto não é nem mesmo uma recomendação para que você use esta solução. Se você está começando um projeto e não está muito certo sobre o que usar, por favor converse primeiro com seu arquiteto de sistemas e com seu administrador de bases de dados; a responsabilidade sobre o que usar é deles e eles devem ser capazes de decidir sobre a melhor solução para o seu sistema.
+
+=head2 O que é?
+
+Em termos simples, uma base de dados MySQL pode copiar (ou I<replicar>, para usar a tradução literal do termo inglês) as modificações que acontecem numa outra base de dados através de um canal de comunicação entre as duas bases de dados. A base de dados que recebe as modificações e as aplica primeiro é conhecida como I<Base de Dados Mestre> (I<Master Database>) e a base de dados que copia estas modificações de um I<Replication Maste> é conhecida como I<Base de Dados Escrava> (I<Replication Slave>).
+
+=head2 Para quê serve?
+
+Replicação em bases de dados tem várias utilidades práticas. A mais importante para nós, agora, é escalabilidade: replicação permite que se acrescentem tantos servidores I<apenas para leitura> quantos necessários para suportar o tráfego do seu I<website>, enquanto mantém a carga do servidor I<Mestre> baixa, para cada novo I<Escravo> acrescentado.
+
+=head2 Vantagens da Replicação em Bases de Dados MySQL
+
+A principal vantagem em se usar replicação com MySQL é a escalabilidade. É sempre possível acrescentar servidores, e o custo de cada novo servidor de leitura, para o servidor I<Mestre> é baixo, com crescimento aproximadamente linear.
+
+São vantagens também a facilidade em fazer I<backups> dos dados (pode-se simplesmente parar uma das réplicas dedicada para esta finalidade, e simplesmente reiniciar o processo de replicação novamente ao término da cópia de dados, como se nada houvesse acontecido.
+
+Além disso, replicação pode ser usada para melhorar o serviço de bases de dados para um departamento geograficamente distante dos servidores, mas com alta utilização de bases de dados. Por exemplo, se o seu departamento de I<data-warehousing> está distante (talvez até mesmo em outro país), pode ser vantajoso manter uma réplica da base de dados principal lá, para que as leituras locais não atrapalhem a produção e sejam mais rápidas (e provavelmente mais baratas, já que o tráfego de dados entre os escritórios normalmente é pago e o tráfego local é quase grátis).
+
+=head2 Desvantagens da Replicação em Bases de Dados MySQL
+
+As principais desvantagens da replicação, na minha opinião, são a falta de robustez da implementação, e a falta de flexibilidade na configuração.
+
+Eu acho que estas duas desvantagens são importantes e precisam de explicação.
+
+Primeiro, a mais simples e menos importante para este artigo: a implementação da MySQL não é robusta, no sentido de que muitas operações que poderiam e deveriam ser idempotentes não são. Tentar criar o mesmo usuário duas vezes, com exatamente os mesmos parâmetros se encaixa nesta categoria; também se encaixa nesta categoria tentar remover tabelas, usuários, e bases de dados que não existem. Estas instruções deveriam ser simplesmente ignoradas pela réplica, mas a implementação da MySQL pára a replicação com um erro e força um DBA a criar a estrutura faltante localmente ou ignorar aquela transação em cada uma das réplicas afetadas (isso se torna um problema sério quando seu I<website> cresce demais e você tem dezenas de réplicas para consertar a cada novo problema).
+
+Agora, a falta de flexibilidade da implementação também é notória. É muito difícil escolher o que replicar, ou como replicar. Sim, pode-se excluir tabelas e até mesmo bases de dados inteiras da replicação, mas não se pode implementar I<white-lists>, isto é, não se pode dizer que se deseja replicar apenas uma determinada tabela ou base de dados. Também não é possível se replicar tabelas ou bases de dados diferentes a partir de diferentes mestres, ou solicitar que uma réplica descarte e reconstrua tabelas a partir do servidor mestre.
+
+A maior parte destas limitações está relacionada com o fato de que a implementação não replica dados, mas as transações (leia-se: os comandos SQL) enviados para a base de dados I<Mestre>, sem se preocupar com o seu efeito sobre os dados. (Nota: a versão 5.0 da base de dados tentou corrigir este problema, e acabou tornando mais complicada a vida do DBA: agora, além de ter de desenroscar os dados emaranhados, você é obrigado a fazer isso em binário, já que a base de dados também suporta replicação "por registros" ao invés de "por I<statement>").
+
+A falta de flexibilidade da implementação também trás como conseqüência a impossibilidade de se fazer uma escolha que eu, como DBA, considero de extrema importância: não se pode ajustar e balancear consistência de dados entre as réplicas contra performance de escrita.
+
+=head2 Exemplo de Acesso
+
+Mesmo com problemas e desvantagens, um I<cluster> replicado de bases de dados MySQL é útil e resolve muitos problemas de escalabilidade típicos do dia-a-dia de um I<website>. Isso, contanto que você mantenha seu foco e escreva código da maneira correta para isso. O básico:
+
+=over 4
+
+=item 1. Leia, ou escreva
+
+Um dos erros mais comuns quando se começa a escreve para uma base de dados que não é I<ACID-compliant> é assumir que ela é I<ACID-complaint> e tentar ler e escrever código durante o mesmo processo. Bases de dados I<ACID-compliant> permitem isso, mas este não é o nosso caso. Se você escrever algo e tentar ler a mesma informação de volta, vai eventualmente ter problemas com o seu sistema, quando o processo de replicação atrasar (acredite, isso é mais comum do que você pensa).
+
+Assim, para evitar problemas de consistência, não olhe para trás: se escrever, não tente ler de volta, e, se estiver lendo, não tente escrever para a base de dados (ou você pode provocar I<race-conditions>).
+
+=item 2. Projete seu sistema para sobreviver a atrasos
+
+Agora que já mencionamos que a base de dados vai atrasar, é preciso estressar este ponto: eu vejo muitos sistemas usando bases de dados replicadas MySQL todos os dias, e é sempre o mesmo problema: qualquer atraso na replicação se reflete (porcamente) na experiência do usuário.
+
+A forma correta de evitar isso é uma extensão do primeiro item desta lista: projete o seu sistema para sobreviver a atrasos de replicação. Alguns problemas vão ficar mais complicados, mas com um pouco de interesse, criatividade e uma eventual base de dados I<ACID> como apoio resolverão todos os seus problemas.
+
+=item 3. Projete seu sistema para sobreviver a desastres
+
+Sim, eu estou me repetindo, as sempre abrindo mais o escopo. Um I<cluster> de bases de dados replicado é mais propenso a ter falhas de hardware do que um sistema gerenciador de bases de dados funcionando em apenas uma máquina. Assim, é importante estudar os casos em que o seu sistema vai ser obrigado a trabalhar ou com menos réplicas, ou eventualmente "sem-cabeça" (por que você está restaurando a base de dados mestra, ou no meio da operação de promover uma das réplicas para cobrir o buraco). Projete o seu sistema para sobreviver a atrasos, e a outros desastres maiores e mais complicados.
+
+=item 4. Consequência: trate erros
+
+Uma das consequências naturais dos outros itens nesta lista é que você vai precisar capturar e tratar todos os erros de base de dados que você puder, o mais cedo possível. Lembre-se: um erro não tratado é uma oportunidade de fazer a coisa certa que você deixou escapar.
+
+=back
+
+=head1 Mas onde diabos está o código Perl?
+
+Eu não sou um programador. Eu sou um administrador de bases de dados MySQL trabalhando para uma grande empresa de anúncios classificados na Internet.
+
+Como eu não quero que código que eu escrevo com finalidade didática termine copiado acidentalmente para algum programa que você está escrevendo, eu escolhi não escrever nenhum código, e fazer um artigo conceitual. 
+
+Claro, isso não me impede de recomendar eventuais módulos da minha preferência:
+
+=head2 Módulos da Minha Preferência
+
+=head3 L<DBI>
+
+Os módulos L<DBI> são a interface de acesso a bases de dados padrão do Perl. Se você não está usando estes, tem problemas muito sérios no seu código.
+
+=head3 Família L<DBIx::Class>  
+
+Se você tem familiaridade com o modelo de mapeamento de objetos em bases de dados relacionais parece atrativo para você, a minha recomendação é que você uso o L<DBIx::Class> como base para os seus objetos de base de dados. Como DBA, eu tenho de avisar que a perda de controle sobre as I<queries> que são executadas é um pouco ruim, e eu recomendo cautela no escrever código: SQL escrito pelo seu DBA tem geralmente a garantia de usar os índices corretos e manter um perfil de consumo de recursos baixo - se você tem muitos clientes, vai achar isso uma coisa muito boa.
+
+=head3 L<SQL::Catalog>
+
+O L<SQL::Catalog> permite que você mantenha um catálogo com suas consultas SQL separadas do seu código Perl, e oferece uma maneira simples para organizar um sistema que não tenha muitas I<queries>. O seu DBA também vai agradecer por facilitar a vida dele e o acesso às I<queries> sem ter de aprender a ler ou escrever Perl.
+
+=head3 L<MySQL::Sandbox>
+
+Com uma interface simples e automatizado ao extremo, o L<SQL::Sandbox> vai ajudar você a instalar e configurar tantos servidores MySQL quantos o seu ambiente de desenvolvimento precisar, com apenas um comando bem curtinho. É a ferramenta ideal para o seu ambiente de desenvolvimento.
+
+=head1 Conclusão
+
+Mesmo com todos os problemas e dificuldades, um I<cluster> de bases de dados replicadas MySQL pode ser a solução da maior parte dos problemas do seu I<website>, contanto que você preste a devida atenção e não crie mais problemas do que está tentando resolver. Em dúvida, consulte sempre o seu arquiteto de sistemas e o seu DBA.
+
+=head1 AUTHOR
+
+Luis Motta Campos, C<< <lmc at cpan.org> >>
+
+=head1 ACKNOWLEDGEMENTS
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2010 Luis Motta Campos.
+
+Este artigo é Software Livre; você pode redistribuí-lo e/ou modificá-lo sob os termos da GNU Public License como publicada pela Free Software Foundation; versão 2 datada a Junho, 1991, ou qualquer versão mais recente, à sua discrição.
+
+Este artigo é distribuído na esperança de que ele pode ser útil, mas SEM QUALQUER GARANTIA; mesmo a garantia implicada de COMERCIABILIDADE ou ADEQUAÇÃO PAR UMA FINALIDADE EM PARTICULAR. Veja a GNU Public License para mais detailhes.
+
+Uma cópia da GNU General Public License (deveria) estar disponível com este artigo; se não, escreva para a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+=cut
+
+1; # End of HOWTO::Scalability::MySQL

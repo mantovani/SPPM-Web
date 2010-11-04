@@ -1,0 +1,421 @@
+=encoding utf8
+
+=head1 Usando LDAP com Perl
+
+O uso do L<LDAP|http://pt.wikipedia.org/wiki/LDAP>
+(I<< Lightweight Directory Access Protocol >>) tem se difundido
+muito no ambiente corporativo como repositório de vários recursos utilizados
+no cotidiano de uma grande rede. O protocolo tem o suporte de grandes players
+do mercado, e vários produtos já provêem algum tipo de integração com
+B<LDAP>. Mesmo redes menores podem utilizar o B<LDAP>, embutido em outros
+produtos, como o caso clássico de ambientes de rede Windows, que utilizam o
+Microsoft Active Directory - um servidor B<LDAP>.
+
+Dada a ubiqüidade do B<Perl>, e a crescente adoção do B<LDAP>, é natural que se
+deseje integrar, em algum momento, os programas em Perl ao diretório de
+informações da empresa.
+
+Este artigo não pretende ser um guia completo sobre B<LDAP>, ou mesmo uma
+documentação completa sobre como acessar diretórios B<LDAP> a partir do Perl,
+mas apenas fornecer um ponto de partida para quem quer trabalhar com o assunto.
+
+=head2 LDAP
+
+O LDAP é um protocolo utilizado para consultar e modificar dados em diretórios
+hierárquicos de informação, através de redes
+L<"TCP/IP"|http://pt.wikipedia.org/wiki/TCP/IP>. O protocolo
+está em sua versão 3 (I<Version 3>), especificado em várias 
+L<RFCs|http://pt.wikipedia.org/wiki/RFC> listadas na
+L<RFC 4510|http://tools.ietf.org/html/rfc4510>.
+
+=head2 Perl
+
+Apesar de haver vários
+L<módulos relacionados a LDAP no CPAN|http://search.cpan.org/search?query=ldap&mode=all>,
+o módulo mais "padrão" e utilizado de fato para acessar diretórios B<LDAP> a
+partir do Perl é o C<< L<Net::LDAP> >>, de Graham Barr. Vários dos outros
+módulos, inclusive, utilizam o C<Net::LDAP> como base.
+
+=head2 Show me the code
+
+A receita de bolo mais simples é:
+
+    my $ldap = Net::LDAP->new( 'meu.servidor.ldap.com' ) or die "$@";
+    my $mesg = $ldap->bind();
+    $mesg = $ldap->search(
+        filter =>
+            '(&(objectClass=*)(dn="cn=zeca,ou=informatica,o=empresa,c=br"))'
+    );
+    foreach my $e ( $mesg->entries() ) {
+        print "dn: " . $e->dn() . "\n";
+        foreach my $a ($e->attributes() ) {
+            print $a . ": " . $e->get_value($a) . "\n";
+        }
+        print "\n";
+    }
+
+Agora vamos analisar por partes.
+
+=head3 Conexão
+
+No trecho:
+
+    my $ldap = Net::LDAP->new( 'meu.servidor.ldap.com' ) or die "$@";
+
+Nessa linha, obviamente criamos uma instância do objeto, mas é importante
+entender que isso por si só estabelece uma conexão TCP/IP com o I<host>
+especificado. Se não especificarmos nada além do I<hostname>, como no caso
+acima, é utilizada a porta padrão do B<LDAP>, 389.
+
+Após estabelecida a conexão TCP/IP, é preciso fazer o B<bind>:
+
+    my $mesg = $ldap->bind();
+
+Neste caso, como não foi passado nenhum parâmetro, ocorre aquilo que chamamos
+de B<anonymous bind>, isto é, não houve uma autenticação de fato. O
+B<anonymous bind> é utilizado para efetuar acessos somente de leitura nos
+dados do diretório, no entanto, o administrador consciente irá proibir o
+bind anônimo em seu servidor, por segurança. Para realizar um bind com
+autenticação, usamos:
+
+    my $mesg = $ldap->bind(
+        'cn=root',
+        password => 'senhahipersecreta'
+    );
+
+=head3 Interlúdio Teórico
+
+O B<LDAP> é uma árvore de entradas, definidas por um B<Distinguished Name> ou
+B<DN> ("Nome Distinto" seria uma tradução literal, e "Nome Único" seria uma
+tradução mais apropriada). O B<DN>, como o nome indica, identifica de forma
+única uma entrada - poderíamos dizer que o B<DN> está para um diretório
+B<LDAP> assim como a B<chave-primária> está para um banco de dados relacional.
+Para mais detalhes sobre o B<DN> veja a
+L<seção 2.3 da RFC 4512|http://tools.ietf.org/html/rfc4512#section-2.3>.
+
+No nosso exemplo acima, poderíamos ter uma árvore (aqui toscamente desenhada)
+como:
+
+    c=br
+    |
+    +---- o=outraempresa
+    |
+    +---- o=empresa
+          |
+          +---- ou=financeiro 
+          |     |
+          |     +---- cn=zeca
+          |
+          +---- ou=marketing
+          |     |
+          |     +---- cn=tato
+          |
+          +---- ou=rh
+          |     |
+          |     +---- cn=duda
+          |
+          +---- ou=informatica
+                |
+                +---- cn=zeca
+                |
+                +---- cn=juca
+                |
+                +---- cn=foca
+
+Assim, o B<DN> completo do funcionário B<zeca> do departamento de
+B<informática> é:
+
+    DN: CN=ZECA,OU=INFORMATICA,O=EMPRESA,C=BR
+
+E o DN do B<zeca> do B<financeiro> é:
+
+    dn: cn=zeca,ou=financeiro,o=empresa,c=br
+
+Onde, nessa terminologia, temos os nomes de atributos:
+
+    CN: Common Name
+    OU: Organizational Unit Name
+    O:  Organization Name
+    C:  Country Name
+
+Notem que o B<DN> completo é montado da "folha" para a "raiz" da árvore de
+dados, de forma bem semelhante ao
+L<DNS|http://en.wikipedia.org/wiki/Domain_Name_System>, e também que ele é
+I<case-insensitive>. Existem vários nomes de atributos diferentes que podem
+ser utilizados para essa hierarquia, e não há restrições quanto à ordem ou a
+sequência em que eles devem aparecer na árvore.  Para maiores detalhes sobre
+os nomes de atributos em um B<DN>, ver a
+L<seção 3 da RFC 4514|http://tools.ietf.org/html/rfc4514#section-3>.
+
+Além do B<DN>, que é único para uma entrada B<LDAP>, podemos ter uma infinidade
+de outros atributos associados com a entrada. Esses outros atributos não
+precisam ser únicos, podemos ter várias ocorrências do mesmo atributo em uma
+entrada, cada um com um valor diferente. Quando buscarmos o valor desse
+atributo com múltiplas ocorrências, teremos como resposta uma lista com todos
+os valores definidos.
+
+Mas o B<LDAP> é mais sofisticado que isso, ele possui um mecanismo de
+estrutura de dados similar ao utilizado em B<programação orientada a objetos>,
+com classes (sem código), e herança (múltipla). Para isso, temos o atributo
+B<objectClass>: toda entrada no B<LDAP> DEVE possuir pelo menos um
+atributo com o nome B<objectClass>. Um B<objectClass> determina, como o nome
+sugere, uma B<classe de um objeto>, e é definido em um tipo de arquivo
+chamado B<LDAP Schema>. Um B<objectClass> determina quais são os atributos
+B<obrigatórios> e B<opcionais> para uma entrada que "implementar" aquela
+classe. Por "implementar", entendam uma entrada que possui um atributo do tipo
+B<objectClass> cujo valor é o nome da classe específica a que nos referimos.
+Para mais detalhes leiam a L<RFC 4512|http://tools.ietf.org/html/rfc4512>.
+
+As classes podem definir virtualmente qualquer tipo de informação: dados
+relacionados a uma pessoa (nome, sobrenome, foto - codificada em base64, etc),
+a um usuário de rede (id, senha, diretório I<home>, etc), informações de
+um cliente B2B, grupos de usuários para permissões, etc... 
+
+=head3 Busca
+
+Após o B<bind>, podemos realizar uma busca:
+
+    $mesg = $ldap->search(
+        filter =>
+            '(&(objectClass=*)(dn="cn=zeca,ou=informatica,o=empresa,c=br"))'
+    );
+
+Obviamente, no filtro é definido o que iremos buscar. Filtros têm uma gama de
+variações em sua sintaxe, mas temos duas construções principais. A primeira é
+o filtro simples:
+
+    (<atrib><op><valor>)   # atributo, operador, valor
+
+    (dn="cn=zeca,ou=informatica,o=empresa,c=br")
+        # atributo: DN
+        # operador: IGUAL A (=)
+        # valor: "cn=zeca,ou=informatica,o=empresa,c=br"
+
+    (logonCount>=1000)
+        # entradas cujo atributo logonCount é maior ou igual a 1000
+
+E a outra é o filtro composto com operadores lógicos:
+
+    (<op-logico>(filtro1)(filtro2) ... )
+
+    (&(objectClass=inetOrgPerson)(logonCount>=1000))
+        # &: operador lógico AND
+        # tradução: trazer as entradas que
+        #           SÂO DA CLASSE inetOrgPerson E têm logonCount MAIOR QUE 1000
+
+    (|(filtro1)(filtro2))   # operador lógico OR
+    (!(filtro))             # operador lógico NOT
+
+    (&(!(cn=zeca))(|(dn=*,ou=financeiro)(dn=*,ou=marketing)))
+
+Para maiores detalhes sobre a sintaxe dos filtros, vejam a
+L<RFC 4515|http://tools.ietf.org/html/rfc4515>.
+
+=head4 Exercício para o Leitor
+
+O que esse último filtro traz, quando aplicado ao diretório utilizado como
+exemplo acima? (o desenho tosco).
+
+=head3 Consumo
+
+Para consumir as entradas resultantes de uma busca:
+
+    $mesg = $ldap->search(
+        filter =>
+            '(&(objectClass=*)(dn="cn=zeca,ou=informatica,o=empresa,c=br"))'
+    );
+    foreach my $e ( $mesg->entries() ) {
+        print "dn: " . $e->dn() . "\n";
+        foreach my $a ($e->attributes() ) {
+            print $a . ": " . $e->get_value($a) . "\n";
+        }
+        print "\n";
+    }
+
+Primeiro obtemos o I<array> fornecido pelo método C<entries()> do resultado. O
+escalar C<$mesg> é do tipo L<Net::LDAP::Search>, e os elementos da lista
+C<entries()> são do tipo L<Net::LDAP::Entry>.
+
+Basta iterar sobre a lista para acessar o B<DN> e atributos de cada elemento
+do resultado da pesquisa.
+
+=head3 LDIF
+
+O protocolo B<LDAP> define um formato padrão de arquivos de dados a serem
+utilizados pelos servidores. Esse formato é o B<LDAP Data Interchange Format>,
+ou B<LDIF>.
+
+Segue um exemplo de um trecho de um arquivo B<LDIF>:
+
+    version: 1
+
+    dn: CN=Alexei Znamensky,OU=SnakeOil,OU=Extranet,DC=sa,DC=mynet,DC=net
+    objectClass: top
+    objectClass: person
+    objectClass: organizationalPerson
+    objectClass: user
+    cn: Alexei Znamensky
+    accountExpires: 129290832000000000
+    badPasswordTime: 129253228359870323
+    badPwdCount: 0
+    codePage: 0
+    countryCode: 0
+    description: Consultant - SnakeOil Brazil on Extranet
+    displayName: Alexei Znamensky
+    distinguishedName: CN=Alexei Znamensky,OU=SnakeOil,OU=Extranet,DC=sa,DC=mynet,DC=net
+    givenName: Alexei
+    lastLogoff: 0
+    logonCount: 684
+    manager: CN=John Doe,OU=SnakeOil,OU=Extranet,DC=na,DC=mynet,DC=net
+    memberOf: CN=g_SPO_ADM_WAS,OU=AD_Based_Apps,OU=GROUPS,OU=SPO,DC=sa,DC=mynet,DC=net
+    memberOf: CN=u_SPO_SRV_Internals,OU=GROUPS,OU=SPO,DC=sa,DC=mynet,DC=net
+    memberOf: CN=g_SPO_ITReleaseManagement_StagingProd,OU=ReleaseMan,OU=IT,OU=GROUPS,OU=SPO,DC=sa,DC=mynet,DC=net
+    memberOf: CN=g_SPO_Radius_BR_Associates,OU=SYSTEM,OU=SPO,DC=sa,DC=mynet,DC=net
+    memberOf: CN=u_SPO_FS1_IT all users,OU=IT,OU=GROUPS,OU=SPO,DC=sa,DC=mynet,DC=net
+    name: Alexei Znamensky
+    sAMAccountName: ZnamensA
+    sAMAccountType: 805306368
+    sn: Znamensky
+    userPrincipalName: ZnamensA@mynet.net
+    uSNChanged: 160358095
+    uSNCreated: 144230343
+    whenChanged: 20100906002534.0Z
+    whenCreated: 20100318194403.0Z
+
+=head2 Dicas
+
+Para modificar entradas no B<LDAP>, use os métodos C<add()>, C<delete()> e
+C<modify()> da classe L<Net::LDAP>, ou suas variações.
+
+Servidores B<LDAP> são otimizados, por padrão, para B<leitura>, e não para
+escrita. Em alguns momentos pode parecer tentador utilizar um servidor B<LDAP>
+como se fosse um banco de dados da aplicação, mas B<resista>! Entenda que:
+um servidor B<LDAP NÃO FOI FEITO PARA SER UM BANCO DE DADOS>.
+
+Ao fazer buscas, passe os parâmetros C<base> e C<scope>, para delimitar o mais
+precisamente possível a busca que deseja realizar. Teste suas buscas antes com
+o comando C<< ldapsearch >>, disponível em praticamente qualquer Linux.
+
+Alguns servidores e administradores de B<LDAP> não gostam de conexões que duram
+muito tempo. Adote como política padrão abrir-consultar-sair.
+
+=head2 Produtos
+
+Veja uma lista mais abrangente no
+L<artigo da Wikipedia|http://en.wikipedia.org/wiki/List_of_LDAP_software>.
+
+=head3 Servidores
+
+B<OpenLDAP>: Servidor open-source de LDAP, padrão de fato para uso de LDAP no
+Linux. Escrito em C. (L<http://www.openldap.org/>)
+
+B<ApacheDS>: Servidor open-source da "marca" Apache. Escrito em Java.
+(L<http://directory.apache.org/>)
+
+B<IBM Tivoli DS (ITDS)>: Servidor comercial da IBM. Escrito em C, utilizado
+um servidor DB2 como back-end para os dados.
+(L<http://www-01.ibm.com/software/tivoli/products/directory-server/>)
+
+=head3 Clientes
+
+B<Net::LDAP>: Faça o seu usando sua linguagem favorita! :-) (L<Net::LDAP>)
+
+B<ldapsearch>: Cliente leve, de linha de comando. No Linux é facilmente
+instalável com o OpenLDAP.
+
+B<Apache Directory Studio>: Execelente aplicação gráfica para acessar
+diretórios B<LDAP>. Infelizmente é bem pesada, não é aconselhável para
+computadores velhos e/ou com recursos limitados.
+
+=head2 Conclusão
+
+Servidores B<LDAP> tendem a ser cada vez mais utilizados como padrão de
+diretório de informações corporativas. O Perl possui uma ferramenta madura, na
+forma do módulo L<Net::LDAP>, para acessar e manipular diretórios. Certamente
+há a possibilidade de que o Net::LDAP não atenda a 100% dos casos, mas atende
+a grande maioria, o que já é um excelente ponto de partida.
+
+Não deixem de ler o fantástico manual ;-).
+
+=head2 Referências
+
+=over 4
+
+=item L<Net::LDAP>
+
+Link direto no CPAN. Info adicional em L<http://ldap.perl.org/>.
+
+=item ldapsearch(1)
+
+L<http://www.openldap.org/software/man.cgi?query=ldapsearch&apropos=0&sektion=0&manpath=OpenLDAP+2.0-Release&format=html>
+
+=item Wikipedia (English) LDAP entry
+
+L<http://en.wikipedia.org/wiki/LDAP>
+
+=item Wikipedia (Português) verbete LDAP
+
+L<http://pt.wikipedia.org/wiki/LDAP>
+
+=item "The 10-Minute LDAP Tutorial - Automating System Administration with Perl"
+
+L<http://oreilly.com/perl/excerpts/system-admin-with-perl/ten-minute-ldap-utorial.html>
+
+=item "Introduction to LDAP: Part 1, Installation and simple Java LDAP programming"
+
+L<http://www.ibm.com/developerworks/tivoli/library/t-ldap01/index.html>
+
+=item "An Introduction to perl-ldap"
+
+L<http://www.linuxjournal.com/article/7086>
+
+=back
+
+=head2 Agradecimentos
+
+=over 4
+
+=item Daniel Mantovani
+
+O nosso mascote-emo na L<São Paulo PM|http://sao-paulo.pm.org/>, por ter me
+atirado em direção a este artigo.
+
+=item Luis "Fields" Campos
+
+Velho amigo que me trouxe de volta para o Perl.
+
+=back
+
+=head2 Autor
+
+Alexei "Russo" Znamensky E<lt> russoz no cpan org E<gt>
+
+Blog: L<http://russoz.wordpress.com/>
+
+LinkedIn:
+L<http://www.linkedin.com/profile?viewProfile=&key=754668&trk=tab_pro>
+
+=head2 Resposta
+
+A resposta para o exercício deixado a cargo do leitor:
+
+O filtro C<< (&(!(cn=zeca))(|(dn=*,ou=financeiro)(dn=*,ou=marketing))) >>,
+aplicado à arvore toscamente desenhada, trará como resultado a entrada:
+
+    cn=tato,ou=marketing,o=empresa,c=br
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
+
+=cut
+

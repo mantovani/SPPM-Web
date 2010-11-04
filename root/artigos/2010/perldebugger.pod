@@ -1,0 +1,266 @@
+=head1 Perl Debugger
+
+Como você procura erros em seu programa? A maioria absoluta dos programadores que
+eu conheço enche o codigo fonte de prints. Isso não é de todo mal, e funciona
+porém as vezes é necessario se debuggar algo bem mais complexo, no qual um 
+print ou outras formas de colocar na saida os valores de variaveis não funcionam
+de forma adequada. 
+
+=head2 Utilizando
+
+Executar um programa utilizando o perl debugger é simples, basta utilizar 
+o parametro -d na linha de comando:
+
+	perl -d programa
+
+Também na linha do shebang funciona, apesar de não ser usual:
+
+	#!/usr/bin/perl -d
+
+Lembro que a primeira vez que eu abri o perl debugger foi sem querer e eu achei 
+ele não muito util, especialmente porque eu usava o GDB e gostava de me afogar 
+nas opções e opções dele, além de ter um controle muito maior. O que eu aprendi
+foi que na pratica, cada linguagem tem suas caracteristicas fortemente acopladas
+no debugger, então usar o debugger é aprender um pouco sobre os internals  da 
+linguagem. 
+
+Quando se chama o debugger, o programa é compilado, e para na primeira instrução.
+Um exemplo mais imediato é o seguinte:
+
+	perl -d -e 'print "get yourself high\n"' 
+	run: /usr/bin/perl -d -e 'print "get yourself high\n"'
+	
+	Loading DB routines from perl5db.pl version 1.3
+	Editor support available.
+	
+	Enter h or `h h' for help, or `man perldebug' for more help.
+	
+	main::(-e:1):	print "get yourself high\n"
+	
+	DB<1>:
+
+A ultima linha, o DB<1>: é o nosso prompt, onde <1> o numero da instrução 
+de debugger que o usuario vai entrar. 
+
+Todo o ambiente e namespace do programa ficam disponiveis no prompt, assim 
+alguns comandos geram resultados interessantes, como:
+
+	DB<1>: p __PACKAGE__
+	0  'main'
+	
+	DB<2>: p @INC
+	/Library/Perl/Updates/5.10.0/darwin-thread-multi-2level/Library/Perl/Updates/5.10.0/System/Library/Perl/5.10.0/darwin-thread-multi-2level/System/Library/Perl/5.10.0/Library/Perl/5.10.0/darwin-thread-multi-2level/Library/Perl/5.10.0/Network/Library/Perl/5.10.0/darwin-thread-multi-2level/Network/Library/Perl/5.10.0/Network/Library/Perl/System/Library/Perl/Extras/5.10.0/darwin-thread-multi-2level/System/Library/Perl/Extras/5.10.0
+	
+Acho que ficou claro que p é nosso print, ele funciona de forma quase identica
+a função print da perl. Mas nem sempre é a melhor escolha, no caso de estruturas 
+complexas, temos o x, que usa o parametro no contexto de lista e imprime o 
+resultado:
+
+	DB<3>: x @INC
+	0  '/Library/Perl/Updates/5.10.0/darwin-thread-multi-2level'
+	1  '/Library/Perl/Updates/5.10.0'
+	2  '/System/Library/Perl/5.10.0/darwin-thread-multi-2level'
+	3  '/System/Library/Perl/5.10.0'
+	4  '/Library/Perl/5.10.0/darwin-thread-multi-2level'
+	5  '/Library/Perl/5.10.0'
+	6  '/Network/Library/Perl/5.10.0/darwin-thread-multi-2level'
+	7  '/Network/Library/Perl/5.10.0'
+	8  '/Network/Library/Perl'
+	9  '/System/Library/Perl/Extras/5.10.0/darwin-thread-multi-2level'
+	10  '/System/Library/Perl/Extras/5.10.0'
+	11  '.'
+
+Assim como o Data::Dumper, podemos ter uma saida mais formatada se passarmos
+uma referencia:
+
+	DB<4>: x \@INC
+	0  ARRAY(0x100804db0)
+	   0  '/Library/Perl/Updates/5.10.0/darwin-thread-multi-2level'
+	   1  '/Library/Perl/Updates/5.10.0'
+	   2  '/System/Library/Perl/5.10.0/darwin-thread-multi-2level'
+	   3  '/System/Library/Perl/5.10.0'
+	   4  '/Library/Perl/5.10.0/darwin-thread-multi-2level'
+	   5  '/Library/Perl/5.10.0'
+	   6  '/Network/Library/Perl/5.10.0/darwin-thread-multi-2level'
+	   7  '/Network/Library/Perl/5.10.0'
+	   8  '/Network/Library/Perl'
+	   9  '/System/Library/Perl/Extras/5.10.0/darwin-thread-multi-2level'
+	   10  '/System/Library/Perl/Extras/5.10.0'
+	   11  '.'
+
+Podemos ir para a proxima instrução com n, isso faz com que a proxima 
+instrução seja carregada e executada:
+
+	 DB<16> n
+	get yourself high
+	Debugged program terminated.  Use q to quit or R to restart,
+	  use o inhibit_exit to avoid stopping after program termination,
+	  h q, h R or h o to get additional info.  
+
+=head2 Controle de Fluxo
+
+Quando se está debugando um programa, além de se imprimir as variaveis, 
+o controle de fluxo é algo muito importante, assim além do basico 
+next, temos ainda outras opçoes, como o single step:
+
+	  DB<2> .
+	main::(teste.pl:20):	    add($foo);
+	  DB<2> s
+	main::add(teste.pl:8):		my ($fo) = @_;
+	  DB<2> l
+	8==>		my ($fo) = @_;
+	9:		my $key = int rand(100); 
+	10:		my $value = rand (100);
+	11		
+	12:		$fo->{$key} = 0;
+	13	
+	14	}
+	15	
+	16:	my $foo = {};
+	17	
+	  DB<2>                                   
+
+Nesse caso, usando ponto o debugger imprime a linha atual, no caso a função
+add(). Como é uma função de contexto void, eu quero saber o que está sendo
+executado dentro dela, no qual eu utilizo a função step. 
+
+Outra importante ferramenta de controle de fluxo são os breakpoints, nos 
+quais você especificar em qual ponto do programa a execução deve parar.
+É possivel especificar o numero da linha do arquivo fonte atual em que se 
+queria que o debugger pare, além de ser possivel também especificar o 
+nome de uma subrotina, o nome da subrotina com todo o namespace e nome do 
+arquivo com a linha que se quer parar. 
+
+	  DB<2> v 22
+	19:		my $address = shift;
+	20:		my $name = get_name( $address );
+	21		
+	22:		print "Server name: \$name\n";
+	24	}
+	25	
+	27==>	print_name( $ARGV[0] );
+	  DB<3> b 22
+	  DB<4> c  
+	n::print_name(Debug.pl:22):		print "Server name: \$name\n";;
+
+Na sequencia acima, eu imaginava que a linha que eu queria parar era a 22, 
+então pedi para ver em volta da linha 22, com o comando v. Confirmei que 
+era aquela mesmo e coloquei o breakpoint nela com b 22.
+
+Nem sempre é facil achar uma linha especifica no command do debugger, as 
+vezes ela não está no mesmo arquivo, as vezes voce tem um programa enorme 
+e quer parar la no meio da factory de objetos, na qual com next ou breakpoints
+seria um calvario. Se você pode editar o arquivo, basta atribuir 1 a variavel 
+single do DB.
+
+	$DB::single = 1
+
+Quando o programa compilar e aparecer o prompt do debugger, ao avisa-lo para 
+continuar, com c, ele ira parar exatamente na linha posterior a atribuição
+de single.
+
+=head2 Acompanhando variaveis
+
+Depois de todo um be-a-ba, vamos a função do debugger que de fato substitui
+o monte de print que voce ia por no programa :). Watch. Wacht quer dizer
+observar, e na pratica voce coloca uma variavel para ser observada, toda 
+vez que ela mudar o valor, o debugger vai imprimir uma mensagem avisando.
+
+	perl -d -e 'for my $foo (0 .. 10){ print "$foo"}';                                                                                              
+	run: /usr/bin/perl -d -e 'for my $foo (0 .. 10){ print "$foo"}' ;
+	
+	Loading DB routines from perl5db.pl version 1.3
+	Editor support available.
+	
+	Enter h or `h h' for help, or `man perldebug' for more help.
+	
+	main::(-e:1):	for my $foo (0 .. 10){ print "$foo"}
+	  DB<1> w $foo                                                                                                                                    
+	  DB<2> c                                                                                                                                         
+	Watchpoint 0:	$foo changed:
+	    old value:	''
+	    new value:	'0'
+	main::(-e:1):	for my $foo (0 .. 10){ print "$foo"}
+	  DB<2> c                                                                                                                                         
+	0Watchpoint 0:	$foo changed:
+	    old value:	'0'
+	    new value:	'1'
+	main::(-e:1):	for my $foo (0 .. 10){ print "$foo"}
+
+No caso temos um for, que muda os valores de foo de 0 a 10, e cada vez que 
+$foo recebe um novo valor, o debugger imprime o valor antigo e o novo.
+
+No caso de se querer apagar um watch, basta utilizar o comando com letra maiscula,
+W, seguido do nome da variavel:
+
+	W $foo
+
+Isso funciona com breakpoints tambem, B maisculo apaga um breakpoint, e B * assim 
+como W * apaga todos.
+
+=head2 Alem do Basico
+
+Considero a informação passada acima o basico de perl debugger, porém algumas vezes
+temos problemas que não são faceis de se resolver no proprio corpo do programa, ou 
+podemos ter problemas de compilação em uma das bibliotecas.
+
+Um exemplo simples de se reproduzir, é se adicionar uma biblioteca não existente no
+programa, fazendo com que a compilação do mesmo falhe. Basta adicionar no seu programa:
+
+	use Sing/Aleluia;
+
+E ao se utilizar o debugger:
+
+	Loading DB routines from perl5db.pl version 1.3
+	Editor support available.
+	
+	Enter h or `h h' for help, or `man perldebug' for more help.
+	
+	Can't locate Sing/Aleluia.pm in @INC (@INC contains: /Library/Perl/Updates/5.10.0/darwin-thread-multi-2level /Library/Perl/Updates/5.10.0 /System/Library/Perl/5.10.0/darwin-thread-multi-2level /System/Library/Perl/5.10.0 /Library/Perl/5.10.0/darwin-thread-multi-2level /Library/Perl/5.10.0 /Network/Library/Perl/5.10.0/darwin-thread-multi-2level /Network/Library/Perl/5.10.0 /Network/Library/Perl /System/Library/Perl/Extras/5.10.0/darwin-thread-multi-2level /System/Library/Perl/Extras/5.10.0 .) at Watch.pl line 24.
+	 at Watch.pl line 24
+		main::BEGIN() called at Sing/Aleluia.pm line 24
+		eval {...} called at Sing/Aleluia.pm line 24
+	BEGIN failed--compilation aborted at Watch.pl line 24.
+	 at Watch.pl line 24
+	Debugged program terminated.  Use q to quit or R to restart,
+	  use o inhibit_exit to avoid stopping after program termination,
+	  h q, h R or h o to get additional info.  
+
+Isso é uma coisa interessante, pois em uma linguagem estritamente compilada seria necessario
+corrigir o erro de declaração para depois compilar e debuggar. Porém com perl é possivel 
+debuggar antes da compilação da primeira declaração no seu codigo fonte, que no caso é nossa
+declaração falsa de biblioteca.
+
+	BEGIN {
+		$DB::single = 1;
+	}
+
+Ao se colocar como primeiro BEGIN, o pedido de break para o debugger, ele vai atender e parar 
+ali, e abrir o prompt para verificação do que tem errado.
+
+	
+	Loading DB routines from perl5db.pl version 1.3
+	Editor support available.
+	
+	Enter h or `h h' for help, or `man perldebug' for more help.
+	
+	main::CODE(0x10088a5c8)(Watch.pl:27):
+	27:	use strict;
+	  DB<1>
+
+No caso pode utilizar s, e dar um step into dentro do modulo que cuida da pragma strict da linguagem, 
+isso é util não só para debug mas para aprender mais sobre a linguagem per si.
+Depois de passar por todas as pragmas basicas, chegamos no nosso modulo basico não existente, é obvio 
+que não há como dar um step in porque o modulo não existe, mas se ouvesse um bug dentro dele 
+seria mais facil entrar e verificar.
+
+=head2 Mais sobre o assunto
+
+Essa breve introdução foi baseada em parte no que eu mais uso do perl debugger no dia a dia 
+e também no hot site http://debugger.perl.org/. La tem links diretos para varias fontes, 
+incluindo as paginas de manual do perl debugger
+
+=head1 AUTOR
+
+Frederico Recsky <frederico no gmail >
+

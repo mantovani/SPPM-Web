@@ -1,0 +1,361 @@
+
+=head1 Scalar Util 
+
+A forma como se armazena dados em Perl é facil de entender mas pode se tornar em
+estruturas complexas facilmente. Especialmente quando o programador entende que
+escalar é uma unidade e todo o resto são coleções de escalares. Temos um array,
+que é uma lista de escalares e um hash que é um dicionario de escalares.
+Eventualmente precisamos de estruturas mais complexas, e nesse casos podemos
+utilizar referencias, que faz com que um escalar guarde uma especie de link para
+outra estrutura. 
+
+É assim inclusive que se armazena um objeto em perl, temos uma estrutura e sua
+classe salvos em um escalar. Pessoalmente eu uso muito hashs encadeados, como se
+fosse uma struct em C ou uma arvore de dados. 
+
+Normalmente um programa faz seguidas operações sobre um conjunto de dados, e as
+vezes é necessario se obter mais informações sobre aquele escalar armazenado
+para se obter contexto. Como exemplo nós construiremos um array:
+
+	my @array = (
+		  24
+		, "noooo"
+		, 42
+		, bless ( { foo => "bar" } , 'Foo')
+		, 51
+		, "42 -2"
+		, "55"
+	);
+
+Nesse array temos diferentes tipos de escalares, para no caso demonstrarmos as
+funções presentes no L<Scalar::Util>.
+
+=head2 O que é isso afinal?
+
+Temos um array cheio de "coisas" das quais eu não sei o que é, e é preciso
+descobrir durante a a execução. Temos algumas opções para trazer algum contexto.
+
+=head3 Será que isso é um numero?
+
+	  looks_like_number( $scalar ), essa função informa se o interpretador
+					perl acha que o valor nesse escalar pode
+					ser um numero.
+					
+
+No exemplo acima, se executarmos esse loop para aquele array temos:
+
+	  for my $scalar ( @array ) {
+	  
+		  print looks_like_number( $scalar ) ? 
+			    "$scalar looks like a number\n" :
+			    "$scalar is not like a number\n";
+	  
+	  }
+
+Temos:
+
+	>perl Scalar.pl                 
+	24 looks like a number
+	noooo is not like a number
+	42 looks like a number
+	Foo=HASH(0x100804ed0) is not like a number
+	42 -2 is not like a number
+	55 looks like a number
+
+Note que o a string "nooo", o objeto da classe Foo e a string 42 -2 não são
+vistas como numero, ao contrario da string 55, que mesmo entre aspas ainda é
+vista como um numero pelo interpretador.
+
+=head3 Será que é um objeto?
+
+	  blessed( ) , verifica se o escalar em questão está atrelado a uma
+		       classe.
+
+Usando o mesmo loop acima, porém com a função blessed()
+
+	>perl Scalar.pl           
+	24 is not blessed
+	noooo is not blessed
+	42 is not blessed
+	Foo=HASH(0x100804ed0) is blessed
+	42 -2 is not blessed
+	55 is not blessed
+
+Note que nosso pequeno objeto filho de Foo, é abençoado. blessed ainda retorna o
+pacote que é a classe do objeto:
+
+     	print "\n", blessed( $array[3] ) , "\n";
+
+Temos:
+
+	>perl Scalar.pl                                                                                                                                   
+	Foo
+
+Particularmente util quando se monta uma estrutura com varios objetos, quando
+não se sabe exatamente quais são objetos e destes quais são as respectivas
+classes.
+
+=head3 Dois pesos duas medidas
+
+Eu particularmente não gosto dessa função mas pode ser eventualmente util. As
+vezes temos um valor que tem no mesmo contexto um valor numerico e outro string.
+Quando isso ocorre podemos utilizar a função dual var:
+
+	my $boo = dualvar 55, " 55 ";
+	print ">$boo<\n", $boo - 13 , "\n";
+
+Temos:	
+  
+	>>perl Scalar.pl              
+	> 55 <
+	42
+
+Interessante como ele retorna o valor conforme o contexto de string ou numerico.
+Mesmo assim os valores ainda podem ser diferentes:
+
+	my $boo = dualvar 54, " 55 ";
+	$boo++;
+	print ">$boo<\n", $boo - 13 , "\n";
+	
+  
+	>>perl Scalar.pl                                                                 
+	> 55 <
+	42
+
+=head3 Numeros de versões
+
+Mais uma pseudo tipagem, dessa vez no caso do valor ser uma "pseudo-versão".
+Utilizando o mesmo loop que já mostrado acima, agora com a adição do valor:
+
+	  , v1.0
+
+Nós temos a saida:
+
+	>perl Scalar.pl          
+	24 is not version
+	noooo is not version
+	42 is not version
+	Foo=HASH(0x100804ed0) is not version
+	42 -2 is not version
+	55 is not version
+	 is version
+
+Util para verificar a versao de "alguma" coisa, embora no processo padrão de
+modulos da Perl já exista isso automatico. (Talvez usando essa função, eu não
+verifiquei como).
+
+=head3 Referencias fracas (Weaken references)
+
+Talvez o mais util. Uma referencia em perl, é como um link para um outro valor e
+toda vez que esse link é criado, o interpretador adiciona um ao contador de
+referencias da variavel que é referenciada. Nem sempre isso é bom. Muitas vezes
+numa estrutura complexa você tem referencias circulares, que fazem com que a
+variavel nunca mais saia da memoria enquanto o programa existir. Toda vez que o
+contador de referencias chega a zero a memoria é devolvida porém com referencias
+circulares isso nunca vai acontecer.
+
+Para isso podemos "enfraquecer" uma referencia, de modo que ela nao conte mais
+no contador de referencias. Para esse caso temos um exemplo novo, diferente:
+
+	  #!/usr/bin/perl 
+	  
+	  use strict;
+	  use warnings;
+	  use Data::Dumper;
+	  
+	  use Scalar::Util qw/weaken isweak/;
+	  
+	  my $ref;
+	  
+	  { 
+	  
+		  my @array = ( 1, 2, 3);
+		  $ref = \@array;
+		  #weaken( $ref );
+	  
+	  }
+	  
+	  print Dumper $ref;
+
+Note a linha comentada:  #weaken( $ref );
+
+Na primeira execução do programa temos:
+
+	>perl Weaken.pl       
+	$VAR1 = [
+          1,
+          2,
+          3
+        ];
+
+Agora podemos descomentar a linha #weaken( $ref );
+
+	weaken( $ref );
+
+Temos:
+ 
+	>perl Weaken.pl   
+	$VAR1 = undef;
+
+O que acontece é que o array é declarado dentro de um bloco, entre chaves
+
+	  {
+		    my @array = ( 0, 2, 4);
+	  }
+
+Ao sair do bloco em uma situação "normal" a referencia @array some e em zero
+o contador limpa a memoria, quando declaramos uma referencia na linha posterior
+nós criamos outra entrada e assim o conteudo não é limpo. weaken faz com que
+aquela referencia não seja contada :).
+
+Voltando ao classico desse artigo, será que a referencia é fraca?
+
+	  isweak( $ref );
+
+Colocando essa função no nosso loop padrão, nos veremos que não há nenhuma
+referencia fraca.
+
+	>perl Scalar.pl                           
+	24 is not weak
+	noooo is not weak
+	42 is not weak
+	Foo=HASH(0x100804ed0) is not weak
+	42 -2 is not weak
+	55 is not weak
+	 is not weak
+ 
+Fica como lição de casa ao leitor colocar uma referencia fraca no loop para
+testar ;).
+
+=head3 Files Handles
+
+Espero que você não esteja usando barewords para abrir arquivos hein :).
+
+	  open DIR , "foo";
+
+Isso além de ser bem anos 90, não é muito flexivel. Lembre-se, escalar é seu
+amigo (open com 3 parametros também). No caso, no contexto onde temos ou
+recebemos um filehandle, como testa-lo? De fato se voce fez a chamada open você
+pode testar diretamente a saida dela, porém e se o programa já executou n
+operações ou você recebeu o filehandle de "terceiros"?
+
+Novo exemplo:
+
+	  #!/usr/bin/perl 
+	  
+	  use strict;
+	  use warnings;
+	  
+	  use Scalar::Util qw/openhandle readonly reftype/;
+	  
+	  open my $file, "<" , "idontexist";
+	  
+	  print "is \$file useful filehandle: ", openhandle $file ? "yes":"no" ," \n";
+	  
+	  open my $file2, ">" , "dumpitforme";
+	  
+	  print "is \$file2 useful filehandle: ", openhandle $file2 ? "yes":"no" ," \n";
+	  
+Partindo do principio que o arquivo de nome "idontexist" nao exista no seu hd :)
+
+	>perl open.pl        
+	is $file useful filehandle: no 
+	is $file2 useful filehandle: yes 
+
+Basicamente eu verifico o estado do filehandle, caso ele nao seja usavel o
+retorno é undef. De novo, vencedores usam escalares para salvar o filehandle,
+se voce usa bareword (aquele FILE ou DIR maisculos onipresentes em exemplos
+antigos) isso não funciona.
+
+=head3 Isso é uma variavel mesmo?
+
+Então você tem uma função, bonita, que não sabe se recebeu um valor ou um
+escalar (ou qualquer coisa que possa ser modificada).
+
+	  readonly( value )
+	  
+	  print "\o/ Yes I can\n" if !readonly( $var );
+	  print "_ _! No, I can't\n" if readonly ( 0 );
+
+Um tanto obvia, apenas o codigo fonte da para perceber que o contexto de somente
+leitura é para quase temos constantes, se voce recebe como parametros:
+
+	  foo ( 42 );
+	  
+E voce não tem certeza se é uma var ou um valor, pode utilizar readonly para o
+teste.
+
+	>perl readonly.pl                                                                   
+	Unrecognized escape \o passed through at open.pl line 10.
+	o/ Yes I can
+	_ _! No, I can't
+
+Ah, aquele warning na linha 10 é por causa do meu \o/, homemzinho comemorando :)
+O certo seria:
+
+	  print "\\o/ Yes I can\n" if !readonly( $var );
+
+Mas esse artigo é sobre C<Scalar::Util> e não sobre regexes.
+
+=head3 É uma referencia? Aponta para onde?
+
+As duas ultimas funções que vou falar do Scalar::Util, são para se determinar
+o endereço de um escalar e o tipo de dado que ele referencia.
+
+	  reftype( $scalar );
+
+Oras, se temos ref, para que reftype? Porque reftype é literal. ref vai retornar
+o nome da classe de um objeto caso ele o seja. reftype vai retornar o que é
+refenciado, mesmo no caso de um objeto.
+
+Normalmente objetos são hashs, mas não necessariamente, veja o exemplo:
+
+	  #!/usr/bin/perl 
+	  
+	  use strict;
+	  use warnings;
+	  
+	  use Scalar::Util qw/reftype refaddr blessed/;
+	  
+	  my $normal = bless ( { foo => "bar" } , 'Foo' );
+	  my $uncommon = bless ( [ 0 , 1, 3, 4 ] , 'Bar');
+	  
+	  print "normal:", blessed ($normal),"\n",
+		    "uncommon:", blessed ($uncommon), "\n";
+	  
+	  print "normal:", reftype ($normal),"\n",
+          "uncommon:", reftype ($uncommon), "\n";
+
+Temos:
+
+	> perl5.13.3 reftype.pl 
+	normal:Foo
+	uncommon:Bar
+	normal:HASH
+	uncommon:ARRAY
+
+Note que no caso reftype retornou o tipo literal do que é referenciado, um hash
+e um array.
+
+Por ultimo, um recurso que eu ainda nao usei e nao vi utilidade pratica mas pode
+ser util é se obter o endereço, seja la do que ele for da referencia:
+
+	  refaddr ( $ref );
+	  
+Trocando o blessed o exemplo acima por refaddr, temos a saida:
+
+	> perl5.13.3 reftype.pl 
+	normal:4303368376
+	uncommon:4303515456
+	normal:HASH
+	uncommon:ARRAY
+
+Sinceramente nunca precisei disso, mas nunca se sabe :).
+
+A essa altura, imagino que voce leu meu outro artigo, sobre perl debugger, e
+agora está usando o Perl debugger para descobrir o que fazer com o endereço das
+referencias que acabou de pegar :).
+
+=head2 AUTHOR
+
+Frederico Recsky <frederico no email gratis do google >

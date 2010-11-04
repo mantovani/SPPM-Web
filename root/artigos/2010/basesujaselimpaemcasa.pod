@@ -1,0 +1,206 @@
+=pod
+
+=encoding utf8
+
+=head1 Base suja se limpa em casa
+
+Data cleasing ou simplesmente limpeza de dados é o ato de detectar, corrigir
+,ou até mesmo, remover dados corrompidos, truncados ou simplesmente errados em
+uma base de dados
+
+=head2 Motivação
+
+Base de dados sujas são bem difíceis de se tirar estatísticas simples por
+exemplo responder a pergunta "Quantos usuários eu tenho da cidade de São
+Paulo?" isso é uma pergunta muito fácil de se responder quando eu tenho
+certeza que o campo cidade da base de dados está correta, mas e quando não
+está? e quando 'São Paulo' pode estar escrita de varias formas diferentes? Sao
+paulo, S Paulo, Saum Paulo ( não duvidem ... ) isso é um exemplo simples de
+uma base de dados que precisa de uma limpeza a resposta a nossa pergunta
+"Quantos usuários eu tenho da cidade de São Paulo?" ficaria inconsistente, a
+não ser que você considere todas as variações, originalíssimas, que
+cadastraram na sua base como 'São Paulo' , e quanto maior a base de dados, maior
+esse problema.
+
+=head2 Raiz de todo o mal
+
+Todo esse problema começou porque você confiou nos seus usuários, ou mesmo nos
+seus funcionários que cadastram esses tipos de dados, campos
+livres de texto para preenchimento de estado/cidade é um perigo! 
+Uma boa pratica para diminuir esse problema é colocar combos pré-definidos de
+estado/cidade, para o tipo de logradouro (Avenida, Rua, etc ) essas
+coisas não mudam tanto, e a única que pode mudar é a cidade , mas você pode
+deixar uma opção no combo "Cidade inexistente" ou coisa do gênero, que ao
+selecionar essa opção habilita o campo de texto livre.
+
+=head2 Limpando seus dados com sabão
+
+Fique tranquilo eu não vou usar SOAP, vou comentar sobre alguns algoritmos
+para tratamento de similaridade de texto, e como o Perl pode te ajudar com isso
+:)
+
+=head3 Base de comparação
+
+Antes de falar dos algoritmos vou comentar sobre a 'base de comparação' e como falamos
+até agora só de limpeza de endereço , vamos continuar usando ele como exemplo para o resto
+desse artigo, nenhum dos algoritmos que eu vou comentar é magico, eles comparam
+estatisticamente a similaridade de palavras e para isso precisam de
+uma 'base de comparação' confiável e com muitos dados, se o nome correto do seu
+dado/cidade não estiver na 'base de comparação' vai ser impossível o
+algoritmos "limpar" esse dado. Ex:
+
+Na base de comparação uma das cidades é São Paulo.
+
+Na base de dados suja, eu tenho algumas cidades com o nome S PAULO
+
+Quando o algoritmos comparar "São Paulo" => "S PAULO" ele vai achar uma
+similaridade de x%, e você vai poder confiar que "S PAULO" quer dizer "São
+Paulo", isso é só um exemplo de quão importante é a base de comparação, se
+você não tiver o dado correto na base de comparação vai ser difícil limpar sua
+base suja
+
+Para pegar uma base de comparação razoável para cidade, o site do IBGE pode ser
+um bom começo, mais se a sua base de dados e grande e valiosa o melhor mesmo é
+comprar essas informações dos correios, para a maioria das bases de dados
+acho que as cidades/municípios do site do IBGE são suficientes.
+
+
+
+=head3 String::Trigram
+
+Esse já é especifico para palavras ele procura palavras parecidas usando o
+trigram, que consiste em dividir a palavras de 3 em 3 letras, e ele faz a
+comparação usando essas "trigram" 
+
+Ex: a palavra campinas tem os trigrams
+
+{cam amp mpi pin ina nas}
+
+A palavra campynas, que está escrito errado tem os trigrms
+
+{camp amp mpy pyn yna nas}
+
+Para comparar a similaridade entre essas duas palavras o algoritmo nós
+dividimos o numero de trigram certos, pelo conjunto de todos os trigram
+únicos das suas palavras
+
+trigram certos:  {cam amp nas} = 3
+trigram unicos:  {cam amp mpi mpy pin pyn ina yna nas} = 9
+
+3/9 = 0,33
+
+Há outras otimizações que é feito nesse algoritmo, que acaba aumentando a
+similaridade no final, mas o 'core' dele funciona assim, um exemplo mais
+pratico do código de exemplo que está no cpan:
+
+
+    use strict;
+    use warnings;
+    use String::Trigram;
+    my %result;
+    my @cmpBase = ('campynas', 'campina grande' , 'campinão', 'carambola do norte');
+
+    my $trig = new String::Trigram( cmpBase => \@cmpBase );
+
+    my $numOfSimStrings = $trig->getSimilarStrings( "campinas", \%result );
+
+    print "Achou $numOfSimStrings palavras similares.\n";
+
+    foreach ( keys %result ) {
+     print "Palavra $_ tem uma similaridade de ",
+         sprintf( "%02f", ( $result{$_} * 100 ) ), "%\n";
+    }
+
+Achou 4 palavras similares.
+Palavra campynas tem uma similaridade de 53.846154%
+Palavra campinão tem uma similaridade de 40.000000%
+Palavra carambola do norte tem uma similaridade de 7.142857%
+Palavra campina grande tem uma similaridade de 36.842105%
+
+Apesar do modulo se chamar String::Trigram, ele também suporta os outros
+n-grams, quando instancias ele é só passar a quantidade de gram que você quer
+no parâmetro 'ngram'.
+
+=head3 Text::Levenshtein
+
+Esse é o algoritmo de Levenshtein! como é bom quando você cria um algoritmo e
+o seu nome é maneiro para usar como nome do algoritmo :)
+Essa na verdade é uma das 'n' implementações da técnica de edit distance, ou
+distancia de edição que diz assim: 
+
+"A distância de edição entre dois "strings" (duas sequências de caracteres) é
+dada pelo número mínimo de operações necessárias para transformar um string no
+outro. Entendemos por "operações" a inserção, deleção ou substituição de um
+carácter."
+
+Fonte wikipedia L<http://pt.wikipedia.org/wiki/Distância_Levenshtein>
+
+Outra técnica de edit distance que todo programador/sysadmin já
+usou e provavelmente não sabe, é o LCS - Longest Common Subsequence é o algoritmo
+usado no programa diff.
+
+Vamos ao exemplo
+Similaridade entre "São Paulo" - "Saum Paulo"
+
+Eu tenho que mudar uma letra de a => ã, remover duas letras 'u' e 'm'
+e adicionar a letra 'o', então a distancia de edição é 4, pois eu preciso
+fazer essas 4 operações para elas ficarem iguais
+
+    use strict;
+    use warnings;
+
+    use Text::Levenshtein    qw(distance);
+    my $dist = distance("São Paulo","Saum Paulo");
+    print int($dist) . "\n";
+
+
+=head3 Usando os algoritmos
+
+Bom, vocês viram que os algoritmos não são tão complicados assim, esses dois
+são bastante "configuráveis" você pode aumentar/diminuir o tamanho do gram,
+ver qual distancia de edição funciona melhor para o seu domínio, acho que com
+eles já dá pra limpar bastante coisa.
+A maneira mais simples e segura que eu vejo para fazer isso e usando o bom e
+e velho DE => PARA, ou seja, você fazer um programa usando os 2 ou apenas 1
+algoritmo e o resultado desse programa não seja nada mais que apenas DE =>
+PARA, exemplo:
+
+"Saum Paulo" => "São Paulo"
+"campynas"  =>  "Campinas"
+
+E assim por diante, porque você vai poder verificar o resultado antes de
+atualizar sua base dados, e depois que você se certificou que está tudo certo é
+muito simples fazer um programa que substitui-a o seu "$de" para o seu "$para"
+:)
+E para melhorar ainda mais, você pode deixar a similaridade e a distancia de
+edição no resultado, similaridades acima de 80% você pode aceitar direto,
+pode colocar pesos, similaridade valendo 0.6 e distancia de edição valendo
+0.4.
+Podem haver casos em que a similaridade é baixa, a distancia de edição é
+baixa mais está certo, exemplo "BHZ" => "Belo Horizonte"  então não desanime e
+olhe os resultados com cuidado.
+O que pode acabar com a similaridade também são os números, então padronize
+eles, se a cidade chama 13 de Alguma coisa, e na sua base de comparação está
+Treze de Alguma coisa faça uma substituição para que todo 13 vire Treze assim
+você ajuda o algoritmo a fazer o trabalho dele.
+
+=head2 Conclusão
+
+Cada caso é um caso, as configurações de gram e edit distance estão ai para
+isso, não se esqueça de fazer aplicações que evitem esse tipo de erro de
+usuário, para não ter dor de cabeça mais para a frente, com essas técnicas acho
+que dá para limpar 50% ou mais de uma base de dados suja, quanto melhor sua
+'base de comparação' melhor altere os dados da base de dados com cuidado para
+não acabar com ela e boa sorte
+
+=head1 Bibliografia
+
+http://en.wikipedia.org/wiki/Data_cleansing
+
+http://pt.wikipedia.org/wiki/Distância_Levenshtein
+
+=head1 AUTHOR 
+
+Lindolfo "Lorn" Rodrigues
+
+=cut

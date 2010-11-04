@@ -1,0 +1,227 @@
+=head1 Benchmark
+
+Para algumas aplicações a eficiência é um fator decisivo na resolução de um 
+problema. Do que adianta querer saber se vai chover hoje se os cáculos envolvidos
+na previsão só terminam amanhã?
+
+Sabemos que em Perl há sempre um outro jeito de se fazer, mas como
+comparar 2... 3... 4 soluções para um mesmo problema? Como saber se a solução
+escolhida é mesmo a mais rápida?
+
+No episódio de hoje vamos conhecer um módulo usado para comparar o tempo de 
+execução de diferentes trechos de código.
+
+
+=head1 Descrição
+
+Depois de identificado o gargalo da sua aplicação com um profiler, como o 
+L<Devel::NYTProf> -- não, na maioria das vezes você *não* sabe onde realmente
+está o hotspot em seu código. Isso é normal, acontece também com o g-spot -- e
+desenvoldido algumas versões de código para solução do problema, o próximo
+passo é compará-las. É aí que entra o Benchmark.pm.
+
+Benchmark é um módulo core do Perl desde a versão 5 e possui algumas subrotinas
+que permitem descobrir o tempo de execução de algum trecho de código.
+
+
+=head2 Principais rotinas
+
+timethis - executa um pedaço de código algumas vezes
+
+timethese - executa diferentes pedaços de código algumas vezes
+
+cmpthese - imprime os resultados do timethese em um gráfico comparativo
+
+timeit - executa uma pedaço de código e mostra quanto tempo levou
+
+countit - mostra quantas vezes um código executa em um determinado intervalo de tempo
+
+=head1 Usando o módulo
+
+A forma mais simples de usar o Benchmark é criando um objeto antes e depois do
+trecho de código a ser medido, e tomando a diferença do tempo antes e depois
+de executado.
+
+       use Benchmark;
+       
+       my $t0 = Benchmark->new;
+       
+       # ... aqui fica o código a ser medido ...
+
+
+       # ... o tempo passa ...
+
+       my $t1 = Benchmark->new;
+
+       my $td = timediff($t1, $t0);
+       
+       print "O código levou: ",timestr($td),"\n";
+
+Legal, né? Agora faça isso com 9 versões diferentes do código e imprima uma tabela
+comparativa. Deu preguiça, não foi?
+
+É pra isso que existem as rotinas utilitárias descritas anteriormente, elas
+funcionam detrás das cortinas mais ou menos da mesma maneira que a demonstrada
+no exemplor anterior, mas de forma mais intuitiva e com algumas firulas muito úteis.
+
+=head2 Rotinas utilitárias
+
+Dentre as rotinas descritas, timeit(), timethis(), timethese(), timediff() e
+timestr() são exportadas automaticamente para o namespace atual assim que o
+Benchmark é importado. As demais são opcionais e devem ser importadas 
+explicitamente ou usando o alias ':all' para importar todas.
+
+
+=head3 timediff( T1, T2 )
+
+Retorna a diferença de tempo entre dois objetos Benchmark
+
+=head3 timestr(TIMEDIFF, [ STYLE, [ FORMAT ] ] )
+
+Retorna uma string que formatada a partir de um objeto TIMEDIFF que é um objeto
+Benchmark normalmente oriundo do retorno de timediff().
+
+STYLE compreende um dos seguintes tipos: 'all', 'none', 'noc', 'nop' ou 'auto'.
+'all' mostra todos os 5 tipos de tempo de CPU do UNIX( 'wallclock', tempo de usuário,
+tempo do sistema, tempo de usuáro dos processos filhos e tempo de sistema dos
+processos filhos). 'noc' mostra todos os tempo exceto o tempo dos processos filhos.
+'nop' mostra somente o tempo dos processos filhos. 'auto' se comporta como 'all'
+a menos que o tempo dos processos filhos sejam ambos 0, neste caso então se comportará
+como 'noc'. 'none' não mostra saída alguma.
+
+FORMAT representa o formato de saída no estilo printf() sem o '%', o padrão é '5.2'.
+
+Exemplo:
+
+        print timestr( timediff( $t2, $t1 ), 'all' ) . "\n";
+        # 7 wallclock secs ( 6.64 usr  0.02 sys +  0.00 cusr  0.00 csys =  6.66 CPU)
+
+=head3 timeit(COUNT, CODE)
+
+COUNT determina quantas vezes o código em CODE é executado. CODE pode ser tanto uma
+referência de código quanto uma string a ser executada pelo eval().
+Retorna um objeto Benchmark.
+
+Exemplo:
+
+        my $t1 = timeit(1_000, $code1);
+        my $t2 = timeit(1_000, $code2);
+        print timestr(timediff($t2, $t1));
+
+   
+
+=head3 timethis(COUNT, CODE,[ TITLE, [ STYLE ] ] )
+
+Funciona de maneira parecida ao timeit() mas imprime o resultado ao invés de 
+somente retornar um objeto Benchmark. TITLE tem seu default setado para 
+'timethis for COUNT'.
+
+COUNT pode ser um número negativo ou zero. Um número negativo significa o tempo 
+CPU mínimo a ser executado o código, portanto, o seguinte trecho:
+
+    timethis(-4, $code)
+    # timethis for 4:  4 wallclock secs ( 4.23 usr +  0.00 sys =  4.23 CPU) @ 162676.12/s (n=688120)
+
+fará com que o trecho de código rode por pelo menos 4 segundos de CPU.
+Zero faria com que o tempo default (3 segundos) fosse utilizado.
+
+=head3 timethese(COUNT, CODEHASHREF, [ STYLE ] )
+
+Funciona de maneira análoga ao timethis(), adicionalmente é possível comparar 
+vários trechos de código. Imprime o resultado e retorna um hashref com os 
+objetos Benchmark correspondentes aos trechos de código. O códigos são executados
+em ordem de comparação das chaves do CODEHASHREF.
+
+Exemplo:
+
+        timethese(-4, { test1 => $code, test2 => $code2 })
+        # Benchmark: running test1, test2 for at least 4 CPU seconds...
+        #  test1:  5 wallclock secs ( 4.26 usr +  0.00 sys =  4.26 CPU) @ 161530.52/s (n=688120)
+        #  test2:  4 wallclock secs ( 4.19 usr +  0.01 sys =  4.20 CPU) @ 204797.62/s (n=860150)
+
+=head3 cmpthese( COUNT, CODEHASHREF, [ STYLE ] )
+
+=head3 cmpthese( RESULTSHASHREF, [ STYLE ] )
+
+cmpthese() executa timethese() e exibe uma tabela comparativa como a seguinte:
+
+              Rate test1 test2
+    test1 162293/s    --  -22%
+    test2 206768/s   27%    --
+
+A tabela é ordenada do mais lento para o mais rápido. Nesta tabela C<test1> é 22% mais
+lento que C<test2> que, por sua vez, é 27% mais rápido que C<test1>. C<Rate> representa
+a quantidade de vezes que o código é executado por segundo.
+
+cmpthese() retorna uma referência para um ARRAY contendo as linhas da tabela anterior
+incluindo as legendas.
+
+          my $rows = cmpthese( -1, { a => '++$i', b => '$i *= 2' }, "none" );
+
+O código acima retornaria uma estrutura como a seguinte:
+
+           [
+             [ '',       'Rate',   'b',    'a' ],
+             [ 'b', '2885232/s',  '--', '-59%' ],
+             [ 'a', '7099126/s', '146%',  '--' ],
+           ]
+
+Essa estrutura poderia ser utilizado para gerar uma tabela HTML usando um módulo como
+Data::Table.
+        
+
+        (...)        
+
+        my $ref = cmpthese(-1, { test1=> $code, test2 => $code2});
+
+        # massageando os dados...
+        my $header = shift @$ref;
+
+        # Data::Table não aceita string vazia no cabeçalho
+        $header->[0] = '-';
+
+        my $table = Data::Table->new($ref, $header, 0);
+
+        print $table->html;
+
+
+E o resultado:
+
+=begin pod:xhtml
+
+<table  border="1">
+<tr bgcolor="#CCCC99"><th>-</th><th>Rate</th><th>test1</th><th>test2</th></tr>
+<tr bgcolor="#D4D4BF"><td>test1</td><td>162293/s</td><td>--</td><td>-22%</td></tr>
+<tr bgcolor="#ECECE4"><td>test2</td><td>206768/s</td><td>27%</td><td>--</td></tr>
+</table>
+
+=end pod:xhtml
+
+
+=head1 Conclusão
+
+Usando o módulo Benchmark você não precisa se preocupar com detalhes ao tomar o
+tempo de execução do código. Como, por exemplo, a eliminação do 
+overhead presente numa abordagem mais "boba" envolvendo o uso de um loop 
+para conter o código em questão ou sucessivas chamadas à função time() que
+não retorna o tempo que a CPU realmente levou pra executar o código. Além de 
+também oferecer uma forma organizada na apresentação dos resultados obtidos
+na comparação.
+
+Tenha em mente que performance é um assunto complicado, nem tudo é velocidade.
+Antes de sair por aí tomando decisões erradas e perdendo tempo escovando bits
+preocupe-se primeiramente com resultados e assegure-se de que você realmente
+entende o problema e tem controle sobre o ambiente onde seu código vai rodar.
+
+Não poderia terminar esse artigo sem antes dizer um velho ditado, clichê,
+mas sempre útil:
+
+    "Esqueçamos as pequenas eficiências, em 97% do tempo a otimização prematura é a raiz de todo mal."
+                -- Donald E. Knuth
+
+=head1 AUTOR
+
+Gabriel Andrade.
+
+=cut
+

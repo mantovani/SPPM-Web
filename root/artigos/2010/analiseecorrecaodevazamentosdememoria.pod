@@ -1,0 +1,188 @@
+=pod
+
+=head1 Análise e correção de vazamentos de memória
+
+Um vazamento de memória ocorre quando um programa aloca memória e 
+não é capaz de liberar esta de volta ao sistema operational, ocasionando
+diminuição de desempenho da aplicação (ou até mesmo do sistema computacional
+como um todo). Muitas pessoas acreditam que qualquer crescimento inesperado do
+uso de memória seja um sintoma de vazamento, o que não é sempre uma verdade.
+
+Perl usa L<contagem de referências|http://en.wikipedia.org/wiki/Reference_counting>
+para gerênciar o uso de memória, isto significa que quando se cria uma estrutura
+circular causa-se vazamento, como também um L<XS|http://search.cpan.org/dist/perl/pod/perlxs.pod>
+prendendo uma referência. Deste modo, não é tão difícil saber quando e em
+qual ordem a desalocação vai acontecer, e então pode-se ser pró-ativo
+(ou paranóico :) chamando C<undef($object)> da mesma forma que os programadores
+em C, C<free(object)>.
+
+Vazamentos de memória podem não ser fácilmente detectáveis ou nem mesmo
+sérios em alguns casos, como por exemplo em scripts simples e/ou de curta
+duração. Em outros casos, pode-se fazer uso de alguns dos vários módulos
+existentes no L<CPAN|http://www.cpan.org/> como:
+
+=over
+
+=item L<Devel::Size>
+
+Investiga o uso de memória de variáveis.
+
+=item L<Devel::Cycle>
+
+Útil para encontrar referências circulares se você sabe ou suspeita quais
+estruturas são prováveis de se ter ciclos.
+
+=item L<Devel::LeakTrace::Fast>
+
+Indica onde estão as variáveis com vazamento.
+
+=item L<Test::LeakTrace> e L<Test::LeakTrace::Script>
+
+Fornecem várias funções para monitoramento de vazamentos de memória.
+
+=item L<Devel::Events::Objects>
+
+Permite o monitoramento de objetos ao framework L<Devel::Events>, facilitando
+a construção de ferramentas de relatório de ciclos.
+
+=item L<Devel::Peek>
+
+Pode ser usado para encontrar ciclos em objetos existentes em códigos que
+fazem programação XS.
+
+=item L<Test::Valgrind>
+
+L<Valgrind|http://valgrind.org/> é um I<framework> para construção de ferramentas de análise
+dinâmica que contém vários utilitários prontos para detecção de falhas no gerenciamento de
+memória e I<threading>. Muito útil se há suspeita de vazamento de memória em código XS.
+
+=back
+
+Ciclos são contornáveis na prática. Porém, por vezes faz-se necessário
+o uso de referências de retorno como uma simplicação na modelagem de
+relacionamentos, neste caso, pode-se usar a função C<weaken> do L<Scalar::Util>
+para assim marcar uma referência fraca permitindo ao gerenciador coletar o
+objeto como lixo e liberar a memória.
+
+Exemplo:
+
+	1. my $parent = { name => 'Foo' };
+	2. my $child = {
+	       name => 'Foo Jr',
+	       parent => $parent,
+           };
+	3. $parent->{'children'} = [$child];
+
+Usando a função C<find_cycle> do Devel::Cycle
+
+	4. find_cycle($parent);
+
+teríamos como saída
+
+	Cycle (1):
+
+		$A->{'children'} => \@B
+		$B->[0] => \%C
+		$C->{'parent'} => \%A
+
+onde C<$A> é C<$parent> e C<$C> é $child. Assim, obtém-se o ponto chave da
+circularidade, o qual neste exemplo fica óbvio desde o ínicio onde seria,
+pois é sua modelagem é bem simples e a profundidade dos relacionamentos
+é pouca, facilitando ao desenvolvedor a correção.
+
+	1. use Scalar::Util 'weaken';
+	2. my $parent = { name => 'Foo' };
+	3. weaken($parent);
+	4. my $child = {
+	       name => 'Foo Jr',
+	       parent => $parent,
+           };
+	5. $parent->{'children'} = [$child];
+
+Com L<Moose>, basta declarar o atributo como C<< weak_ref => 1 >>.
+
+	package Child;
+	use Moose;
+
+	has parent => (
+	    isa => 'Parent', is => 'rw',
+	    weak_ref => 1, required => 1,
+	);
+
+	1;
+
+=head2 Aplicações Web em L<Catalyst>
+
+Se você tem uma aplicação web desenvolvida em Catalyst, existem dois
+componentes que permitem geração de relatórios sobre vazamentos de 
+forma rápida e indolor.
+
+=over
+
+=item L<Catalyst::Plugin::LeakTracker>
+
+Reliza o monitoramento de objetos que causaram vazamentos no durante um ciclo de
+requisição da aplicação.
+
+=item L<Catalyst::Controller::LeakTracker>
+
+Gera relatórios sobre os vazamentos de memória encontrados pelo Catalyst::Plugin::LeakTracker.
+
+=back
+
+Tudo o que se precisa fazer é carregar o I<plugin> na classe da aplicação
+
+	package MyApp;
+
+        use Catalyst qw(LeakTracker);
+
+e criar um I<controller> (por exemplo C<Leaks>)
+
+	package MyApp::Controller::Leaks;
+
+	use Moose;
+	BEGIN { extends 'Catalyst::Controller::LeakTracker' }
+
+	1;
+
+desta forma, acessando http://localhost:3000/list_requests obtém-se um relatório semelhante
+a este:
+
+=begin pod:xhtml
+
+<img src="http://sao-paulo.pm.org/static/images/equinocio/2010/set/memleaks/list_requests.jpg" alt="/list_requests" />
+
+=end pod:xhtml
+
+Os resultados demonstrados são por requisição, incluem as ações/URIs que tiveram
+vazamento e quanto de memória cada uma delas custou, etc. Acessando cada registro
+pode-se ver um relatório mais detalhado sobre quais classes de objetos estão envolvidas
+nos vazamentos:
+
+=begin pod:xhtml
+
+<img src="http://sao-paulo.pm.org/static/images/equinocio/2010/set/memleaks/request_1.jpg" alt="/request/1" />
+
+=end pod:xhtml
+
+refinando novamente, tem-se o I<stacktrace> da origem e a lista de ciclos capturados:
+
+=begin pod:xhtml
+
+<img src="http://sao-paulo.pm.org/static/images/equinocio/2010/set/memleaks/leak_1_1.jpg" alt="/leak/1/13" />
+
+=end pod:xhtml
+
+=head3 ADVERTÊNCIA
+
+Sabe-se que podem ocorrer falsos positivos nos resultados, pois
+objetos I<cacheados> ou I<singletons> são considerados tecnicamente como
+vazamentos, assim não há problema contanto que cada um não se repita a cada
+requisição. Este cenário é tipicamente encontrado em grandes aplicações em
+suas primeiras requisições.
+
+=head2 Autor
+
+L<Wallace Reis|http://wallace.reis.org.br/> <wreis@cpan.org>
+
+=cut

@@ -1,0 +1,228 @@
+=pod
+
+=encoding utf8
+
+=head1 Tips/tricks com 'datas'
+
+=head2 Introdução
+
+O tempo, é usado para quantificar a duração de eventos. Nesse artigo
+será mostrado truques de como calcular/usar o tempo para resolver problemas
+diários.
+
+No calendário datas são uma referência, a um dia em particular do calendário. 
+Será abordado, o calendário Gregorian que é o calendário internacional
+aceito pela civilização moderna, que será usado nesse artigo.
+
+=head2 Perl e a função localtime
+
+O Perl fornece uma função chamada C<localtime>, que nos permite trabalhar
+com o tempo. Essa função retorna nove elementos, que nos permite analizar
+o tempo local, abaixo mostra como você pode obter os elementos:
+
+	#  0    1    2     3     4    5     6     7     8
+	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
+		localtime(time);
+ 
+O ano retorna o número de anos desde 1900, ou seja se você obter, 110
+basta somar com 1900 e você terá o ano em quatro digitos:
+
+	$year += 1900;
+
+No contexto scalar, a função C<localtime> retorna o tempo, formatado da seguinte
+forma,
+
+	perl -E 'say scalar localtime'
+	Sun Sep  5 21:43:28 2010
+
+
+=head2 Calculando Benchmark
+
+Benchmark é usado para medir a performance de um certo código, você
+pode testar diversos códigos e ter o resultado de qual código obteve
+a melhor performance.
+
+No Perl temos o módulo C<Benchmark> para nos auxiliar, não precisamos
+calcular na mão o tempo. O módulo se encarrega de fazer todo o trabalho
+para nós, a única coisa que você precisa fazer é dizer o que você quer.
+
+Vamos testar dois códigos, e ver qual é mais rápido.
+
+    use Benchmark qw( cmpthese ) ;
+    $x = 3;
+    cmpthese( -5, {
+        a => sub{$x*$x},
+        b => sub{$x**2},
+    } );
+
+O "-5" significa executar o código durante cinco minutos. Quando você
+executar o código terá uma saída parecida com essa,
+
+   Benchmark: running a, b, each for at least 5 CPU seconds...
+          Rate    b    a
+   b 1559428/s   -- -62%
+   a 4152037/s 166%   --
+
+Onde o código "b" é 62% mais lento que o "a", e o "a" é 166% mais rápido 
+do que o "b".
+
+Pode-se também utilizar o "cmpthese" para fazer uma gráfico de compração,
+
+    use Benchmark qw( timethese cmpthese ) ;
+    $x = 3;
+    $r = timethese( -5, {
+        a => sub{$x*$x},
+        b => sub{$x**2},
+    } );
+    cmpthese $r;
+
+E a saída será algo como,
+
+    Benchmark: running a, b, each for at least 5 CPU seconds...
+             a: 10 wallclock secs ( 5.14 usr +  0.13 sys =  5.27 CPU) @ 3835055.60/s (n=20210743)
+             b:  5 wallclock secs ( 5.41 usr +  0.00 sys =  5.41 CPU) @ 1574944.92/s (n=8520452)
+           Rate    b    a
+    b 1574945/s   -- -59%
+    a 3835056/s 144%   --
+
+Benchmark é uma ótimo ferramenta, sem dúvidas. Procurar por um algoritmo
+mais rápido, ou testar formas diferentes de fazer a mesma coisa, TMTOWTDI.
+
+=head2 DateTime
+
+O C<DateTime> é um módulo completo para se trabalhar com data e tempo,
+o C<DateTime> aceita todos os fuso horários do mundo. Ele fornece uma
+aplicação que torna fácil fazer contas/manipular datas.
+
+Veremos alguns truques que resolvem problemas diários.
+
+=head3 Criando um objeto DateTime
+
+	my $dt1 = 
+		DateTime->new( year       => 2003,
+                 month      => 1,
+                 day        => 1,
+                 hour       => 0,
+                 minute     => 0,
+                 second     => 0,
+                 nanosecond => 0,
+                 time_zone  => "floating",
+         );
+
+Criando um objeto, usando a função C<time>:
+
+	# Criando um objeto DateTime do tempo atual
+	my $dt2 = DateTime->from_epoch( epoch => time() );
+	print $dt2->year
+	# 2010
+
+	# E para obter o tempo de volta no formato do time
+	my $time = $dt2->epoch();
+	print $time
+	1283760273
+
+Mas se você quer obter a data atual, existe um jeito mais fácil,
+
+	my $dt = DateTime->now
+
+ou
+
+	my $dt = DateTime->today # Um atalho para "now"
+
+=head3 Comprando Duas Datas
+
+	$dt1 = DateTime->new( year => 1999 );
+	$dt2 = DateTime->new( year => 2000 );
+
+	my $cmp = DateTime->compare($dt1, $dt2);
+	# $cmp é -1, 0, ou 1 se $dt1 é <, ==, or > do que $dt2.
+
+=head3 Outro Jeito de Comparar Duas Datas
+
+
+	my $some_date = ...;
+	my $now = DateTime->now();
+
+	my $some_date2 = $some_date->clone()->truncate(to => 'day');
+	my $now = DateTime->today();
+	if ($some_date == $now) { # Right!
+
+		print "É hoje \o/\n";
+
+	}
+
+=head3 Obtendo Formatos da Data
+
+	my $dt = DateTime->now;
+
+Obetendo, o ano, mês e o dia:
+	
+	print $dt->ymd;
+	# 2010-09-06
+
+	print $dt->dmy('/');
+	# 06/09/2010
+
+Obetendo, a hora, o minuto e o segundo:
+
+	print $dt->hms;
+	# 07:54:21
+
+=head3 Obetendo Outras Informações
+
+Aqui mostra como obter, o ano, mês, dia do mês, dia da semana,
+hora, minuto, segundo e o dia do ano.
+
+  $year   = $dt->year;
+  $month  = $dt->month;          # 1-12 - o mês
+
+  $day    = $dt->day;            # 1-31 - o dia do mês
+
+  $dow    = $dt->day_of_week;    # 1-7 (Segunda-feira é 1)
+
+  $hour   = $dt->hour;           # 0-23 - Hora
+  $minute = $dt->minute;         # 0-59 - Minuto
+
+  $second = $dt->second;         # 0-61 - segundos
+
+  $doy    = $dt->day_of_year;    # 1-366 (ano bissexto)
+
+=head3 Como Clonar Datas
+
+As datas são apenas referências de hash, quando se faz algo,
+como:
+
+	my $dt1 = DateTime->new( year => 2000 );
+
+	# Copiando o objeto para a variável dt2
+	$dt2 = $dt1;
+	$dt2->set( year => 2003 );
+
+Quando formos imprimir o $dt1 ao invés de obtermos 2000, vamos obter
+2003. O jeito correto de fazer uma cópia é usar o método clone.
+
+	my $dt1 = DateTime->new( year => 2000 );
+
+	# Copiando o objeto para a variável dt2
+	$dt2 = $dt1->clone();
+	$dt2->set( year => 2003 );
+
+	print $dt1->year();  # Imprime: 2000
+
+=head2 Referências
+
+L<http://en.wikipedia.org/wiki/Time>
+
+L<http://en.wikipedia.org/wiki/Calendar>
+
+L<http://search.cpan.org/~jesse/perl-5.12.1/lib/Benchmark.pm>
+
+L<http://search.cpan.org/~drolsky/DateTime-0.61/lib/DateTime.pm>
+
+L<http://datetime.perl.org/?FAQ>
+
+=head2 Autor
+
+Daniel de Oliveira Mantovani <daniel.oliveira.mantovani [a] gmail.com>
+
+Aware L<www.aware.com.br>

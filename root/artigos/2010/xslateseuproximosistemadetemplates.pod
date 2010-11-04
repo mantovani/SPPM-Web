@@ -1,0 +1,386 @@
+=head1 Xslate - Seu próximo sistema de templates
+
+Dizem que escrever um framework web ou um sistema de templates é uma espécie
+de ritual de passagem para muitos desenvolvedores. De fato, uma rápida olhada
+no L<CPAN|http://search.cpan.org> nos dá diversas opções. Escondido no
+meio delas, com um nome estranho, direto da terra do sol nascente, está um
+um candidato de peso, e tema do artigo de hoje: o L<Text::Xslate>,
+"Xslate" para os íntimos.
+
+=head2 Já uso TT, obrigado. NEXT!
+
+É inegável que, até o momento, L<< Template|Template-Toolkit >> reina
+absoluto entre os diferentes sistemas de template. É simples, robusto, estável,
+e muito bem documentado, mais recomendado que o novo Colgate Total 12.
+No mundo Perl, 9 entre cada 10 desenvolvedores tratam TT como a melhor, senão
+única, opção decente. Mas então, por que sequer considerar uma alternativa
+como o Xslate?
+
+Continue lendo. Você não vai se arrepender ;-)
+
+=head3 Altíssimo desempenho
+
+O Xslate possui uma máquina virtual escrita em XS e fortemente otimizada para
+renderizar templates. Como resultado, benchmarkings apontam para renderizações
+muito mais eficientes que a concorrência. Não estamos falando de ser 2x, ou
+5x mais rápido. O Xslate coloca velocidade na renderização em outra ordem
+de grandeza, com medições chegando a B<158x>(!!) mais rápido que o TT2.
+
+O gargalo da maioria das aplicações está no acesso ao banco de dados, mas isso
+não quer dizer que outras áreas não possam ser otimizadas. Se sua aplicação
+possui templates complexos e você suspeita que a renderização possa estar
+impactando no desempenho, o Xslate pode ser a sua solução definitiva.
+
+=head3 Compatibilidade com TT
+
+Normalmente, esse tipo de velocidade vem com um impacto significativo na
+usabilidade do sistema de templates. Afinal, se fosse para escrever em Perl
+puro, não precisaríamos de um sistema de templates em primeiro lugar!
+Designers precisam de uma micro-linguagem simples que possam integrar em
+seu HTML sem muito esforço, e esse é um dos pontos mais fortes do TT.
+
+Além disso, se você já trabalha muito bem obrigado com o TT, reescrever tudo
+na sintaxe do Xslate pode não ser uma opção. Nada tema! O Xslate já possui
+não uma, mas duas camadas diferentes de compatibilidade com o TT :)
+
+   use Text::Xslate;
+   
+   my $template = Text::Xslate->new(
+       syntax => "TTerse",
+       module => [ 'Text::Xslate::Bridge::TT2Like' ],
+   );
+   
+   my $tt_string = 'Bem-vindos ao [% evento %]!';
+   
+   print $template->render_string( $tt_string, { evento => 'Equinócio' } );
+
+A camada de compatibilidade abrange ~90% de todo o TT, incluindo
+L<< Virual Methods|Template::Manual::VMethods >> como var.length() e
+var.replace(), e diretivas como IF, WRAPPER, INCLUDE, FOREACH, WHILE, SET, etc.
+Alguns poucos elementos ainda estão de fora - como PROCESS e DEFAULT - mas
+na maioria dos casos podemos viver sem eles.
+
+A variação do L<Text::Xslate::Bridge::TT2Like> é o
+L<Text::Xslate::Bridge::TT2>, e para utilizá-lo basta trocar a chamada no
+código acima. A diferença entre eles é que o TXB:TT2 importa os vmethods
+do Template-Toolkit, enquanto o TXB:TT2Like implementa tudo
+diretamente para você e não precisa do Template-Toolkit instalado.
+
+B<< Você precisará instalar a bridge desejada separadamente >>. Mas, assim
+como o Xslate, a instalação tanto do
+L<TXB:TT2Like|Text::Xslate::Bridge::TT2Like> quanto do
+L<TXB:TT2|Text::Xslate::Bridge::TT2> é simples e indolor.
+
+Com essas facilidades, você pode continuar escrevendo seus templates no
+formato do Template-Toolkit, e contar com uma renderização absurdamente rápida!
+
+=head3 Escape automático de meta caracteres em HTML
+
+Todas as expressões interpoladas pela engine do Xslate são escapadas em HTML
+automaticamente, a menos que você explicitamente diga o contrário. Isso
+significa que sua aplicação já vem protegida contra ataques XSS por padrão,
+sem que você precise fazer nada!
+
+=head3 Templates extensíveis (com modificadores e roles, como Moose!)
+
+Não, você não entendeu errado. Se você está acostumado com INCLUDE e WRAPPER do
+Template-Toolkit, tudo bem. Agora, se você escreve seus próprios templates
+e muitas vezes sentiu-se frustrado por não poder trabalhar com extensões mais
+flexíveis, experimente o Xslate. Veja a
+L<< seção abaixo/Extendendo Templates >> abaixo para mais detalhes.
+
+=head2 Instalação
+
+O Xslate possui pouquíssimas dependências, mas seu código é em XS, então você
+vai precisar de um copilador C na máquina alvo. Instalar é moleza:
+
+em sua shell do CPAN:
+
+   cpan> install Text::Xslate
+
+ou direto via cpanminus:
+
+   $ curl -L http://cpanmin.us | perl - Text::Xslate
+
+=head2 O formato padrão: Kolon
+
+Se você está acostumado com formatos como L<Mason|HTML::Mason> ou L<< EPL (Mojolicious)|Mojo::Template >>, vai se acostumar rapidamente com o Xslate. O formato é muito simples:
+
+=over 4
+
+=item * tags inline
+
+Para exibir o conteúdo de variáveis ou utilizar tags inline de um modo geral,
+basta utilizar colocar o conteúdo entre a abertuta C<< <: >> e o fechamento
+C<< :> >>.
+
+   Olá <: $nome :>, tudo bem?
+
+=item * linhas inteiras
+
+Quando estivermos fazendo uma operação mais complexa, normalmente envolvendo
+blocos, pode valer a pena utilizar a linha toda. Para isso, basta começar
+a linha com "C<:>".
+
+   : if $idade > 18 {
+       Bebida liberada!
+   : }
+
+=back
+
+=head3 Comentários
+
+Como em Perl, comentários são o que vier depois de um C<#>.
+
+  : $var = "lalala" # isso é um comentário
+  :# essa linha toda também é um comentário
+
+A diferença é que também podemos usar comentários em tags inline:
+
+  <: $var # comentário! :>
+
+Você pode também terminar comentários com ponto e vírgula, assim como
+qualquer outra declaração:
+
+  : # isso é um comentário; $var # o '$var' aí do meio é renderizado!
+
+=head3 Variáveis
+
+Além das variáveis passadas para o nosso template, podemos criar nossas
+próprias variáveis:
+
+  : my $foo = 42;
+  : my $bar = "baz";
+
+Podemos também criar constantes:
+
+  : constant FOO = 42;
+
+=head3 Funções e Filtros
+
+Você pode registrar funções através das opções C<function> ou C<module> do
+C<< Text::Xslate->new() >>, e chamá-las usando o operador C<< () >> ou o
+símbolo C<< | >>.
+
+  : f()        # sem argumentos
+  : f(1, 2, 3) # com argumentos
+  : 42 | f     # o mesmo que f(42)
+
+Algumas funções úteis:
+
+  : $var | raw  # interpola variável sem escapar o conteúdo
+  : $var | dump # dump da variável com Data::Dumper
+
+É possível ainda criar pequenas macros em seus templates:
+
+  : macro alo -> $cidade {
+      Alo, <: $cidade :> !
+  : }
+  
+  Minha mensagem: <: alo("são paulo") :>
+
+=head3 Métodos
+
+Se C<$var> é um objeto, você pode chamar os métodos usando um ponto:
+
+  <: $var.metodo() :>
+
+=head3 Condicionais
+
+Blocos if-else e given-when funcionam sem a necessidade de parêntesis:
+
+  : if $var == nil {
+      lalala
+  : }
+  : else if $var != "foo" { # elsif também funciona
+      lelele
+  : }
+  : else {
+      lilili
+  : }
+
+=head3 Laços
+
+Os laços C<for> são iteradores simples:
+
+  : # itera uma referência a ARRAY em $lista
+  : for $lista -> $item {
+      o item é <: $item :>
+  : }
+
+Podemos acessar a variável iteradora chamando C<< $~NOME_DA_VAR >>:
+
+  : for $lista -> $item {
+      o item atual é  <: $item :>
+      o índice dele é <: $~item.index :>
+      index + 1 é     <: $~item.count :>
+
+      : if $~item.is_first {
+          primeirão!!!
+      : }
+  : }
+
+=head2 Extendendo Templates
+
+Templates podem ser incluídas normalmente:
+
+  : include "foo.tx";
+  : include "foo.tx" { var1 => "meep", var2 => 42 };
+
+Mas o grande barato está mesmo na enorme flexibilidade que o Xslate
+proporciona. Podemos, por exemplo, definir uma série de blocos em um template
+base, e derivar nossos templates desses componentes.
+
+Suponha o seguinte template I<myapp/base.tx>:
+
+  : block titulo -> {
+      Equinócio!
+  : }
+
+  : block conteudo -> { } # sem conteúdo padrão
+
+Podemos testar a renderização de nossa base através do programa C<xslate>,
+que vem junto com o módulo:
+
+  $ xslate myapp/base.tx
+     Equinócio!
+
+Mas nosso objetivo é extender a base em outros templates, por exemplo,
+I<myapp/foo.tx>:
+
+  : cascade myapp::base
+  : around conteudo -> {
+      meu conteúdo bonitão!
+  : }
+
+Vamos experimentar a renderização agora:
+
+  $ xslate myapp/foo.tx
+     Equinócio!
+     meu conteúdo bonitão!
+
+Podemos extender tantos templates quanto quisermos, exatamente como
+extenderíamos um método no L<Moose>! Veja outro exemplo agora, I<myapp/bar.tx>:
+
+  : cascade myapp::foo
+  
+  : around titulo -> {
+      ----------
+      : super
+      ----------
+  : }
+  
+  : before conteudo -> {
+      Isso é renderizado ANTES do conteúdo!
+  : }
+  
+  : after conteudo -> {
+      E isso vem DEPOIS!
+  : }
+
+
+É só executar e ver o resultado:
+
+  $ xslate myapp/bar.tx
+     ---------
+     Equinócio!
+     ---------
+     Isso é renderizado ANTES do conteúdo!
+     meu conteúdo bonitão!
+     E isso vem DEPOIS!
+
+Aliás, falando em Moose, templates podem ser tratados como classes, e
+extendidos tratando os blocos como I<roles>:
+
+  : cascade myapp::base with myapp::role1, myapp::role2
+
+Com I<roles>, podemos até mesmo omitir a base:
+
+  : cascade with myapp::role1, myapp::role2
+
+Legal, né?
+
+=head2 Catalyst + Xslate
+
+Agora que vimos todas as vantagens do Xslate, que tal experimentá-lo em seu
+framework Web favorito?
+
+O primeiro passo é instalar a I<View> apropriada:
+
+  cpan> install Catalyst::View::Xslate
+
+O segundo passo é... bom, não existe segundo passo ;)
+
+A criação de uma I<View> para nossa aplicação pode ser feita pela linha de
+comando:
+
+  $ script/myapp_create.pl view HTML Xslate
+
+ou, pra usar a camada de compatibilidade do L<< Template-Toolkit|Template >>:
+
+  $ script/myapp_create.pl view HTML Xslate bridge=TT2
+
+trocando C<TT2> por C<TT2Like> conforme sua vontade (veja acima).
+
+Se preferir "fazer na mão", a I<View> é exatamente como qualquer outra:
+
+  package MyApp::View::Xslate;
+  use strict;
+  use parent 'Catalyst::View::Xslate';
+  
+  1;
+
+ou ainda:
+
+  package MyApp::View::Xslate;
+  use Moose;
+  extends 'Catalyst::View::Xslate';
+  
+  has '+module' => (
+      default => sub { [ 'Text::Xslate::Bridge::TT2Lite' ] }
+  );
+
+  1;
+
+
+=head2 Mojolicious + Xslate
+
+Se, por outro lado, você prefere o L<Mojolicious>, instale o
+L<MojoX::Renderer::Xslate> e adicione o seguinte código na sub C<startup>
+de sua aplicação:
+
+  use MojoX::Renderer::Xslate;
+  my $xslate = MojoX::Renderer::Xslate->build(
+      mojo => $self,
+      template_options => {},
+  );
+  $self->renderer->add_handler( tx => $xslate );
+
+ou simplesmente carregue o renderizador como um plugin do Mojolicious:
+
+  $self->plugin('xslate_renderer');
+  
+No L<Mojolicious::Lite> então, é mais fácil ainda! Basta adicionar no início de seu programa:
+
+  plugin 'xslate_renderer';
+
+Fácil, não é? Você pode também passar opções ao plugin normalmente:
+
+  plugin 'xslate_renderer' => {
+      template_options => { syntax => 'TTerse', ... }
+  };
+
+
+=head2 Concluindo
+
+L<Text::Xslate> é um poderoso e flexível sistema de templates, com altíssimo
+desempenho, e que veio para ficar.
+
+Ainda que prefira a sintaxe tradicional do Template-Toolkit, bastam alguns
+pequenos ajustes em nossos templates tradicionais para contarmos com a
+incrível velocidade de sua engine. E, com a integração com os principais
+frameworks web do mundo Perl, você não tem motivos para não experimentar :)
+
+=head2 Autor
+
+Breno G. de Oliveira C<< <garu@cpan.org> >>

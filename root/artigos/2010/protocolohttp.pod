@@ -1,0 +1,543 @@
+=pod
+
+=encoding utf8
+
+=head1 Protocolo HTTP
+
+=head2 Introdução
+
+O protocolo HTTP (HyperText Transfer Protocol) é um protocolo genérico, em
+nível de aplicação, I<stateless>, que pode ser utilizado para várias outras
+tarefas além de transferir hipertexto.
+
+Ele está em uso desde 1990 e de lá pra cá tornou-se um dos protocolos mais
+utilizados para a transferência de informações ou dados entre aplicações nas
+mais variadas plataformas e arquiteturas.
+
+=head3 Um pouco de história
+
+Para entender melhor algumas das características atuais, é preciso ter uma
+visão geral de como ele nasceu e evoluiu.
+
+A primeira versão, HTTP/0.9 era um protocolo simples para transferência de
+dados brutos, sendo um subconjunto do que se tornou a versão HTTP/1.0.
+Através dele, um cliente fazia a requisição de um documento ao servidor, e
+este simplesmente respondia entregando o documento html correspondente. O
+cliente era responsável então por ler o documento o mais rápido possível,
+pois ao final da transmissão, ou após um timeout de 15 segundos, o servidor
+deveria encerrar a conexão. Nessa época esse protocolo era usado quase que
+exclusivamente para servir hipertexto (html).
+
+Em 1996 a RFC 1945 definiu a versão HTTP/1.0 (e também a versão HTTP/0.9),
+adicionando algumas das features em uso até hoje, como o conceito de mensagem,
+métodos, entre outros.
+
+Entretanto, a versão 1.0 não cobria suficientemente assuntos como caching e
+proxies. Então em 1999, a RFC 2616 definiu alguns comportamentos novos e
+aboliu outros, estabelecendo a versão HTTP/1.1.
+
+=cut
+
+=head2 Principais características
+
+A principal finalidade do protocolo HTTP no momento de sua concepção foi
+padronizar o acesso a documentos estáticos escritos em html. Por isso ele é
+baseado em requisição e resposta simples.
+
+Um cliente requisita um documento e o servidor entrega ou não o documento
+requisitado.
+
+Uma consequência desse comportamento é que não há necessidade nenhuma de uma
+requisição subsequente. O cliente pode requisitar outro documento ou não
+requisitar nada nunca mais. O servidor não precisa guardar nenhuma informação
+sobre requisições sucessivas. Cada requisição é completamente independente da
+requisição anterior.
+
+Esse cenário define a principal e provavelmente a menos compreendida das
+características do protocolo, ser I<stateless>, ou seja, não guardar
+informação de estado entre as requisições.
+
+Note que não guardar informação de estado não tem necessariamente nada a ver
+com não manter uma conexão persistente.
+
+Nas versões anteriores do protocolo HTTP/1.1 o servidor encerrava a conexão
+ao final da transmissão - ou no meio se o cliente não fosse capaz de ler
+a resposta a tempo. A cada nova requisição do cliente ao servidor, ambos
+tinham que estabelecer uma nova conexão, trocar dados e encerrá-la.
+
+Quando isso era feito para recuperar arquivos estáticos contendo somente texto
+não havia problema algum, mas com o advento das páginas web mais ricas e
+dinâmicas, tornou-se comum cliente e servidor trocarem dados através de uma
+sequência não determinada de requisições e respostas.
+
+O custo de abrir, gerenciar e encerrar conexões passou a ser relevante. Então
+o protocolo HTTP/1.1 estabeleceu o uso de conexões persistentes sempre que
+mais de um par requisição-resposta precisar ser utilizado.
+
+Portanto, o protocolo não guarda informações de estado entre as requisições,
+mas pode ou não manter uma conexão persistente dependendo da versão.
+
+=cut
+
+=head2 Mensagens
+
+O protocolo HTTP estabelece uma comunicação baseada em mensagens de texto
+plano, podendo ser de dois tipos: Requisição (request) e Resposta (response).
+
+Um cliente envia determinada mensagem para o servidor (requisição), e este
+responde com uma outra mensagem (resposta).
+
+As mensagens possuem um formato característico, estabelecido pelo protocolo.
+Cada uma delas é composta por cabeçalhos e opcionalmente um corpo. No corpo
+da mensagem, por sua vez, pode haver desde texto simples, até um conteúdo
+especialmente encapsulado no que chamamos de entidade. Uma entidade também
+possui cabeçalhos.
+
+Numa mensagem típica temos então uma linha inicial indicando se é requisição
+ou resposta, seguida por um conjunto de cabeçalhos, seguida por uma linha em
+branco (marcando o fim dos cabeçalhos da mensagem), seguida pelo corpo da
+mensagem quando houver corpo.
+
+A ordem dos cabeçalhos é irrelevante, mas estabelece-se que uma boa prática é
+posicioná-los da seguinte ordem: cabeçalhos genéricos, cabeçalhos de
+requisição ou resposta e por fim cabeçalhos de entidade.
+
+Os cabeçalhos da mensagem tratam de informações a respeito do protocolo, do
+cliente e/ou do servidor, como a versão do protocolo, os encodings esperados,
+entre outras. São meta-informações genéricas.
+
+Já os cabeçalhos da entidade são meta-informações relacionadas ao conteúdo
+que ela encapsula.
+
+Pense na mensagem HTTP como um envelope no qual há o endereço onde ele deve
+ser entregue (cabeçalho genérico) e cuidados sobre como manuseá-lo (cabeçalho
+de entidade).
+
+Lembre-se que nem todas as mensagens HTTP precisam ter um corpo, como é o
+caso do cartão postal. O "envelope" (cabeçalho) é a própria informação.
+
+=head3 Requisição
+
+Uma requisição é uma mensagem HTTP enviada de um cliente para um servidor.
+
+Cada requisição possui pelo menos a linha inicial, aqui chamada de linha de
+requisição, contendo um método, um recurso e uma versão de protocolo.
+
+    GET /foo.html HTTP/1.1
+
+O método é um qualificador da requisição que informa ao servidor que tipo de
+operação deverá ser executada.
+
+O recurso é um objeto sobre o qual a operação será realizada, por exemplo, um
+documento, uma página html ou ainda um script ou aplicação.
+
+A versão indica ao servidor como tratar certas peculiaridades da requisição,
+como por exemplo se ele deve ou não manter uma conexão persistente.
+
+Uma requisição opcionalmente pode ainda conter cabeçalhos ou um conteúdo a ser
+enviado para o servidor, encapsulado em uma entidade.
+
+    GET /foo.html HTTP/1.1
+    Host: bar.com
+
+=head3 Resposta
+
+Uma resposta é uma mensagem HTTP enviada por um servidor a um cliente, em
+resposta a uma requisição.
+
+Cada resposta possui pelo menos a linha inicial, aqui chamada de linha de
+status, contendo a versão do protocolo, um código indicando o status da
+requisição (se foi atendida ou não, etc) e uma mensagem curta sobre o código
+de status retornado.
+
+    HTTP/1.1 200 OK
+
+Os códigos de status são números de 3 dígitos, divididos em 5 classes de
+acordo com sua natureza:
+
+B<1xx>: Informacional - A requisição foi recebida e o processamento continua.
+
+B<2xx>: Sucesso - A requisição foi recebida, entendida e aceita com sucesso.
+
+B<3xx>: Redirecionamento - Alguma outra ação precisa ser tomada para tratar a
+requisição.
+
+B<4xx>: Erro no cliente - A requisição está incorreta ou incompleta.
+
+B<5xx>: Erro no servidor - O servidor falhou ao atender a uma requisição
+aparentemente válida.
+
+Confira a RFC 2616, páginas 40 e 41, para maiores detalhes.
+
+Opcionalmente uma resposta pode conter cabeçalhos e um conteúdo encapsulado
+em uma entidade.
+
+=cut
+
+=head2 Métodos de requisição
+
+Conforme citado anteriormente um método é um qualificador para uma
+requisição, ou seja, através dos métodos que informamos ao sevidor que tipo
+de requisição estamos enviando, se queremos obter dados ou enviar dados, etc.
+
+=head3 Métodos Seguros (Safe Methods)
+
+A especificação convenciona (desde a RFC 1945) que alguns métodos sejam
+utilizados somente para B<obter> recursos, enquanto que outros podem B<criar>,
+B<alterar> ou B<excluir> recursos no servidor.
+
+Quando um método não causa nenhum efeito colateral (side effect) no servidor,
+ou seja, não cria, destrói ou altera qualquer recurso, ele é classificado como
+I<método seguro>.
+
+Isso implica que requisições sucessivas que utilizam métodos seguros B<sempre>
+devem resultar na mesma resposta.
+
+São exemplos de métodos seguros o I<OPTIONS>, o I<HEAD> e o I<GET>.
+
+Se um método pretende criar, alterar ou destruir algum recurso ele não pode
+ser considerado seguro neste contexto. São exemplos o I<POST>, o I<PUT> e o
+I<DELETE>. As RFCs no entanto B<não> estabelecem um termo como I<métodos
+inseguros ou unsafe methods>.
+
+Note que o termo I<seguro> aqui não tem nada a ver com segurança da informação
+trafegada, senhas ou autenticação de qualquer espécie, muito menos sobre a
+qualidade do método. Ele refere-se à expectativa que se tem do servidor ao
+tratar a mensagem, ou seja, se ela será utilizada para operações de
+"somente leitura" ou também "escrita".
+
+Nada impede no entanto que um script no servidor, ao tratar uma requisição GET
+faça acesso de escrita no banco de dados - são camadas diferentes. Porém,
+B<convenciona-se> e B<espera-se> que uma requisição GET deve ser utilizada
+apenas para B<obtenção> de recursos.
+
+Essa convenção permite que os clientes, browsers por exemplo, possam tratar as
+requisições não-seguras de forma particular, de forma a impedir que os
+usuários façam requisições potencialmente danosas inadvertidamente.
+
+Um exemplo é quando enviamos um formulário e ao clicar em "Recarregar" o
+browser pergunta se é isso mesmo que queremos fazer.
+
+=head3 Métodos Idempotentes (Idempotent Methods)
+
+Um método é dito idempotente quando sucessivas requisições causam o mesmo
+efeito que uma única. Métodos que não causam efeitos colaterais (métodos
+seguros) são idempotentes por definição.
+
+Entretanto é possível que uma sequência de requisições idempotentes não seja
+idempotente, tipicamente quando uma requisição utiliza algum valor obtido
+através de uma requsição anterior. Neste caso, dependendo da ordem das
+requisições o resultado pode ser diferente.
+
+Uma sequência de requisições que não causam efeitos colaterais é idempotente
+por definição.
+
+=head3 Método OPTIONS
+
+O método OPTIONS é utilizado para obter informações sobre as opções de
+comunicação disponibilizadas pelo sevidor, como por exemplo quais métodos ele
+implementa/suporta.
+
+Vamos a um exemplo. Para isto basta se conectar em um servidor web qualquer
+usando o C<nc> ou o C<telnet>.
+
+A requisição:
+
+    user@host:~$ nc terra.com.br 80
+    OPTIONS * HTTP/1.1          # Linha de requisição
+    Host: www.terra.com.br      # Cabeçalho
+                                # Nova linha (fim do cabeçalho e da mensagem)
+
+E sua resposta:
+
+    HTTP/1.1 200 OK                         # Requisição aceita!
+    Date: Sat, 28 Aug 2010 18:58:37 GMT     # Data e hora
+    Server: Apache                          # Web server
+    Allow: GET,HEAD,POST,OPTIONS,TRACE      # Métodos permitidos
+    Content-Length: 0                       # Conteúdo do corpo da mensagem
+    Connection: close                       # Ele deseja encerrar a conexão
+    Content-Type: text/plain                # Tipo de conteúdo enviado
+                                            # Fim do cabeçalho e da mensagem
+
+=head3 GET
+
+O método GET é utilizado para recuperar qualquer recurso (entidade)
+identificado por uma URI e disponibilizado por um servidor.
+
+É o método padrão utilizado para requisitar um conteúdo através de uma URL.
+
+Vamos fazer um exemplo ao contrário dessa vez. Vamos ver o que um browser
+envia para um servidor quando requisitamos uma url. Para isso vamos colocar
+um C<nc> escutando em uma porta e apontar o browser para lá.
+
+Requisição enviada pelo browser e recebida pelo nosso "servidor" fake:
+
+    user@host:~$ nc -l -p 2000
+    GET / HTTP/1.1
+    User-Agent: Opera/9.80 (X11; Linux i686; U; pt-BR) Presto/2.6.30
+        Version/10.61
+    Host: localhost:2000
+    Accept: text/html, application/xml;q=0.9, application/xhtml+xml,
+        image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1
+    Accept-Language: pt-BR,pt;q=0.9,en;q=0.8
+    Accept-Charset: iso-8859-1, utf-8, utf-16, *;q=0.1
+    Accept-Encoding: deflate, gzip, x-gzip, identity, *;q=0
+    Connection: Keep-Alive
+    
+
+Nesse caso não há resposta porque o C<nc> não é um servidor e não sabe o que
+responder :)
+
+Agora vamos fazer uma outra requisição com C<nc>:
+
+    user@host:~$ nc www.google.com.br 80
+    GET / HTTP/1.1
+    Host: www.google.com.br
+    
+E observar a resposta:
+
+    HTTP/1.1 200 OK
+    Date: Sat, 28 Aug 2010 19:58:11 GMT
+    Expires: -1
+    Cache-Control: private, max-age=0
+    Content-Type: text/html; charset=ISO-8859-1
+    ... # Cabeçalhos propositalmente omitidos pra caber aqui!
+    Server: gws
+    X-XSS-Protection: 1; mode=block
+    Transfer-Encoding: chunked
+    
+    1000
+    <!doctype html><html><head><meta http-equiv="content-type" content="...
+
+...que é a lista de cabeçalhos que o google responde para o browser, seguido
+de todo o html da sua página inicial.
+
+=head3 HEAD
+
+O método HEAD é idêntico ao método GET, exceto pelo fato que o corpo da
+mensagem não é enviado na resposta. É normalmente utilizado para obter
+informações sobre a entidade requisitada sem transferi-la.
+
+Por exemplo, a requisição:
+
+    user@host:~$ nc www.google.com.br 80
+    HEAD / HTTP/1.1
+    Host: www.google.com.br
+    
+
+Resulta em:
+
+    HTTP/1.1 200 OK
+    Date: Sat, 28 Aug 2010 20:13:23 GMT
+    Expires: -1
+    Cache-Control: private, max-age=0
+    Content-Type: text/html; charset=ISO-8859-1
+    ... # Cabeçalhos propositalmente omitidos pra caber aqui!
+    Server: gws
+    X-XSS-Protection: 1; mode=block
+    Transfer-Encoding: chunked
+    
+
+...que é o mesmo que a requisição anterior, exceto que esta não retorna o
+corpo da mensagem, o html da página inicial do google, no caso.
+
+=head3 POST
+
+O método POST é utilizado para submeter uma entidade a um recurso no servidor,
+ou seja, ele é utilizado para enviar algum conteúdo para ser manipulado por
+algo que já exista no servidor.
+
+O exemplo mais clássico é enviar dados de um formulário para uma aplicação
+web. Neste caso os campos do formulário são encapsulados numa entidade e
+submetidos à aplicação conforme o atributo C<action> da tag C<form>.
+
+Entretanto esta não é a única utilidade. Para maiores detalhes consulte as
+páginas 54 4 55 da RFC 2616.
+
+Vamos a um exemplo simples. Primeiramente vamos mostrar como um browser compõe
+uma requisição POST. Para isso considere o html (mal formando propositalmente)
+abaixo:
+
+    <form method="post" action="http://localhost:8080/">
+        <input type="text" name="user" value="foo" />
+        <input type="password" name="pass" value="bar" />
+        <input type="submit" name="bt_submit" value="OK" />
+    </form>
+
+Os browsers modernos são espertos pra lidar com o que faltou.
+
+Agora vamos subir nosso "fake server" na porta 8080 e enviar a requisição via
+browser:
+
+    user@host:~$ nc -l -p 8080
+    POST / HTTP/1.1
+    User-Agent: Opera/9.80 (X11; Linux i686; U; pt-BR) Presto/2.6.30
+        Version/10.61
+    Host: localhost:8080
+    Accept: text/html, application/xml;q=0.9, application/xhtml+xml,
+        image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1
+    Accept-Language: pt-BR,pt;q=0.9,en;q=0.8
+    Accept-Charset: iso-8859-1, utf-8, utf-16, *;q=0.1
+    Accept-Encoding: deflate, gzip, x-gzip, identity, *;q=0
+    Connection: Keep-Alive
+    Content-Length: 30
+    Content-Type: application/x-www-form-urlencoded
+
+    user=foo&pass=bar&bt_submit=OK
+
+Os cabeçalhos importantes aqui são C<Host>, obrigatório - identifica o host
+e porta onde está o recurso, C<Content-Length> que identifica o tamanho da
+entidade que está no corpo da mensagem e C<Content-Type> que identifica o tipo
+de dado que está sendo enviado dentro da entidade.
+
+O corpo da nossa mensagem possui exatamente os bytes:
+
+    user=foo&pass=bar&bt_submit=OK
+
+Que contam exatamente 30.
+
+Note que embora o conteúdo do form esteja "escondido" no corpo da mensagem,
+ele está sob a forma de texto plano. A senha "bar" apareceu completamente
+legível.
+
+O conteúdo também foi arranjado no formato de uma query string, conforme
+indica o cabeçalho C<Content-Type> (url encoded).
+
+Agora um outro exemplo. Vamos criar uma pequena aplicação web que saiba tratar
+uma requisição POST e vamos enviar uma requisição na unha!
+
+Considere a seguinte aplicação web:
+
+    #!/usr/bin/perl
+
+    use strict;
+    use warnings;
+    use Mojolicious::Lite;
+
+    post '/login' => sub {
+        my $self = shift;
+        
+        $self->stash({
+            'user' => $self->param('user'),
+            'pass' => $self->param('pass'),
+        });
+        
+    } => 'index';
+
+    shagadelic;
+
+    __DATA__
+    @@ index.html.ep
+    <h1>POST response!!!</h1>
+    <p>User: <%= $user %></p>
+    <p>User: <%= $pass %></p>
+
+Agora vamos subir a aplicação, que vai escutar na porta 3000:
+
+    user@host:~$ ./app.pl daemon
+
+E em seguida enviar a requisição via C<nc>:
+
+    user@host:~$ nc localhost 3000
+    POST /login HTTP/1.1
+    Host: localhost:3000
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 23
+
+    user=blabos&pass=foobar
+
+E observar a resposta:
+
+    HTTP/1.1 200 OK
+    Connection: Keep-Alive
+    Content-Type: text/html
+    X-Powered-By: Mojolicious (Perl)
+    Date: Sun, 05 Sep 2010 20:16:13 GMT
+    Content-Length: 64
+    Server: Mojolicious (Perl)
+
+    <h1>Hello World!!!</h1>
+    <p>User: blabos</p>
+    <p>User: foobar</p>
+
+Após os cabeçalhos da resposta, vem o html definido no template index.html.ep,
+conforme esperávamos.
+
+=head4 Upload de arquivos
+
+Está fora do escopo deste texto discutir profundamente todas as nuances por
+trás das diversas combinações de métodos, cabeçalhos, requisições e respostas
+do protocolo HTTP, mas vale abrir um pequeno parêntesis sobre upload de
+arquivos.
+
+O suporte a upload de arquivos via HTTP é discutido na RFC 1867 como extensão
+do HTML. Nela define-se como encapsular um arquivo genérico para ser enviado
+via como parte de um formulário, via HTTP. Note que esta é uma consideração
+de nível de aplicação, não de protocolo. O HTTP não faz nenhuma consideração
+a respeito do conteúdo que ele transmite encapsulado. O nome já diz "HyperText
+B<Transfer> Protocol".
+
+Maiores detalhes, verifique na RFC citada. Só preste bastante atenção porque
+um arquivo não é um elemento ordinário em um formulário.
+
+=head3 Outros
+
+Existem outros métodos de requisição que não serão abordados aqui, como o
+B<PUT> e o B<DELETE>. Para maiores informações, consulte a RFC 2616.
+
+=cut
+
+=head2 Considerações
+
+Como vimos, mesmo em uma requisição POST, onde os dados do formulário são
+transferidos dentro do corpo da mensagem, eles estão sempre em formato plano,
+completamente legíveis por qualquer um que intercepte a mensagem entre o
+cliente e o servidor, como é o caso dos proxies e gateways.
+
+O protocolo HTTP não faz nenhuma consideração quanto à privacidade dos dados
+envolvidos, ele só se preocupa com a transferência dos dados.
+
+Para tentar manter a privacidade dos dados transferidos, considere utilizar
+uma camada de segurança à parte como o HTTP sobre TLS, conforme descrito na
+RFC 2818.
+
+Considere também que o recurso requisitado (url) poderá ser gravado em
+arquivos de log ao longo do trajeto da mensagem entre cliente e servidor.
+Portanto evite passar senhas ou dados sensíveis utilizando requisições GET. E
+se precisar passar informações confidenciais, use POST B<E> pelo menos uma
+camada de criptografia decente.
+
+=cut
+
+=head2 Autor
+
+Blabos de Blebe é programador desde 1999 e atualmente também aluno do curso de
+Ciência da Computação no Centro Universitário da FEI em São Bernardo do Campo.
+</p>
+
+http://www.fei.edu.br/pt-BR/ensino/graduacao/ciencia_da_computacao/Pagi
+nas/ciencia_da_computacao.aspx
+
+http://www.fei.edu.br/pt-BR/Paginas/home.aspx
+
+=head2 Referências
+
+=over
+
+=item HTTP 0.9 - http://www.w3.org/Protocols/HTTP/AsImplemented.html
+        
+=item HTTP 1.0 - RFC 1945, http://www.ietf.org/rfc/rfc1945.txt
+
+=item HTTP 1.1 - RFC 2616, http://www.ietf.org/rfc/rfc1945.txt        
+        
+=item Upload de arquivos baseados em forms HTML - RFC 1867, http://www.ietf.org/rfc/rfc1867.txt
+        
+=item HTTPS - RFC 2818, http://www.ietf.org/rfc/rfc2818.txt
+
+=back
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da Creative Commons by-sa, http://creativecommons.org/licenses/by-sa/3.0/br/
+
+=cut
