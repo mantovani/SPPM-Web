@@ -18,7 +18,6 @@ requires 'Catalyst::Action::RenderView';
 requires 'Moose';
 requires 'namespace::autoclean';
 requires 'Catalyst::View::TT';
-requires 'HTML::FormHandler::Model::DBIC';
 requires 'parent';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
@@ -32,12 +31,14 @@ requires 'Cache::FileCache';
 requires 'DateTime';
 requires 'B::Hooks::OP::Check';
 requires 'DBIx::Class::ForceUTF8';
-requires 'HTML::FormHandler::Moose';
 requires 'DateTime::Format::MySQL';
 requires 'Catalyst::Controller::reCAPTCHA';
 requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'HTML::TreeBuilder::XPath';
 requires 'DBIx::Class::ForceUTF8';
+
+requires 'Test::UseAllModules';
+
 catalyst;
 
 install_script glob('script/*.pl');
