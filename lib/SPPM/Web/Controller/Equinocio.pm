@@ -3,7 +3,7 @@ package SPPM::Web::Controller::Equinocio;
 
 use Moose;
 use MooseX::MethodAttributes;
-extends 'Catalyst::Controller';
+BEGIN { extends 'Catalyst::Controller'; }
 
 use Calendar::Simple;
 use DateTime;
@@ -125,6 +125,7 @@ sub day : Chained('month') : PathPart('') : Args(1) {
 
 }
 # Thanks for Advent Calendar of Catalyst. :-)
+__PACKAGE__->meta->make_immutable;
 
 1;
 

@@ -3,7 +3,7 @@ package SPPM::Web::Controller::Local;
 use Moose;
 use MooseX::MethodAttributes;
 
-extends 'Catalyst::Controller';
+BEGIN { extends 'Catalyst::Controller' };
 use SPPM::Local;
 use utf8;
 
@@ -27,6 +27,8 @@ sub local :Chained('base') : PathPart(''): Args(1) {
     }
 
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 
