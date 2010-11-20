@@ -36,7 +36,7 @@ requires 'HTML::FormHandler::Moose';
 requires 'DateTime::Format::MySQL';
 requires 'Catalyst::Controller::reCAPTCHA';
 requires 'Catalyst::Plugin::Unicode::Encoding';
-
+requires 'HTML::TreeBuilder::XPath';
 catalyst;
 
 install_script glob('script/*.pl');
