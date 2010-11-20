@@ -31,11 +31,12 @@ Lembre-se: Não utilize o memcached como banco de dados, se quiser um banco de d
 
 =head3 Cache
 
-=over 
 
 Um espaço temporário onde dados acessados frequentemente podem ser armazenados para serem acessados rapidamente, economizando recursos.
 
 O cache é utilizado para sua aplicação ser escalavel, ou seja para manter resultados de querys, objetos que existe uma certa demora para ser calculado, thumbnails, ou seja qualquer coisa que demore para ser gerado.
+
+=over
 
 =item Tabela hash
 
@@ -69,6 +70,8 @@ Então a melhor solução seja em vez de liberar a memória de volta a um conjun
 
 Todo cache contém uma lista de slabs, que podemos dividir os blocos de memória em:
 
+=back
+
 =over
 
 =item full
@@ -100,6 +103,8 @@ Veja, o B<- a -> é o tamanho da estrutura mínima de um item no slab, e assim e
 
 Por isso se os limites são exagerados você terá uma perda de rendimento, este algoritimo é apenas eficiênte quando existem parâmetros bem definidos.
 
+=over
+
 =item TTL 
 
 TTL e um acrônimo do inglês para "Time-to-Live", que neste caso significamente especificamente o tempo de vida da informação no memcached.
@@ -123,6 +128,7 @@ As chaves podem ter no máximo 250 caracteres e os valores 1 MB, pela razão de 
 A segunda é por conta do algoritimo slab, como já foi discutido.
 
 =back
+
 
 =head2 Algoritimo para implementação.
 

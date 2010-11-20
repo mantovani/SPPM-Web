@@ -253,7 +253,7 @@ Pois é, você tem vários caminhos:
 
 =item	* Se usar o Firefox, pode instalar o XPather e obter o caminho com alguns cliques de mouse
 
-=over
+=back
 
 ( Não se esqueça de tirar os tbody(se existirem) do caminho. Eles não funcionam no HTML::TreeBuilder::XPath )
  
@@ -438,13 +438,11 @@ Andre Garcia Carneiro <andregarciacarneiro@gmail.com>
 
 =item Comunidade Perl
 
-
 =back
 
 =LICENÇA
 
 Você pode obter, alterar e republicar esse artigo sobre os mesmos termos da licença ARTISTIC2
-
 
 =head1 FONTES
 
@@ -456,19 +454,8 @@ Você pode obter, alterar e republicar esse artigo sobre os mesmos termos da lic
 
 =item http://www.w3.org/TR/xpath/
 
-=back
-
-
 
 =cut
-
-
-
-
-
-
-
-
 
 
 

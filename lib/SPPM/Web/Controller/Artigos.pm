@@ -3,7 +3,7 @@ package SPPM::Web::Controller::Artigos;
 use Moose;
 use MooseX::MethodAttributes;
  
-extends 'Catalyst::Controller';
+BEGIN { extends 'Catalyst::Controller'; }
 use SPPM::Artigo;
 use utf8;
 
@@ -21,6 +21,8 @@ sub artigo : Chained('/base') : PathPart('artigo') : Args(2) {
     );
 
 }
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 

@@ -31,11 +31,11 @@ Lembre-se: Não utilize o memcached como banco de dados, se quiser um banco de d
 
 =head3 Cache
 
-=over 
-
 Um espaço temporário onde dados acessados frequentemente podem ser armazenados para serem acessados rapidamente, economizando recursos.
 
 O cache é utilizado para sua aplicação ser escalavel, ou seja para manter resultados de querys, objetos que existe uma certa demora para ser calculado, thumbnails, ou seja qualquer coisa que demore para ser gerado.
+
+=over
 
 =item Tabela hash
 

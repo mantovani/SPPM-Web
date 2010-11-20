@@ -47,7 +47,7 @@
 
     </div>
     <div id="footer" class="png_bg">
-    [% PROCESS site/site_base/header.tt %]
+    [% PROCESS site/site_base/footer.tt %]
 
 
   </div>

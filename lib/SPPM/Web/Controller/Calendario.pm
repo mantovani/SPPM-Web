@@ -1,7 +1,11 @@
-
 package SPPM::Web::Controller::Calendario;
+use Moose;
 
-use Catalyst;
+use namespace::autoclean;
+
+
+BEGIN {extends 'Catalyst::Controller'; }
+
 
 use Class::CSV;
 use DateTime;
@@ -46,6 +50,9 @@ sub year : Chained('base') Args(0) {
     $c->stash->{year} = $year;
 
 }
+
+__PACKAGE__->meta->make_immutable;
+
 
 1;
 

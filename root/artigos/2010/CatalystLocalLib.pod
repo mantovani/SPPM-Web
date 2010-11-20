@@ -421,8 +421,6 @@ local:lib e configurar as variáveis de ambiente adequadamente.
 
 =cut
 
-=cut
-
 =head1 MÓDULOS ADICIONAIS (OPCIONAL)
 
 Uma das grandes vantagens do Catalyst é ser um framework bastante
@@ -493,8 +491,6 @@ desenvolvimento, conforme foi citado no início deste texto.
 
 =cut
 
-=cut
-
 =head2 Criação de Templates
 
 Um dos mais legais sistemas de templates que podem ser usados juntamente com o
@@ -557,8 +553,6 @@ simples.
 
 B<Catalyst::Helper::Model::Email> ou B<Catalyst::View::Email::Template> para
 envio de email.
-
-=cut
 
 =cut
 
@@ -654,8 +648,6 @@ quando terminar, ou você vai acaber caindo na armadilha anterior.
 
 =cut
 
-=cut
-
 =head1 REFERÊNCIAS
 
 B<Site do Catalyst>: L<http://www.catalystframework.org>
@@ -666,8 +658,6 @@ B<Livro de Catalyst>: L<http://apress.com/book/view/1430223650>
 
 B<Módulos recomendados para diversas finalidades>:
 L<http://www.perlfoundation.org/perl5/index.cgi?recommended_cpan_modules>
-
-=cut
 
 =cut
 

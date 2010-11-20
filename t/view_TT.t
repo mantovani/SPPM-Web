@@ -1,6 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 1;
+use Test::More;
 
-BEGIN { use_ok 'SPPM::Web::View::TT' }
+BEGIN  { use_ok 'Catalyst' }
 
+#BEGIN { use_ok 'SPPM::Web::View::TT' }
+
+done_testing(); 
