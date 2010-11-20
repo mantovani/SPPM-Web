@@ -424,6 +424,8 @@ Lembrando que TODOS os métodos do HTML::Element que você usava como o HTML::Tr
 
 Abraço!
 
+=back
+
 =head1 AUTOR
 
 Andre Garcia Carneiro <andregarciacarneiro@gmail.com>
