@@ -5,8 +5,8 @@ BEGIN { extends 'Catalyst::View::TT' };
 
 __PACKAGE__->config(
     INCLUDE_PATH => [
-        SPPM::Web->path_to('root', 'templates', 'src' ),
-        SPPM::Web->path_to('root', 'templates', 'lib' )
+#        SPPM::Web->path_to('root', 'templates', 'src' ),
+#        SPPM::Web->path_to('root', 'templates', 'lib' )
     ],
     TEMPLATE_EXTENSION => '.tt',
     ENCODING    => 'utf8',

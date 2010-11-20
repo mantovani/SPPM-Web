@@ -22,7 +22,6 @@ requires 'parent';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
 test_requires 'Test::More' => '0.88';
-requires 'CatalystX::Declare';
 requires 'Calendar::Simple';
 requires 'Pod::Xhtml';
 requires 'Date::Calc';
