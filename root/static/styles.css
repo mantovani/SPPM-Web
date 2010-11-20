@@ -13,8 +13,8 @@ img,fieldset {
 
 
 body {
-    font:11px Arial, Helvetica, sans-serif;
-    color:#333;
+    font:14pt Arial, Helvetica, sans-serif;
+    color: #333;
     background:url(/static/images/q.gif) repeat 0px 0px;
   }
 
@@ -287,9 +287,9 @@ span.clear {
 #container p {
     color:#757575;
     text-align: justify;
-    font:11px Tahoma, Arial, Helvetica, sans-serif;
+    font:12pt Tahoma, Arial, Helvetica, sans-serif;
     margin-bottom:12px;
-    line-height:15px;
+    line-height:1.5em;
   }
 
 #container dl {
@@ -650,10 +650,10 @@ a.expand {
 
 
 #container .top_left {
-    width:510px;
+    width:590px;
     float:left;
-    background:url(/static/images/braces.gif) left top no-repeat;
-    padding:0px 0px 0px 50px;
+ 
+    padding:0px 0px 0px 20px;
   }
 
 
@@ -697,7 +697,7 @@ a.expand {
 
 
 #container .top h1 {
-    font:24px Arial, Helvetica, sans-serif;
+    font:20pt Arial, Helvetica, sans-serif;
     color:#bc0108;
     background:url(/static/images/dots.gif) repeat-x 0px 100%;
     margin-bottom:10px;
@@ -707,7 +707,7 @@ a.expand {
 
 
 #container .top h2 {
-    font:20px Arial, Helvetica, sans-serif;
+    font:16pt Arial, Helvetica, sans-serif;
     color:#bc0108;
     margin-bottom:10px;
     padding:5px 0px;
@@ -715,10 +715,11 @@ a.expand {
   }
 
 #container .top_right {
-    width:350px;
+    width:320px;
     float:right;
-    background:url(/static/images/braces.gif) left top no-repeat;
-    padding:0px 0px 15px 50px;
+  
+    padding:0px 0px 15px 20px;
+	margin-right:20px;
   }
 
 
@@ -760,6 +761,10 @@ a.expand {
     padding:13px 0px 15px 20px;
   }
 
+#container .bottom .left_section .side_largo {
+    width:940px;
+    
+  }
 
 #container .bottom .left_section .side .artigos {
     background:url(/static/images/artigos_heading.gif) no-repeat 0px 0px;
