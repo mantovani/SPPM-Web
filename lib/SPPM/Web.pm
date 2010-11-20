@@ -22,7 +22,26 @@ use Catalyst qw/
     ConfigLoader
     Static::Simple
 	Unicode::Encoding
+<<<<<<< HEAD
     Facebook
+=======
+
+
+
+    StackTrace
+    Authentication
+    Authorization::Roles
+    Session
+    Session::Store::FastMmap
+    Session::State::Cookie
+
+    Cache
+    Cache::FastMmap 
+    PageCache 
+
+
+
+>>>>>>> 8c9f9739aef3fe19ef55c685848216d876474317
 /;
 
 extends 'Catalyst';
@@ -45,6 +64,7 @@ __PACKAGE__->config(
 
 __PACKAGE__->config( 'Plugin::Authentication' =>
     {
+<<<<<<< HEAD
         default => 'facebook',
 
         realms => {
@@ -61,13 +81,41 @@ __PACKAGE__->config( 'Plugin::Authentication' =>
             facebook => {
                 credential => {
                     class => "Facebook",
+=======
+        default => {
+            credential => {
+                class => 'Password',
+                password_field => 'password',
+                password_type => 'clear'
+            },
+            store => {
+                class => 'Minimal',
+                users => {
+                    admin => {
+                        password => "admin123",
+                        editor => 'yes',
+                        roles => [qw/admin/],
+                    },
+                    bob => {
+                        password => "s00p3r",
+                        editor => 'yes',
+                        roles => [qw/admin/],
+                    },
+                    william => {
+                        password => "s3cr3t",
+                        roles => [qw/admin/],
+                    }
+>>>>>>> 8c9f9739aef3fe19ef55c685848216d876474317
                 }
             }
         }
     }
 );
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8c9f9739aef3fe19ef55c685848216d876474317
 
 __PACKAGE__->config->{'recaptcha'}->{'pub_key'} =
 '6Le0CroSAAAAACWhFwcZ0K54ooBT6KBQ3VTfIoqz';
