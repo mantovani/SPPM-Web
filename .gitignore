@@ -11,3 +11,4 @@ nytprof
 nytprof.out
 MANIFEST.bak
 *.tar.gz
+*swp
