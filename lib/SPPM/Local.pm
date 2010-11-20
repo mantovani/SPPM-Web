@@ -9,7 +9,7 @@ has legal_chars => (
 );
 
 has basedir => (
-    is => 'rw',
+    is => 'ro',
     isa => 'Str',
     required => 1
 );
@@ -37,6 +37,10 @@ after file => sub {
         if $orig =~ /\.\./ || $orig =~ /[^\w$self->legal_chars]/;
 
     $self->fullpath(join('/', $self->basedir, $orig));
+
+    die "What file?"
+        if ! -f $self->fullpath;
+
 };    
     
 has fullpath => (
