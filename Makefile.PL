@@ -37,6 +37,7 @@ requires 'DateTime::Format::MySQL';
 requires 'Catalyst::Controller::reCAPTCHA';
 requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'HTML::TreeBuilder::XPath';
+requires 'DBIx::Class::ForceUTF8';
 catalyst;
 
 install_script glob('script/*.pl');

@@ -1,48 +1,52 @@
 
-use CatalystX::Declare;
+package SPPM::Web::Controller::Calendario;
 
-controller SPPM::Web::Controller::Calendario {
-    use Class::CSV;
-    use DateTime;
+use Catalyst;
 
-    action base as 'calendario' under '/base' {
-        $ctx->stash->{calendario_dir} = $ctx->path_to('root',
-            'calendario');
+use Class::CSV;
+use DateTime;
+
+sub base : Chained('/base') PathPart('equinocio') CaptureArgs(0) {
+    my ($self, $c) = @_;
+    $c->stash->{calendario_dir} = $c->path_to('root', 'calendario');
+}
+
+sub index : Chained('base') PathPart('') Args(0) {
+    my ($self, $c) = @_;
+
+    opendir DIR, $c->stash->{calendario_dir} or die "Error opening: $!";
+    my @years = sort grep { /\d{4}/ } readdir DIR;
+    closedir DIR;
+
+    my $year = pop @years || DateTime->now->year;
+    $c->res->redirect( $c->uri_for('/calendario', $year) );
+}
+
+sub year : Chained('base') Args(0) {
+    my ($self, $c, $year) = @_;
+
+    if ($year !~ /^\d{4}$/) {
+        $c->res->redirect( $c->uri_for('/') );
+        $c->detach;
     }
 
-    final action index as '' under base {
-        opendir DIR, $ctx->stash->{calendario_dir}
-        or die "Error opening: $!";
-        my @years = sort grep { /\d{4}/ } readdir DIR;
-        closedir DIR;
+    my $f_csv = $c->path_to('root', 'calendario', "$year.csv");
 
-        my $year = pop @years || DateTime->now->year;
-        $ctx->res->redirect( $ctx->uri_for('/calendario', $year) );
+    if (! -f $f_csv) {
+        $c->res->redirect( $c->uri_for('/') );
+        $c->detach;
     }
 
-    final action year (Int $year) as '' under base {
-        if ($year !~ /^\d{4}$/) {
-            $ctx->res->redirect( $ctx->uri_for('/') );
-            $ctx->detach;
-        }
-
-        my $f_csv = $ctx->path_to('root', 'calendario', "$year.csv");
-
-        if (! -f $f_csv) {
-            $ctx->res->redirect( $ctx->uri_for('/') );
-            $ctx->detach;
-        }
-
-        my $csv = Class::CSV->parse(
-            filename    => $f_csv,
-            fields      => [qw/data name url/]
-        );
-            
-        $ctx->stash->{events} = [ @{$csv->lines()} ]; 
-        $ctx->stash->{year} = $year;
-
-    }
+    my $csv = Class::CSV->parse(
+        filename    => $f_csv,
+        fields      => [qw/data name url/]
+    );
+        
+    $c->stash->{events} = [ @{$csv->lines()} ]; 
+    $c->stash->{year} = $year;
 
 }
+
+1;
 
 
