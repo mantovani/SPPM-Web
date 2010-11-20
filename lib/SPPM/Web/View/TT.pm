@@ -1,8 +1,7 @@
-
 package SPPM::Web::View::TT;
 
 use Moose;
-extends 'Catalyst::View::TT';
+BEGIN { extends 'Catalyst::View::TT' };
 
 __PACKAGE__->config(
     INCLUDE_PATH => [
