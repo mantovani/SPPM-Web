@@ -10,7 +10,7 @@ requires 'Catalyst::Runtime' => '5.80016';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::Cache';
-requires 'Catalyst::Plugin::Unicode';
+
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::View::TT';
 requires 'HTML::FormHandler::Model::DBIC';
@@ -30,6 +30,8 @@ requires 'DBIx::Class::ForceUTF8';
 requires 'HTML::FormHandler::Moose';
 requires 'DateTime::Format::MySQL';
 requires 'Catalyst::Controller::reCAPTCHA';
+requires 'Catalyst::Plugin::Unicode::Encoding';
+
 catalyst;
 
 install_script glob('script/*.pl');

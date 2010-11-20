@@ -14,11 +14,14 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use parent qw/Catalyst/;
-use Catalyst qw/Unicode
-                Cache
+
+
+use Catalyst qw/
 		-Debug
+        Unicode::Encoding
+        Cache
 		ConfigLoader
-                Static::Simple/;
+        Static::Simple/;
 our $VERSION = '0.01';
 
 # Configure the application.
@@ -45,6 +48,9 @@ __PACKAGE__->config->{'recaptcha'}->{'pub_key'} =
 __PACKAGE__->config->{'recaptcha'}->{'priv_key'} =
 '6Le0CroSAAAAAIAsTZ9CRMNdA88jktjzYMnVa6or';
 
+__PACKAGE__->config( {
+    ENCODING     => 'utf-8',
+} );
 
 # Start the application
 __PACKAGE__->setup();

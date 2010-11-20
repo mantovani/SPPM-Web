@@ -10,6 +10,7 @@ use DateTime;
 use SPPM::Web::Pod;
 use File::stat;
 use HTML::TreeBuilder::XPath;
+use utf8;
 
 sub base : Chained('/base') PathPart('equinocio') CaptureArgs(0) {
 	my ($self, $c) = @_;
