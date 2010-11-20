@@ -1,7 +1,13 @@
 *mp3
 *~
+META.yml
+Makefile
 blib
 inc
 pm_to_blib
-Makefile
-META.yml
+MANIFEST
+Makefile.old
+nytprof
+nytprof.out
+MANIFEST.bak
+*.tar.gz
