@@ -30,6 +30,7 @@ requires 'DBIx::Class::ForceUTF8';
 requires 'HTML::FormHandler::Moose';
 requires 'DateTime::Format::MySQL';
 requires 'Catalyst::Controller::reCAPTCHA';
+requires 'DBIx::Class::ForceUTF8';
 catalyst;
 
 install_script glob('script/*.pl');
