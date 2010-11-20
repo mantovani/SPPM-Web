@@ -34,7 +34,9 @@ requires 'DateTime::Format::MySQL';
 requires 'Catalyst::Controller::reCAPTCHA';
 requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'HTML::TreeBuilder::XPath';
-requires 'DBIx::Class::ForceUTF8';
+
+requires 'Cache::File';
+requires 'Authen::Simple::Twitter';
 
 requires 'Test::UseAllModules';
 
