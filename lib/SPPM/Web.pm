@@ -14,9 +14,15 @@ use Catalyst::Runtime 5.80;
 
 use Catalyst qw/
     -Debug
+    +CatalystX::SimpleLogin
+    Authentication
+    Session
+    Session::State::Cookie
+    Session::Store::File
     ConfigLoader
     Static::Simple
 	Unicode::Encoding
+    Facebook
 /;
 
 extends 'Catalyst';
@@ -35,11 +41,32 @@ $VERSION = eval $VERSION;
 
 __PACKAGE__->config(
     name => 'SPPM::Web',
-    'Plugin::Cache' => { backend => {
-        class => 'Cache::FileCache',
-        namespace => 'SPPM::Web',
-    } },
 );
+
+__PACKAGE__->config( 'Plugin::Authentication' =>
+    {
+        default => 'facebook',
+
+        realms => {
+            twitter => {
+                credential => {
+                    class => "Twitter",
+                },
+
+                consumer_key => 'twitter-consumer_key-here',
+                consumer_secret => 'twitter-secret-here',
+                callback_url => 'http://mysite.com/callback',
+            },
+
+            facebook => {
+                credential => {
+                    class => "Facebook",
+                }
+            }
+        }
+    }
+);
+
 
 
 __PACKAGE__->config->{'recaptcha'}->{'pub_key'} =
