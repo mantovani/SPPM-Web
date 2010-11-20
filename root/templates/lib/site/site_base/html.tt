@@ -21,16 +21,30 @@
  <body>
 
 <div id="layout">
-  <div id="inner_layout">
-    <div id="header" class="png_bg">
-    [% PROCESS site/site_base/header.tt %]
-    </div>
+	<div id="inner_layout">
+		<div id="header" class="png_bg">
+			[% PROCESS site/site_base/header.tt %]
+		</div>
 
-    <div id="container" class="png_bg">
+		<div id="container" class="png_bg">
 
-<br/><br/>
+			[% content %]
+            <center><br /><br />
+            <div>
+                <div class="addthis_toolbox addthis_32x32_style addthis_default_style">
+                    <a class="addthis_button_facebook"></a>
+                    <a class="addthis_button_twitter"></a>
+                    <a class="addthis_button_email"></a>
+                    <a class="addthis_button_google"></a>
+                    <a class="addthis_button_compact"></a>
+                </div>
+                <!-- AddThis Button END -->
+            </div>
+               <br /><br /><center/>
+			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4caea3431b6a7690"></script>
+		</div>
 
-[% content %]
+	</div>
 
 <div class="addthis_toolbox addthis_32x32_style addthis_default_style">
     <a class="addthis_button_facebook"></a>
@@ -39,6 +53,7 @@
     <a class="addthis_button_google"></a>
     <a class="addthis_button_compact"></a>
 </div>
+<<<<<<< HEAD
 <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4caea3431b6a7690"></script>
 <!-- AddThis Button END -->
 
@@ -54,6 +69,9 @@
 </div>
 
 
+=======
+ 
+>>>>>>> 7ec0b05f252ab60133b7894274fa841737e77835
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

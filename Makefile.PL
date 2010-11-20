@@ -13,6 +13,7 @@ requires 'Catalyst::Runtime' => '5.80029';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::Cache';
+requires 'Catalyst::Plugin::StackTrace';
 
 requires 'Catalyst::Action::RenderView';
 requires 'Moose';
@@ -34,9 +35,7 @@ requires 'DateTime::Format::MySQL';
 requires 'Catalyst::Controller::reCAPTCHA';
 requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'HTML::TreeBuilder::XPath';
-
 requires 'Cache::File';
-requires 'Authen::Simple::Twitter';
 
 requires 'Test::UseAllModules';
 
