@@ -17,6 +17,22 @@ use Catalyst qw/
     ConfigLoader
     Static::Simple
 	Unicode::Encoding
+
+
+
+    StackTrace
+    Authentication
+    Authorization::Roles
+    Session
+    Session::Store::FastMmap
+    Session::State::Cookie
+
+    Cache
+    Cache::FastMmap 
+    PageCache 
+
+
+
 /;
 
 extends 'Catalyst';
@@ -41,6 +57,36 @@ __PACKAGE__->config(
     } },
 );
 
+__PACKAGE__->config( 'Plugin::Authentication' =>
+    {
+        default => {
+            credential => {
+                class => 'Password',
+                password_field => 'password',
+                password_type => 'clear'
+            },
+            store => {
+                class => 'Minimal',
+                users => {
+                    admin => {
+                        password => "admin123",
+                        editor => 'yes',
+                        roles => [qw/admin/],
+                    },
+                    bob => {
+                        password => "s00p3r",
+                        editor => 'yes',
+                        roles => [qw/admin/],
+                    },
+                    william => {
+                        password => "s3cr3t",
+                        roles => [qw/admin/],
+                    }
+                }
+            }
+        }
+    }
+);
 
 __PACKAGE__->config->{'recaptcha'}->{'pub_key'} =
 '6Le0CroSAAAAACWhFwcZ0K54ooBT6KBQ3VTfIoqz';
