@@ -5,6 +5,7 @@ use MooseX::MethodAttributes;
 
 extends 'Catalyst::Controller';
 use SPPM::Local;
+use utf8;
 
 sub base :Chained('/base') : PathPart(''): CaptureArgs(0) {}
 
