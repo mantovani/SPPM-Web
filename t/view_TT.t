@@ -4,3 +4,4 @@ use Test::More tests => 1;
 
 BEGIN { use_ok 'SPPM::Web::View::TT' }
 
+done_testing(); 

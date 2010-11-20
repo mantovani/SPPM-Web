@@ -253,7 +253,7 @@ Pois é, você tem vários caminhos:
 
 =item	* Se usar o Firefox, pode instalar o XPather e obter o caminho com alguns cliques de mouse
 
-=over
+=back
 
 ( Não se esqueça de tirar os tbody(se existirem) do caminho. Eles não funcionam no HTML::TreeBuilder::XPath )
  
