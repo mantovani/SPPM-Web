@@ -1,27 +1,27 @@
 [% META title=" Empresas " %]
 
-      <div id="container_top">
-        <div id="container_bottom">
-          <div class="top">
-            <h2>Empresas</h2>
-            <div class="whois">
-<p>            
-Abaixo uma rela&ccedil;&atilde;o de empresas que trabalham com Perl no estado de S&atilde;o Paulo.
-</p>
+<div id="container_top">
+	<div id="container_bottom">
+		<div class="top">
+			<h2>Empresas</h2>
+			<div class="whois">
+				<p>
+					Abaixo uma rela&ccedil;&atilde;o de empresas que trabalham com Perl no estado de S&atilde;o Paulo.
+				</p>
 
-<table cellspacing=20><tr><td>
-<!-- Responsavel pela inclusao: Otavio Fernandes -->
-<a href="/locaweb"><img src="/static/images/empresas/Locaweb.jpg" alt="Locaweb" border="0"  width="200" height="200"></a>
-</td><td>
-<!-- Responsavel pela inclusao: Andre Carneiro -->
-<img src="/static/images/empresas/Jacotei.gif" alt="Jacotei" border="0" width="190" height="90">
+				<table cellspacing=20><tr><td>
+				<!-- Responsavel pela inclusao: Otavio Fernandes -->
+				<a href="/locaweb"><img src="/static/images/empresas/Locaweb.jpg" alt="Locaweb" border="0"  width="200" height="200"></a>
+				</td><td>
+				<!-- Responsavel pela inclusao: Andre Carneiro -->
+				<img src="/static/images/empresas/Jacotei.gif" alt="Jacotei" border="0" width="190" height="90">
 
-</td></tr></table>
+				</td></tr></table>
 
-<h5>Caso sua empresa utiliza Perl, e n&atilde;o esta relacionada abaixo, por favor entre em <a href="/contato">contato</a> conosco !</h4>
+				<p>Caso sua empresa utiliza Perl, e n&atilde;o esta relacionada abaixo, por favor entre em <a href="/contato">contato</a> conosco !</p>
+			</div>
 		</div>
-          </div>
-        </div>
-      </div>
+	</div>
+</div>
 
 
