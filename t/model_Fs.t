@@ -4,14 +4,14 @@ use strict;
 
 use FindBin qw($Bin);
 
-use_ok('SPPM::FS');
+use_ok('SPPM::Web::Model::FS');
 
 my $obj;
 
-eval { $obj = SPPM::FS->new(basedir => "$Bin/test-notexist") };
+eval { $obj = SPPM::Web::Model::FS->new(basedir => "$Bin/test-notexist") };
 is($@, '', 'basedir not exist');
 
-eval { $obj = SPPM::FS->new(basedir => "$Bin/test-basedir") };
+eval { $obj = SPPM::Web::Model::FS->new(basedir => "$Bin/test-basedir") };
 is($@, '', 'basedir exist');
 
 eval { $obj->file('../local.tt') };
