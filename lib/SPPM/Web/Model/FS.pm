@@ -1,6 +1,8 @@
-package SPPM::FS;
+package SPPM::Web::Model::FS;
 
 use Moose;
+
+extends 'Catalyst::Model';
 
 has legal_chars => (
     is => 'ro',
@@ -9,9 +11,9 @@ has legal_chars => (
 );
 
 has basedir => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Str',
-    required => 1
+    default => '/tmp'
 );
 
 after basedir => sub {
@@ -48,6 +50,6 @@ has fullpath => (
     isa => 'Str',
     default => ''
 );
-        
+    
 1;
 

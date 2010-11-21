@@ -1,7 +1,7 @@
-package SPPM::Artigo;
+package SPPM::Web::Model::Artigo;
 
 use Moose;
-extends 'SPPM::FS';
+extends 'SPPM::Web::Model::FS';
 
 use Cache::File;
 use File::stat;

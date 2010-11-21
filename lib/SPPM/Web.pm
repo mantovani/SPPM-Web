@@ -52,6 +52,7 @@ __PACKAGE__->config( {
     ENCODING     => 'utf-8',
 } );
 
+
 # Start the application
 __PACKAGE__->setup();
 
