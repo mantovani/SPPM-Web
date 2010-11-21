@@ -13,22 +13,18 @@
       </div>
       <div id="menu">
         <ul>
-          <li class="home"><a href="/" [% IF template.current_page == 'home' %] class="current" [% END %]><img src="/static/images/dot_clear.gif" alt="Principal" /></a></li>
+          <li class="home"><a href="/" [% IF template.current_page == 'home' %] class="current" [% END %]>Home</a></li>
           <li class="pipe"></li>
 
-          <li class="quem"><a href="/quemsomos" [% IF template.current_page == 'quemsomos' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Quemsomos" width="1" height="1" /></a></li>
+          <li class="quem"><a href="/quemsomos" [% IF template.current_page == 'quemsomos' %] class="current" [% END %] >Quem Somos</a></li>
           <li class="pipe"></li>
-          <li class="social"><a href="/encontrosocial" [% IF template.current_page == 'encontrosocial' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Encontro Social" width="1" height="1" /> </a></li>
+          <li class="social"><a href="/encontrosocial" [% IF template.current_page == 'encontrosocial' %] class="current" [% END %] >Encontro Social</a></li>
           <li class="pipe"></li>
-          <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Artigos" /> </a></li>
+          <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %] >Artigos</a></li>
           <li class="pipe"></li>
-          <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Blogs" width="1" height="1" /> </a></li>
-
+          <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %] >Blogs</a></li>
           <li class="pipe"></li>
-          <li class="tecnico"><a href="/encontrotecnico" [% IF template.current_page == 'encontrotecnico' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Encontro Tecnico" width="1" height="1" /> </a></li>
-          <li class="pipe"></li>
-          <li class="treinamento"><a href="/treinamento" [% IF template.current_page == 'treinamento' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Treinamento" width="1" height="1" /> </a></li>
-          <li class="pipe"></li>
-          <li class="lista"><a href="/lista" [% IF template.current_page == 'lista' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Lista" width="1" height="1" /> </a></li>
+          <li class="treinamento"><a href="/treinamento" [% IF template.current_page == 'treinamento' %] class="current" [% END %] >Treinamento [% $c.url_for('/') %]</a></li>
         </ul>
+
       </div>

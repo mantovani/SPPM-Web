@@ -151,7 +151,7 @@ span.clear {
   }
 
 
-#menu ul li a.current {
+#menu ul li.current {
     background:url(/static/images/arrow.gif) no-repeat 50% 0px;
   }
 
@@ -163,7 +163,7 @@ span.clear {
     padding:0px;
   }
 
-
+/*
 #menu ul li.home {
     background:url(/static/images/home.gif) no-repeat 50% 15px;
   }
@@ -253,6 +253,19 @@ span.clear {
 #menu ul li.lista a {
     width:29px;
   }
+*/
+
+#menu ul li a {
+color:white;
+font-family:monospace;
+font-size:10pt;
+font-weight:bold;
+padding-top:11px;
+text-decoration:none;
+text-transform:uppercase;
+}
+
+#menu ul {overflow: auto}
 
 
 #container {
@@ -346,29 +359,6 @@ span.clear {
     margin-bottom:0px;
   }
 
-
-#container .box .head {
-    margin-bottom:10px;
-  }
-
-
-#container .box .head p {
-    margin-bottom:0px;
-    font-size:10px;
-  }
-
-
-#container_left .box .section {
-    width:739px;
-    overflow:hidden;
-  }
-
-
-#container_left .box .small_box {
-    padding:6px 12px 6px 2px;
-    width:349px;
-    float:left;
-  }
 
 
 #container_left .box .small_box h3 {
@@ -997,4 +987,16 @@ fieldset.area legend{
     font-weight: bolder;
 }
 
-
+/* CRON area! */
+.withShadowBox {
+    /*-moz-border-radius:15px 15px 15px 15px; saiu do padrao do site.*/
+    -moz-box-shadow:5px 5px 0 #DDDDDD;
+    background-color:white;
+    padding:0 30px;
+    /*TODO fazer isso pro chorme/ie9 quando estiver online*/
+}
+ 
+#logos_perl {
+    margin:0 auto;
+    width:372px;
+}
