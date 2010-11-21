@@ -10,15 +10,22 @@ name 'SPPM-Web';
 all_from 'lib/SPPM/Web.pm';
 
 requires 'Catalyst::Runtime' => '5.80029';
+
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
-requires 'Catalyst::Plugin::Cache';
-requires 'Catalyst::Plugin::StackTrace';
+requires 'Catalyst::Plugin::Authentication';
+requires 'Catalyst::Plugin::Session';
+requires 'Catalyst::Plugin::Session::State::Cookie';
+requires 'Catalyst::Plugin::Session::Store::File';
+requires 'Catalyst::Plugin::Facebook';
+requires 'Catalyst::Plugin::Unicode::Encoding';
 
+requires 'Catalyst::Controller::reCAPTCHA';
 requires 'Catalyst::Action::RenderView';
+requires 'Catalyst::View::TT';
+
 requires 'Moose';
 requires 'namespace::autoclean';
-requires 'Catalyst::View::TT';
 requires 'parent';
 requires 'Config::General'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
@@ -30,10 +37,7 @@ requires 'Class::CSV';
 requires 'Cache::FileCache';
 requires 'DateTime';
 requires 'B::Hooks::OP::Check';
-requires 'DBIx::Class::ForceUTF8';
 requires 'DateTime::Format::MySQL';
-requires 'Catalyst::Controller::reCAPTCHA';
-requires 'Catalyst::Plugin::Unicode::Encoding';
 requires 'HTML::TreeBuilder::XPath';
 requires 'Cache::File';
 
