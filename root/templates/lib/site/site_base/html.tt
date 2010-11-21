@@ -46,20 +46,6 @@
 
 	</div>
 
-<div class="addthis_toolbox addthis_32x32_style addthis_default_style">
-    <a class="addthis_button_facebook"></a>
-    <a class="addthis_button_twitter"></a>
-    <a class="addthis_button_email"></a>
-    <a class="addthis_button_google"></a>
-    <a class="addthis_button_compact"></a>
-</div>
-<<<<<<< HEAD
-<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4caea3431b6a7690"></script>
-<!-- AddThis Button END -->
-
-
-<br/><br/>
-
     </div>
     <div id="footer" class="png_bg">
     [% PROCESS site/site_base/footer.tt %]
@@ -68,10 +54,6 @@
   </div>
 </div>
 
-
-=======
- 
->>>>>>> 7ec0b05f252ab60133b7894274fa841737e77835
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -81,6 +63,8 @@ try {
 var pageTracker = _gat._getTracker("UA-12787073-1");
 pageTracker._trackPageview();
 } catch(err) {}</script>
+
+
 
 </body>
 </html>

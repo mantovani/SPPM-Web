@@ -1,42 +1,51 @@
-
 [% META title=" Encontro Social " current_page="encontrosocial" %]
-
-      <div id="container_top">
+    <div id="container_top">
         <div id="container_bottom">
-          <div class="top">
-            <h2>Encontro Social</h2>
-            <div class="whois">
-            
-
-		<p>Realizamos encontros sociais regularmentem, com boas cervejas e para falarmos de pol&iacute;tica, mercado, literatura, emprego, cozinha, fotografia, viagens e algumas vezes sobre perl!</p>
-	
-
-		<h3>Quando eles acontecem ? Como marcar um ?</h3>
-
-		<p>Se informe melhor pela <a href="/lista">lista de discuss&atilde;o</a> sobre os encontros, n&atilde;o h&aacute; uma frequencia definida, normalmente algu&eacute;m se pronuncia na lista sobre o assunto e ent&atilde;o o lugar e o hor&aacute;rio s&atilde;o definidos.</p>
-
-
-		<h3>2010</h3>
-		<ul>
-			<li>08/10/2010 - O'Malleys</li>
-			<li>10/09/2010 - O'Malleys</li>
-			<li>20/08/2010 - O'Malleys</li>
-			<li>18/06/2010 - The Blue Pub</li>
-			<li>25/03/2010 - O'Malleys</li>
-			<li>19/03/2010 - Mulligans</li>
-		</ul>
-		<h3>2009</h3>
-		<ul>
-		<li>15/01/2010 - Mulligans</li>
-		<li>29/01/2010 - S&atilde;o Bernado do Campo (FEI) </li>
-		<li>26/02/2010 - The Pub</li>
-        <li>19/03/2010 - O'Malleys</li>
-        <li>24/03/2010 - Mulligans</li>
-        </ul>
-
-		</div>
-          </div>
+            <div class="top">
+                <h2>Encontro Social</h2>
+                
+                <div class="whois">
+                    <p>Os Encontros Sociais, tamb&eacute;m chamados de ES,
+                    s&atilde;o os momentos em que nos reunimos na
+                    presen&ccedil;a da sagrada cerveja para para falar de
+                    pol&iacute;tica, mercado, literatura, emprego, cozinha,
+                    fotografia, viagens e de vez em quando at&eacute; Perl!!!</p>
+                    
+                    <p>Nos ES deixamos um pouco de lado o aspecto
+                    t&eacute;cnico e profissional e nos focamos no aspecto
+                    humano de cada um. &Eacute; um encontro de pessoas com
+                    pessoas e para pessoas.</p>
+                    
+                    <h3>Quando eles acontecem? Como marcar um?</h3>
+                    
+                    <p>Informe-se melhor pela <a href="/lista">lista de
+                    discuss&atilde;o</a>. N&atilde;o h&aacute; uma
+                    frequ&ecirc;ncia definida, normalmente algu&eacute;m se
+                    pronuncia sobre o assunto e ent&atilde;o o lugar
+                    e hor&aacute;rio s&atilde;o definidos.</p>
+                    
+                    <h3>2010</h3>
+                    
+                    <ul>
+                        <li>08/10/2010 - O'Malleys</li>
+                        <li>10/09/2010 - O'Malleys</li>
+                        <li>20/08/2010 - O'Malleys</li>
+                        <li>18/06/2010 - The Blue Pub</li>
+                        <li>25/03/2010 - O'Malleys</li>
+                        <li>19/03/2010 - Mulligans</li>
+                    </ul>
+                    
+                    <h3>2009</h3>
+                    
+                    <ul>
+                        <li>15/01/2010 - Mulligans</li>
+                        <li>29/01/2010 - S&atilde;o Bernado do Campo (FEI) </li>
+                        <li>26/02/2010 - The Pub</li>
+                        <li>19/03/2010 - O'Malleys</li>
+                        <li>24/03/2010 - Mulligans</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-
+    </div>
 
