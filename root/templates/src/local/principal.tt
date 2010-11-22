@@ -33,7 +33,7 @@
                                 <h3>Artigos</h3>
 
                                 <p>
-                                Veja a nossa sess&atilde;o de artigos, este ano foi produzido um grande
+                                Veja a nossa sess&atilde;o de <a href="[%c.uri_for("/artigos")%]">artigos</a>, este ano foi produzido um grande
                                 material relacionado ao desenvolvimento web pelo evento equin&oacute;cio.
                                 </p>
 
