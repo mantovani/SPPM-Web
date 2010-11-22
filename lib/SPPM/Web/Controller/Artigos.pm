@@ -11,7 +11,7 @@ sub base : Chained('/base') PathPart('') CaptureArgs(0) {
     $c->stash->{collection} = $c->model('Artigo');
 }
 
-sub artigo : Chained('base') : PathPart('artigo') : Args(2) {
+sub root : Chained('base') : PathPart('artigo') : Args(2) {
     my ( $self, $c, $year, $article ) = @_;
 
     my $artigo = $c->stash->{collection};
@@ -22,7 +22,7 @@ sub artigo : Chained('base') : PathPart('artigo') : Args(2) {
         $artigo->file("$article.pod");
     };
 
-    return if !$@;
+    $c->stash( templates => 'local/error.tt' ) and return if $@;
 
     $c->stash(
         pod => $artigo->content,
