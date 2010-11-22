@@ -4,50 +4,52 @@
 <div id="container_top">
 	<div id="container_bottom">
 		<div class="top">
-			<h2>
-				Lista
-			</h2>
+			<h2>Lista SP-PM</h2>
 				<div class="whois">
 				<p>
-					Esta &#233; a pagina da lista de email dos S&#227;o Paulo Perl Mongers!
+					A lista de email dos S&atilde;o Paulo Perl Mongers est&aacute; ativa desde 2004, e depois de todo esse tempo, o grupo tem algumas dicas de como se dar bem e aproveitar o m&aacute;ximo possivel das pessoas e do site da S&atilde;o Paulo Perl Mongers! Quando entrar na lista responda ao email de boas vindas se apresentando, conte-nos um pouco da sua experi&ecirc;ncia e suas expectativas. Voc&ecirc; pode se inscrever ou desinscrever da lista e acessar o hist&oacute;rico de mensagens nos links abaixo:
 				</p>
 				<p>
-					Depois de todo esse tempo ativo, o grupo tem algumas dicas de como se dar bem e aproveitar o m&#225;ximo possivel da lista, das pessoas e do site da S&#227;o Paulo Perl Mongers.
+					Cadastro: <a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm" >http://mail.pm.org/mailman/listinfo/saopaulo-pm</a><br/>
+                    Hist&oacute;rico: <a href="http://mail.pm.org/pipermail/saopaulo-pm/">http://mail.pm.org/pipermail/saopaulo-pm/</a>
 				</p>
 				<p>
-					Quando entrar na lista apresente-se, responda ao email de boas vindas com um pouco da sua experiencia, sua idade e suas expectativas.
+					O ambiente da lista &eacute; descontra&iacute;do e de alto n&iacute;vel t&eacute;cnico. Nela &eacute; esperado que se use um bom Portugu&ecirc;s, respeito e educa&ccedil;&atilde;o para que a comunica&ccedil;&atilde;o aconte&ccedil;a da melhor forma poss&iacute;vel. Por favor n&atilde;o use "migux&ecirc;s" ou algo parecido. Quase todos os clientes de email inclusive web t&ecirc;m corretores ortogr&aacute;ficos.
+				</p>
+            <h3>Leituras & Perguntas</h3>
+                <p>As pessoas da lista s&atilde;o, em sua maioria, entusiastas e profissionais em busca de <b>troca</b> de conhecimento. Lembre-se que ningu&eacute;m &eacute; <b>obrigado</b> a resolver os seus problemas, e que o respeito que voc&ecirc; demonstrar com os outros ser&aacute; crucial para determinar o respeito os outros dar&atilde;o a voc&ecirc;. Isso dito, antes de perguntar, recomendamos a leitura dos seguintes textos:</p>
+                <ul>
+                    <li>Como Fazer Perguntas Inteligentes, Eric S. Raymond (Portugu&ecirc;s, Tradu&ccedil;&atilde;o: Marcos Machado) <br/>
+                        <i><a href="http://www.istf.com.br/perguntas/" target="_blank">http://www.istf.com.br/perguntas/</a></i></li>
+                    <li>Guia de "Netiqueta" - RFC 1855, Sally Hambridge (Ingl&ecirc;s, T&iacute;tulo original: <i>Netiquette Guidelines</i>) <br/>
+                        <i><a href="http://www.ietf.org/rfc/rfc1855.txt" target="_blank">http://www.ietf.org/rfc/rfc1855.txt</a></i></li>
+                    <li>Como se Tornar um Hacker, Eric S. Raymond (Portugu&ecirc;s, Tradu&ccedil;&atilde;o: Rafael Caetano) <br/>
+                        <i><a href="http://www.linux.ime.usp.br/~rcaetano/docs/hacker-howto-pt.html" target="_blank">http://www.linux.ime.usp.br/~rcaetano/docs/hacker-howto-pt.html</a></i></li>
+                    <li>Perguntas Frequents de Perl (Ingl&ecirc;s, T&iacute;tulo original: <i>perlfaq</i>) <br/>
+                        <i><a href="http://faq.perl.org/" target="_blank">http://faq.perl.org/</a></i></li>
+                    <li>Wikip&eacute;dia: Postagem Cruzada (Ingl&ecirc;s, T&iacute;tulo original: <i>Crossposting</i>) <br/>
+                        <i><a href="http://en.wikipedia.org/wiki/Crossposting" target="_blank">http://en.wikipedia.org/wiki/Crossposting</a></i></li>
+                    <li>Recomenda&ccedil;&otilde;es de livros da Rio-PM <br/>
+                        <i><a href="http://rio.perl.org.br/livros.pl" target="_blank">http://rio.perl.org.br/livros.pl</a></i></li>
+                </ul>
+                <p>Sugerimos aos iniciantes que leiam bastante. Leiam primeiro, perguntem depois - todo mundo come&ccedil;ou um dia sem saber nada, mas se voc&ecirc; quer que os outros te ajudem, mostre que est&aacute; disposto a se esfor&ccedil;ar para aprender.</p>
+            <h3>Outros Canais</h3>
+				<p><b><a name="IRC">IRC</a></b>: Servidor <a href="http://www.irc.perl.org/">irc.perl.org</a>, canal #sao-paulo.pm</p>
+				<p><b>LinkedIn</b>: Grupo <a href="http://www.linkedin.com/groups?about=&gid=64857&trk=anet_ug_grppro" target="_blank">S&atilde;o Paulo Perl Mongers</a></p>
+<!-- Trecho abaixo comentado por Alexei (Russoz) - me pareceu mais "verbose" que o necessário -->
+<!--
+				<p>
+					O grupo cont&eacute;m cientistas da computa&ccedil;&atilde;o, engenheiros de software, DBA's e varios outros profissionais que buscam seguir as melhores pr&aacute;ticas de programa&ccedil;&atilde;o. Mais do que simplesmente Perl, discutem-se solu&ccedil;&otilde;es. Muitas das respostas e coment&aacute;rios s&atilde;o embasados em teorias e conceitos provados da programa&ccedil;&atilde;o. 
 				</p>
 				<p>
-					No link abaixo voc&#234; pode se inscrever e desinscrever da lista, assim como acessar o hist&#243;rico de mensagens:
+                    Isso faz com que algumas perguntas sejam bastante comuns e voc&ecirc; pode verificar no site<link> nossa se&ccedil;&atilde;o de Perguntas e Respostas (FAQ). N&oacute;s recomendamos fortemente a leitura da FAQ, n&atilde;o s&oacute; leitura da FAQ, como de livros, textos e de codigo fonte. Um bom programador l&ecirc; muito. 
 				</p>
 				<p>
-					<a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm" > 
-						http://mail.pm.org/mailman/listinfo/saopaulo-pm
-					</a>
+					Eventualmente existir&atilde;o refer&ecirc;ncias para textos em Ingl&ecirc;s. Caso voc&ecirc; n&atilde;o tenha dom&#237;nio do idioma, e estiver em uma emerg&ecirc;ncia, pergunte por uma vers&atilde;o em Portugu&ecirc;s para ajudar mas, a grande maioria dos textos tecnicos est&atilde;o em ingl&ecirc;s, assim como existem desenvolvedores de v&aacute;rios pa&#237;ses cujo a l&icaute;ngua em comum &eacute; o Ingl&ecirc;s. Mesmo que n&atilde;o exista a possibilidade de estudar Ingl&ecirc;s de imediato, existem tradutores como o google translator e varios cursos online para come&ccedil;ar.
 				</p>
 				<p>
-					O ambiente da lista &#233; descontraido e de alto nivel tecnico. Nela &#233; esperado que se use portugu&#234;s correto e educado pois existem pessoas de todas as idades e para a comunica&#231;&#227;o ser feita da melhor forma possivel devemos se ater ao portugu&#234;s correto. Em outras palavras n&#227;o &#233; lugar para mixugu&#234;s e quase todos os clientes de email inclusive web tem corretores ortograficos.
 				</p>
-				<p>
-					Muito mais do que Perl, o grupo cont&#233;m cientistas da computa&#231;&#227;o, engenheiros de software, DBA's e varios outros profissionais que seguem as melhores praticas de programa&#231;&#227;o. As respostas e comentarios sempre s&#227;o embasados em teorias e conceitos provados da programa&#231;&#227;o. Isso faz com que algumas perguntas sejam bastante comuns e voc&#234; pode verificar no site<link> nossa se&#231;&#227;o de Perguntas e Respostas (FAQ).
-				</p>
-				<p>
-					N&#243;s fortemente recomendamos a leitura da FAQ, n&#227;o s&#243; leitura da FAQ, como de livros, textos e de codigo fonte. Um bom programador l&#234; muito. 
-				</p>
-				<p>
-					Eventualmente existiram referencias para textos em ingl&#234;s, voc&#234; pode n&#227;o ter o dom&#237;nio do idioma e perguntar por uma vers&#227;o em portugu&#234;s para ajudar na emergencia, mas a grande maioria dos textos tecnicos est&#227;o em ingl&#234;s, assim como existem desenvolvedores de v&#225;rios pa&#237;ses cujo a lingua em comum acaba sendo o ingl&#234;s. Mesmo que n&#227;o se tenha a possibilidade de estudar ingl&#234;s de imediato, existem tradutores como o google translator e varios cursos online para come&#231;ar.
-				</p>
-				<p>
-					Uma boa refer&ecirc;ncia &eacute; de etiqueta na internet esta aqui: <a href="http://www.ietf.org/rfc/rfc1855.txt" target="_blank" >rfc 1855</a>.
-				</p>
-			
-				<h3>IRC</h3>
-
-				<p>Estamos presentes tamb&eacute;m no IRC, na rede <a href="http://www.irc.perl.org/" >irc.perl.org</a> no canal #sao-paulo.pm</p>
-
-				<h3>LinkedIn</h3>
-
-				<p><a href="http://www.linkedin.com/groups?home=&amp;gid=64857" target="_blank">http://www.linkedin.com/groups?home=&amp;gid=64857</a>.</p>
+-->
 			</div>
 		</div>
 	</div>

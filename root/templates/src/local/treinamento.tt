@@ -1,37 +1,121 @@
 
 [% META title=" Treinamento " current_page="treinamento" %]
 
-      <div id="container_top">
-        <div id="container_bottom">
-          <div class="top">
-            <h2>Treinamento</h2>
-            <div class="whois">
-            
+<div id="container_top">
+	<div id="container_bottom">
+		<div class="top">
+			<div class="whois">
 
-		<p>A comunidade possui membros que colaboram ministrando treinamentos, cursos ou apresenta&ccedil;&otilde;es em univerdades ou empresas.</p>
-		
-		<p>Para organizar um treinamento entre em contato na nossa lista de discuss&atilde;o com as seguintes informa&ccedil;&otilde;es: </p>
+				<h2>Treinamento</h2>
+					<p>
+					A comunidade possui membros que colaboram ministrando
+					treinamentos, cursos ou apresenta&ccedil;&otilde;es em
+					univerdades ou empresas.
+					</p>
 
-		<ul>
-			<li>Local ;</li>
-			<li>Data ;</li>
-			<li>Perfil do p&uacute;blico alvo ;</li>
-			<li>Tema recomendado ;</li>
-			<li>Descrever sobre qual o interesse da empresa/loca interessada.               </li>
-		</ul>
-																 
-	<p>&Eacute; recomendado que este contato seja feita com uma anteced&ecirc;ncia razo&aacute;vel para o planejamento do evento.</p>
-	
-	
-		<h2>Conte&uacute;do</h2>
+					<p>Para organizar um treinamento entre em contato na nossa
+					<a href="/lista">lista de discuss&atilde;o</a> com as
+					seguintes informa&ccedil;&otilde;es:
+					</p>
 
-		<p>Este material foi elaborado para o curso que foi ministrado na FEI em janeiro de 2010.</p>
+					<ul>
+						<li>Local:</li>
+						<li>Data:</li>
+						<li>Perfil do p&uacute;blico alvo:</li>
+						<li>Tema recomendado:</li>
+						<li>Descrever o interesse da empresa/entidade
+						interessada:
+						</li>
+					</ul>
 
-		<p>Perl 101 - <a href="http://github.com/otaviof/SPPM-Perl_101">http://github.com/otaviof/SPPM-Perl_101</a></p>
+					<p>
+					&Eacute; recomendado que este contato seja feita com uma
+					anteced&ecirc;ncia razo&aacute;vel para o planejamento do
+					evento.
+					</p>
 
+				<h2>Perl 101</h2>
+					<p>
+					Este material foi elaborado para o curso que foi ministrado
+					na FEI em Janeiro de 2010:
+					</p>
+
+					<p>Perl 101 - <a href="http://github.com/otaviof/SPPM-Perl_101">http://github.com/otaviof/SPPM-Perl_101</a></p>
+
+		            <p>Conte&uacute;do:</p>
+					<ul>
+						<li>Introdu&ccedil;&atilde;o &agrave; linguagem
+						<ul>
+							<li>Hist&oacute;ria da linguagem</li>
+							<li>Larry Wall</li>
+							<li>Quem usa Perl?</li>
+							<li>Cultura Perl</li>
+							<li>Comunidade / ES</li>
+							<li>Plataformas suportadas pelo Perl</li>
+						</ul></li>
+
+						<li>Perl no Windows
+						<ul>
+						    <li>Instala&ccedil;&atilde;o</li>
+						    <li>Configura&ccedil;&atilde;o</li>
+						</ul></li>
+
+						<li>Perl e os unixes-like</li>
+
+						<li>Documenta&ccedil;&atilde;o (Perldoc)
+						<ul>
+							<li>Livros</li>
+							<li>Terminal</li>
+							<li>Sites</li>
+						</ul></li>
+
+						<li>Estruturas:
+						<ul>
+							<li>Scalares</li>
+							<li>Arrays</li>
+							<li>Hashes</li>
+							<li>Estruturas Complexas</li>
+						</ul></li>
+
+						<li>Vari&aacute;veis especiais</li>
+
+						<li>Estruturas de repeti&ccedil;&atilde;o, condi&ccedil;&otilde;es e operadores</li>
+
+						<li>Tratamento de arquivos</li>
+
+						<li>Express&otilde;es Regulares</li>
+
+						<li>M&oacute;dulos</li>
+						<ul>
+							<li>CPAN</li>
+						</ul>
+
+						<li>Boas pr&aacute;ticas:
+						<ul>
+							<li>Agile</li>
+							<li>TDD</li>
+							<li>Integra&ccedil;&atilde;o contínua</li>
+							<li>DRY</li>
+							<li>Testes de Aceita&ccedil;&atilde;o</li>
+							<li>Testes de Integra&ccedil;&atilde;o</li>
+						</ul></li>
+
+						<li>Orienta&ccedil;&atilde;o a Objetos com Moose</li>
+
+						<li>Perl para Web</li>
+
+						<li>O Passado com os CGIs</li>
+
+						<li>Introdu&ccedil;&atilde;o Catalyst
+						<ul>
+							<li>Template Toolkit 2</li>
+							<li>DBIx::Class</li>
+						</ul></li>
+					</ul>
+
+			</div>
 		</div>
-          </div>
-        </div>
-      </div>
+	</div>
+</div>
 
 
