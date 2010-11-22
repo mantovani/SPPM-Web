@@ -31,28 +31,21 @@
 			[% content %]
             <center><br /><br />
             <div>
-                <div class="addthis_toolbox addthis_32x32_style addthis_default_style">
-                    <a class="addthis_button_facebook"></a>
-                    <a class="addthis_button_twitter"></a>
-                    <a class="addthis_button_email"></a>
-                    <a class="addthis_button_google"></a>
-                    <a class="addthis_button_compact"></a>
-                </div>
-                <!-- AddThis Button END -->
-            </div>
-               <br /><br /><center/>
+				<div class="addthis_toolbox addthis_32x32_style addthis_default_style">
+					<a class="addthis_button_facebook"></a>
+					<a class="addthis_button_twitter"></a>
+					<a class="addthis_button_email"></a>
+					<a class="addthis_button_google"></a>
+					<a class="addthis_button_compact"></a>
+				</div>
+			</div>
+            <br /><br /><center/>
 			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4caea3431b6a7690"></script>
 		</div>
-
+        <div id="footer">
+        [% PROCESS site/site_base/footer.tt %]
+        </div>
 	</div>
-
-    </div>
-    <div id="footer" class="png_bg">
-    [% PROCESS site/site_base/footer.tt %]
-
-
-  </div>
-</div>
 
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -64,8 +57,5 @@ var pageTracker = _gat._getTracker("UA-12787073-1");
 pageTracker._trackPageview();
 } catch(err) {}</script>
 
-
-
 </body>
 </html>
-

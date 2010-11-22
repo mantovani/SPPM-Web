@@ -1,11 +1,12 @@
 
 [% META title=" Treinamento " current_page="treinamento" %]
 
-<div id="container_top">
-	<div id="container_bottom">
-		<div class="top">
-			<div class="whois">
-
+      <div id="container_top">
+        <div id="container_bottom">
+          <div class="top">
+            <h2>Treinamento</h2>
+            <div>
+           
 				<h2>Treinamento</h2>
 					<p>
 					A comunidade possui membros que colaboram ministrando

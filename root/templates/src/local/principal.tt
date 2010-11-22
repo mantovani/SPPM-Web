@@ -48,15 +48,13 @@
                             </div>
                             <div class="side side_largo">
 
-                                <center>
-                                <table><tr><td>
+                                <table class="withShadowBox" id="logos_perl"><tr><td>
                                 <a href="http://www.pm.org"><img src="/static/images/pm.jpg" border="0" alt="pm"  width="135" height="59" /></a>
                                 </td><td>
                                 <a href="http://www.perl.org"><img src="/static/images/perl.org.png" border="0" alt="perl.org" width="135" height="82" /></a>
                                 </td><td>
                                 <a href="http://creativecommons.org/licenses/by/3.0/"><img src="/static/images/cc.png" border="0" alt="creative commons" width="88" height="31" /></a>
                                 </td></tr></table>
-                                </center>
    
                             </div>
                         </div>

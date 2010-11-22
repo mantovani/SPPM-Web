@@ -1,19 +1,11 @@
-      <div id="inner_footer">
-        <ul>
-          <li><a href="/quemsomos">Quem somos</a></li>
-          <li><a href="/encontrosocial">ENCONTRO SOCIAL</a></li>
-          <li><a href="/artigos">Artigos</a></li>
-          <li><a href="/blogs">BLOGS</a></li>
-
-          <li><a href="/vaquinha">Vaquinha</a></li>
-          <li><a href="/encontrotecnico">ENCONTRO T&Eacute;CNICO</a></li>
-          <li><a href="/treinamento">Treinamento</a></li>
-          <li><a href="/lista">Lista</a></li>
-	  <li><a href="/equinocio/2010">Meses do Equin&oacute;cio</a></li>
-       	  <li><a href="/empresas">Empresas</a></li>
-	 </ul>
-        <div class="copyright">
-          <p>Copyleft S&atilde;o Paulo Perl Mongers.</p>
-        </div>
-      </div>
-    </div>
+<div id="inner_footer">
+	<ul>
+		<li><a href="[% c.uri_for('/vaquinha') %]">Vaquinha</a></li>
+		<li><a href="[% c.uri_for('/treinamento') %]">Treinamento</a></li>
+		<li><a href="[% c.uri_for('/equinocio','2010') %]">Meses do Equin&oacute;cio</a></li>
+		<li><a href="[% c.uri_for('/empresas') %]">Empresas</a></li>
+	</ul>
+	<div class="copyright">
+		<p>Copyleft S&atilde;o Paulo Perl Mongers.</p>
+	</div>
+</div>

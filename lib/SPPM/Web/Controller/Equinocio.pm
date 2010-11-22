@@ -89,9 +89,9 @@ sub day : Chained('month') : PathPart('') : Args(1) {
 	}
 	$c->log->info($pod_file);
 	my $mtime = ( stat $pod_file )->mtime;
-	my $cached_pod = $c->cache->get("$pod_file $mtime");
+	#my $cached_pod = $c->cache->get("$pod_file $mtime");
 
-	if (!$cached_pod) {
+	#if (!$cached_pod) {
 		my $parser = SPPM::Web::Pod->new(
 			StringMode      => 1,
 			FragmentOnly    => 1,
@@ -105,9 +105,9 @@ sub day : Chained('month') : PathPart('') : Args(1) {
                 $parser->parse_from_filehandle($fh);
                 close $fh;
 
-                $cached_pod = $parser->asString;
-                $c->cache->set("$pod_file $mtime", $cached_pod, '12h' );
-	}
+                my $cached_pod = $parser->asString;
+     #           $c->cache->set("$pod_file $mtime", $cached_pod, '12h' );
+	#}
 
 
 	my $tree  = HTML::TreeBuilder::XPath->new_from_content($cached_pod);

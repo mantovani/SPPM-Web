@@ -1,34 +1,25 @@
-      <div id="links">
-        <ul>
-          <li><a href="/contato">Contato</a></li>
-        </ul>
-      </div>
-      <div class="header">
-        <div class="logo">
-
-           <a href="/" accesskey="1">
-           <img src="/static/images/logo.png" alt="Sao Paulo Perl Mongers" class="png_bg"  width="460" height="64"/>
-           </a>
-        </div>
-      </div>
-      <div id="menu">
-        <ul>
-          <li class="home"><a href="/" [% IF template.current_page == 'home' %] class="current" [% END %]><img src="/static/images/dot_clear.gif" alt="Principal" /></a></li>
-          <li class="pipe"></li>
-
-          <li class="quem"><a href="/quemsomos" [% IF template.current_page == 'quemsomos' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Quemsomos" width="1" height="1" /></a></li>
-          <li class="pipe"></li>
-          <li class="social"><a href="/encontrosocial" [% IF template.current_page == 'encontrosocial' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Encontro Social" width="1" height="1" /> </a></li>
-          <li class="pipe"></li>
-          <li class="artigos"><a href="/artigos" [% IF template.current_page == 'artigos' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Artigos" /> </a></li>
-          <li class="pipe"></li>
-          <li class="blogs"><a href="/blogs" [% IF template.current_page == 'blogs' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Blogs" width="1" height="1" /> </a></li>
-
-          <li class="pipe"></li>
-          <li class="tecnico"><a href="/encontrotecnico" [% IF template.current_page == 'encontrotecnico' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Encontro Tecnico" width="1" height="1" /> </a></li>
-          <li class="pipe"></li>
-          <li class="treinamento"><a href="/treinamento" [% IF template.current_page == 'treinamento' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Treinamento" width="1" height="1" /> </a></li>
-          <li class="pipe"></li>
-          <li class="lista"><a href="/lista" [% IF template.current_page == 'lista' %] class="current" [% END %] ><img src="/static/images/dot_clear.gif" alt="Lista" width="1" height="1" /> </a></li>
-        </ul>
-      </div>
+<div id="links">
+	<ul>
+		<li><a rel="nofollow" href="[% c.uri_for('/contato') %]">Contato</a></li>
+	</ul>
+</div>
+<div class="header">
+	<div class="logo">
+		<a href="[% c.uri_for('/') %]" accesskey="1">
+			<img src="/static/images/logo.png" title="Logo do site do Sao Paulo Perl Mongers" alt="Sao Paulo Perl Mongers" class="png_bg" width="460" height="64"/>
+		</a>
+	</div>
+</div>
+<div id="menu">
+	<ul>
+		<li rel="nofollow" class="home[% IF template.current_page == 'home' %] current [% END %]"><a href="[% c.uri_for('/') %]" >Home</a></li>
+		<li class="pipe"></li>
+		<li class="quem[% IF template.current_page == 'quemsomos' %] current[% END %]"><a href="[% c.uri_for('/quemsomos') %]" >Quem Somos</a></li>
+		<li class="pipe"></li>
+		<li class="social[% IF template.current_page == 'encontrosocial' %] current[% END %]"><a href="[% c.uri_for('/encontrosocial') %]"  >Encontro Social</a></li>
+		<li class="pipe"></li>
+		<li class="artigos[% IF template.current_page == 'artigos' %] current[% END %]"><a href="[% c.uri_for('/artigos') %]"  >Artigos</a></li>
+		<li class="pipe"></li>
+		<li class="treinamento[% IF template.current_page == 'treinamento' %] current[% END %]"><a href="[% c.uri_for('/treinamento') %]"  >Treinamento </a></li>
+	</ul>
+</div>
