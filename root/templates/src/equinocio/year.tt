@@ -17,8 +17,7 @@
 <h3>Equin&oacute;cio Mar&ccedil;o (Desenvolvimento web)</h3>
 [% INCLUDE equinocio/calendar.tt month='mar' fcalendar=calendar_mar %]
 
-<p><h5>Este evento foi baseado no <a href="http://www.catalystframework.org/calendar/" target="_blank">Catalyst Advent Calendar</a>.</h5>
-</p>
+<p>Este evento foi baseado no <a href="http://www.catalystframework.org/calendar/" target="_blank">Catalyst Advent Calendar</a>.</p>
 
                 </div>
           </div>
