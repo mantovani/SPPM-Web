@@ -12,23 +12,36 @@
 				<p>
                     <table border="0" width="80%" align="center">
                         <tr>
-                            <td>Cadastro:</td>
-                            <td><a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm">http://mail.pm.org/mailman/listinfo/saopaulo-pm</a></td>
+                            <td align="right">my $list =</td>
+                            <td><a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm">http://mail.pm.org/mailman/listinfo/saopaulo-pm</a>-&gt;subscribe();</td>
                         </tr>
                         <tr>
-                            <td>Hist&oacute;rico:</td>
+                            <td align="right">@hist&oacute;rico =</td>
                             <td><a href="http://mail.pm.org/pipermail/saopaulo-pm/">http://mail.pm.org/pipermail/saopaulo-pm/</a></td>
                         </tr>
                         <tr>
-                            <td></td>
+                            <td align="right">-&gt;search(</td>
                             <td>
                                 <!-- Taken from: http://www.askdavetaylor.com/how_can_i_add_a_google_search_box_to_my_web_site.html -->
                                 <form method="get" action="http://www.google.com/search">
                                     <input type="text"   name="q" size="31" maxlength="255" value="" />
-                                    <input type="submit" value="Google Search" />
+                                    <input type="submit" value="Google Search" /> );
                                     <input type="hidden" name="sitesearch"  value="mail.pm.org/pipermail/saopaulo-pm/" />
                                </form>
                             </td>
+                        </tr>
+                        <tr><td></td><td>&nbsp;</td></tr>
+                        <tr>
+                            <td align="right">my $gmane = { lista =&gt; </td>
+                            <td><a href="http://dir.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">http://dir.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo</a>, </td>
+                        </tr>
+                        <tr>
+                            <td align="right">nntp =&gt; </td>
+                            <td><a href="nntp://news.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">nntp://news.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo</a>, </td>
+                        </tr>
+                        <tr>
+                            <td align="right">blog =&gt; </td>
+                            <td><a href="http://blog.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">http://blog.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo</a>, };</td>
                         </tr>
                     </table>
 				</p>
@@ -59,7 +72,4 @@
 		</div>
 	</div>
 </div>
-
-
-
 
