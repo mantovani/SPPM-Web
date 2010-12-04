@@ -1,0 +1,17 @@
+#!/bin/sh
+
+do_tidy() {
+    DIRLIST="$*"
+    find $DIRLIST \
+        \( -name '*.pm' -o -name '*.pl' -o -name '*.t' \) \
+        -print -exec perltidy -b {} \; \
+    | xargs -n 1 echo 'TIDY:'
+
+    find $DIRLIST \
+        \( -name '*.bak' -o -name '*~' \) \
+        -print -exec rm -f {} \; \
+    | xargs -n 1 echo '  RM:'
+}
+
+do_tidy *.PL lib script t tools >&2
+
