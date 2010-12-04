@@ -13,5 +13,5 @@ do_tidy() {
     | xargs -n 1 echo '  RM:'
 }
 
-do_tidy *.PL lib script t tools >&2
+do_tidy *.PL lib script root t tools >&2
 
