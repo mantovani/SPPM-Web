@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('SPPM::Web', 'Create');
+Catalyst::ScriptRunner->run( 'SPPM::Web', 'Create' );
 
 1;
 

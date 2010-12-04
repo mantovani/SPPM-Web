@@ -8,19 +8,19 @@ use_ok('SPPM::Web::Model::FS');
 
 my $obj;
 
-eval { $obj = SPPM::Web::Model::FS->new(basedir => "$Bin/test-notexist") };
-is($@, '', 'basedir not exist');
+eval { $obj = SPPM::Web::Model::FS->new( basedir => "$Bin/test-notexist" ) };
+is( $@, '', 'basedir not exist' );
 
-eval { $obj = SPPM::Web::Model::FS->new(basedir => "$Bin/test-basedir") };
-is($@, '', 'basedir exist');
+eval { $obj = SPPM::Web::Model::FS->new( basedir => "$Bin/test-basedir" ) };
+is( $@, '', 'basedir exist' );
 
 eval { $obj->file('../local.tt') };
-isnt($@, '', 'local with ..');
+isnt( $@, '', 'local with ..' );
 
 eval { $obj->file('local.tt') };
-is($@, '', 'local.tt is ok');
+is( $@, '', 'local.tt is ok' );
 
-ok($obj->fullpath);
+ok( $obj->fullpath );
 
 1;
 

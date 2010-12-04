@@ -11,14 +11,14 @@ use SPPM::Web::Pod;
 use utf8;
 
 has cache => (
-    is => 'ro',
-    isa => 'Object',
-    default => sub { Cache::File->new( cache_root => '/tmp') }
+    is      => 'ro',
+    isa     => 'Object',
+    default => sub { Cache::File->new( cache_root => '/tmp' ) }
 );
 
 has title => (
-    is => 'rw',
-    isa => 'Str',
+    is      => 'rw',
+    isa     => 'Str',
     default => ''
 );
 
@@ -38,7 +38,7 @@ sub content {
         );
 
         open my $fh, '<:utf8', $file
-          or die "Failed to open $file: $!";
+            or die "Failed to open $file: $!";
 
         $parser->parse_from_filehandle($fh);
         close $fh;

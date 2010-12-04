@@ -3,7 +3,7 @@ use Moose;
 
 use namespace::autoclean;
 
-BEGIN {extends 'Catalyst::Controller'; }
+BEGIN { extends 'Catalyst::Controller'; }
 
 use utf8;
 
@@ -29,58 +29,55 @@ SPPM::Controller::Root - Root Controller for SPPM
 
 =cut
 
-sub base : Chained('/') : PathPart('') : CaptureArgs(0) {}
+sub base : Chained('/') : PathPart('') : CaptureArgs(0) {
+}
 
+sub auto : Private {
+    my ( $self, $c ) = @_;
 
-sub auto :Private {
-    my ($self, $c) =@_;
-
-    if ( $c->action eq $c->controller('Login')->action_for('login')
-        || $c->action eq $c->controller('Root')->action_for('index')
-	|| $c->controller eq $c->controller('Artigos')
-	|| $c->controller eq $c->controller('Calendario')
-	|| $c->controller eq $c->controller('Equinocio')
-	|| $c->controller eq $c->controller('Local')
-        ) {
+    if (   $c->action eq $c->controller('Login')->action_for('login')
+        || $c->action     eq $c->controller('Root')->action_for('index')
+        || $c->controller eq $c->controller('Artigos')
+        || $c->controller eq $c->controller('Calendario')
+        || $c->controller eq $c->controller('Equinocio')
+        || $c->controller eq $c->controller('Local') ) {
         return 1;
     }
 
     # If a user doesn't exist, force login
-    if (
-        !$c->user_exists
-        or (
-            (
-                    !$c->check_user_roles('admin')
+    if (!$c->user_exists
+        or ( (      !$c->check_user_roles('admin')
                 and !$c->check_user_roles('gerente')
                 and !$c->check_user_roles('funcionario')
             )
         )
-      )
-    {
+        ) {
+
         # Redirect the user to the login page
         $c->forward(qw/SPPM::Web::Controller::Login login/);
-          # Return 0 to cancel 'post-auto' processing and prevent use of application
-            return 0;
-          }
+
+     # Return 0 to cancel 'post-auto' processing and prevent use of application
+        return 0;
+    }
 
     # User found, so return 1 to continue with processing after this 'auto'
     return 1;
-    }
+}
 
-sub hidden_page :Path('/hidden_page') :Args(0) {
+sub hidden_page : Path('/hidden_page') : Args(0) {
     my ( $self, $c ) = @_;
     $c->stash( template => \'CONTEÚDO ESCONDIDO' );
-    }
+}
 
-sub index :Path :Args(0) {
+sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
     $c->res->redirect('/principal');
 }
 
-sub default :Path {
+sub default : Path {
     my ( $self, $c ) = @_;
-    $c->response->body( 'Page not found' );
+    $c->response->body('Page not found');
     $c->response->status(404);
 }
 
@@ -90,7 +87,8 @@ Attempt to render a view, if needed.
 
 =cut
 
-sub end : ActionClass('RenderView') {}
+sub end : ActionClass('RenderView') {
+}
 
 =head1 AUTHOR
 

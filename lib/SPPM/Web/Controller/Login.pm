@@ -3,35 +3,36 @@ use Moose;
 use utf8;
 use HTML::FormHandler;
 
-BEGIN {extends 'Catalyst::Controller'; }
-
-
+BEGIN { extends 'Catalyst::Controller'; }
 
 sub login : Path('/login') : Args(0) {
     my ( $self, $c ) = @_;
 
-        my $form = HTML::FormHandler->new({
+    my $form = HTML::FormHandler->new( {
             field_list => [
-              username => {
-                  type => 'Text',
-                  label => 'Login',
-                  required => 1,
-                  required_message => 'Campo Requerido',
-                  },
-              password => {
-                  type => 'Password',
-                  label => 'Password',
-                  required => 1,
-                  required_message => 'Campo Requerido',
-                  },
-              submit => {
-                  type => 'Submit',
-                  value => 'Login',
-                  },
-              ],
-            });
-#       $c->stash( template => \$form->render);
-    $c->stash( template => \<<FBLOGIN
+                username => {
+                    type             => 'Text',
+                    label            => 'Login',
+                    required         => 1,
+                    required_message => 'Campo Requerido',
+                },
+                password => {
+                    type             => 'Password',
+                    label            => 'Password',
+                    required         => 1,
+                    required_message => 'Campo Requerido',
+                },
+                submit => {
+                    type  => 'Submit',
+                    value => 'Login',
+                },
+            ],
+        }
+    );
+
+    #       $c->stash( template => \$form->render);
+    $c->stash(
+        template => \<<FBLOGIN
     <p><fb:login-button autologoutlink="true"></fb:login-button></p>
     <p><fb:like></fb:like></p>
 
@@ -74,7 +75,7 @@ alert('logando');
       }());
     </script>
 FBLOGIN
-);
+    );
 
     # Get the username and password from form
     my $username = $c->request->params->{username} || undef;
@@ -84,34 +85,27 @@ FBLOGIN
     if ( defined($username) && defined($password) ) {
 
         # Attempt to log the user in
-        if (
-            $c->authenticate(
-                {
+        if ($c->authenticate( {
                     username => $username,
                     password => $password
                 }
             )
-          )
-        {
+            ) {
 
             $c->forward(qw/SPPM::Web::Controller::Root index/);
 
             return;
-        }
-        else {
+        } else {
 
             # Set an error message
             $c->stash->{error_msg} =
- "Login desconhecido. Verifique seu login e senha e tente novamente. ";
+                "Login desconhecido. Verifique seu login e senha e tente novamente. ";
         }
     }
 
     # If either of above don't work out, send to the login page
-    $c->detach(qw/SPPM::Web::Controller::Root index/) if ($c->user_exists);
+    $c->detach(qw/SPPM::Web::Controller::Root index/) if ( $c->user_exists );
 }
-
-
-
 
 sub logout : Path('/logout') : Args(0) {
     my ( $self, $c ) = @_;
@@ -122,505 +116,5 @@ sub logout : Path('/logout') : Args(0) {
     # Send the user to the starting point
     $c->response->redirect( $c->uri_for('/') );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 1;

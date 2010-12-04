@@ -5,7 +5,7 @@ BEGIN {
 }
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('SPPM::Web', 'Server');
+Catalyst::ScriptRunner->run( 'SPPM::Web', 'Server' );
 
 1;
 

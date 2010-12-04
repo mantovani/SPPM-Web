@@ -20,14 +20,14 @@ sub new {
 }
 
 sub textblock {
-    my $self   = shift;
+    my $self = shift;
     my ($text) = @_;
     $self->{_first_paragraph} ||= $text;
 
-    if($self->{_in_author_block}){
-            $text =~ /((?:[\w.]+\s+)+)/ and $self->{_author} = $1;
-            $text =~ /<([^<>@\s]+@[^<>\s]+)>/ and $self->{_email} = $1;
-            $self->{_in_author_block} = 0; # not anymore
+    if ( $self->{_in_author_block} ) {
+        $text =~ /((?:[\w.]+\s+)+)/       and $self->{_author} = $1;
+        $text =~ /<([^<>@\s]+@[^<>\s]+)>/ and $self->{_email}  = $1;
+        $self->{_in_author_block} = 0;    # not anymore
     }
 
     return $self->SUPER::textblock(@_);
@@ -35,33 +35,33 @@ sub textblock {
 
 sub command {
     my $self = shift;
-    my ($command, $paragraph, $pod_para) = @_;
+    my ( $command, $paragraph, $pod_para ) = @_;
 
     $self->{_title} = $paragraph
-    if $command eq 'head1' and not defined $self->{_title};
-                        
+        if $command eq 'head1' and not defined $self->{_title};
+
     $self->{_in_author_block} = 1
-    if $command =~ /^head/ and $paragraph =~ /AUTHOR/;
+        if $command =~ /^head/ and $paragraph =~ /AUTHOR/;
 
     return $self->SUPER::command(@_);
 }
 
 sub seqL {
-    my ($self, $link) = @_;
+    my ( $self, $link ) = @_;
     $self->{LinkParser}->parse($link);
     my $page = $self->{LinkParser}->page;
     my $kind = $self->{LinkParser}->type;
     my $targ = $self->{LinkParser}->node;
     my $text = $self->{LinkParser}->text;
-                            
-    if ($kind eq 'hyperlink'){
+
+    if ( $kind eq 'hyperlink' ) {
         return $self->SUPER::seqL($link);
     }
-                                                
+
     $targ ||= $text;
     $text = Pod::Xhtml::_htmlEscape($text);
     $targ = Pod::Xhtml::_htmlEscape($targ);
-                                                                
+
     return qq{<a href="http://search.cpan.org/perldoc?$targ">$text</a>};
 }
 
@@ -71,5 +71,4 @@ sub author  { $_[0]->{_author} }
 sub email   { $_[0]->{_email} }
 
 1;
-
 

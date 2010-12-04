@@ -20,9 +20,9 @@ use Catalyst qw/
     Session::Store::File
     ConfigLoader
     Static::Simple
-	Unicode::Encoding
+    Unicode::Encoding
     Facebook
-/;
+    /;
 
 extends 'Catalyst';
 
@@ -38,24 +38,18 @@ $VERSION = eval $VERSION;
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config(
-    name => 'SPPM::Web',
-);
+__PACKAGE__->config( name => 'SPPM::Web', );
 
 __PACKAGE__->config->{'recaptcha'}->{'pub_key'} =
-'6Le0CroSAAAAACWhFwcZ0K54ooBT6KBQ3VTfIoqz';
+    '6Le0CroSAAAAACWhFwcZ0K54ooBT6KBQ3VTfIoqz';
 
 __PACKAGE__->config->{'recaptcha'}->{'priv_key'} =
-'6Le0CroSAAAAAIAsTZ9CRMNdA88jktjzYMnVa6or';
+    '6Le0CroSAAAAAIAsTZ9CRMNdA88jktjzYMnVa6or';
 
-__PACKAGE__->config( {
-    ENCODING     => 'utf-8',
-} );
-
+__PACKAGE__->config( { ENCODING => 'utf-8', } );
 
 # Start the application
 __PACKAGE__->setup();
-
 
 =head1 NAME
 

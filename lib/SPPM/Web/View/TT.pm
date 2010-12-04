@@ -1,19 +1,18 @@
 package SPPM::Web::View::TT;
 
 use Moose;
-BEGIN { extends 'Catalyst::View::TT' };
+BEGIN { extends 'Catalyst::View::TT' }
 
 __PACKAGE__->config(
     INCLUDE_PATH => [
-        SPPM::Web->path_to('root', 'templates', 'src' ),
-        SPPM::Web->path_to('root', 'templates', 'lib' )
+        SPPM::Web->path_to( 'root', 'templates', 'src' ),
+        SPPM::Web->path_to( 'root', 'templates', 'lib' )
     ],
     TEMPLATE_EXTENSION => '.tt',
-    ENCODING    => 'utf8',
-    WRAPPER     => 'site/wrapper',
-    TIMER       => 0,
+    ENCODING           => 'utf8',
+    WRAPPER            => 'site/wrapper',
+    TIMER              => 0,
 );
-
 
 =head1 NAME
 
