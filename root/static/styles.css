@@ -889,14 +889,21 @@ fieldset.area legend{
 
 /* CRON area! */
 .withShadowBox {
-    /*-moz-border-radius:15px 15px 15px 15px; saiu do padrao do site.*/
-    -moz-box-shadow:5px 5px 0 #DDDDDD;
-    background-color:white;
+    -moz-box-shadow: 5px 5px 0 #DDD;
+	-webkit-box-shadow: 5px 5px 0 #DDD;
+	box-shadow: 5px 5px 0 #DDD;
+    background-color:#FFF;
     padding:0 30px;
-    /*TODO fazer isso pro chorme/ie9 quando estiver online*/
 }
  
 #logos_perl {
     margin:0 auto;
     width:372px;
+}
+
+.listaCodigoTable {
+	background-color:#EEE;
+	font-size:16px;
+	margin:1em auto;
+	padding:1em;
 }

@@ -9,8 +9,8 @@
 				<p>
 					A lista de email dos S&atilde;o Paulo Perl Mongers est&aacute; ativa desde 2004, e depois de todo esse tempo, o grupo tem algumas dicas de como se dar bem e aproveitar o m&aacute;ximo possivel das pessoas e do site da S&atilde;o Paulo Perl Mongers! Quando entrar na lista responda ao email de boas vindas se apresentando, conte-nos um pouco da sua experi&ecirc;ncia e suas expectativas. Voc&ecirc; pode se inscrever ou desinscrever da lista e acessar o hist&oacute;rico de mensagens nos links abaixo:
 				</p>
-				<p>
-                    <table border="0" width="80%" align="center">
+			
+                    <table border="0" width="80%" class="withShadowBox listaCodigoTable">
                         <tr>
                             <td align="right">my $list =</td>
                             <td><a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm">http://mail.pm.org/mailman/listinfo/saopaulo-pm</a>-&gt;subscribe();</td>
@@ -43,8 +43,7 @@
                             <td align="right">blog =&gt; </td>
                             <td><a href="http://blog.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">http://blog.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo</a>, };</td>
                         </tr>
-                    </table>
-				</p>
+
 				<p>
 					O ambiente da lista &eacute; descontra&iacute;do e de alto n&iacute;vel t&eacute;cnico. Nela &eacute; esperado que se use um bom Portugu&ecirc;s, respeito e educa&ccedil;&atilde;o para que a comunica&ccedil;&atilde;o aconte&ccedil;a da melhor forma poss&iacute;vel. Por favor n&atilde;o use "migux&ecirc;s" ou algo parecido. Quase todos os clientes de email inclusive web t&ecirc;m corretores ortogr&aacute;ficos.
 				</p>
