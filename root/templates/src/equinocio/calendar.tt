@@ -26,7 +26,7 @@
 
         [% TRY %]
             [% USE File( c.path_to( 'root', 'equinocio',  year, month, "${day}.pod" ) ) %]
-    <td class="link[% IF today %] today[% END %]"><a href="/equinocio/[% year %]/[% month %]/[% day %]">[% day %]</a></td>
+    <td class="link[% IF today %] today[% END %]"><a rel="nofollow" href="/equinocio/[% year %]/[% month %]/[% day %]">[% day %]</a></td>
         [% CATCH File %]
     <td[% IF today %] class="today"[% END %]>[% day %]</td>
         [% END %]

@@ -26,7 +26,7 @@ sub index : Chained('base') : PathPart('') : Args(0) {
     closedir DIR;
 
     my $year = pop @years || DateTime->now->year;
-    $c->res->redirect( $c->uri_for( '/equinocio', $year ) );
+	$c->res->redirect( $c->uri_for( '/equinocio', $year ) );
 }
 
 sub equinocio : Chained('base') : PathPart('') : CaptureArgs(1) {
