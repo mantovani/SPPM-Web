@@ -10,8 +10,27 @@
 					A lista de email dos S&atilde;o Paulo Perl Mongers est&aacute; ativa desde 2004, e depois de todo esse tempo, o grupo tem algumas dicas de como se dar bem e aproveitar o m&aacute;ximo possivel das pessoas e do site da S&atilde;o Paulo Perl Mongers! Quando entrar na lista responda ao email de boas vindas se apresentando, conte-nos um pouco da sua experi&ecirc;ncia e suas expectativas. Voc&ecirc; pode se inscrever ou desinscrever da lista e acessar o hist&oacute;rico de mensagens nos links abaixo:
 				</p>
 				<p>
-					Cadastro: <a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm" >http://mail.pm.org/mailman/listinfo/saopaulo-pm</a><br/>
-                    Hist&oacute;rico: <a href="http://mail.pm.org/pipermail/saopaulo-pm/">http://mail.pm.org/pipermail/saopaulo-pm/</a>
+                    <table border="0" width="80%" align="center">
+                        <tr>
+                            <td>Cadastro:</td>
+                            <td><a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm">http://mail.pm.org/mailman/listinfo/saopaulo-pm</a></td>
+                        </tr>
+                        <tr>
+                            <td>Hist&oacute;rico:</td>
+                            <td><a href="http://mail.pm.org/pipermail/saopaulo-pm/">http://mail.pm.org/pipermail/saopaulo-pm/</a></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <!-- Taken from: http://www.askdavetaylor.com/how_can_i_add_a_google_search_box_to_my_web_site.html -->
+                                <form method="get" action="http://www.google.com/search">
+                                    <input type="text"   name="q" size="31" maxlength="255" value="" />
+                                    <input type="submit" value="Google Search" />
+                                    <input type="hidden" name="sitesearch"  value="mail.pm.org/pipermail/saopaulo-pm/" />
+                               </form>
+                            </td>
+                        </tr>
+                    </table>
 				</p>
 				<p>
 					O ambiente da lista &eacute; descontra&iacute;do e de alto n&iacute;vel t&eacute;cnico. Nela &eacute; esperado que se use um bom Portugu&ecirc;s, respeito e educa&ccedil;&atilde;o para que a comunica&ccedil;&atilde;o aconte&ccedil;a da melhor forma poss&iacute;vel. Por favor n&atilde;o use "migux&ecirc;s" ou algo parecido. Quase todos os clientes de email inclusive web t&ecirc;m corretores ortogr&aacute;ficos.
@@ -36,20 +55,6 @@
             <h3>Outros Canais</h3>
 				<p><b><a name="IRC">IRC</a></b>: Servidor <a href="http://www.irc.perl.org/">irc.perl.org</a>, canal #sao-paulo.pm</p>
 				<p><b>LinkedIn</b>: Grupo <a href="http://www.linkedin.com/groups?about=&gid=64857&trk=anet_ug_grppro" target="_blank">S&atilde;o Paulo Perl Mongers</a></p>
-<!-- Trecho abaixo comentado por Alexei (Russoz) - me pareceu mais "verbose" que o necessário -->
-<!--
-				<p>
-					O grupo cont&eacute;m cientistas da computa&ccedil;&atilde;o, engenheiros de software, DBA's e varios outros profissionais que buscam seguir as melhores pr&aacute;ticas de programa&ccedil;&atilde;o. Mais do que simplesmente Perl, discutem-se solu&ccedil;&otilde;es. Muitas das respostas e coment&aacute;rios s&atilde;o embasados em teorias e conceitos provados da programa&ccedil;&atilde;o. 
-				</p>
-				<p>
-                    Isso faz com que algumas perguntas sejam bastante comuns e voc&ecirc; pode verificar no site<link> nossa se&ccedil;&atilde;o de Perguntas e Respostas (FAQ). N&oacute;s recomendamos fortemente a leitura da FAQ, n&atilde;o s&oacute; leitura da FAQ, como de livros, textos e de codigo fonte. Um bom programador l&ecirc; muito. 
-				</p>
-				<p>
-					Eventualmente existir&atilde;o refer&ecirc;ncias para textos em Ingl&ecirc;s. Caso voc&ecirc; n&atilde;o tenha dom&#237;nio do idioma, e estiver em uma emerg&ecirc;ncia, pergunte por uma vers&atilde;o em Portugu&ecirc;s para ajudar mas, a grande maioria dos textos tecnicos est&atilde;o em ingl&ecirc;s, assim como existem desenvolvedores de v&aacute;rios pa&#237;ses cujo a l&icaute;ngua em comum &eacute; o Ingl&ecirc;s. Mesmo que n&atilde;o exista a possibilidade de estudar Ingl&ecirc;s de imediato, existem tradutores como o google translator e varios cursos online para come&ccedil;ar.
-				</p>
-				<p>
-				</p>
--->
 			</div>
 		</div>
 	</div>
