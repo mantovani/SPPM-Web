@@ -13,16 +13,15 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use Catalyst qw/
-    -Debug
-    Authentication
-    Session
-    Session::State::Cookie
-    Session::Store::File
-    ConfigLoader
-    Static::Simple
-    Unicode::Encoding
-    Facebook
-    /;
+  -Debug
+  Session
+  Session::State::Cookie
+  Session::Store::File
+  ConfigLoader
+  Static::Simple
+  Unicode::Encoding
+  Facebook
+  /;
 
 extends 'Catalyst';
 
@@ -41,12 +40,14 @@ $VERSION = eval $VERSION;
 __PACKAGE__->config( name => 'SPPM::Web', );
 
 __PACKAGE__->config->{'recaptcha'}->{'pub_key'} =
-    '6Le0CroSAAAAACWhFwcZ0K54ooBT6KBQ3VTfIoqz';
+  '6Le0CroSAAAAACWhFwcZ0K54ooBT6KBQ3VTfIoqz';
 
 __PACKAGE__->config->{'recaptcha'}->{'priv_key'} =
-    '6Le0CroSAAAAAIAsTZ9CRMNdA88jktjzYMnVa6or';
+  '6Le0CroSAAAAAIAsTZ9CRMNdA88jktjzYMnVa6or';
 
 __PACKAGE__->config( { ENCODING => 'utf-8', } );
+
+__PACKAGE__->config( { default_view => 'Web' } );
 
 # Start the application
 __PACKAGE__->setup();

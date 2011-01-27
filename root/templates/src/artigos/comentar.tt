@@ -1,0 +1,37 @@
+[% SET res = procurar(year,article) %]
+[% WHILE (my_result = res.next) %]
+
+	<img src="[% gravatar(my_result.email) %]"></img>
+	[% my_result.nome %] ([% my_result.apelido %])	<p>[% my_result.comentario %]</p>
+
+[% END %]
+
+[% IF error_msg %]
+	<p>[% error_msg %]</p>
+[% END %]
+<h3>Comentar:</h3>
+<form method="post" action_for="[%  %]">
+	<table>
+		<tr>
+			<td>Email: *</td>
+			<td><input type="text" name="email" value="[% email %]"></td>
+		</tr>
+		<tr>
+			<td>Nome: *</td>
+			<td><input type="text" name="nome" value="[% nome %]"></td>
+		</tr>
+			<td>Apelido: </td>
+			<td><input type="text" name="apelido" value="[% apelido %]"></td>
+		</tr>
+		<tr>
+			<td>Coment&aacute;rio: *</td>
+			<td>
+				<textarea name="comentario"" cols="100%" rows="10" tabindex="4">[% comentario %]</textarea>
+			</td>
+		</tr>
+		<tr><td><input type="submit" value="Comentar!"></td></tr>
+	</table>
+</form>
+<p>Voc&ecirc; pode usar as seguintes tags: <br />
+	<b>a p b i u hr br table tr td ul li</b>
+</p>

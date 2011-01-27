@@ -1,0 +1,3 @@
+<iframe frameborder="0" width="100%" height="300" src="[% c.uri_for(c.controller('artigos').action_for('comentar'),year,article) %]">
+
+</iframe>
