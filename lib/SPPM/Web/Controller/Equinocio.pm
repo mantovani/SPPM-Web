@@ -21,12 +21,12 @@ sub index : Chained('base') : PathPart('') : Args(0) {
     my ( $self, $c ) = @_;
 
     opendir DIR, $c->stash->{equinocio_dir}
-        or die "Error opening: $!";
-    my @years = sort grep {/\d{4}/} readdir DIR;
+      or die "Error opening: $!";
+    my @years = sort grep { /\d{4}/ } readdir DIR;
     closedir DIR;
 
     my $year = pop @years || DateTime->now->year;
-	$c->res->redirect( $c->uri_for( '/equinocio', $year ) );
+    $c->res->redirect( $c->uri_for( '/equinocio', $year ) );
 }
 
 sub equinocio : Chained('base') : PathPart('') : CaptureArgs(1) {
@@ -60,7 +60,7 @@ sub year : Chained('equinocio') : PathPart('') : Args(0) {
 sub month : Chained('equinocio') : PathPart('') : CaptureArgs(1) {
     my ( $self, $c, $month ) = @_;
 
-    unless ( grep {/mar|set|test/} $month ) {
+    unless ( grep { /mar|set|test/ } $month ) {
         $c->res->redirect( $c->uri_for('/') );
         $c->detach;
     }
@@ -81,7 +81,7 @@ sub day : Chained('month') : PathPart('') : Args(1) {
     }
 
     my $pod_file =
-        join( '/', $c->stash->{equinocio_dir}, $year, $month, "$day.pod" );
+      join( '/', $c->stash->{equinocio_dir}, $year, $month, "$day.pod" );
 
     if ( !-e $pod_file ) {
         $c->res->redirect( $c->uri_for('/') );
@@ -90,26 +90,26 @@ sub day : Chained('month') : PathPart('') : Args(1) {
     $c->log->info($pod_file);
     my $mtime = ( stat $pod_file )->mtime;
 
-    #my $cached_pod = $c->cache->get("$pod_file $mtime");
+    my $cached_pod = $c->cache->get("$pod_file $mtime");
 
-    #if (!$cached_pod) {
-    my $parser = SPPM::Web::Pod->new(
-        StringMode   => 1,
-        FragmentOnly => 1,
-        MakeIndex    => 0,
-        TopLinks     => 0,
-    );
+    if ( !$cached_pod ) {
+        my $parser = SPPM::Web::Pod->new(
+            StringMode   => 1,
+            FragmentOnly => 1,
+            MakeIndex    => 0,
+            TopLinks     => 0,
+        );
 
-    open my $fh, '<:utf8', $pod_file
-        or die "Failed to open $pod_file: $!";
+        open my $fh, '<:utf8', $pod_file
+          or die "Failed to open $pod_file: $!";
 
-    $parser->parse_from_filehandle($fh);
-    close $fh;
+        $parser->parse_from_filehandle($fh);
+        close $fh;
 
-    my $cached_pod = $parser->asString;
+        my $cached_pod = $parser->asString;
 
-    #           $c->cache->set("$pod_file $mtime", $cached_pod, '12h' );
-    #}
+        $c->cache->set( "$pod_file $mtime", $cached_pod, '12h' );
+    }
 
     my $tree  = HTML::TreeBuilder::XPath->new_from_content($cached_pod);
     my $title = $tree->findnodes('//h1')->[0]->as_text;
