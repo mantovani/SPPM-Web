@@ -28,6 +28,9 @@ requires 'Moose';
 requires 'namespace::autoclean';
 
 requires 'REST::Google';
+requires 'HTML::Scrubber';
+requires 'Gravatar::URL';
+requires 'REST::Google';
 requires 'Cache::File';
 requires 'JSON';
 

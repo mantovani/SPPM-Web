@@ -1,0 +1,16 @@
+<div class="container_bottom">
+<div class="top">
+	<h2>Not&iacute;cias</h2>
+</div>
+
+<div class="whois">
+	[% FOREACH my_news IN cached_news %]
+
+		<h3>[% my_news.titleNoFormatting %]</h3>
+		<p>[% my_news.content %]
+		<a href="[% my_news.unescapedUrl %]">[% my_news.unescapedUrl %]</a>
+		</p>
+
+	[% END %]
+</div>
+</div>
