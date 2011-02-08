@@ -32,38 +32,6 @@ SPPM::Controller::Root - Root Controller for SPPM
 sub base : Chained('/') : PathPart('') : CaptureArgs(0) {
 }
 
-sub auto : Private {
-    my ( $self, $c ) = @_;
-
-    if (   $c->action eq $c->controller('Login')->action_for('login')
-        || $c->action     eq $c->controller('Root')->action_for('index')
-        || $c->controller eq $c->controller('Artigos')
-        || $c->controller eq $c->controller('Calendario')
-        || $c->controller eq $c->controller('Equinocio')
-        || $c->controller eq $c->controller('Local') ) {
-        return 1;
-    }
-
-    # If a user doesn't exist, force login
-    if (!$c->user_exists
-        or ( (      !$c->check_user_roles('admin')
-                and !$c->check_user_roles('gerente')
-                and !$c->check_user_roles('funcionario')
-            )
-        )
-        ) {
-
-        # Redirect the user to the login page
-        $c->forward(qw/SPPM::Web::Controller::Login login/);
-
-     # Return 0 to cancel 'post-auto' processing and prevent use of application
-        return 0;
-    }
-
-    # User found, so return 1 to continue with processing after this 'auto'
-    return 1;
-}
-
 sub hidden_page : Path('/hidden_page') : Args(0) {
     my ( $self, $c ) = @_;
     $c->stash( template => \'CONTEÚDO ESCONDIDO' );
