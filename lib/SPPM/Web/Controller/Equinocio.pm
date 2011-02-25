@@ -78,40 +78,22 @@ sub day : Chained('month') : PathPart('') : Args(1) {
         $c->detach;
     }
 
-    my $pod_file =
-      join( '/', $c->stash->{equinocio_dir}, $year, $month, "$day.pod" );
+    my $pod_dir =
+      join( '/', $c->stash->{equinocio_dir}, $year, $month );
 
-    if ( !-e $pod_file ) {
-        $c->res->redirect( $c->uri_for('/') );
-        $c->detach;
-    }
-    $c->log->info($pod_file);
-    my $mtime = ( stat $pod_file )->mtime;
+    my $artigo = $c->model('Artigo');
 
-    my $cached_pod = $c->cache->get("$pod_file $mtime");
+    eval {
+        $artigo->basedir("$pod_dir");
+        $artigo->file("$day.pod");
+    };
 
-    if ( !$cached_pod ) {
-        my $parser = SPPM::Web::Pod->new(
-            StringMode   => 1,
-            FragmentOnly => 1,
-            MakeIndex    => 0,
-            TopLinks     => 0,
-        );
-
-        open my $fh, '<:utf8', $pod_file
-          or die "Failed to open $pod_file: $!";
-
-        $parser->parse_from_filehandle($fh);
-        close $fh;
-
-        my $cached_pod = $parser->asString;
-
-        $c->cache->set( "$pod_file $mtime", $cached_pod, '12h' );
-    }
+    $c->stash( templates => 'local/error.tt' ) and return if $@;
 
     $c->stash(
         day      => $day,
-        pod      => $cached_pod,
+        pod      => $artigo->content,
+        eqtitle  => $artigo->title,
         template => 'equinocio/day.tt',
     );
     $c->forward('View::TT');
