@@ -36,11 +36,6 @@ sub base : Chained('/') : PathPart('') : CaptureArgs(0) {
     );
 }
 
-sub hidden_page : Path('/hidden_page') : Args(0) {
-    my ( $self, $c ) = @_;
-    $c->stash( template => \'CONTEÚDO ESCONDIDO' );
-}
-
 sub index : Path : Args(0) {
     my ( $self, $c ) = @_;
 
