@@ -21,7 +21,7 @@ body {
 
 span.clear {
     clear:both;
-W}
+}
 
 
 .left {
@@ -595,6 +595,10 @@ a.expand {
   }
 
 
+
+#container .top ul li a span{ color: #000080; font-size: 0.8em }
+
+
 #container .top h1 {
     font:20pt Arial, Helvetica, sans-serif;
     color:#bc0108;
@@ -907,3 +911,4 @@ fieldset.area legend{
 	margin:1em auto;
 	padding:1em;
 }
+
