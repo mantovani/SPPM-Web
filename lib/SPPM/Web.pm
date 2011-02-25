@@ -44,7 +44,7 @@ __PACKAGE__->config(
 
 __PACKAGE__->config->{'Plugin::Cache'}{backend} = {
     class => "Cache::File",
-    cache_root => "/tmp"
+    cache_root => "/tmp/sppm/cache"
 };
 
 

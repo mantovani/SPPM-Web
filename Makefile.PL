@@ -29,7 +29,6 @@ requires 'namespace::autoclean';
 
 requires 'REST::Google';
 requires 'HTML::Scrubber';
-requires 'Gravatar::URL';
 requires 'REST::Google';
 requires 'Cache::File';
 requires 'JSON';
@@ -48,7 +47,6 @@ requires 'DateTime';
 requires 'B::Hooks::OP::Check';
 requires 'DateTime::Format::MySQL';
 requires 'HTML::TreeBuilder::XPath';
-requires 'Cache::File';
 
 requires 'Test::UseAllModules';
 
