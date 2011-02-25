@@ -37,6 +37,8 @@
 <div style="clear: both"></div>
 <Br/><br/>
 
+[% INCLUDE site/disqus.tt %]
+
 <br/><br/>
 <a href="/lista">Clique aqui</a> e assine nossa lista de discuss&atilde;o para ensinar, aprender, discutir e muito mais!
 
