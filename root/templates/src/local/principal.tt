@@ -5,6 +5,12 @@
 
     <div id="container_bottom">
 
+	<center>
+		<a href="http://www.perlworkshop.com.br" target="_blank">
+		<img src="/static/images/banner2.png" border="0"/>
+		</a>
+		<br/>
+	</center>
 
         <div class="top">
             <div class="top_left">
