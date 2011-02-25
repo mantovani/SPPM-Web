@@ -20,7 +20,7 @@ use Catalyst qw/
   ConfigLoader
   Static::Simple
   Unicode::Encoding
-  Facebook
+  Cache
   /;
 
 extends 'Catalyst';
@@ -37,17 +37,17 @@ $VERSION = eval $VERSION;
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( name => 'SPPM::Web', );
+__PACKAGE__->config( 
+    name => 'SPPM::Web', 
+    default_view => 'TT',
+);
 
-__PACKAGE__->config->{'recaptcha'}->{'pub_key'} =
-  '6Le0CroSAAAAACWhFwcZ0K54ooBT6KBQ3VTfIoqz';
+__PACKAGE__->config->{'Plugin::Cache'}{backend} = {
+    class => "Cache::File",
+    cache_root => "/tmp"
+};
 
-__PACKAGE__->config->{'recaptcha'}->{'priv_key'} =
-  '6Le0CroSAAAAAIAsTZ9CRMNdA88jktjzYMnVa6or';
 
-__PACKAGE__->config( { ENCODING => 'utf-8', } );
-
-__PACKAGE__->config( { default_view => 'Web' } );
 
 # Start the application
 __PACKAGE__->setup();

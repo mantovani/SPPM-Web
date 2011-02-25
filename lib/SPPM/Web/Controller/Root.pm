@@ -1,11 +1,10 @@
 package SPPM::Web::Controller::Root;
 use Moose;
+use Digest::MD5 qw (md5_hex);
 
 use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
-
-use utf8;
 
 #
 # Sets the actions in this controller to be registered with no prefix
@@ -30,6 +29,11 @@ SPPM::Controller::Root - Root Controller for SPPM
 =cut
 
 sub base : Chained('/') : PathPart('') : CaptureArgs(0) {
+    my ( $self, $c ) = @_;
+    $c->stash( 
+        md5 => md5_hex($c->req->uri->path), 
+        path => $c->req->uri->path
+    );
 }
 
 sub hidden_page : Path('/hidden_page') : Args(0) {

@@ -9,6 +9,8 @@
    
     [% INCLUDE site/listar_artigos.tt %]
 
+    [% INCLUDE site/disqus.tt %]
+
 		</div>
           </div>
         </div>

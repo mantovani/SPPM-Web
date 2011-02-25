@@ -8,7 +8,7 @@ use File::stat;
 use POSIX qw(strftime);
 use DateTime;
 use SPPM::Web::Pod;
-use utf8;
+use HTML::TreeBuilder::XPath;
 
 has cache => (
     is      => 'ro',

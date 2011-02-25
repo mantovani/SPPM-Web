@@ -9,7 +9,8 @@
             <div class="whois">
             
 		[% pod %]
-    	[% INCLUDE site/comentarios.tt %]
+
+		[% INCLUDE site/disqus.tt %]
 
 		</div>
           </div>

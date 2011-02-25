@@ -9,8 +9,6 @@ use Calendar::Simple;
 use DateTime;
 use SPPM::Web::Pod;
 use File::stat;
-use HTML::TreeBuilder::XPath;
-use utf8;
 
 sub base : Chained('/base') PathPart('equinocio') CaptureArgs(0) {
     my ( $self, $c ) = @_;
@@ -110,11 +108,6 @@ sub day : Chained('month') : PathPart('') : Args(1) {
 
         $c->cache->set( "$pod_file $mtime", $cached_pod, '12h' );
     }
-
-    my $tree  = HTML::TreeBuilder::XPath->new_from_content($cached_pod);
-    my $title = $tree->findnodes('//h1')->[0]->as_text;
-    $c->stash->{'eqtitle'} = $title;
-    $tree->delete;
 
     $c->stash(
         day      => $day,
