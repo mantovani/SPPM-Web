@@ -27,7 +27,8 @@ sub root : Chained('base') : PathPart('artigo') : Args(2) {
     $c->stash(
         pod      => $artigo->content,
         template => 'local/artigo_pod.tt',
-        eqtitle  => $artigo->title
+        eqtitle  => $artigo->title,
+        md5      => $artigo->md5
     );
 
 }

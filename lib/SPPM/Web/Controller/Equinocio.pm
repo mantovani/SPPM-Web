@@ -94,6 +94,7 @@ sub day : Chained('month') : PathPart('') : Args(1) {
         day      => $day,
         pod      => $artigo->content,
         eqtitle  => $artigo->title,
+        md5      => $artigo->md5,
         template => 'equinocio/day.tt',
     );
     $c->forward('View::TT');

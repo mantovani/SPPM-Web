@@ -9,6 +9,7 @@ use POSIX qw(strftime);
 use DateTime;
 use SPPM::Web::Pod;
 use HTML::TreeBuilder::XPath;
+use Digest::MD5 qw (md5_hex);
 
 has cache => (
     is      => 'ro',
@@ -20,6 +21,24 @@ has title => (
     is      => 'rw',
     isa     => 'Str',
     default => ''
+);
+
+has md5 => (
+    is => 'ro',
+    isa => 'Str',
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+        return $self->has_content ? md5_hex($self->content) : undef;
+    }
+
+);
+
+# predicate ? 
+has has_content => (
+    is => 'rw',
+    isa => 'Int',
+    default => 0
 );
 
 sub content {
@@ -52,6 +71,7 @@ sub content {
     $self->title($title);
     $tree->delete;
 
+    $self->has_content(1);
     return $cached_pod;
 }
 
