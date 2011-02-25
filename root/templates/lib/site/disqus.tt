@@ -2,7 +2,7 @@
 <div id="disqus_thread"></div>
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'sppm'; 
+        var disqus_shortname = 'sopauloperlmongers'; 
 	var disqus_identifier = '[% md5 %]';
 	var disqus_url = 'http://sao-paulo.pm.org[% path %]';
 
