@@ -2,6 +2,7 @@ package SPPM::Web::Controller::Artigos;
 
 use Moose;
 use MooseX::MethodAttributes;
+use Digest::MD5 qw (md5_hex);
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -28,7 +29,7 @@ sub root : Chained('base') : PathPart('artigo') : Args(2) {
         pod      => $artigo->content,
         template => 'local/artigo_pod.tt',
         eqtitle  => $artigo->title,
-        md5      => $artigo->md5
+        md5      => md5_hex($artigo->content),
     );
 
 }

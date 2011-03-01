@@ -9,6 +9,7 @@ use Calendar::Simple;
 use DateTime;
 use SPPM::Web::Pod;
 use File::stat;
+use Digest::MD5 qw(md5_hex);
 
 sub base : Chained('/base') PathPart('equinocio') CaptureArgs(0) {
     my ( $self, $c ) = @_;
@@ -94,7 +95,7 @@ sub day : Chained('month') : PathPart('') : Args(1) {
         day      => $day,
         pod      => $artigo->content,
         eqtitle  => $artigo->title,
-        md5      => $artigo->md5,
+        md5      => md5_hex($artigo->content),
         template => 'equinocio/day.tt',
     );
     $c->forward('View::TT');
