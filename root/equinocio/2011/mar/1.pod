@@ -380,4 +380,10 @@ SPARQL Working Group Wiki, L<http://www.w3.org/2009/sparql/wiki/Main_Page>
 
 Improving Access to Government through Better Use of the Web, L<http://www.w3.org/TR/egov-improving/>
 
+=head1 AUTOR
+
+Thiago Rondon, L<thiago.rondon no e-mail gratuito do google>.
+
+=cut
+
 
