@@ -324,7 +324,7 @@ A serialização destes dados pode ser oferecida em RDFa, RDF/XML, N3, Turtle, .
 
 Há alguns tipos de banco de informações já definidos para dados como estes, alguns deles são:
 
-=head3 FOAF
+=head4 FOAF
 
 FOAF é um acronimo para Friend of Friend, que é um ontologia para descrever dados de pesssoas, suas atividades, o relacionamento com outras pessoas e objetos, no qual sejam interpretador por máquinas.
 
@@ -332,13 +332,13 @@ Existe alguns módulos para tratar deste tipo de dataset no CPAN, L<XML::FOAF>, 
 
 Mais informações sobre esta espeficação: http://rdfweb.org/foaf/
 
-=head3 GeoNames
+=head4 GeoNames
 
 É um tipo de banco de dados que disponibiliza dados geograficos e pode ser acessado por vários tipos de "web services", que é o conjunto de vocabulário para adicionar a semática necessária nos padrões abertos para distribuição de dados, como RDF/XML, DBpedia e etc.
 
 Existe uma API em Perl para isto, que é L<Geo::GeoNames>, no qual utiliza o webservice http://ws.geonames.org/.
 
-=head2 DBpedia
+=head4 DBpedia
 
 É um projeto que espera extrair informações estruturadas criadas no Wikipedia, no qual permite efetuar consultas e associar documentos entre eles.
 
@@ -382,7 +382,7 @@ Improving Access to Government through Better Use of the Web, L<http://www.w3.or
 
 =head1 AUTOR
 
-Thiago Rondon, L<thiago.rondon no e-mail gratuito do google>.
+Thiago Rondon, thiago.rondon no e-mail gratuito do google.
 
 =cut
 
