@@ -266,7 +266,7 @@ Estes dados além de alimentar banco de dados internos que só o governo pode vi
 
 =head4 Quais os formatos ?
 
-Assim como os dados, os foramtos devem ser abertos para que não exista dependencia tecnologica para o acesso aos dados. Existe sempre uma alternativa ao formato proprietário.
+Assim como os dados, os formatos devem ser abertos para que não exista dependencia tecnologica para o acesso aos dados. Existe sempre uma alternativa ao formato proprietário.
 
 Um exemplo muito comum de uso do formato proprietário, e oferecer os dados em formatos de planilhas excel, no qual uma das alternativas em formato livre seria o CSV.
 
