@@ -256,41 +256,41 @@ Encontre mais informações para publicação de arquivos RDF no final deste doc
 
 =back
 
-=head2 De onde os dados devem vir ?
+=head4 De onde os dados devem vir ?
 
 Quando o assunto é governo, os dados devem ser os que são já estabelecidos por lei como no caso do Brasil que garante a publicidade de uma enorme quantidade de dados.
 
-=head2 Como ele deve ser alimentado ?
+=head4 Como ele deve ser alimentado ?
 
 Estes dados além de alimentar banco de dados internos que só o governo pode visualizar eles, é interessante que ele seja alimenato hoje em formatos abertos na Internet, para que exista uma reutilização destas informações de maneira mais trivial pela sociedade.
 
-=head2 Quais os formatos ?
+=head4 Quais os formatos ?
 
 Assim como os dados, os foramtos devem ser abertos para que não exista dependencia tecnologica para o acesso aos dados. Existe sempre uma alternativa ao formato proprietário.
 
 Um exemplo muito comum de uso do formato proprietário, e oferecer os dados em formatos de planilhas excel, no qual uma das alternativas em formato livre seria o CSV.
 
-=head2 Existe um padrão para os dados ?
+=head4 Existe um padrão para os dados ?
 
 Na Internet, existem padrões ótimas como por exemplo o RDF que define um padrão baseado em URI que define a localização dos arquivos na rede, e em XML que define como o documento será disposto.
 
 Além de oferecer os arquivos em RDF é interessante que seja oferecido em formatos que sejam de fácil manipulação por humanos, como por exemplo o CSV.
 
-=head2 Com qual frequencia ?
+=head4 Com qual frequencia ?
 
 Assim como quais dados devem ser alimentados, o ideal é que sejam oferecidos como a lei estabelece a publicidade dos dados e os prazos para que eles estejam dispostos também.
 
-=head2 Como dividir os dados ?
+=head4 Como dividir os dados ?
 
 A divisão dos dados é um fator muito importante para re-utilização deles de uma maneira mais proveitosa, isto significa que dividir as informações no máximo de arquivos possiveis é interessante para que a leitura seja mais simples.
 
-=head2 Data-driven para o jornalismo ?
+=head4 Data-driven para o jornalismo ?
 
 O processo do jornalismo é um exemplo interessante do que outros profissionais podem fazer com os dados obtidos em relação ao opendata, que basicamente um dado que passe por um filtro e seja bem visualizado possa criar uma boa noticia.
 
 Para que isto ocorra, boas praticas são necessárias tanto por quem abre os dados como para quem irá criar uma nova informação, como a notícia neste caso. Por exemplo, criar uma notícia e não oferecer esta nova visão como dado aberto não irá ajudar na reutilização desta nova visão.
 
-=head1 OWL (Web Ontology Language)
+=head2 OWL (Web Ontology Language)
 
 OWL é uma linguagem para definir e instanciar modelos de dados para informações na web, que o objetivo é oferecer uma interpretação para as máquinas de forma semántica e não apenas de sintaxe, ao invés de apresentá-las apenas aos humanos.
 
