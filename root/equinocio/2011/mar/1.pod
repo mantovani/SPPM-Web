@@ -21,7 +21,7 @@ Transparência na web não significa apenas colocar documentos na web, é precis
 
 Estas tecnologias podem prover para o governo uma maneira inovadora de expor os dados já públicos, de forma que muitos consigam usar de fato. Sabemos que há fatores como política, legais e de cultura, porém com um esforço para esta implementação o retorno será positivo.
 
-Jornalistas, analistas políticos, desenvolvedores de software, organizações, empresários, advogados, médicos e o público em geral irá ter recursos para acessar e entender todo o repositório de dados gerado pelo governo.
+Jornalistas, analistas políticos, desenvolvedores de software, organizações, empresários, advogados, médicos e o público em geral irão ter recursos para acessar e entender todo o repositório de dados gerado pelo governo.
 
 A constituição brasileira prevê a publicidade de uma grande quantidade de informações de interesse da sociedade que atualmente não explora todo potencial de documentos na Web.
 
