@@ -27,9 +27,6 @@ requires 'Catalyst::View::TT';
 requires 'Moose';
 requires 'namespace::autoclean';
 
-requires 'REST::Google';
-requires 'HTML::Scrubber';
-requires 'REST::Google';
 requires 'Cache::File';
 requires 'JSON';
 
@@ -42,12 +39,9 @@ requires 'Calendar::Simple';
 requires 'Pod::Xhtml';
 requires 'Date::Calc';
 requires 'Class::CSV';
-requires 'Cache::FileCache';
 requires 'DateTime';
 requires 'B::Hooks::OP::Check';
-requires 'DateTime::Format::MySQL';
 requires 'HTML::TreeBuilder::XPath';
-
 requires 'Test::UseAllModules';
 
 catalyst;
