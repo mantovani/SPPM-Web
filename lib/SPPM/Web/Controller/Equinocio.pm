@@ -90,16 +90,14 @@ sub day : Chained('month') : PathPart('') : Args(1) {
     };
 
     $c->stash( templates => 'local/error.tt' ) and return if $@;
-
+    
     $c->stash(
-        day      => $day,
         pod      => $artigo->content,
         eqtitle  => $artigo->title,
         md5      => md5_hex($artigo->content),
         template => 'equinocio/day.tt',
     );
-    $c->forward('View::TT');
-
+	$c->detach;
 }
 
 # Thanks for Advent Calendar of Catalyst. :-)

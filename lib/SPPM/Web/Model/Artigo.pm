@@ -13,7 +13,7 @@ use HTML::TreeBuilder::XPath;
 has cache => (
     is      => 'ro',
     isa     => 'Object',
-    default => sub { Cache::File->new( cache_root => '/tmp' ) }
+    default => sub { Cache::Memcached->new }
 );
 
 has title => (
