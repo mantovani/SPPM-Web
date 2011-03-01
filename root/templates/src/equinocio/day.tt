@@ -14,28 +14,53 @@
 
 <br><br>
 
-
-[% pod %]
-<ul id="pager">
 [% yesterday = day - 1 %]
 [% tomorrow  = day + 1 %]
-[% TRY %]
-    [% USE File( c.path_to( 'root', 'equinocio', year, month, "${yesterday}.pod" ) ) %]
-    <li class="previous"><a href="/equinocio/[% year %]/[% month %]/[% yesterday %]">Anterior</a></li>
-[% CATCH File %]
-    <li class="previous">Anterior</li>
-[% END %]
-</ul>
-<ul id="pager">
-[% TRY %]
-    [% USE File( c.path_to( 'root', 'equinocio', year, month, "${tomorrow}.pod" ) ) %]
-    <li class="next"><a href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo</a></li>
-[% CATCH File %]
-    <li class="next">Pr&oacute;ximo</li>
-[% END %]
-</ul>
+
+<div class="pagination" >
+    [% TRY %]
+        [% USE File( c.path_to( 'root', 'equinocio', year, month, "${yesterday}.pod" ) ) %]
+        <a class="previous" href="/equinocio/[% year %]/[% month %]/[% yesterday %]"><< Anterior</a>
+    [% CATCH File %]
+        <span class="disabled">« Anterior</span>
+    [% END %]
+
+    <span class="current">[% day %]</span>
+
+    [% TRY %]
+        [% USE File( c.path_to( 'root', 'equinocio', year, month, "${tomorrow}.pod" ) ) %]
+        <a class="next" href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo >></a>
+    [% CATCH File %]
+        <span class="disabled">Pr&oacute;ximo »</span>
+    [% END %]
+</div>
+
+
+[% pod %] <br/>
+
+
+<div class="pagination" >
+    [% TRY %]
+        [% USE File( c.path_to( 'root', 'equinocio', year, month, "${yesterday}.pod" ) ) %]
+        <a class="previous" href="/equinocio/[% year %]/[% month %]/[% yesterday %]"><< Anterior</a>
+    [% CATCH File %]
+        <span class="disabled">« Anterior</span>
+    [% END %]
+
+    <span class="current">[% day %]</span>
+    
+    [% TRY %]
+        [% USE File( c.path_to( 'root', 'equinocio', year, month, "${tomorrow}.pod" ) ) %]
+        <a class="next" href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo >></a>
+    [% CATCH File %]
+        <span class="disabled">Pr&oacute;ximo »</span>
+    [% END %]
+</div>
+
+
 <div style="clear: both"></div>
-<Br/><br/>
+
+<br/><br/>
 
 [% INCLUDE site/disqus.tt %]
 
