@@ -273,11 +273,11 @@ atravE<eacute>s de uma interface orientada a objetos. Segue um exemplo
  use IPC::Open2;
  
  # Exemplo 1
- # essa È a forma incorreta de se evitar o shell!
+ # essa √© a forma incorreta de se evitar o shell!
  $pid = open2(\*RDRFH, \*WTRFH, 'some cmd and args');
  
  # Exemplo 2
- # esta È a forma correta
+ # esta √© a forma correta
  $pid = open2(\*RDRFH, \*WTRFH, 'some', 'cmd', 'and', 'args');
 
 =over
@@ -357,7 +357,7 @@ dados para que a Perl passe a aceitE<aacute>-lo:
  
  unless ($arquivo =~ /(^[\w\.\-\_]+$)/) {
  
-   die "Nome de arquivo inv·lido\n";
+   die "Nome de arquivo inv√°lido\n";
  
  } else {
  
