@@ -1,29 +1,29 @@
-﻿=pod
+E<#65279>=pod
 
 =encoding utf8
 
 =head1 DBIx::Class - Usando os relacionamentos
 
-=head1 Introdução - MER/DBIx-Class
+=head1 IntroduE<#231>E<#227>o - MER/DBIx-Class
 
 
-O DBIx Class é um dos grandes e mais sólidos projetos que compõem o tão falado Perl moderno, o projeto foi criado por Matt S.Trout(Autor do livro “The Definitive Guide to Catalyst”) e tem um time de desenvolvedores de peso no seu core team, entre eles os brazucas Eden Cardim e Wallace Reis.
+O DBIx Class E<#233> um dos grandes e mais sE<#243>lidos projetos que compE<#245>em o tE<#227>o falado Perl moderno, o projeto foi criado por Matt S.Trout(Autor do livro E<#8220>The Definitive Guide to CatalystE<#8221>) e tem um time de desenvolvedores de peso no seu core team, entre eles os brazucas Eden Cardim e Wallace Reis.
 
-O DBIx Class se propõe a ser um ORM (Object Relational Mapper) extensível e flexível. Esse tipo de abordagem tem como maior objetivo possibilitar que o desenvolver dê prioridade as regras de negócio do projeto e não se preocupe com as peculiaridades de cada RDBMS . O DBIx Class nos permite simples facilidades como escrever consultas em forma de código Perl, extrair automaticamente classes da estrutura já existente no banco de dados e também uma integração com o AutoCrud, um AJAX web front-end para o Catalyst. Em contra partida alguns acham que a curva de aprendizado é alta demais em relação aos benefícios, e que seria mais simples e produtivo utilizar as queries SQL para consultas complexas.
+O DBIx Class se propE<#245>e a ser um ORM (Object Relational Mapper) extensE<#237>vel e flexE<#237>vel. Esse tipo de abordagem tem como maior objetivo possibilitar que o desenvolver dE<#234> prioridade as regras de negE<#243>cio do projeto e nE<#227>o se preocupe com as peculiaridades de cada RDBMS . O DBIx Class nos permite simples facilidades como escrever consultas em forma de cE<#243>digo Perl, extrair automaticamente classes da estrutura jE<#225> existente no banco de dados e tambE<#233>m uma integraE<#231>E<#227>o com o AutoCrud, um AJAX web front-end para o Catalyst. Em contra partida alguns acham que a curva de aprendizado E<#233> alta demais em relaE<#231>E<#227>o aos benefE<#237>cios, e que seria mais simples e produtivo utilizar as queries SQL para consultas complexas.
 
 Nesse artigo pretendo demonstrar as funcionalidades e vantagens oferecidas ao utilizar o DBIx::Class ao utilizar os relacionamentos de um modelo relacional.
 
-O DBIx::Class oferece métodos que permitem criar relacionamentos entre as tabelas existentes do seu MER(Modelo Entidades e Relacionamentos).
+O DBIx::Class oferece mE<#233>todos que permitem criar relacionamentos entre as tabelas existentes do seu MER(Modelo Entidades e Relacionamentos).
 
-Nesse artigo vamos entrar em detalhes no relacionamento “um  para muitos” ou “has many”, que é o tipo de relacionamento mais usual nos modelos relacionais, vamos mostrar como defini-los nas classes do DBIx::Class, como realizar consultas JOIN (onde são feitas junção de duas ou mais tabelas que se relacionam) e também como criar e excluir automaticamente registros que se relacionam.
+Nesse artigo vamos entrar em detalhes no relacionamento E<#8220>um  para muitosE<#8221> ou E<#8220>has manyE<#8221>, que E<#233> o tipo de relacionamento mais usual nos modelos relacionais, vamos mostrar como defini-los nas classes do DBIx::Class, como realizar consultas JOIN (onde sE<#227>o feitas junE<#231>E<#227>o de duas ou mais tabelas que se relacionam) e tambE<#233>m como criar e excluir automaticamente registros que se relacionam.
 
 =head1 Tipos de relacionamentos
 
-A grande conveniência da utilização dos relacionamentos no DBIx::Class é que ele cria acessores nas classes para serem utilizados nos códigos. Começemos listando os possíveis tipos de relacionamentos do DBIx::Class:
+A grande conveniE<#234>ncia da utilizaE<#231>E<#227>o dos relacionamentos no DBIx::Class E<#233> que ele cria acessores nas classes para serem utilizados nos cE<#243>digos. ComeE<#231>emos listando os possE<#237>veis tipos de relacionamentos do DBIx::Class:
 
 =head2 belongs_to
 
-Cria um relacionamento no qual a classe define quais são suas chaves estrangeiras.
+Cria um relacionamento no qual a classe define quais sE<#227>o suas chaves estrangeiras.
 
 =head2 has_many
 
@@ -31,7 +31,7 @@ Cria um relacionamento um-para-muitos no qual a chave estrangeira referencia par
 
 =head2 might_have
 
-Cria um relacionamento um-para-muitos opcional, que pode existir ou não.
+Cria um relacionamento um-para-muitos opcional, que pode existir ou nE<#227>o.
 
 =head2 has_one
 
@@ -39,12 +39,12 @@ Cria um relacionamento um-para-um com uma classe.
 
 =head2 many_to_many
 
-Cria uma ponte entre dois resultsets oferecendo as mesmas conveniências de acessors que os outros tipos de relacionamentos tem.
+Cria uma ponte entre dois resultsets oferecendo as mesmas conveniE<#234>ncias de acessors que os outros tipos de relacionamentos tem.
 
 
 =head1 Ambiente/Tabelas/Schemas
 
-Abaixo uma imagem do schema que iremos utilizar neste artigo, optei por utilizar o schema Human Resources (L<http://download.oracle.com/docs/cd/B12037_01/server.101/b10771/scripts003.htm/>) que são schemas demo que vem com os bancos Oracle, fiz essa opção por este nos oferecer um schema com tabelas já relacionadas e populadas, prontas para uso, o que me permitiu focar o desenvolvimento apenas na definição dos relacionamentos no DBIx::Class.
+Abaixo uma imagem do schema que iremos utilizar neste artigo, optei por utilizar o schema Human Resources (L<http://download.oracle.com/docs/cd/B12037_01/server.101/b10771/scripts003.htm/>) que sE<#227>o schemas demo que vem com os bancos Oracle, fiz essa opE<#231>E<#227>o por este nos oferecer um schema com tabelas jE<#225> relacionadas e populadas, prontas para uso, o que me permitiu focar o desenvolvimento apenas na definiE<#231>E<#227>o dos relacionamentos no DBIx::Class.
 
 =begin pod:xhtml
 
@@ -58,7 +58,7 @@ Neste artigo irei demonstrar como funciona o tipo de relacionamento mais comum n
 
 =head2 Definindo os relacionamentos nas classes
 
-Começamos definindo as classes:
+ComeE<#231>amos definindo as classes:
 
 MyDB/Schema/Result/Employee.pm
 
@@ -129,7 +129,7 @@ MyDB/Schema/Result/JobHistory.pm
 		print "Department " . $dep->department_name." City: " . $dep->locations->city.$/;
 	}
 	
-No bloco de código acima nós estamos fazendo um join da tabela Department com a tabela Locations, porém se nós setarmos DBIC_TRACE=1, perceberemos que nós executamos a query nas duas tabelas porém só retornamos os dados da tabela Department, e ao acessarmos a coluna city da tabela Location, uma consulta é feita para cada linha retornada da tabela Department, e este realmente não é nosso objetivo:
+No bloco de cE<#243>digo acima nE<#243>s estamos fazendo um join da tabela Department com a tabela Locations, porE<#233>m se nE<#243>s setarmos DBIC_TRACE=1, perceberemos que nE<#243>s executamos a query nas duas tabelas porE<#233>m sE<#243> retornamos os dados da tabela Department, e ao acessarmos a coluna city da tabela Location, uma consulta E<#233> feita para cada linha retornada da tabela Department, e este realmente nE<#227>o E<#233> nosso objetivo:
 
 
 	SELECT me.department_id, me.department_name, me.manager_id, me.location_id 
@@ -153,7 +153,7 @@ No bloco de código acima nós estamos fazendo um join da tabela Department com 
 
 =head2 Prefetch Joins	
 	
-Para evitar situações com a descrita acima, o DBIx::Class nos oferece os prefetch joins, que consultam os dados das tabelas relacionadas antecipadamente:
+Para evitar situaE<#231>E<#245>es com a descrita acima, o DBIx::Class nos oferece os prefetch joins, que consultam os dados das tabelas relacionadas antecipadamente:
 
 	my $rs = $schema->resultset('Department')->search(
 			{
@@ -170,7 +170,7 @@ Para evitar situações com a descrita acima, o DBIx::Class nos oferece os prefe
 		print "Department #$i " . $dep->department_name." City: " . $dep->locations->city.$/;
 	}
 	
-Abaixo veja a única query gerada pelo bloco de código acima:
+Abaixo veja a E<#250>nica query gerada pelo bloco de cE<#243>digo acima:
 	
 	SELECT me.department_id, me.department_name, me.manager_id, me.location_id, locations.location_id, locations.street_address, locations.postal_code, 
 	locations.city, locations.state_province, locations.country_id 
@@ -181,7 +181,7 @@ Abaixo veja a única query gerada pelo bloco de código acima:
 
 =head2 Multiple joins
 
-O DBIx::Class também nos permite joins múltiplos em várias tabelas, bastando passar uma arrayref ao invés de um scalar como atributo no join:
+O DBIx::Class tambE<#233>m nos permite joins mE<#250>ltiplos em vE<#225>rias tabelas, bastando passar uma arrayref ao invE<#233>s de um scalar como atributo no join:
 	
 	my $rs = $schema->resultset('Employee')->search(
 			{
@@ -199,7 +199,7 @@ O DBIx::Class também nos permite joins múltiplos em várias tabelas, bastando 
 			},
 		);
 
-Abaixo a query gerada pelo código acima que pretende listar empregados com departament_name 'Finance', com job_title 'Accountant' e salary maior ou igual a 100:
+Abaixo a query gerada pelo cE<#243>digo acima que pretende listar empregados com departament_name 'Finance', com job_title 'Accountant' e salary maior ou igual a 100:
 
 	SELECT me.employee_id, me.first_name, me.last_name, me.email, me.phone_number, me.hire_date, me.salary, me.commission_pct, me.manager_id, me.department_id, 
 	me.job_id, department.department_id, department.department_name, department.manager_id, department.location_id 
@@ -212,7 +212,7 @@ Abaixo a query gerada pelo código acima que pretende listar empregados com depa
 
 =head2 Multi-step joins
 
-Suponhemos que nós necessitemos fazer join entre mais que um relaciomento, exemplificando: digamos que para nosso caso nós queiramos buscar todos empregados que tenha country_id 'US', alary maior ou igual a 100 e start_date maior ou igual a 01-JAN-80. Repare que as tabelas Employee e Locations não se relacionam diretamente, Departament está entre elas, é quando existe essa necessidade que nós devemos utilizar o multistep join:
+Suponhemos que nE<#243>s necessitemos fazer join entre mais que um relaciomento, exemplificando: digamos que para nosso caso nE<#243>s queiramos buscar todos empregados que tenha country_id 'US', alary maior ou igual a 100 e start_date maior ou igual a 01-JAN-80. Repare que as tabelas Employee e Locations nE<#227>o se relacionam diretamente, Departament estE<#225> entre elas, E<#233> quando existe essa necessidade que nE<#243>s devemos utilizar o multistep join:
 
 	my $rs = $schema->resultset('Employee')->search(
 				{
@@ -236,7 +236,7 @@ Suponhemos que nós necessitemos fazer join entre mais que um relaciomento, exem
 		print "Departamento: ".$dep->department->department_name." Nome " . $dep->first_name." Salary ".$dep->salary." Start date ".$dep->jobhistorys->start_date.$/;	 
 	}	
 
-Abaixo a query gerada que faz join nas tabelas jobhistory, departments e também na locations, graças a utilização do multistep join:
+Abaixo a query gerada que faz join nas tabelas jobhistory, departments e tambE<#233>m na locations, graE<#231>as a utilizaE<#231>E<#227>o do multistep join:
 	
 	SELECT me.employee_id, me.first_name, me.last_name, me.email, me.phone_number, m
 	e.hire_date, me.salary, me.commission_pct, me.manager_id, me.department_id, me.j
@@ -253,7 +253,7 @@ Abaixo a query gerada que faz join nas tabelas jobhistory, departments e também
 
 =head2 Pesquisas relacionadas
 
-Nós também podemos usar dos relacionamentos para fazer pesquisas entre tabelas relacionadas utilizando o método search_related:
+NE<#243>s tambE<#233>m podemos usar dos relacionamentos para fazer pesquisas entre tabelas relacionadas utilizando o mE<#233>todo search_related:
 
 	my $rs = $schema->resultset('Department')->search(
 		{ department_name => { like => '%Account%' } }
@@ -265,7 +265,7 @@ Nós também podemos usar dos relacionamentos para fazer pesquisas entre tabelas
 		print $_->first_name.$/;
 	}
 
-Abaixo a query gerada pelo código acima:
+Abaixo a query gerada pelo cE<#243>digo acima:
 
 	SELECT employees.employee_id, employees.first_name, employees.last_name, employees.email, employees.phone_number, employees.hire_date, employees.salary, 
 	employe	es.commission_pct, employees.manager_id, employees.department_id, employees.job_id 
@@ -299,7 +299,7 @@ Abaixo a query gerada pelo código acima:
 
 =head1 Agradecimentos
 
-A toda São Paulo Perl Mongers pelo duro trabalho realizado para a popularização dessa poderosa ferramenta que é o Perl
+A toda SE<#227>o Paulo Perl Mongers pelo duro trabalho realizado para a popularizaE<#231>E<#227>o dessa poderosa ferramenta que E<#233> o Perl
 
 =head1 AUTOR
 

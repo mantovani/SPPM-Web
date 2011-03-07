@@ -42,7 +42,7 @@ Para isso, basta chamar um terminal e digitar o comando cpan. Ele vai mostrar
 uma pequena mensagem de apresentação e perguntar se você gostaria de deixá-lo
 configurar tudo automaticamente. Para a maioria dos casos a configuração
 automática é suficiente, no entanto vamos configurar algumas opções um pouco
-diferentes do default, então respondemos ‘no’.
+diferentes do default, então respondemos 'no'.
 
     Would you like me to configure as much as possible automatically? [yes] no
 
@@ -64,7 +64,7 @@ fará mais essas besteiras, vamos modificar a opção de auto_commit para 'yes'.
 
 A segunda é a que define a política de pré-requisitos. Ela define o que o cpan
 deve fazer ao se deparar com um módulo que possui uma dependência. O default é
-‘ask’ (perguntar). Vamos modificar para ‘follow’ (seguir). Assim, quando o
+'ask' (perguntar). Vamos modificar para 'follow' (seguir). Assim, quando o
 cpan encontrar um módulo que possui alguma dependência, ao invés de me
 perguntar o que fazer , ele vai tentar instalá-la automaticamente. Isso é
 extremamente útil durante instalações longas com uma árvore de dependências
@@ -75,8 +75,8 @@ grande como a do Catalyst.
 
 Na sequência vem a pergunta sobre a instalação de dependências de build dos
 módulos. As dependências de build são componentes que são necessários durante
-o processo de compilação/testes/instalação. Vamos alterar de ‘ask/yes’ para
-‘yes’ de forma que as dependências de build também sejam instaladas. Assim se
+o processo de compilação/testes/instalação. Vamos alterar de 'ask/yes' para
+'yes' de forma que as dependências de build também sejam instaladas. Assim se
 durante o build algum módulo precisar de outro que ainda não está instalado,
 este será automaticamente baixado e instalado para você. O default era
 perguntar e sugerir sim como resposta.
@@ -274,7 +274,7 @@ Feito isso, podemos instalar o módulo CPAN::Mini com o comando:
 
 Depois de instalar o módulo, executamos o comando minicpan que vai sincronizar
 o repositório local (diretório ~/minicpan, atualmente vazio) com o repositório
-indicado no ‘remote’ do .minicpanrc na internet. Esta parte pode demorar entre
+indicado no 'remote' do .minicpanrc na internet. Esta parte pode demorar entre
 alguns minutos e várias horas, dependendo da velocidade do seu link, pois ele
 vai baixar cerca de 1.2 GB de arquivos.
 
@@ -293,7 +293,7 @@ do cpan:
     cpan> o conf urllist unshift file:///home/blabos/minicpan
 
 Onde /home/blabos é o diretório home do usuário, no meu caso, blabos; e
-minicpan é o diretório que configuramos na opção ‘local’ do .minicpanrc.
+minicpan é o diretório que configuramos na opção 'local' do .minicpanrc.
 
 Lembra-se da primeira opção configurada no cpan? Ela serve exatamente para que
 a configuração feita acima seja automaticamente persistida nos arquivo de
