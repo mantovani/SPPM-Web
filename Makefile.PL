@@ -28,6 +28,7 @@ requires 'Moose';
 requires 'namespace::autoclean';
 
 requires 'Cache::File';
+requires 'Cache::Memcached';
 requires 'JSON';
 
 requires 'parent';
