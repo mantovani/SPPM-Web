@@ -20,7 +20,7 @@
 <div class="pagination" >
     [% TRY %]
         [% USE File( c.path_to( 'root', 'equinocio', year, month, "${yesterday}.pod" ) ) %]
-        <a class="previous" href="/equinocio/[% year %]/[% month %]/[% yesterday %]"><< Anterior</a>
+        <a class="previous" href="/equinocio/[% year %]/[% month %]/[% yesterday %]">« Anterior</a>
     [% CATCH File %]
         <span class="disabled">« Anterior</span>
     [% END %]
@@ -29,12 +29,12 @@
 
     [% TRY %]
         [% USE File( c.path_to( 'root', 'equinocio', year, month, "${tomorrow}.pod" ) ) %]
-        <a class="next" href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo >></a>
+        <a class="next" href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo »</a>
     [% CATCH File %]
         <span class="disabled">Pr&oacute;ximo »</span>
     [% END %]
 </div>
-
+<br/>
 
 [% pod %] <br/>
 
@@ -42,7 +42,7 @@
 <div class="pagination" >
     [% TRY %]
         [% USE File( c.path_to( 'root', 'equinocio', year, month, "${yesterday}.pod" ) ) %]
-        <a class="previous" href="/equinocio/[% year %]/[% month %]/[% yesterday %]"><< Anterior</a>
+        <a class="previous" href="/equinocio/[% year %]/[% month %]/[% yesterday %]">« Anterior</a>
     [% CATCH File %]
         <span class="disabled">« Anterior</span>
     [% END %]
@@ -51,7 +51,7 @@
     
     [% TRY %]
         [% USE File( c.path_to( 'root', 'equinocio', year, month, "${tomorrow}.pod" ) ) %]
-        <a class="next" href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo >></a>
+        <a class="next" href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo »</a>
     [% CATCH File %]
         <span class="disabled">Pr&oacute;ximo »</span>
     [% END %]

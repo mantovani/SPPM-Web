@@ -1,0 +1,581 @@
+=encoding utf-8
+
+=head1 DataFlow - Um Framework Para Fluxo de Dados
+
+=head2 OpenData - O ComeE<#231>o e o Fim
+
+Tudo comeE<#231>ou com um e-mail na L<lista da SP-PM|http://sao-paulo.pm.org/lista>,
+no qual se falou de "hackear" dados pE<#250>blicos. Logo isso evoluiu para a idE<#233>ia
+de produzir um framework para buscar e analisar dados pE<#250>blicos. Sem demora, o
+L<Thiago Rondon|http://www.maluco.com.br/blog/> montou um 
+L<repositE<#243>rio no GitHub|https://github.com/maluco/OpenData-BR> e comeE<#231>ou a 
+rabiscar umas idE<#233>ias de cE<#243>digo. Em seguida nasceu o site do
+L<OpenData-BR|http://www.opendatabr.org/>.
+
+O projeto ainda tem um status de I<work in progress>, mas as expectativas e as
+perspectivas sE<#227>o muito animadoras, e espera-se que em breve o B<DataFlow>
+possa ser utilizado amplamente pelo B<OpenData-BR> para disponibilizar os
+dados pE<#250>blicos.
+
+=head2 Primeiras IdE<#233>ias
+
+=head3 Buscar dados na web (scrape)
+
+A primeira idE<#233>ia a ser implementada foi a lE<#243>gica de buscar dados na web. Na
+lista, ou no canal #saopaulo.pm no irc.perl.org, surgiram as primeiras
+indicaE<#231>E<#245>es de sites onde a informaE<#231>E<#227>o estava disponibilizada. Um dos sites
+primariamente visados foi o
+L<PortalTransparencia|http://www.portaltransparencia.gov.br/>, o site do
+governo federal para promover a transparE<#234>ncia nos dados do governo.
+
+Seguindo a metodologia opensource I<"release early, release often">, o
+projeto comeE<#231>ou a disponibilizar cE<#243>digo que, efetivamente, conseguia buscar
+dados. No entanto, esse cE<#243>digo inicialmente nE<#227>o fazia muitas provisE<#245>es
+para manutenE<#231>E<#227>o e extensE<#227>o no futuro.
+
+=head3 ETL - Extract, Transform, Load
+
+Surgiu entE<#227>o uma tentativa de modularizar melhor o B<OpenData-BR>, dividindo-o
+em 3 tipos de componentes:
+
+B<Extractors>: Extratores de dados. A idE<#233>ia seria que todos os scrapers,
+sejam web ou nE<#227>o, na forma que forem, seriam um tipo de Extractor.
+
+B<Transformers>: RobE<#244>s assassinos que se transformam em carros ou outras
+mE<#225>quinas fantE<#225>sticas.
+Ou, componentes que iriam conter toda a lE<#243>gica de
+B<transformaE<#231>E<#227>o> dos dados, dos documentos originais para os dados buscados.
+
+B<Loaders>: Seriam os I<end-points> do processo de extraE<#231>E<#227>o dos dados, e a
+principal tarefa de um I<Loader> seria gravar os dados em algum lugar.
+Os primeiros testes gravavam esses dados em um banco de dados MongoDB, ou
+imprimiam os dados obtidos usando o L<Data::Dumper> (para debug).
+
+=head3 Flow, Baby, Flow
+
+Quanto mais pensE<#225>vamos no framework, mais ele se parecia com um fluxo de dados,
+do comeE<#231>o (extractors) ao meio (transformers), ao fim (loaders).
+Todos os componentes pareciam, de uma forma genE<#233>rica, ter o mesmo
+comportamento: recebem algo na entrada, fazem alguma coisa com esses dados, e
+(eventualmente) disponibilizam esses dados em uma saE<#237>da.
+Assim surgiu a idE<#233>ia de fazer um sub-projeto de fluxo de dados.
+
+Em meados de Dezembro de 2010, a primeira idE<#233>ia foi codificada em termos de
+"caixas", que teriam um entrada e uma saE<#237>da - de uma forma bem genE<#233>rica: 
+"entra porquinho, sai salsicha".
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig1-porco-salsicha.png" /></center>
+
+=end pod:xhtml
+
+Em termos de programaE<#231>E<#227>o em B<Perl>, podemos colocar vE<#225>rios tipos de
+porquinhos:
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig2-porco-salsicha.png" /></center>
+
+=end pod:xhtml
+
+E as caixas poderiam ser enfileiradas para que a salsicha de um pudesse virar
+a feijoada do prE<#243>ximo.
+
+Assim surgiu, dentro do repositE<#243>rio do B<OpenData>, o sub-projeto que foi,
+inicialmente, denominado de I<"Box">. Depois se tornou o I<"Flow"> e, enquanto
+este artigo E<#233> escrito, tornou-se um projeto independente, o I<"DataFlow">.
+
+=head2 Show Me The Node
+
+Um exemplo bE<#225>sico de um nE<#243> que transforma os dados para caixa-alta (
+I<upper-case>), usando a funE<#231>E<#227>o C<< uc() >> padrE<#227>o do Perl.
+
+    my $uc = DataFlow::Node->new(
+        process_item => sub {
+            shift; return uc(shift);
+        }
+    );
+
+O racional de um C<DataFlow::Node> E<#233> o mesmo de um comando de Unix ou Linux
+que atua como um filtro: ele E<#233> um pedaE<#231>o de cano (I<pipe>), que faz uma
+coisa sE<#243>, simples, e bem definida:
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig3-node.png" /></center>
+
+=end pod:xhtml
+
+E como usar esse nE<#243>? Seguindo a tradiE<#231>E<#227>o, de mais de um jeito:
+
+    # em duas etapas
+    $uc->input( 'laranja' );
+    my $out = $uc->output();  # LARANJA
+
+    # ou em um unica etapa
+    my $out = $uc->process('laranja');
+
+    # podemos passar arrays
+    my @out = $uc->process( qw/feira da fruta/ ); # qw/FEIRA DA FRUTA/
+
+    # podemos passar referencias
+    my $out = $uc->process( [ 'oh', 'my', 'god' ] );
+
+B<AtenE<#231>E<#227>o>: nesta E<#250>ltima forma, os elementos do ArrayRef B<nE<#227>o> serE<#227>o
+transformados, pois vocE<#234> pode ter um node que espera de fato uma I<reference>
+e a trata de acordo com suas prE<#243>prias regras. O mesmo se aplica a outros tipos
+de referE<#234>ncia. Se vocE<#234> quer que o node processe a informaE<#231>E<#227>o B<dentro> da
+referE<#234>ncia, use:
+
+    my $uc = DataFlow::Node->new(
+        process_into => 1,
+        process_item => sub {
+            shift; return uc(shift);
+        }
+    );
+
+    my $out = $uc->process( [ 'oh', 'my', 'god' ] );
+    # resultado: [ 'OH', 'MY', 'GOD' ]
+
+    my $out = $uc->process( { a => 'value', another => 'different value' } );
+    # resultado { a => 'VALUE', another => 'DIFFERENT VALUE' } );
+
+TambE<#233>m podemos passar I<code references> para serem processadas (usando o
+C<process_into>):
+
+    my $code = sub { return 'batatas' };
+    my $out = $uc->process( $code );
+    print $out->(); # imprime 'BATATAS'
+
+Notem que, quando sE<#227>o passadas referE<#234>ncias, sempre sE<#227>o retornadas referE<#234>ncias
+do mesmo tipo. Neste E<#250>ltimo caso C<$out> contE<#233>m um I<code reference> que,
+ao ser invocado, aplica a funE<#231>E<#227>o C<uc()> ao resultado do I<code reference>
+passado ao node.
+
+B<Futuro>: Talvez o parE<#226>metro C<process_into> passe a ser habilitado por
+I<default>. Isso estE<#225> sendo considerado.
+
+=head3 Chains
+
+Um I<node> sozinho nE<#227>o faz um I<hack>, entE<#227>o E<#233> preciso "enfileirar" os nE<#243>s para
+conseguir obter um resultado significativo. O poder dos comandos pequenos estE<#225>
+em juntE<#225>-los para fazer algo maior:
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig4-chain.png" /></center>
+
+=end pod:xhtml
+
+Exatamente como se fosse um I<pipe> na linha de comando. No C<DataFlow>, isso
+se faz com a classe L<DataFlow::Chain>, que pode ser usada assim:
+
+    my $uc = DataFlow::Node->new(
+        process_item => sub { shift; return uc(shift) }
+    );
+    my $rv = DataFlow::Node->new(
+        process_item => sub { shift; return scalar reverse $_[0]; }
+    );
+
+    my $chain = DataFlow::Chain->new( links => [ $uc, $rv ] );
+
+Um objeto da classe B<Chain> E<#233> tambE<#233>m um B<Node>, e funciona da mesma forma:
+
+	$chain->input( qw/abc def ghi/ );
+	my @result = $chain->output();
+	# @result == qw/CBA FED IHG/
+
+=head3 Biblioteca de NE<#243>s
+
+Algumas operaE<#231>E<#245>es sE<#227>o mais comuns, e nE<#243>s especializados podem ser criados
+para executar processamentos especE<#237>ficos. O pacote L<DataFlow>, contE<#233>m ainda
+apenas um pequeno nE<#250>mero dessas classes, mas com o tempo isso deve aumentar.
+Alguns exemplos de classes jE<#225> disponE<#237>veis hoje sE<#227>o:
+
+=over
+
+=item L<DataFlow::Chain>
+
+Tipo especial de nE<#243>, que possui uma lista de nE<#243>s, e concatena esses nE<#243>s, como
+descrito acima.
+
+=item L<DataFlow::Node::CSV>
+
+NE<#243> que transforma array references em strings no formato CSV.
+
+=item L<DataFlow::Node::Dumper>
+
+NE<#243> que utiliza o mE<#243>dulo L<Data::Dumper> para imprimir a estrutura de cada item
+para STDERR.
+
+=item L<DataFlow::Node::HTMLFilter>
+
+NE<#243> utilizado para filtrar tags de um documento HTML utilizando
+L<HTML::TreeBuilder::XPath>. Pode produzir nodes (L<HTML::Element>), HTML ou
+somente os valores de tags e/ou atributos.
+
+=item L<DataFlow::Node::LiteralData>
+
+NE<#243> que injeta na sua fila de entrada os parE<#226>metros passados ao construtor.
+
+=item L<DataFlow::Node::MultiPageURLGenerator>
+
+NE<#243> utilizado para gerar uma lista de URLs com os endereE<#231>os de todas as pE<#225>ginas
+web de um conjunto de dados.
+
+=item L<DataFlow::Node::NOP>
+
+NE<#243> "NO-OP". A informaE<#231>E<#227>o sai do mesmo jeito que entrou. Pode ser utilizado como
+classe base para outras classes, ou apenas para alterar algum atributo do fluxo
+de dados.
+
+=item L<DataFlow::Node::Null>
+
+NE<#243> que sempre retorna C<undef>.
+
+=item L<DataFlow::Node::URLRetriever>
+
+NE<#243> que recebe URLs na entrada, e retorna o conteE<#250>do das mesmas na saE<#237>da.
+
+=back
+
+=head2 E Como Uso Tudo Isso?
+
+O L<DataFlow> surgiu do projeto L<OpenData-BR|http://www.opendatabr.org/>, e
+um dos usos para o qual ele foi pensado foi justamente a obtenE<#231>E<#227>o e manipulaE<#231>E<#227>o
+de dados disponE<#237>veis em sites na web.
+
+=head3 DATAFLOW EM AE<#199>E<#195>O
+
+Por exemplo, o trecho de script abaixo (baseado em
+L<df-portaltransparencia.pl|http://goo.gl/Vxw4f>), obtE<#233>m as informaE<#231>E<#245>es das
+pessoas (fE<#237>sicas e jurE<#237>dicas) consideradas inidE<#244>neas e/ou que tenham sido
+sancionadas por algum E<#243>rgE<#227>o do governo:
+
+	my $chain = Chain->new(
+	    links => [
+	        LiteralData->new($base_url),
+	        MultiPageURLGenerator->new(
+	            first_page => -1,
+	            produce_last_page => sub {
+	                my $url = shift;
+	
+	                my $get  = DataFlow::Node::URLRetriever::Get->new;
+	                my $html = $get->get($url);
+	
+	                my $texto =
+	                  HTML::TreeBuilder::XPath->new_from_content($html)
+	                  ->findvalue('//p[@class="paginaAtual"]');
+	                croak q{NE<#227>o conseguiu determinar a E<#250>ltima pE<#225>gina}
+	                  unless $texto;
+	                return $1 if $texto =~ /\d\/(\d+)/;
+	            },
+	            make_page_url => sub {
+	                my ( $self, $url, $page ) = @_;
+	
+	                my $u = URI->new($url);
+	                $u->query_form( $u->query_form, Pagina => $page );
+	                return $u->as_string;
+	            },
+	        ),
+	        NOP->new( deref => 1, ),
+	        URLRetriever->new,
+	        HTMLFilter->new(
+	            process_into => 1,
+	            search_xpath =>
+	              '//div[@id="listagemEmpresasSancionadas"]/table/tbody/tr',
+	        ),
+	        HTMLFilter->new(
+	            search_xpath => '//td',
+	            result_type  => 'VALUE',
+	            ref_result   => 1,
+	        ),
+	        Node->new(
+	            process_into => 1,
+	            process_item => sub {
+	                shift; local $_ = shift; s/^\s*//; s/\s*$//;
+	                return $_;
+	            }
+	        ),
+	        DataFlow::Node::Dumper->new,
+	    ],
+	);
+
+	$chain->flush;
+
+=head3 RESULTADO
+
+Esse cE<#243>digo imprimirE<#225> na tela (C<STDERR>) algo como:
+
+	...
+
+	$VAR1 = [
+	          '11.222.333/0001-44',
+	          'A CALOTEIRA LTDA.',
+	          'Suspensa',
+	          '04/06/08',
+	          '03/06/13',
+	          'SENADO FEDERAL',
+	          '**',
+	          'SENADO FEDERAL',
+	          '14/04/2009'
+	        ];
+	$VAR1 = [
+	          '555.666.777-88',
+	          'JOSE<#201> DO TRAMBIQUE',
+	          'IniE<#65533>nea',
+	          '27/10/09',
+	          '27/10/14',
+	          '1E<#65533> VARA CIVEL - SE<#65533>O SEBASTIAO DO PARAE<#65533>SO - TJMG',
+	          '',
+	          'CONSELHO NACIONAL DE JUSTIE<#65533>A',
+	          '02/01/2011'
+	        ];
+
+Como pode ser visto, a parte de codificaE<#231>E<#227>o de caracteres ainda precisa de
+algum trabalho. Mas os dados jE<#225> foram obtidos e "limpos", faltando apenas
+convertE<#234>-los para algum formato que possa ser facilmente manipulE<#225>vel por
+outros sistemas.
+
+JE<#225> estE<#227>o sendo trabalhados nE<#243>s para conversE<#227>o de codificaE<#231>E<#227>o de caracteres,
+bem como para a transformaE<#231>E<#227>o para outros formatos, como CSV e XML.
+
+=head3 Passo-a-Passo
+
+Vamos examinar cada nE<#243> da cadeia.
+
+    LiteralData->new($base),
+
+Esse nE<#243> simplesmente pega o valor de C<$base_url>, uma URL (para este exemplo
+estamos considerando que E<#233> a URL do
+B<Cadastro de Empresas InidE<#244>neas ou Sancionadas>
+do site L<PortalTransparE<#234>ncia|http://www.portaltransparencia.gov.br>) e a
+injeta na fila de entrada do nE<#243>. O objeto do tipo
+L<DataFlow::Node::LiteralData> nE<#227>o modifica o valor,
+logo essa URL serE<#225> o E<#250>nico item de saE<#237>da desse nE<#243>.
+
+    MultiPageURLGenerator->new(
+        first_page => -2,
+        produce_last_page => sub {
+	        my $url = shift;
+			...
+        },
+        make_page_url => sub {
+	        my ( $self, $url, $page ) = @_;
+			...
+        },
+    ),
+
+A classe L<DataFlow::Node::MultiPageURLGenerator> serve para gerar, a partir
+de uma URL base, uma lista de URLs que correspondam E<#224>s vE<#225>rias pE<#225>ginas nas
+quais aquele conjunto de dados se encontra. E<#201> obrigatE<#243>rio prover a I<sub>
+anE<#244>nima C<make_page_url>. Esta I<sub> irE<#225> receber uma URL C<$url> e um nE<#250>mero
+de pE<#225>gina C<$page>, e deverE<#225> retornar uma outra URL para a pE<#225>gina C<$page>
+do conjunto de dados.
+
+As pE<#225>ginas inicial e final podem ser indicadas explicitamente, passando os
+parE<#226>metros C<first_page> e C<last_page>, respectivamente. Caso C<first_page>
+nE<#227>o seja passado, serE<#225> usado 1 (um) como valor I<default>. Se C<last_page>
+nE<#227>o for passado, o parE<#226>metro C<produce_last_page> B<deverE<#225>> conter uma I<sub>
+anE<#244>nima que irE<#225> calcular o nE<#250>mero da E<#250>ltima pE<#225>gina, baseado na C<$url> base.
+
+No exemplo acima, a E<#250>ltima pE<#225>gina E<#233> obtida no prE<#243>prio site, e a primeira
+pE<#225>gina estE<#225> como B<-2>, o que significa que irE<#225> comeE<#231>ar na penE<#250>ltima pE<#225>gina.
+
+A saE<#237>da desse nE<#243> serE<#225> um I<ArrayRef> que aponta para um I<array> que contE<#233>m as
+URLs das E<#250>ltimas duas pE<#225>ginas.
+
+    NOP->new( deref => 1, ),
+
+Esse nE<#243>, do tipo L<DataFlow::NOP> nE<#227>o irE<#225> transformar a informaE<#231>E<#227>o em si, mas
+como passamos o valor B<1> para o parE<#226>metro C<deref>, o I<ArrayRef> recebido
+serE<#225> dereferenciado, isto E<#233>, transformado de volta em um I<array>, e injetado
+na fila de saE<#237>da do nE<#243>. Assim, cada elemento do I<array> serE<#225> tratado como um
+dado independente pelos prE<#243>ximos nE<#243>s. PoderE<#237>amos ter passado C<deref> no nE<#243>
+anterior, mas deixamos aqui para efeito de ilustraE<#231>E<#227>o.
+
+A saE<#237>da desse nE<#243> serE<#227>o duas I<strings> contendo as URLs, respectivamente, da
+penE<#250>ltima e E<#250>ltima pE<#225>ginas do cadastro do site.
+
+    URLRetriever->new,
+
+Este nE<#243> acima, como o nome da classe L<DataFlow::URLRetriever> indica, irE<#225>
+acessar as URLs passadas e buscarE<#225> o conteE<#250>do (no caso, cE<#243>digo HTML).
+
+A saE<#237>da desse nE<#243> serE<#227>o duas strings, cada uma delas correspondendo ao conteE<#250>do
+HTML completo das URLs das E<#250>ltimas duas pE<#225>ginas.
+
+    HTMLFilter->new(
+        search_xpath =>
+          '//div[@id="listagemEmpresasSancionadas"]/table/tbody/tr',
+    ),
+
+A classe L<DataFlow::HTMLFilter> E<#233>, obviamente, utilizada para filtrar conteE<#250>do
+HTML. Essa filtragem E<#233> baseada em XPath. No caso do exemplo acima, o filtro
+irE<#225> buscar uma tag com atributo,
+C<< <div id="listagemEmpresasSancionadas"> >>, e dentro do bloco delimitado
+por essa tag, uma C<< <table> >>, dentro dela um C<< <tbody> >>, e dentro dele
+todas as tags C<< <tr> >>, que naturalmente correspondem E<#224>s linhas da tabela
+com os dados que buscamos.
+
+Por I<default>, serE<#225> retornado o texto HTML resultante da busca. No caso, a
+saE<#237>da deste nE<#243> serE<#225> um I<array> de I<strings>, cada uma contendo integralmente
+o texto HTML de cada linha (C<< <tr> >>) encontrada nas tabelas de ambas as
+duas pE<#225>ginas, isto E<#233>, uma E<#250>nica seqE<#252>E<#234>ncia de itens.
+
+    HTMLFilter->new(
+        search_xpath => '//td',
+        result_type  => 'VALUE',
+        ref_result   => 1,
+    ),
+
+Mais um filtro HTML, desta vez para obter, de cada linha da tabela os valores
+de cada cE<#233>lula, ou seja, de cada tag C<< <td> >> que a linha (C<< <tr> >>)
+contiver. No entanto, aqui passamos o parE<#226>metro C<result_type> igual a
+C<'VALUE'>, isso faz com que, por exemplo,
+C<< <tr><td>1</td><td>aa</td></tr> >>, retorne C<< ( 1, 'aa' ) >>. Mas, como
+cada item de uma linha sE<#227>o atributos de um E<#250>nico item (pessoa inidE<#244>nea),
+gostarE<#237>amos que eles ficassem agrupados - para isso passamos o parE<#226>metro
+C<ref_result>, que irE<#225> transformar a lista de valores de cada linha em um
+I<ArrayRef> para essa lista.
+
+A saE<#237>da deste nE<#243> E<#233> um I<array> de I<ArrayRef>s, cada um contendo os dados de
+cada pessoa listada nas E<#250>ltimas duas pE<#225>ginas do cadastro no site.
+
+    Node->new(
+        process_into => 1,
+        process_item => sub {
+            shift; local $_ = shift; s/^\s*//; s/\s*$//;
+            return $_;
+        }
+    ),
+
+Aqui criamos um nE<#243> do prE<#243>prio tipo L<DataFlow::Node>, ao qual fornecemos o
+cE<#243>digo C<process_item>, que irE<#225>, neste caso, remover eventuais espaE<#231>os em
+branco no inE<#237>cio e no final de cada dado, dentro de cada I<ArrayRef> - isso
+ocorre devido ao uso do parE<#226>metro C<process_into>.
+
+A saE<#237>da desse nE<#243> terE<#225> a mesma estrutura de dados do nE<#243> anterior, mas o conteE<#250>do
+terE<#225> os espaE<#231>os iniciais e finais removidos.
+
+	DataFlow::Node::Dumper->new,
+
+Este nE<#243>, do tipo L<DataFlow::Node::Dumper>, utiliza o mE<#243>dulo L<Data::Dumper>
+para imprimir em C<STDERR> o conteE<#250>do de cada item de dado. Neste caso ele
+listarE<#225>, para cada pessoa inidE<#244>nea ou sancionada das E<#250>ltimas duas pE<#225>ginas do
+cadastro, o conteE<#250>do do I<ArrayRef> contendo os dados da pessoa.
+
+Para colocar a B<Chain> em aE<#231>E<#227>o, invocamos o mE<#233>todo C<flush()>, que irE<#225>
+consumir itens da saE<#237>da de um nE<#243>, no caso C<$chain>, atE<#233> que nE<#227>o haja
+mais itens.
+
+    $chain->flush;
+
+=head2 ConclusE<#227>o
+
+O L<DataFlow> E<#233> um projeto que estE<#225> em um estE<#225>gio muito novo do seu
+desenvolvimento, e por enquanto nE<#227>o hE<#225> promessas ou garantias de que
+as interfaces serE<#227>o mantidas. Se houver interesse em usar o DataFlow, sugiro
+acompanhar de perto o desenvolvimento do mesmo para ficar a par de quaisquer
+mudanE<#231>as.
+
+JE<#225> existem vE<#225>rias idE<#233>ias de melhorias, como por exemplo:
+
+=over
+
+=item * ExecuE<#231>E<#227>o em paralelo (com threads, com forks)
+
+=item * NE<#243> para leitura/escrita de arquivos (em andamento)
+
+=item * NE<#243> para I<encoding> de caracteres (em andamento)
+
+=item * NE<#243> para envio/recebimento de mensagens em filas (RabbitMQ, MQ, etc...)
+
+=item * NE<#243> para geraE<#231>E<#227>o de dados em formato RDF
+
+=item * NE<#243> para decodificar imagens com OCR
+
+=item * NE<#243> para executar comandos externos
+(enviar ou receber dados para esses comandos)
+
+=item * Uso de operadores (concatenaE<#231>E<#227>o de nE<#243>s seria uma cadeia)
+
+=item * ConstruE<#231>E<#227>o de nE<#243>s (e principalmente cadeias de nE<#243>s) a partir de especificaE<#231>E<#245>es em JSON e/ou YAML
+
+=item * NE<#243>s que permitam I<split> e I<join> de fluxos de informaE<#231>E<#227>o
+
+=back
+
+Estas e outras idE<#233>ias de melhorias estE<#227>o no arquivo de
+L<TODO|https://github.com/russoz/DataFlow/blob/master/TODO> no repositE<#243>rio
+do projeto.
+
+B<VocE<#234> pode ajudar!> De vE<#225>rias formas: escrevendo cE<#243>digo, tanto para os mE<#243>dulos 
+quanto testes. Executando testes e enviando I<reports> - neste momento hE<#225>, por
+exemplo, alguns reports de erro em FreeBSD que nE<#227>o estE<#227>o ocorrendo no sistema
+dos mantenedores (Linux).
+
+=head2 ReferE<#234>ncias
+
+=over
+
+=item Portal TransparE<#234>ncia
+
+L<http://www.portaltransparencia.gov.br/>
+
+=item Portal TransparE<#234>ncia - CEIS (Cadastro de Empresas InidE<#244>neas ou Sancionadas)
+
+L<http://goo.gl/UDNaG>
+
+=item OpenData-BR
+
+L<http://www.opendatabr.org/>
+
+=back
+
+=head2 Agradecimentos
+
+=over
+
+=item Nelson Ferraz
+
+Por lanE<#231>ar a sugestE<#227>o de ter o EquinE<#243>cio 2011 sobre o tema
+B<Hack de Dados PE<#250>blicos>. Nelson, a culpa E<#233> toda sua. ;-)
+
+=item Thiago "Maluco" Rondon
+
+Por tirar o B<OpenData-BR> do plano das idE<#233>ias e trazE<#234>-lo para a realidade.
+Pelos testes, idE<#233>ias e discussE<#245>es, muitas vezes em horE<#225>rios excusos.
+Muitos dos conceitos do L<DataFlow> germinaram a partir desses momentos.
+
+=item Blabos de Blebe
+
+Pela revisE<#227>o deste texto. Valeu, Blabos!!
+
+=back
+
+=head2 Autor
+
+B<< Alexei "Russo" Znamensky E<lt> russoz no cpan org E<gt> >>
+
+Blog: L<http://russoz.wordpress.com/>
+
+LinkedIn:
+L<http://www.linkedin.com/profile?viewProfile=&key=754668&trk=tab_pro>
+
+=head2 LicenE<#231>a
+
+Este texto estE<#225> licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="LicenE<#231>a Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
+
+=cut
+

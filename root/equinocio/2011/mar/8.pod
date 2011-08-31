@@ -1,0 +1,394 @@
+=pod
+
+=encoding utf8
+
+=head1 Lendo XLS e XLSX
+
+Neste artigo, irei apresentar como faço para extrair os dados de XLS e XLSX, um dos formatos
+mais adorados do seu cliente! 
+
+Geralmente, os clientes têm grande parte das suas informações 
+em planilhas de Excel, e precisam que você as leia.
+
+Até 2000, a unica forma de ler XLS com perl, era usando o L<Win::OLE>, e no Linux... não era possível! 
+Mas em 2001, o Takanori Kawai e o John McNamara criaram o L<Spreadsheet::WriteExcel> e o L<Spreadsheet::ParseExcel>,
+que além de oferecer mais operações para manipulação dos dados, era mais rápido e funciona no Linux!
+
+Alem disso tudo, quem usava Windows também saiu ganhando, pois não é mais necessário ter o Excel instalado/com a licença no computador.
+
+=head2 Spreadsheet::ParseExcel
+
+L<Spreadsheet::ParseExcel> é um módulo que permite leitura de XLS.
+Na sua forma mais básica, é possível ler os arquivos .xls e acessá-los dizendo qual a planilha, linha e coluna:
+
+B<workbook>: é o documento inteiro, nele existem varias worksheets.
+
+B<worksheet>: qual a planilha de verdade você vai utilizar, isto equivale a cada folha (ou aba) que é exibida no Excel.
+
+Cada B<worksheet> disponibiliza os métodos I<row_range()> e I<col_range()>, ambos retornam arrays, com o mínimo e máximo de seus respectivos nomes (linhas/colunas).
+
+Outro método disponibilizado pelo worksheet é o C<get_cell($row, $col)>, ele retorna a célula daquela posição/planilha.
+O retorno do C<get_cell> é um objeto L<Spreadsheet::ParseExcel::Cell> e você pode, entre outros, os métodos I<value()> e I<formatted()>.
+
+A principal diferença é que o I<unformatted()> retorna os valores da forma que eles foram salvos, e o I<value()> é o valor que o Excel exibe.
+
+Quem usa bastante Excel sabe que as datas são como os números, e que apenas a exibição da célula que muda.
+
+Você pode ver mais detalhes em L<Spreadsheet::ParseExcel::Cell>.
+
+Veja um exemplo de código abaixo:
+
+    #!/usr/bin/perl -w
+
+    use strict;
+    use Spreadsheet::ParseExcel;
+
+    my $parser   = Spreadsheet::ParseExcel->new();
+    my $workbook = $parser->parse('nome_do_arquivo.xls');
+
+    if ( !defined $workbook ) {
+        die $parser->error(), ".\n";
+    }
+
+    for my $worksheet ( $workbook->worksheets() ) {
+
+        my ( $row_min, $row_max ) = $worksheet->row_range();
+        my ( $col_min, $col_max ) = $worksheet->col_range();
+
+        for my $row ( $row_min .. $row_max ) {
+            for my $col ( $col_min .. $col_max ) {
+
+                my $cell = $worksheet->get_cell( $row, $col );
+                next unless $cell;
+
+                print "Row, Col    = ($row, $col)\n";
+                print "Value       = ", $cell->value(),       "\n";
+                print "Unformatted = ", $cell->unformatted(), "\n";
+                print "\n";
+            }
+        }
+    }
+
+Um grande problema em XLS é a quantidade de memória utilizada. Por isso, se você precisa apenas extrair 
+as informações básicas do XLS (como o valor da célula) você não precisa montar tudo na memória.
+
+No manual, diz que um arquivo de 10mb é um arquivo grande para uma máquina com 256MB de RAM, portanto, um de 60mb é
+um arquivo B<bem> grande para uma máquina com 1GB de RAM.
+
+A solução usada pelo modulo é chamar uma função a cada célula lida, passando como parâmetro, 
+a workbook, o índex da planilha, a linha, a coluna e o objeto da célula.
+
+Exemplo:
+
+	#!/usr/bin/perl -w
+
+    use strict;
+    use Spreadsheet::ParseExcel;
+
+    my $parser = Spreadsheet::ParseExcel->new(
+        CellHandler => \&cell_handler,
+        NotSetCell  => 1
+    );
+
+    my $workbook = $parser->parse('file.xls');
+
+    sub cell_handler {
+
+        my $workbook    = $_[0];
+        my $sheet_index = $_[1];
+        my $row         = $_[2];
+        my $col         = $_[3];
+        my $cell        = $_[4];
+
+        # pula alguns registros
+        return if $sheet_index == 3;
+        return if $row == 10;
+
+        # imprime o valores formatados
+        print $cell->value(), "\n";
+
+    }
+
+
+=head3 Lendo arquivos com cabeçalhos variáveis
+
+Uma das piores coisas do mundo é quando o cliente envia a planilha numa ordem diferente, 
+ou até mesmo completamente diferente, onde é necessário recriar o parsing.
+
+Se você não conseguir alinhar isso com o cliente, ainda há uma solução que costumo usar: procurar pelos cabeçalhos.
+
+Para isto, vamos criar uma planilha conforme abaixo:
+
+	NOME   | IDADE | TWITTER
+	Renato | 19    | @renato_cron
+	Eden   |       | @edenc
+	Glupo  | 33    | 
+
+Porém, crie você em qualquer lugar de qualquer planilha, você que escolhe, o twitter pode estar antes da idade, etc..
+
+
+	#!/usr/bin/perl -w
+
+	use strict;
+	use Spreadsheet::ParseExcel;
+
+	my $parser   = Spreadsheet::ParseExcel->new();
+	my $workbook = $parser->parse('teste.xls');
+
+	if ( !defined $workbook ) {
+		die $parser->error(), ".\n";
+	}
+
+	my %expected_header = (
+		twitter => qr /\btwitter\b/io,
+		idade   => qr /\bidade\b/io,
+		nome    => qr /\bnome\b/io
+	);
+
+	# apenas para exibir
+	my $reg_num        = 0;
+
+	for my $worksheet ( $workbook->worksheets() ) {
+
+		my ( $row_min, $row_max ) = $worksheet->row_range();
+		my ( $col_min, $col_max ) = $worksheet->col_range();
+
+		my $header_map     = {};
+		my $header_found   = 0;
+
+		for my $row ( $row_min .. $row_max ) {
+
+			if (!$header_found){
+				for my $col ( $col_min .. $col_max ) {
+					my $cell = $worksheet->get_cell( $row, $col );
+					next unless $cell;
+					
+					foreach my $header_name (keys %expected_header){
+						if ($cell->value() =~ $expected_header{$header_name}){
+							$header_found++;
+							# mais informações poderia ser salvas, como por exemplo
+							# qual é o valor que está escrito e bateu com a regexpr
+
+							$header_map->{$header_name} = $col;
+						}
+					}
+				}
+			}else{
+
+				# aqui você pode verificar se foram encontrados todos os campos que você precisa
+				# neste caso, achar apenas 1 cabeçalho já é o suficiente
+
+				my $registro = {};
+				
+				foreach my $header_name (keys %$header_map){
+					my $col = $header_map->{$header_name};
+
+					my $cell = $worksheet->get_cell( $row, $col );
+					next unless $cell;
+
+					my $value = $cell->value();
+					
+					# aqui é uma regra que você escolhe, pois as vezes o valor da célula pode ser nulo
+					next unless $value;
+
+					$registro->{$header_name} = $value;
+				}
+
+				# se existe alguma chave, algum conteudo foi encontrado
+				if (keys %$registro){
+					$reg_num++;
+					print "row $row, registro $reg_num\n";
+					print "$_ = $registro->{$_}\n" for keys %$registro;
+					print "------------------\n";
+				}
+			}
+
+		}
+	}
+
+o resultado será alguma coisa como:
+
+	row 5, registro 1
+	nome = Renato 
+	twitter =  @renato_cron
+	idade =  19    
+	------------------
+	row 6, registro 2
+	nome = Eden   
+	twitter =  @edenc
+	idade =        
+	------------------
+	row 7, registro 3
+	nome = Glupo  
+	twitter =  
+	idade =  33    
+	------------------
+
+Você deve alterar o código para ajudar a sua necessidade, pois cada caso é um caso.
+
+Reparem que foi adicionado um C<next unless $value;> pois geralmente, vêm muita linha completamente em branco.
+
+Estas linhas são criadas (quase) que sozinhas pelo Excel.
+
+
+=head3 Encoding
+
+Vamos brincar um pouco com I<encoding>. Abra a planilha e troque o cabeçalho "nome" por "nome para validação". É apenas um teste.
+
+Se você rodar o programa, verá que continua funcionado, então teremos que trocar a regexpr: 
+
+	qr /\bnome para validação\b/io
+
+Lembre-se de salvar o arquivo em B<UTF-8>. Se você rodar novamente, você não irá conseguir encontrar o campo, 
+pois ele é um texto em perl (portanto está em UTF8) e o perl considera como padrão o código sendo como Latin1.
+Para resolver este problema, você precisa adicionar no topo (junto com o C<use strict>) o C<use utf8>:
+
+	use strict;
+	use Spreadsheet::ParseExcel;
+	use utf8;
+
+	...
+
+Na verdade, não há segredo nenhum! Se quiser mais informações sobre encoding, leia o ótimo L<artigo do Stanislaw Pusep sobre encoding|http://sao-paulo.pm.org/equinocio/2011/mar/4>.
+
+Uma dica que deixo é, deixe apenas se necessário as regexpr do cabeçalhos com o acento, pois o cliente pode mudar sem querer:
+
+	qr /\bnome\s+(para\s+)?valida(r|[çc][ãa]o)\b/io
+
+Assim, pode ser escrito 'nome para validar', 'nome validaçao', 'nome validacao', etc.. e todos serão aceitos.
+
+Para mais detalhes sobre comparação de textos, leia outro artigo deste equinócio, L<Comparando textos por Blabos de Blebe|http://sao-paulo.pm.org/equinocio/2011/mar/6>.
+
+=head2 XLSX
+
+Até pouco tempo, apenas existia apenas o modulo L<SimpleXlsx>. Mas vamos falar sobre o L<Spreadsheet::WriteExcel>.
+
+McNamara também criou o L<Spreadsheet::WriteExcel>, e com pequenas e
+rápidas modificações, você consegue ler arquivos XLSX usando algumas das classes do XLS!
+
+Uma das poucas desvantagens que temos no XLSX é que você não consegue utilizar o método para economizar memória, portanto, 
+se precisar ler um arquivo maior, se prepare para fazer telas de loading bonitas para seu cliente.
+
+Vou colocar o código modificado aqui e explicar cada modificação.
+
+	#!/usr/bin/perl -w
+
+	use strict;
+	use utf8;
+	use Spreadsheet::XLSX;
+
+	use Text::Iconv;
+	my $converter = Text::Iconv -> new ("utf-8", "latin1");
+
+	my $excel  = Spreadsheet::XLSX->new('teste.xlsx', $converter);
+
+	my %expected_header = (
+		twitter => qr /\btwitter\b/io,
+		idade   => qr /\bidade\b/io,
+		nome    => qr /\bnome\s+(para\s*)?valida(r|[çc][ãa]o)\b/io
+	);
+
+	# apenas para exibir
+	my $reg_num        = 0;
+
+	for my $worksheet ( @{$excel -> {Worksheet}} ) {
+
+		my ( $row_min, $row_max ) = $worksheet->row_range();
+		my ( $col_min, $col_max ) = $worksheet->col_range();
+
+		my $header_map     = {};
+		my $header_found   = 0;
+
+		for my $row ( $row_min .. $row_max ) {
+
+			if (!$header_found){
+				for my $col ( $col_min .. $col_max ) {
+					my $cell = $worksheet->get_cell( $row, $col );
+					next unless $cell;
+					
+					foreach my $header_name (keys %expected_header){
+
+						if ($cell->value() =~ $expected_header{$header_name}){
+							$header_found++;
+							$header_map->{$header_name} = $col;
+						}
+					}
+				}
+			}else{
+
+				# aqui você pode verificar se foram encontrados todos os campos que você precisa
+				# neste caso, achar apenas 1 cabeçalho já é o suficiente
+
+				my $registro = {};
+				
+				foreach my $header_name (keys %$header_map){
+					my $col = $header_map->{$header_name};
+
+					my $cell = $worksheet->get_cell( $row, $col );
+					next unless $cell;
+
+					my $value = $cell->value();
+					
+					# aqui é uma regra que você escolhe, pois as vezes o valor da célula pode ser nulo
+					next unless $value;
+
+					$registro->{$header_name} = $value;
+				}
+
+				if (keys %$registro){
+					$reg_num++;
+					print "row $row, registro $reg_num\n";
+					print "$_ = $registro->{$_}\n" for keys %$registro;
+					print "------------------\n";
+				}
+			}
+
+		}
+	}
+
+	
+Pois bem, além do C<use utf8>, é recomendado utilizar o modulo L<Text::Iconv> para não ter problemas com encoding.
+
+	use Spreadsheet::XLSX;
+
+	use Text::Iconv;
+	my $converter = Text::Iconv -> new ("utf-8", "latin1");
+
+	my $excel  = Spreadsheet::XLSX->new('teste.xlsx', $converter);
+
+Isso é meio bizarro, mas o único jeito que consegui fazer funciona foi trocando o windows-1251 por latin1 (iso-8859-1).
+
+O windows-1251 está na documentação do L<Spreadsheet::XLSX>, porém as regexpr não 
+funcionavam nem com C<use utf8> nem sem. Mesmo removendo o iconv da jogada, o erro persistia.
+Também soltava um warning, e então resolvi trocar para latin1 e funcionou.
+Se você tiver algum problema, mande um e-mail para lista ou comente logo baixo!
+
+A outra alteração é que não existe mais a variável C<$parser>, e sim C<$excel>, que contem o Worksheet inteiro.
+	
+	for my $worksheet ( @{$excel -> {Worksheet}} ) {
+		...
+		
+
+Espero que você tenha aprendido um pouco sobre estes modulos.
+
+=head1 Sobre o autor
+
+I<Renato CRON>, L<http://renatocron.com>
+
+CPANID: RENTOCRON
+
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Este artigo é Software Livre; você pode redistribuí-lo e/ou modificá-lo sob os termos da GNU Public License como publicada
+pela Free Software Foundation; versão 2 datada a Junho, 1991, ou qualquer versão mais recente, à sua discrição.
+
+Este artigo é distribuído na esperança de que ele pode ser útil, mas SEM QUALQUER GARANTIA; mesmo a garantia implicada de
+COMERCIABILIDADE ou ADEQUAÇÃO PAR UMA FINALIDADE EM PARTICULAR. Veja a GNU Public License para mais detailhes.
+
+Uma cópia da GNU General Public License (deveria) estar disponível com este artigo; se não, escreva para a Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+
+=cut

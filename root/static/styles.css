@@ -230,6 +230,7 @@ text-transform:uppercase;
     padding-left:25px;
     color:#000;
     background: #ddd;
+    overflow: auto
 }
 
 
@@ -573,6 +574,8 @@ a.expand {
     text-transform:uppercase;
   }
 
+#container .top h2 { border-bottom: 1px dotted black;}
+
 #container .top ul li {
     color:#00552c;
     font:14px Arial, Helvetica, sans-serif;
@@ -581,7 +584,7 @@ a.expand {
     padding:0px 0px;
     margin-left:32px
   }
-
+#container .top ul.decimal li { list-style: decimal; }
 
 #container .top ul li.first {
     background:none;
@@ -596,7 +599,7 @@ a.expand {
 
 
 
-#container .top ul li a span{ color: #000080; font-size: 0.8em }
+#container .top ul li span{ color: #000080; font-size: 0.8em }
 
 
 #container .top h1 {

@@ -1,88 +1,88 @@
 <h3>2010</h3>
 <ul>
-<li><a href="/artigo/2010/comoescreverperlescalavelparaoseuclustermysql">Como Escrever Perl Escalável para o seu Cluster MySQL<span class="autor"> [Luis Motta Campos]</a></li>
-<li><a href="/artigo/2010/orliteumaabordagemsimplesparautilizarsqlite">ORLite - Uma abordagem simples para utilizar SQLite<span class="autor"> [Daniel Vinciguerra]</a></li>
-<li><a href="/artigo/2010/utilizandoxpathparacriarwebspiders">Utilizando XPath para criar web spiders<span class="autor"> [Andre Garcia Carneiro]</a></li>
-<li><a href="/artigo/2010/yacyaccmsyetanothercatalystcms">YAC (YACCMS (Yet Another Catalyst CMS))<span class="autor"> [Ricardo Filipo]</a></li>
-<li><a href="/artigo/2010/gearmanframeworkdeaplicacaogenerico">Gearman: Framework de Aplicação Genérico<span class="autor"> [Daniel Mantovani]</a></li>
-<li><a href="/artigo/2010/perldebugger">Perl Debugger<span class="autor"> [Frederico Recsky]</a></li>
-<li><a href="/artigo/2010/protocolohttp">Protocolo HTTP<span class="autor"> [Blabos de Blebe]</a></li>
-<li><a href="/artigo/2010/benchmark">Benchmark<span class="autor"> [Gabriel Andrade]</a></li>
-<li><a href="/artigo/2010/basicaintroducaoaprogramacaoorientadaaobjetopoo">Básica Introdução à Programação Orientada a Objeto (POO)<span class="autor"> [Ronaldo Ferreira]</a></li>
-<li><a href="/artigo/2010/analiseecorrecaodevazamentosdememoria">Análise e correção de vazamentos de memória<span class="autor"> [Wallace Reis]</a></li>
-<li><a href="/artigo/2010/dbixclassusandoosrelacionamentos">DBIx::Class - Usando os relacionamentos<span class="autor"> [Marcio Vitor De Matos]</a></li>
-<li><a href="/artigo/2010/perlitoperl6">Perlito Perl6<span class="autor"> [Flávio S. Glock]</a></li>
-<li><a href="/artigo/2010/scalarutil">Scalar Util<span class="autor"> [Frederico Recsky]</a></li>
-<li><a href="/artigo/2010/integracaojavaperl">Integração Java/Perl - TomCat/Apache (Parte I)<span class="autor"> [Hailton David Lemos]</a></li>
-<li><a href="/artigo/2010/instalacaodeumaaplicacaomojolicioususandofastcginodreamhost">Instalação de uma aplicação Mojolicious usando FastCGI no Dreamhost<span class="autor"> [Blabos de Blebe]</a></li>
-<li><a href="/artigo/2010/tipstrickscomdatas">Tips/tricks com 'datas'<span class="autor"> [Daniel Mantovani]</a></li>
-<li><a href="/artigo/2010/perldatawarehousetoolkit">Perl Data Warehouse Toolkit<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2010/usandoldapcomperl">Usando LDAP com Perl<span class="autor"> [Alexei Znamensky]</a></li>
-<li><a href="/artigo/2010/pdfesuasutilidades">PDF e suas utilidades<span class="autor"> [Renato Cron]</a></li>
-<li><a href="/artigo/2010/basesujaselimpaemcasa">Base suja se limpa em casa<span class="autor"> [Lindolfo "Lorn" Rodrigues]</a></li>
-<li><a href="/artigo/2010/analisedastecnicasparaabrirelerarquivos">Análise das técnicas para abrir e ler arquivos<span class="autor"> [Solli M. Honório]</a></li>
-<li><a href="/artigo/2010/amqprabbitmqeperl">AMQP, RabbitMQ e Perl<span class="autor"> [Thiago Berlitz Rondon]</a></li>
-<li><a href="/artigo/2010/xslateseuproximosistemadetemplates">Xslate - Seu próximo sistema de templates<span class="autor"> [Breno G. de Oliveira]</a></li>
+<li><a href="/artigo/2010/comoescreverperlescalavelparaoseuclustermysql">Como Escrever Perl Escalável para o seu Cluster MySQL</a><span class="autor"> [Luis Motta Campos]</span></li>
+<li><a href="/artigo/2010/orliteumaabordagemsimplesparautilizarsqlite">ORLite - Uma abordagem simples para utilizar SQLite</a><span class="autor"> [Daniel Vinciguerra]</span></li>
+<li><a href="/artigo/2010/utilizandoxpathparacriarwebspiders">Utilizando XPath para criar web spiders</a><span class="autor"> [Andre Garcia Carneiro]</span></li>
+<li><a href="/artigo/2010/yacyaccmsyetanothercatalystcms">YAC (YACCMS (Yet Another Catalyst CMS))</a><span class="autor"> [Ricardo Filipo]</span></li>
+<li><a href="/artigo/2010/gearmanframeworkdeaplicacaogenerico">Gearman: Framework de Aplicação Genérico</a><span class="autor"> [Daniel Mantovani]</span></li>
+<li><a href="/artigo/2010/perldebugger">Perl Debugger</a><span class="autor"> [Frederico Recsky]</span></li>
+<li><a href="/artigo/2010/protocolohttp">Protocolo HTTP</a><span class="autor"> [Blabos de Blebe]</span></li>
+<li><a href="/artigo/2010/benchmark">Benchmark</a><span class="autor"> [Gabriel Andrade]</span></li>
+<li><a href="/artigo/2010/basicaintroducaoaprogramacaoorientadaaobjetopoo">Básica Introdução à Programação Orientada a Objeto (POO)</a><span class="autor"> [Ronaldo Ferreira]</span></li>
+<li><a href="/artigo/2010/analiseecorrecaodevazamentosdememoria">Análise e correção de vazamentos de memória</a><span class="autor"> [Wallace Reis]</span></li>
+<li><a href="/artigo/2010/dbixclassusandoosrelacionamentos">DBIx::Class - Usando os relacionamentos</a><span class="autor"> [Marcio Vitor De Matos]</span></li>
+<li><a href="/artigo/2010/perlitoperl6">Perlito Perl6</a><span class="autor"> [Flávio S. Glock]</span></li>
+<li><a href="/artigo/2010/scalarutil">Scalar Util</a><span class="autor"> [Frederico Recsky]</span></li>
+<li><a href="/artigo/2010/integracaojavaperl">Integração Java/Perl - TomCat/Apache (Parte I)</a><span class="autor"> [Hailton David Lemos]</span></li>
+<li><a href="/artigo/2010/instalacaodeumaaplicacaomojolicioususandofastcginodreamhost">Instalação de uma aplicação Mojolicious usando FastCGI no Dreamhost</a><span class="autor"> [Blabos de Blebe]</span></li>
+<li><a href="/artigo/2010/tipstrickscomdatas">Tips/tricks com 'datas'</a><span class="autor"> [Daniel Mantovani]</span></li>
+<li><a href="/artigo/2010/perldatawarehousetoolkit">Perl Data Warehouse Toolkit</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2010/usandoldapcomperl">Usando LDAP com Perl</a><span class="autor"> [Alexei Znamensky]</span></li>
+<li><a href="/artigo/2010/pdfesuasutilidades">PDF e suas utilidades</a><span class="autor"> [Renato Cron]</span></li>
+<li><a href="/artigo/2010/basesujaselimpaemcasa">Base suja se limpa em casa</a><span class="autor"> [Lindolfo "Lorn" Rodrigues]</span></li>
+<li><a href="/artigo/2010/analisedastecnicasparaabrirelerarquivos">Análise das técnicas para abrir e ler arquivos</a><span class="autor"> [Solli M. Honório]</span></li>
+<li><a href="/artigo/2010/amqprabbitmqeperl">AMQP, RabbitMQ e Perl</a><span class="autor"> [Thiago Berlitz Rondon]</span></li>
+<li><a href="/artigo/2010/xslateseuproximosistemadetemplates">Xslate - Seu próximo sistema de templates</a><span class="autor"> [Breno G. de Oliveira]</span></li>
 
 
-<li><a href="/artigo/2010/AutenticacaoCatalyst">Autenticação em aplicações usando Catalyst<span class="autor"> [Wallace Reis]</a></li>
-<li><a href="/artigo/2010/CaptchaCatalyst">Captcha com Catalyst<span class="autor"> [Daniel Mantovani]</a></li>
-<li><a href="/artigo/2010/CatalystLocalLib">Catalyst com local::lib<span class="autor"> [Blabos de Blebe]</a></li>
-<li><a href="/artigo/2010/CatalystScriptRunner">Catalyst::ScriptRunner<span class="autor"> [Daniel Mantovani]</a></li>
-<li><a href="/artigo/2010/ConceitosAntesCatalyst">Conceitos e conhecimentos para começar no Catalyst<span class="autor"> [Thiago Rondon]</a></li>
-<li><a href="/artigo/2010/DBIC">Bancos de dados relacionais, orientação a objetos e DBIx::Class<span class="autor"> [Eden Cardim]</a></li>
-<li><a href="/artigo/2010/DBIC2">Bancos de dados relacionais, orientação a objetos e DBIx::Class, parte2<span class="autor"> [Eden Cardim]</a></li>
-<li><a href="/artigo/2010/DesenvolvimentoCatalystPadre">Desenvolvimento de Aplicativos Catalyst com Padre<span class="autor"> [Breno G. de Oliveira]</a></li>
-<li><a href="/artigo/2010/EmailAlemDoEnviarReceber">O email além do enviar e receber<span class="autor"> [Otavio Fernandes]</a></li>
-<li><a href="/artigo/2010/GarantiaQualidade">Testes, uma garantia de qualidade<span class="autor"> [Wallace Reis]</a></li>
-<li><a href="/artigo/2010/GraficosAppCatalyst">Gráficos de sua Aplicação Catalyst<span class="autor"> [Breno G. de Oliveira]</a></li>
-<li><a href="/artigo/2010/HTMLFormHandler">HTML::FormHandler<span class="autor"> [Gabriel Andrade Santana]</a></li>
-<li><a href="/artigo/2010/LogApplicacao">Log sua aplicação<span class="autor"> [Solli M. Honorio]</a></li>
-<li><a href="/artigo/2010/Memcached">Memcached<span class="autor"> [Thiago Rondon]</a></li>
-<li><a href="/artigo/2010/Mojolicious">Mojolicious - A Web Divertida!<span class="autor"> [Breno G. de Oliveira]</a></li>
-<li><a href="/artigo/2010/PSGI">PSGI, Plack, Bada bing bada boom! <span class="autor"> [Lindolfo Rodrigues]</a></li>
-<li><a href="/artigo/2010/PluginMovableType">Criando um plugin rapido para Movable Type<span class="autor"> [Frederico Recsky]</a></li>
-<li><a href="/artigo/2010/PluginsCatalyst">Os plugins do Catalyst<span class="autor"> [Giuliani D. Sanches]</a></li>
-<li><a href="/artigo/2010/RESTful">Arquitetura REST e o serviço web 'RESTful'<span class="autor"> [Thiago Rondon]</a></li>
-<li><a href="/artigo/2010/TimeLapseCatalyst">Time-lapse e Catalyst<span class="autor"> [Daniel Mantovani]</a></li>
+<li><a href="/artigo/2010/AutenticacaoCatalyst">Autenticação em aplicações usando Catalyst</a><span class="autor"> [Wallace Reis]</span></li>
+<li><a href="/artigo/2010/CaptchaCatalyst">Captcha com Catalyst</a><span class="autor"> [Daniel Mantovani]</span></li>
+<li><a href="/artigo/2010/CatalystLocalLib">Catalyst com local::lib</a><span class="autor"> [Blabos de Blebe]</span></li>
+<li><a href="/artigo/2010/CatalystScriptRunner">Catalyst::ScriptRunner</a><span class="autor"> [Daniel Mantovani]</span></li>
+<li><a href="/artigo/2010/ConceitosAntesCatalyst">Conceitos e conhecimentos para começar no Catalyst</a><span class="autor"> [Thiago Rondon]</span></li>
+<li><a href="/artigo/2010/DBIC">Bancos de dados relacionais, orientação a objetos e DBIx::Class</a><span class="autor"> [Eden Cardim]</span></li>
+<li><a href="/artigo/2010/DBIC2">Bancos de dados relacionais, orientação a objetos e DBIx::Class, parte2</a><span class="autor"> [Eden Cardim]</span></li>
+<li><a href="/artigo/2010/DesenvolvimentoCatalystPadre">Desenvolvimento de Aplicativos Catalyst com Padre</a><span class="autor"> [Breno G. de Oliveira]</span></li>
+<li><a href="/artigo/2010/EmailAlemDoEnviarReceber">O email além do enviar e receber</a><span class="autor"> [Otavio Fernandes]</span></li>
+<li><a href="/artigo/2010/GarantiaQualidade">Testes, uma garantia de qualidade</a><span class="autor"> [Wallace Reis]</span></li>
+<li><a href="/artigo/2010/GraficosAppCatalyst">Gráficos de sua Aplicação Catalyst</a><span class="autor"> [Breno G. de Oliveira]</span></li>
+<li><a href="/artigo/2010/HTMLFormHandler">HTML::FormHandler</a><span class="autor"> [Gabriel Andrade Santana]</span></li>
+<li><a href="/artigo/2010/LogApplicacao">Log sua aplicação</a><span class="autor"> [Solli M. Honorio]</span></li>
+<li><a href="/artigo/2010/Memcached">Memcached</a><span class="autor"> [Thiago Rondon]</span></li>
+<li><a href="/artigo/2010/Mojolicious">Mojolicious - A Web Divertida!</a><span class="autor"> [Breno G. de Oliveira]</span></li>
+<li><a href="/artigo/2010/PSGI">PSGI, Plack, Bada bing bada boom! </a><span class="autor"> [Lindolfo Rodrigues]</span></li>
+<li><a href="/artigo/2010/PluginMovableType">Criando um plugin rapido para Movable Type</a><span class="autor"> [Frederico Recsky]</span></li>
+<li><a href="/artigo/2010/PluginsCatalyst">Os plugins do Catalyst</a><span class="autor"> [Giuliani D. Sanches]</span></li>
+<li><a href="/artigo/2010/RESTful">Arquitetura REST e o serviço web 'RESTful'</a><span class="autor"> [Thiago Rondon]</span></li>
+<li><a href="/artigo/2010/TimeLapseCatalyst">Time-lapse e Catalyst</a><span class="autor"> [Daniel Mantovani]</span></li>
 </ul>
 <h3>2009</h3>
-<ul><li><a href="/artigo/2009/ComoInstalarApacheMysqlPerl">Como instalar, passo a passo o: Apache, Mysql, Perl e módulos necessários do CPAN no Windows<span class="autor"> [Marco Aurelio]</a></li>
-<li><a href="/artigo/2009/ModulosRecomendadosCPAN">Módulos Recomendados do CPAN<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2009/UsandoCpan">Usando o CPAN<span class="autor"> [Daniel de Oliveira]</a></li>
+<ul><li><a href="/artigo/2009/ComoInstalarApacheMysqlPerl">Como instalar, passo a passo o: Apache, Mysql, Perl e módulos necessários do CPAN no Windows</a><span class="autor"> [Marco Aurelio]</span></li>
+<li><a href="/artigo/2009/ModulosRecomendadosCPAN">Módulos Recomendados do CPAN</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2009/UsandoCpan">Usando o CPAN</a><span class="autor"> [Daniel de Oliveira]</span></li>
 </ul>
 <h3>2008</h3>
-<ul><li><a href="/artigo/2008/ComoEncontrarBonsProgramadores">Como Encontrar (e Contratar) Bons Programadores<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2008/MVCWxPerl">MVC e WxPerl<span class="autor"> [Alceu Junior]</a></li>
-<li><a href="/artigo/2008/ModulosCore">Módulos básicos que você precisa conhecer<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2008/PrimeirosPassosEmPerl">Primeiros Passos em Perl<span class="autor"> [Nelson Ferraz]</a></li>
+<ul><li><a href="/artigo/2008/ComoEncontrarBonsProgramadores">Como Encontrar (e Contratar) Bons Programadores</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2008/MVCWxPerl">MVC e WxPerl</a><span class="autor"> [Alceu Junior]</span></li>
+<li><a href="/artigo/2008/ModulosCore">Módulos básicos que você precisa conhecer</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2008/PrimeirosPassosEmPerl">Primeiros Passos em Perl</a><span class="autor"> [Nelson Ferraz]</span></li>
 </ul>
 <h3>2007</h3>
-<ul><li><a href="/artigo/2007/AdventuresInPerl6">Adventures in Perl 6<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2007/CodigoDeEtica">Código de ética<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2007/CriandoWebLogCatalyst">Criando um WebLog com Catalyst<span class="autor"> [Eden Cardim]</a></li>
-<li><a href="/artigo/2007/ExperimentandoInternals">Iniciando em perlguts, perlapi, perlcall e perlembed<span class="autor"> [Daniel Ruoso]</a></li>
-<li><a href="/artigo/2007/IntroducaoPerl">Uma introdução ao Perl<span class="autor"> [Alceu Junior]</a></li>
-<li><a href="/artigo/2007/OtimizandoPerl">Otimizando código Perl<span class="autor"> [Alceu Junior]</a></li>
-<li><a href="/artigo/2007/ParsePortuguesComPCR">Usando Perl6 Rules para Fazer parse de Portugues<span class="autor"> [Daniel Ruoso]</a></li>
-<li><a href="/artigo/2007/PorQueEsconderOCodigoEMaIdeia">Por que tentar obstruir a leitura do seu código é uma má idéia<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2007/ProgramacaoSegura">Criando programas em Perl de forma segura<span class="autor"> [Alceu Junior]</a></li>
+<ul><li><a href="/artigo/2007/AdventuresInPerl6">Adventures in Perl 6</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2007/CodigoDeEtica">Código de ética</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2007/CriandoWebLogCatalyst">Criando um WebLog com Catalyst</a><span class="autor"> [Eden Cardim]</span></li>
+<li><a href="/artigo/2007/ExperimentandoInternals">Iniciando em perlguts, perlapi, perlcall e perlembed</a><span class="autor"> [Daniel Ruoso]</span></li>
+<li><a href="/artigo/2007/IntroducaoPerl">Uma introdução ao Perl</a><span class="autor"> [Alceu Junior]</span></li>
+<li><a href="/artigo/2007/OtimizandoPerl">Otimizando código Perl</a><span class="autor"> [Alceu Junior]</span></li>
+<li><a href="/artigo/2007/ParsePortuguesComPCR">Usando Perl6 Rules para Fazer parse de Portugues</a><span class="autor"> [Daniel Ruoso]</span></li>
+<li><a href="/artigo/2007/PorQueEsconderOCodigoEMaIdeia">Por que tentar obstruir a leitura do seu código é uma má idéia</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2007/ProgramacaoSegura">Criando programas em Perl de forma segura</a><span class="autor"> [Alceu Junior]</span></li>
 </ul>
 <h3>2006</h3>
-<ul><li><a href="/artigo/2006/AdicionandoRepositoriosPPM">Adicionano repositório de modulos em seu PPM<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/AsTresGrandesVirtudesDoProgramador">As Três Grandes Virtudes do Programador<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2006/ConceitosBasicosSockets">Conceitos básicos sobre Sockets<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/DesenhandoTextosGtk2Pango">Desenhando textos ad-hoc com Gtk2 e Pango<span class="autor"> [Daniel Ruoso]</a></li>
-<li><a href="/artigo/2006/ExpressoesRegulares">Expressões Regulares<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/HackerHowto">Como se tornar um hacker<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2006/InlineC">Introdução ao Inline::C<span class="autor"> [Otavio Fernandes]</a></li>
-<li><a href="/artigo/2006/IntroduzindoPerlNoSeuTrabalho">Introduzindo a Linguagem Perl no seu trabalho<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/PraticasEssenciaisDeDesenvolvimento">Praticas Essenciais de Desenvolvimento<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/ProgramacaoWEBComPerl">Programação WEB com Perl<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/RecomendacoesProgramacaoEmPerl">Recomendações para programação em Perl<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/RegexPraticasTecnicasAvancadas">Expressões Regulaes - Introdução, Práticas e Técnicas Avançadas<span class="autor"> [David Dias]</a></li>
-<li><a href="/artigo/2006/SmartQuestionsHowTo">Como fazer perguntas de forma inteligente<span class="autor"> [Nelson Ferraz]</a></li>
-<li><a href="/artigo/2006/TecnicasManipulacaoEstruturas">Técnicas de manipulação<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/TestandoSoftwaresEmPerl">Testes de Software em Perl<span class="autor"> [Joenio Costa]</a></li>
-<li><a href="/artigo/2006/VariaveisEspeciais">Variáveis Especiais em Perl<span class="autor"> [Breno de Oliveira]</a></li>
+<ul><li><a href="/artigo/2006/AdicionandoRepositoriosPPM">Adicionano repositório de modulos em seu PPM</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/AsTresGrandesVirtudesDoProgramador">As Três Grandes Virtudes do Programador</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2006/ConceitosBasicosSockets">Conceitos básicos sobre Sockets</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/DesenhandoTextosGtk2Pango">Desenhando textos ad-hoc com Gtk2 e Pango</a><span class="autor"> [Daniel Ruoso]</span></li>
+<li><a href="/artigo/2006/ExpressoesRegulares">Expressões Regulares</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/HackerHowto">Como se tornar um hacker</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2006/InlineC">Introdução ao Inline::C</a><span class="autor"> [Otavio Fernandes]</span></li>
+<li><a href="/artigo/2006/IntroduzindoPerlNoSeuTrabalho">Introduzindo a Linguagem Perl no seu trabalho</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/PraticasEssenciaisDeDesenvolvimento">Praticas Essenciais de Desenvolvimento</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/ProgramacaoWEBComPerl">Programação WEB com Perl</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/RecomendacoesProgramacaoEmPerl">Recomendações para programação em Perl</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/RegexPraticasTecnicasAvancadas">Expressões Regulaes - Introdução, Práticas e Técnicas Avançadas</a><span class="autor"> [David Dias]</span></li>
+<li><a href="/artigo/2006/SmartQuestionsHowTo">Como fazer perguntas de forma inteligente</a><span class="autor"> [Nelson Ferraz]</span></li>
+<li><a href="/artigo/2006/TecnicasManipulacaoEstruturas">Técnicas de manipulação</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/TestandoSoftwaresEmPerl">Testes de Software em Perl</a><span class="autor"> [Joenio Costa]</span></li>
+<li><a href="/artigo/2006/VariaveisEspeciais">Variáveis Especiais em Perl</a><span class="autor"> [Breno de Oliveira]</span></li>
 </ul>

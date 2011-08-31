@@ -1,0 +1,395 @@
+=pod
+
+=head1 KinoSearch (Search Engine)
+  
+ Um erro é simplesmente outro modo de fazer as coisas.
+                                                    --Katharine Graham 
+
+ Ciência é o que entendemos bem o suficiente para explicar a um computador.
+ Arte é qualquer coisa que fazemos além disso.
+                                                        --Donald Knuth 
+
+Objetivo desse artigo é desmistificar um pouco I<Full Text Search>,
+apresentando o I<engine de busca> KinoSearch. Utilizo o KinoSearch como exemplo,
+mas apresento também há referências a outros engines igualmente interessantes,
+além de abordar brevemente o funcionamento do Full Text em banco de dados.
+Esse artigo originou-se da necessidade de tornar minhas consultas mais
+eficientes.
+
+Caso o leitor tenha crítica/dúvida, por favor comente no fim do artigo -
+contribua. ;)
+
+=head2 Consulta por texto
+
+Apesar de haver diversas formas de armazenamento de dados, o banco de dados
+relacional é de longe a solução mais implementada. Porém quando nosso
+input corresponde a uma longa cadeia de caracteres, é interessante sabermos
+como o banco de dados relacional armazena e recupera os dados.
+
+Quando consultamos um banco buscando sempre pelo mesmo campo de uma tabela,
+é conveniente criar um índice para esse campo. Índices agilizam a obtenção
+da informação, pois guardam o conteúdo do campo de forma ordenada e otimizada.
+Assim, ao invés da consulta ser realizada diretamente na tabela, o índice é
+usado para saber de antemão os registros realmente pertinentes. Índices são
+muito interessantes para agilizar consultas em campos com valores
+
+Porém em um campo do tipo I<TEXT>, no MySQL por exemplo, ocupa 65.536bytes, 
+você pode criar um prefixo ao índice(por exemplo 10 primeiros bytes da 
+string), porém fica limitado a consultar pelo 
+L<início da string|http://dev.mysql.com/doc/refman/5.0/en/create-index.html>
+, o que torna essa implementação de índice não eficiente para a maioria dos
+casos. 
+
+=head3 Operador I<LIKE>
+
+Imaginemos uma tabela com 100 mil registros, onde uma consulta é realizada 
+em um campo I<TEXT>. Sem a utilização/existência de um índice, os 100 mil 
+registros serão visitados e comparados com o valor da expressão I<LIKE>.
+Essa implementação não faz qualquer otimização na consulta. O que torna a
+pesquisa lenta a medida que se acrescentam registros.
+
+=head2 Full Text Search e Índice Invertido
+
+B<Full Text Search> é uma técnica de pesquisar texto em documentos ou banco de dados.
+
+A forma mais eficiente de indexar esse tipo de conteúdo é utilizando o que
+chamamos de B<Índice Invertido>. Em resumo, é criar uma lista de todas as
+palavras da string referenciando suas respectivas posições no texto original.
+
+Imagine que temos os registros:
+ 
+ R  = "Estamos falando de Perl Moderno"
+ R¹ = "Hoje em sua 12 versão, o Perl 5 moderno é uma linguagem de uso geral"
+ R² = "Perl moderno a escolha certa para um projeto tão ambicioso e multifacetado"
+
+O índice gerado considerando L<stop words|http://en.wikipedia.org/wiki/Stop_words>,
+teria essa cara:
+ 
+ "estamos":       {(0, 0)}
+ "falando":       {(0, 1)}
+ "moderno":       {(0, 4), (1, 8), (2, 1)}
+ "perl":          {(0, 3), (1, 6), (2, 0)}
+ "hoje":          {(1, 0)}
+ "versão":        {(1, 4)}
+ "é":             {(1, 9)}
+ "linguagem":     {(1, 11)}
+ "uso":           {(1, 13)}
+ "geral":         {(1, 14)}
+ "escolha":       {(2, 3)}
+ "certa":         {(2, 4)}
+ "projeto":       {(2, 7)}
+ "ambicioso":     {(2, 9)}
+ "multifacetado": {(2, 11)}
+
+O primeiro número corresponde ao registro e o segundo a posição do termo no
+registro. Assim quando criamos um índice, estamos efetivamente criando 
+I<tokens> com o lexema do texto original.
+
+=head3 No Banco de Dados
+
+O PostgreSQL possui um tipo de dado para trabalhar com Full Text, I<tsvector>,
+e os tipos índice são I<GIN> e I<GIST>. O GIST pode gerar falsos-positivos, 
+uma vez que seu índice é baseado em bits aleatórios. O GIN, por sua vez, é 
+mais preciso e oferece um desempenho melhor que o GIST, perdendo apenas 
+durante o processo de atualização do índice.
+
+É possível criar um índice de campos compostos:
+
+ CREATE INDEX pgweb_idx ON pgweb USING gin(to_tsvector(config_name, body));
+ [...]
+ WHERE to_tsvector(config_name, body) @@ 'a & b'
+
+É possível ainda concatenar campos:
+
+ CREATE INDEX pgweb_idx ON pgweb USING gin(to_tsvector('english', title || ' ' || body));
+
+Como o banco trabalh com o índice em memória, o desempenho do índice degrada
+e o consumo de memória aumenta consideravelmente conforme o volume de texto.
+
+Não é possível inserir direto no campo tsvector (workaround: trigger para
+L<automatizar o update|http://www.postgresql.org/docs/8.3/static/textsearch-features.html#TEXTSEARCH-UPDATE-TRIGGERS>). 
+
+tsvector suporta menos de 2 kb por lexema e 1 mb por lexema com as posições.
+
+ SELECT title
+ FROM pgweb
+ WHERE to_tsvector('english', body) @@ to_tsquery('english', 'friend');
+
+Nesse exemplo, convertemos um campo text para C<tsvector> (tipo de dado que
+suporta o índice) com o C<to_tsvector>, para buscar o termo "friend". @@ é o
+operador de consulta em um campo C<tsvector>. O dicionário padrão é 'english'.
+
+C<to_tsquery> e C<plainto_tsquery> convertem a query para C<tsquery>.
+C<to_tsquery> é menos preciso que C<plainto_tsquery>, não considera stop words por exemplo.
+
+PostgreSQL possui dicionários em várias linguagens. É possível configurar os
+termos ignorados no índice, customizar seu próprio dicionário, sinônimos e lexidade.
+
+=head3 Engines
+
+A melhor forma de obter bons resultados com B<Full Text Search> é usando
+I<engines> projetadas para armazenamento de texto. 
+
+=head4 LUCENE - Solr
+
+É a engine mais difundida. Desenvolvida em Java, possui alta performance.
+É capaz de indexar documentos em diversos formatos(PDF, HTML, Microsoft
+Word e OpenDocument).
+
+=head4 Sphinx
+
+Desenhado para trabalhar em conjunto com banco de dados.
+
+=head4 Plucene
+
+Esse engine é um port do Lucene para Perl
+
+=head1 Kinosearch
+
+Versão do Lucene portada para C compilado para Perl. Seu 
+L<desempenho é semelhante ao Lucene|http://www.rectangular.com/pipermail/kinosearch/2006-April/006819.html>.
+Para instalar via CPAN:
+
+ cpan KinoSearch
+
+Por ser em Perl, não há qualquer pré-requisito para usá-lo, a não ser instalar
+o próprio módulo. Além de possuir ótimo desempenho e ter baixo consumo de memória, é
+simples de ser usado/configurado.
+
+=head3 Criando um Índice
+
+O KinoSearch permite configurar vários tipos diferentes de índices. Abaixo, detalho
+um pouco sobre a criação e consulta dos índices:
+          
+=head4 KinoSearch::Schema 
+
+Parametriza o schema do índice. 
+            
+ my $schema = KinoSearch::Schema->new;
+ $schema->spec_field( name => $field, type => $datatype );
+                
+O datatype pode ser: B<BlobType> (dados em binário) - opção padrão -, 
+B<FullTextType> e B<StringType> - para busca em campos de valores exatos. 
+
+O B<FullTextType> merece um pouco mais da nossa atenção. Há configurações
+específicas nesse campo que personalizam a forma de utilizá-lo.
+              
+ my $type = KinoSearch::Plan::FullTextType->new(
+                analyzer      => $analyzer,
+                boost         => 2.0,
+                indexed       => 1,
+                stored        => 1,
+                sortable      => 1,
+                highlightable => 1,
+            );
+                    
+B<analyzer> - Agrega o "Analizador" do campo, por exemplo idioma, stopword,
+normaliza o case.
+
+Com B<KinoSearch::Analysis::*> se faz tais configurações;
+
+B<boost> - float, precisão do campo;
+
+B<indexed> - boolean se o campo deve ser indexado;
+
+B<stored> - boolean se o campo deve ser armazenado;
+
+B<sortable> - boolean se o campo deve ser ordenado;
+
+B<highlightable> - boolean se o campo pode destacar termos. 
+
+=head4 KinoSearch::Indexer 
+
+Constrói o index, com ele parametriza-se a criação do index.
+                
+ my $indexer = KinoSearch::Indexer->new(
+                   schema   => $schema,
+                   index    => '/path/to/index',
+                   create   => 1,
+                   truncate => 1,
+                   manager  => $manager
+               );
+                     
+ while ( my ( $title, $content ) = each %source_docs ) {
+     $indexer->add_doc(
+         doc   => { field_name => $field_value },
+         boost => 2.5,                # default: 1.0
+     );
+ }
+                    
+ $indexer->commit;
+                    
+B<schema> - define o schema;
+
+B<index> - caminho para o índice a ser consultado;
+
+B<create> - boolean se o index deve ser criado fisicamente;
+
+B<truncate> - boolean se o campo deve ser "truncável";
+
+B<manager> - boolean se o campo deve permitir futuras reconfigurações;
+
+B<add_doc()> - Esse método adiciona um documento no índice, bastar definir o nome
+do campo e seu valor no atributo "doc" e o "boost";
+
+B<optimize()> - Otimiza o índice para um tempo de busca menor;
+
+B<commit()> - Grava as alterações no índice.
+                
+OBS** O tamanho do arquivo de índice criado é semelhante a uma tabela exportada
+(COPY) do PostgreSQL. Os metadados são armazenados em JSON, o que é um ponto 
+positivo.
+
+=head4 KinoSearch::Analysis::PolyAnalyzer 
+
+Parametriza a criação de cada campo, isso determina o que será possível fazer
+com o campo. Todos os tipos de campos podem usufruir desse recurso.
+                
+ my $case_folder  = KinoSearch::Analysis::CaseFolder->new;
+ my $tokenizer    = KinoSearch::Analysis::Tokenizer->new(
+                        language => 'pt'
+                    );
+ my $stemmer      = KinoSearch::Analysis::Stemmer->new(
+                        language => 'pt'
+                    );
+ my $polyanalyzer = KinoSearch::Analysis::PolyAnalyzer->new(
+                        analyzers => [ 
+                            $case_folder, 
+                            $whitespace_tokenizer, 
+                            $stemmer, 
+                        ], 
+                    );
+      
+=head3 Consultando
+      
+=head4 KinoSearch::Searcher 
+
+Classe para busca nos documentos.
+            
+ my $searcher  = Searcher->new( index => $index );
+ 
+ my $sort_spec = KinoSearch::Search::SortSpec->new(
+                     rules => [
+                         KinoSearch::Search::SortRule->new( field => 'date' ),
+                         KinoSearch::Search::SortRule->new( type  => 'doc_id' ),
+                     ],
+                 );
+ 
+ my $hits = $searcher->hits(
+                query      => $query,
+                offset     => $offset,
+                num_wanted => $limit,
+                sort_spec => $sort_spec,
+            );
+                    
+ while ( my $hit = $hits->next ) {
+     print $hit->{$field}
+  }
+
+  print $hits->total_hits;
+
+Na instância do objeto já se define o índice que vamos trabalhar.
+
+B<query> - consulta, exemplo: "field_name:$field_value";
+
+B<offset> - offset da consulta;
+
+B<num_wanted> - limite de resultados na consulta;
+
+B<sort_spec> - forma de ordernar o resultado;
+
+B<next> - percorre o conjunto de resultados;
+
+B<total_hits> - total de documentos retornados;                
+                
+=head4 KinoSearch::Highlight::Highlighter
+
+Esse módulo personaliza o retorno da busca, dando realce no resultado. Ele
+assume um padrão de HTML para os destaques, <strong> por default.
+                
+ my $highlighter = KinoSearch::Highlight::Highlighter->new(
+                       searcher       => $searcher,      
+                       query          => $query,       
+                       field          => 'content',   
+                       excerpt_length => 150,        
+                   );
+                      
+ my $hits = $searcher->hits( query => $query );
+   
+ while ( my $hit = $hits->next ) {
+     print $highlighter->create_excerpt($hit);
+ }
+                     
+B<field> - campo que queremos realçar em nosso match;
+
+B<excerpt_length> - tamanho máximo do trecho retornado, em caracteres;
+
+B<create_excerpt( $Obj )> - retorna o trecho a ser destacado.
+
+=head4 Search::Query::Dialect::KSx/Search::Query 
+
+Usando o Search::Query é possível consultar o dialeto KSx no momento da 
+busca. Esse recurso permite pesquisar via wildcard;
+
+ use Search::Query;
+ my $query = Search::Query->parser(
+                 fields      => { $field => { analyzer => $analyzer } },
+                 query_class => 'KSx',
+                 field_class => 'Search::Query::Field',
+                 query_class_opts => { default_field => [$field], },
+             )->parse( 'processo* +administrativo* -contratante' );
+
+A string de consulta gerada:
+
+ txt_item:processo* AND txt_item:administrativo* AND (NOT txt_item:CONTRATANTE)
+
+B<query_class> - define o dialeto usado na consulta;
+
+B<parser()> - configura a consulta;
+
+B<parse()> - string da consulta.
+            
+OBS** esse é o modo mais complexo de se fazer consultas no KinoSearch. Usando-o
+obtemos o mesmo efeito do ILIKE em SQL. Ele é escrito em XS, o que o mantém com
+ótimo desempenhoa, porém não suporta consultas mais complexas. Sugestão por 
+Peter Karman, usa-se o módulo Search::Tools para esse tipo de pesquisa. 
+
+=head1 Conclusão
+
+Como vimos, há maneiras mais eficientes de trabalhar com armazenamento de texto
+que armazená-lo em banco de dados relacional, mesmo havendo suporte ao Full Text
+em no banco, seu desempenho é muito discrepante em comparação as engines de
+mercado. Kinosearch é uma engine interessante, considerando sua simplicidade
+desde a instalação, indexação e consulta.
+
+
+=head1 Referências
+
+MySQL - http://dev.mysql.com/doc/refman/5.5/en/storage-requirements.html
+
+PostgreSQL - http://www.postgresql.org/docs/8.3/static/textsearch.html
+
+KinoSearch - http://search.cpan.org/~creamyg/KinoSearch-0.31/
+
+Lucene/Solr - http://lucene.apache.org/
+
+=head1 Agradecimentos
+
+Agradeço à comunidade Perl brasileira pela oportunidade de contribuir com 
+conteúdo técnico.
+
+Ao pessoal do IRC, principalmente Lorn e lmc por deixar pistas no início da
+minha pesquisa.
+
+Ao Breno pela incrível paciência e revisão desse texto.
+
+E principalmente a Larry Wall e os mantenedores do Perl que possibilitam que
+meu trabalho seja tão mais fácil/divertido :)
+
+=head1 autor
+
+Marcio Ferreira$ perl -e'push @gmail, marciodesouzaferreira'
+
+Twitter L<@_marcioferreira|http://twitter.com/_marcioferreira>
+
+=cut

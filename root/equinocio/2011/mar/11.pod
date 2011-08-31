@@ -1,0 +1,88 @@
+
+=head1 Latitudes e Longitudes de cidades brasileiras
+
+=begin pod:xhtml
+
+<center>
+<img src="http://llcb.opendatabr.org/static/images/banner-llcb.png">
+</center>
+
+=end pod:xhtml
+
+=head1 Abstração
+
+Este projeto tem como objetivo criar um serviço independente sobre informações dos municipios das cidades brasileiras, principalmente para que haja uma maneira de 'linkar' os dados na visualização deles com dados especificos de cidades brasileiras.
+
+Existem serviços disponíveis pelo IBGE, mas até o momento não há estes dados em formatos abertos e que seja disponível linkar eles de forma trivial, então a ideia é que este projeto seja um incentivo para este tipo de trabalho pela equipe técnica do IBGE.
+
+O serviço começou a ser desenvolvido faz pouco tempo, por isto estamos procurando pessoas e voluntários com dados para agregar ao serviço.
+
+=head1 Desenvolvimento
+
+O desenvolvimento deste site esta sendo elaborado pelo grupo OpenData-BR, que encontra-se no endereço L<http://www.opendatabr.org>.
+
+Esta sendo utilizado um repositório de desenvolvimento utilizando o serviço do github, e pode ser encontrado em L<https://github.com/maluco/llcb>.
+
+Para visualizar o resultado deste projeto, basta acessar o endereço L<http://llcb.opendatabr.org>.
+
+=head2 API
+
+A API foi desenvolvida e disponibilizada para facilitar alguns cenários onde a utilização dos dados que estejam em nosso banco de dados sejam mais facilmente encontradas e acessadas, e para utilizar ela é muito simples basta acessar a seguinte URL:
+
+	http://llcb.opendatabr.org/api/[ARGUMENTO]
+
+Onde o argumento pode ser a sigla do estado (uf), ou o código da cidade estipulada pelo IBGE.
+
+O retorno deste acesso é no formato de dados JSON, como por exemplo acessar o endereço http://llcb.opendatabr.org/api/MS, a resposta será:
+
+	{"llcb":
+		[{
+			"cidade":"Alcinópolis",
+			"uf":"MS",
+			"longitude":"-53.70645",
+			"latitude":"-18.32452",
+			"codigo":"5000252"},
+		{
+			"cidade":"Amambaí",
+			"uf":"MS",
+			"longitude":"-55.22648",
+			"latitude":"-23.10452",
+			"codigo":"5000609"
+		},
+			(...)
+		]
+	}
+
+
+=head2 RDF
+
+Estes são os arquivos de dados baseado em metadados, que podem ser utilizados por aplicações de forma trivial, para utilizar este serviço basta acessar:
+
+	http://llcb.opendatabr.org/rdf/[ARGUMENTO]
+
+Onde [ARGUMENTO] é a sigla de dois caracteres do estado, para representar os dados de latitude e longitude são utilizados o vocabulário "geo wgs84_pos", e o retorno é semelhante a este:
+
+	<?xml version="1.0"?> 
+	<rdf:RDF
+		xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+		xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	> 
+
+	<rdf:Description rdf:about="#entry399"> 
+	<geo:long>-55.1315</geo:long> 
+	<geo:lat>-29.55053</geo:lat> 
+	<rdf:cidade>S>RS</rdf:uf> 
+	</rdf:Description> 
+
+	(...)
+
+=head2 RAWDATA
+
+Além dos serviços, disponibilizamos todos os dados em um arquivo único, para facilitar a utilização deles, para utilizar acessa o site do projeto e faça o download da versão mais recente!
+
+=head1 CONCLUSÃO
+
+Este é um trabalho recente, e precisamos de voluntários e dados para melhorar a utilização e a publicidade deles, para mais informações acesse L<http://www.opendatabr.org>.
+
+
+

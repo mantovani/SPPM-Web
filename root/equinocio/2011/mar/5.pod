@@ -1,0 +1,581 @@
+=encoding utf8
+
+=head1 DataFlow - Um Framework Para Fluxo de Dados
+
+=head2 OpenData - O Começo e o Fim
+
+Tudo começou com um e-mail na L<lista da SP-PM|http://sao-paulo.pm.org/lista>,
+no qual se falou de "hackear" dados públicos. Logo isso evoluiu para a idéia
+de produzir um framework para buscar e analisar dados públicos. Sem demora, o
+L<Thiago Rondon|http://www.maluco.com.br/blog/> montou um 
+L<repositório no GitHub|https://github.com/maluco/OpenData-BR> e começou a 
+rabiscar umas idéias de código. Em seguida nasceu o site do
+L<OpenData-BR|http://www.opendatabr.org/>.
+
+O projeto ainda tem um status de I<work in progress>, mas as expectativas e as
+perspectivas são muito animadoras, e espera-se que em breve o B<DataFlow>
+possa ser utilizado amplamente pelo B<OpenData-BR> para disponibilizar os
+dados públicos.
+
+=head2 Primeiras Idéias
+
+=head3 Buscar dados na web (scrape)
+
+A primeira idéia a ser implementada foi a lógica de buscar dados na web. Na
+lista, ou no canal #saopaulo.pm no irc.perl.org, surgiram as primeiras
+indicações de sites onde a informação estava disponibilizada. Um dos sites
+primariamente visados foi o
+L<PortalTransparencia|http://www.portaltransparencia.gov.br/>, o site do
+governo federal para promover a transparência nos dados do governo.
+
+Seguindo a metodologia opensource I<"release early, release often">, o
+projeto começou a disponibilizar código que, efetivamente, conseguia buscar
+dados. No entanto, esse código inicialmente não fazia muitas provisões
+para manutenção e extensão no futuro.
+
+=head3 ETL - Extract, Transform, Load
+
+Surgiu então uma tentativa de modularizar melhor o B<OpenData-BR>, dividindo-o
+em 3 tipos de componentes:
+
+B<Extractors>: Extratores de dados. A idéia seria que todos os scrapers,
+sejam web ou não, na forma que forem, seriam um tipo de Extractor.
+
+B<Transformers>: Robôs assassinos que se transformam em carros ou outras
+máquinas fantásticas.
+Ou, componentes que iriam conter toda a lógica de
+B<transformação> dos dados, dos documentos originais para os dados buscados.
+
+B<Loaders>: Seriam os I<end-points> do processo de extração dos dados, e a
+principal tarefa de um I<Loader> seria gravar os dados em algum lugar.
+Os primeiros testes gravavam esses dados em um banco de dados MongoDB, ou
+imprimiam os dados obtidos usando o L<Data::Dumper> (para debug).
+
+=head3 Flow, Baby, Flow
+
+Quanto mais pensávamos no framework, mais ele se parecia com um fluxo de dados,
+do começo (extractors) ao meio (transformers), ao fim (loaders).
+Todos os componentes pareciam, de uma forma genérica, ter o mesmo
+comportamento: recebem algo na entrada, fazem alguma coisa com esses dados, e
+(eventualmente) disponibilizam esses dados em uma saída.
+Assim surgiu a idéia de fazer um sub-projeto de fluxo de dados.
+
+Em meados de Dezembro de 2010, a primeira idéia foi codificada em termos de
+"caixas", que teriam um entrada e uma saída - de uma forma bem genérica: 
+"entra porquinho, sai salsicha".
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig1-porco-salsicha.png" /></center>
+
+=end pod:xhtml
+
+Em termos de programação em B<Perl>, podemos colocar vários tipos de
+porquinhos:
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig2-porco-salsicha.png" /></center>
+
+=end pod:xhtml
+
+E as caixas poderiam ser enfileiradas para que a salsicha de um pudesse virar
+a feijoada do próximo.
+
+Assim surgiu, dentro do repositório do B<OpenData>, o sub-projeto que foi,
+inicialmente, denominado de I<"Box">. Depois se tornou o I<"Flow"> e, enquanto
+este artigo é escrito, tornou-se um projeto independente, o I<"DataFlow">.
+
+=head2 Show Me The Node
+
+Um exemplo básico de um nó que transforma os dados para caixa-alta (
+I<upper-case>), usando a função C<< uc() >> padrão do Perl.
+
+    my $uc = DataFlow::Node->new(
+        process_item => sub {
+            shift; return uc(shift);
+        }
+    );
+
+O racional de um C<DataFlow::Node> é o mesmo de um comando de Unix ou Linux
+que atua como um filtro: ele é um pedaço de cano (I<pipe>), que faz uma
+coisa só, simples, e bem definida:
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig3-node.png" /></center>
+
+=end pod:xhtml
+
+E como usar esse nó? Seguindo a tradição, de mais de um jeito:
+
+    # em duas etapas
+    $uc->input( 'laranja' );
+    my $out = $uc->output();  # LARANJA
+
+    # ou em um unica etapa
+    my $out = $uc->process('laranja');
+
+    # podemos passar arrays
+    my @out = $uc->process( qw/feira da fruta/ ); # qw/FEIRA DA FRUTA/
+
+    # podemos passar referencias
+    my $out = $uc->process( [ 'oh', 'my', 'god' ] );
+
+B<Atenção>: nesta última forma, os elementos do ArrayRef B<não> serão
+transformados, pois você pode ter um node que espera de fato uma I<reference>
+e a trata de acordo com suas próprias regras. O mesmo se aplica a outros tipos
+de referência. Se você quer que o node processe a informação B<dentro> da
+referência, use:
+
+    my $uc = DataFlow::Node->new(
+        process_into => 1,
+        process_item => sub {
+            shift; return uc(shift);
+        }
+    );
+
+    my $out = $uc->process( [ 'oh', 'my', 'god' ] );
+    # resultado: [ 'OH', 'MY', 'GOD' ]
+
+    my $out = $uc->process( { a => 'value', another => 'different value' } );
+    # resultado { a => 'VALUE', another => 'DIFFERENT VALUE' } );
+
+Também podemos passar I<code references> para serem processadas (usando o
+C<process_into>):
+
+    my $code = sub { return 'batatas' };
+    my $out = $uc->process( $code );
+    print $out->(); # imprime 'BATATAS'
+
+Notem que, quando são passadas referências, sempre são retornadas referências
+do mesmo tipo. Neste último caso C<$out> contém um I<code reference> que,
+ao ser invocado, aplica a função C<uc()> ao resultado do I<code reference>
+passado ao node.
+
+B<Futuro>: Talvez o parâmetro C<process_into> passe a ser habilitado por
+I<default>. Isso está sendo considerado.
+
+=head3 Chains
+
+Um I<node> sozinho não faz um I<hack>, então é preciso "enfileirar" os nós para
+conseguir obter um resultado significativo. O poder dos comandos pequenos está
+em juntá-los para fazer algo maior:
+
+=begin pod:xhtml
+
+<center><img style="border-width:0" src="https://github.com/russoz/artigos/raw/master/2011/03-sppm-equinocio/fig4-chain.png" /></center>
+
+=end pod:xhtml
+
+Exatamente como se fosse um I<pipe> na linha de comando. No C<DataFlow>, isso
+se faz com a classe L<DataFlow::Chain>, que pode ser usada assim:
+
+    my $uc = DataFlow::Node->new(
+        process_item => sub { shift; return uc(shift) }
+    );
+    my $rv = DataFlow::Node->new(
+        process_item => sub { shift; return scalar reverse $_[0]; }
+    );
+
+    my $chain = DataFlow::Chain->new( links => [ $uc, $rv ] );
+
+Um objeto da classe B<Chain> é também um B<Node>, e funciona da mesma forma:
+
+	$chain->input( qw/abc def ghi/ );
+	my @result = $chain->output();
+	# @result == qw/CBA FED IHG/
+
+=head3 Biblioteca de Nós
+
+Algumas operações são mais comuns, e nós especializados podem ser criados
+para executar processamentos específicos. O pacote L<DataFlow>, contém ainda
+apenas um pequeno número dessas classes, mas com o tempo isso deve aumentar.
+Alguns exemplos de classes já disponíveis hoje são:
+
+=over
+
+=item L<DataFlow::Chain>
+
+Tipo especial de nó, que possui uma lista de nós, e concatena esses nós, como
+descrito acima.
+
+=item L<DataFlow::Node::CSV>
+
+Nó que transforma array references em strings no formato CSV.
+
+=item L<DataFlow::Node::Dumper>
+
+Nó que utiliza o módulo L<Data::Dumper> para imprimir a estrutura de cada item
+para STDERR.
+
+=item L<DataFlow::Node::HTMLFilter>
+
+Nó utilizado para filtrar tags de um documento HTML utilizando
+L<HTML::TreeBuilder::XPath>. Pode produzir nodes (L<HTML::Element>), HTML ou
+somente os valores de tags e/ou atributos.
+
+=item L<DataFlow::Node::LiteralData>
+
+Nó que injeta na sua fila de entrada os parâmetros passados ao construtor.
+
+=item L<DataFlow::Node::MultiPageURLGenerator>
+
+Nó utilizado para gerar uma lista de URLs com os endereços de todas as páginas
+web de um conjunto de dados.
+
+=item L<DataFlow::Node::NOP>
+
+Nó "NO-OP". A informação sai do mesmo jeito que entrou. Pode ser utilizado como
+classe base para outras classes, ou apenas para alterar algum atributo do fluxo
+de dados.
+
+=item L<DataFlow::Node::Null>
+
+Nó que sempre retorna C<undef>.
+
+=item L<DataFlow::Node::URLRetriever>
+
+Nó que recebe URLs na entrada, e retorna o conteúdo das mesmas na saída.
+
+=back
+
+=head2 E Como Uso Tudo Isso?
+
+O L<DataFlow> surgiu do projeto L<OpenData-BR|http://www.opendatabr.org/>, e
+um dos usos para o qual ele foi pensado foi justamente a obtenção e manipulação
+de dados disponíveis em sites na web.
+
+=head3 DATAFLOW EM AÇÃO
+
+Por exemplo, o trecho de script abaixo (baseado em
+L<df-portaltransparencia.pl|http://goo.gl/Vxw4f>), obtém as informações das
+pessoas (físicas e jurídicas) consideradas inidôneas e/ou que tenham sido
+sancionadas por algum órgão do governo:
+
+	my $chain = Chain->new(
+	    links => [
+	        LiteralData->new($base_url),
+	        MultiPageURLGenerator->new(
+	            first_page => -1,
+	            produce_last_page => sub {
+	                my $url = shift;
+	
+	                my $get  = DataFlow::Node::URLRetriever::Get->new;
+	                my $html = $get->get($url);
+	
+	                my $texto =
+	                  HTML::TreeBuilder::XPath->new_from_content($html)
+	                  ->findvalue('//p[@class="paginaAtual"]');
+	                croak q{Não conseguiu determinar a última página}
+	                  unless $texto;
+	                return $1 if $texto =~ /\d\/(\d+)/;
+	            },
+	            make_page_url => sub {
+	                my ( $self, $url, $page ) = @_;
+	
+	                my $u = URI->new($url);
+	                $u->query_form( $u->query_form, Pagina => $page );
+	                return $u->as_string;
+	            },
+	        ),
+	        NOP->new( deref => 1, ),
+	        URLRetriever->new,
+	        HTMLFilter->new(
+	            process_into => 1,
+	            search_xpath =>
+	              '//div[@id="listagemEmpresasSancionadas"]/table/tbody/tr',
+	        ),
+	        HTMLFilter->new(
+	            search_xpath => '//td',
+	            result_type  => 'VALUE',
+	            ref_result   => 1,
+	        ),
+	        Node->new(
+	            process_into => 1,
+	            process_item => sub {
+	                shift; local $_ = shift; s/^\s*//; s/\s*$//;
+	                return $_;
+	            }
+	        ),
+	        DataFlow::Node::Dumper->new,
+	    ],
+	);
+
+	$chain->flush;
+
+=head3 RESULTADO
+
+Esse código imprimirá na tela (C<STDERR>) algo como:
+
+	...
+
+	$VAR1 = [
+	          '11.222.333/0001-44',
+	          'A CALOTEIRA LTDA.',
+	          'Suspensa',
+	          '04/06/08',
+	          '03/06/13',
+	          'SENADO FEDERAL',
+	          '**',
+	          'SENADO FEDERAL',
+	          '14/04/2009'
+	        ];
+	$VAR1 = [
+	          '555.666.777-88',
+	          'JOSÉ DO TRAMBIQUE',
+	          'InidE<06533>nea',
+	          '27/10/09',
+	          '27/10/14',
+	          '1E<#6533> VARA CIVEL - SE<#6533>O SEBASTIAO DO PARAE<#6533>SO - TJMG',
+	          '',
+	          'CONSELHO NACIONAL DE JUSTIE<#6533>A',
+	          '02/01/2011'
+	        ];
+
+Como pode ser visto, a parte de codificação de caracteres ainda precisa de
+algum trabalho. Mas os dados já foram obtidos e "limpos", faltando apenas
+convertê-los para algum formato que possa ser facilmente manipulável por
+outros sistemas.
+
+Já estão sendo trabalhados nós para conversão de codificação de caracteres,
+bem como para a transformação para outros formatos, como CSV e XML.
+
+=head3 Passo-a-Passo
+
+Vamos examinar cada nó da cadeia.
+
+    LiteralData->new($base),
+
+Esse nó simplesmente pega o valor de C<$base_url>, uma URL (para este exemplo
+estamos considerando que é a URL do
+B<Cadastro de Empresas Inidôneas ou Sancionadas>
+do site L<PortalTransparência|http://www.portaltransparencia.gov.br>) e a
+injeta na fila de entrada do nó. O objeto do tipo
+L<DataFlow::Node::LiteralData> não modifica o valor,
+logo essa URL será o único item de saída desse nó.
+
+    MultiPageURLGenerator->new(
+        first_page => -2,
+        produce_last_page => sub {
+	        my $url = shift;
+			...
+        },
+        make_page_url => sub {
+	        my ( $self, $url, $page ) = @_;
+			...
+        },
+    ),
+
+A classe L<DataFlow::Node::MultiPageURLGenerator> serve para gerar, a partir
+de uma URL base, uma lista de URLs que correspondam às várias páginas nas
+quais aquele conjunto de dados se encontra. É obrigatório prover a I<sub>
+anônima C<make_page_url>. Esta I<sub> irá receber uma URL C<$url> e um número
+de página C<$page>, e deverá retornar uma outra URL para a página C<$page>
+do conjunto de dados.
+
+As páginas inicial e final podem ser indicadas explicitamente, passando os
+parâmetros C<first_page> e C<last_page>, respectivamente. Caso C<first_page>
+não seja passado, será usado 1 (um) como valor I<default>. Se C<last_page>
+não for passado, o parâmetro C<produce_last_page> B<deverá> conter uma I<sub>
+anônima que irá calcular o número da última página, baseado na C<$url> base.
+
+No exemplo acima, a última página é obtida no próprio site, e a primeira
+página está como B<-2>, o que significa que irá começar na penúltima página.
+
+A saída desse nó será um I<ArrayRef> que aponta para um I<array> que contém as
+URLs das últimas duas páginas.
+
+    NOP->new( deref => 1, ),
+
+Esse nó, do tipo L<DataFlow::NOP> não irá transformar a informação em si, mas
+como passamos o valor B<1> para o parâmetro C<deref>, o I<ArrayRef> recebido
+será dereferenciado, isto é, transformado de volta em um I<array>, e injetado
+na fila de saída do nó. Assim, cada elemento do I<array> será tratado como um
+dado independente pelos próximos nós. Poderíamos ter passado C<deref> no nó
+anterior, mas deixamos aqui para efeito de ilustração.
+
+A saída desse nó serão duas I<strings> contendo as URLs, respectivamente, da
+penúltima e última páginas do cadastro do site.
+
+    URLRetriever->new,
+
+Este nó acima, como o nome da classe L<DataFlow::URLRetriever> indica, irá
+acessar as URLs passadas e buscará o conteúdo (no caso, código HTML).
+
+A saída desse nó serão duas strings, cada uma delas correspondendo ao conteúdo
+HTML completo das URLs das últimas duas páginas.
+
+    HTMLFilter->new(
+        search_xpath =>
+          '//div[@id="listagemEmpresasSancionadas"]/table/tbody/tr',
+    ),
+
+A classe L<DataFlow::HTMLFilter> é, obviamente, utilizada para filtrar conteúdo
+HTML. Essa filtragem é baseada em XPath. No caso do exemplo acima, o filtro
+irá buscar uma tag com atributo,
+C<< <div id="listagemEmpresasSancionadas"> >>, e dentro do bloco delimitado
+por essa tag, uma C<< <table> >>, dentro dela um C<< <tbody> >>, e dentro dele
+todas as tags C<< <tr> >>, que naturalmente correspondem às linhas da tabela
+com os dados que buscamos.
+
+Por I<default>, será retornado o texto HTML resultante da busca. No caso, a
+saída deste nó será um I<array> de I<strings>, cada uma contendo integralmente
+o texto HTML de cada linha (C<< <tr> >>) encontrada nas tabelas de ambas as
+duas páginas, isto é, uma única seqüência de itens.
+
+    HTMLFilter->new(
+        search_xpath => '//td',
+        result_type  => 'VALUE',
+        ref_result   => 1,
+    ),
+
+Mais um filtro HTML, desta vez para obter, de cada linha da tabela os valores
+de cada célula, ou seja, de cada tag C<< <td> >> que a linha (C<< <tr> >>)
+contiver. No entanto, aqui passamos o parâmetro C<result_type> igual a
+C<'VALUE'>, isso faz com que, por exemplo,
+C<< <tr><td>1</td><td>aa</td></tr> >>, retorne C<< ( 1, 'aa' ) >>. Mas, como
+cada item de uma linha são atributos de um único item (pessoa inidônea),
+gostaríamos que eles ficassem agrupados - para isso passamos o parâmetro
+C<ref_result>, que irá transformar a lista de valores de cada linha em um
+I<ArrayRef> para essa lista.
+
+A saída deste nó é um I<array> de I<ArrayRef>s, cada um contendo os dados de
+cada pessoa listada nas últimas duas páginas do cadastro no site.
+
+    Node->new(
+        process_into => 1,
+        process_item => sub {
+            shift; local $_ = shift; s/^\s*//; s/\s*$//;
+            return $_;
+        }
+    ),
+
+Aqui criamos um nó do próprio tipo L<DataFlow::Node>, ao qual fornecemos o
+código C<process_item>, que irá, neste caso, remover eventuais espaços em
+branco no início e no final de cada dado, dentro de cada I<ArrayRef> - isso
+ocorre devido ao uso do parâmetro C<process_into>.
+
+A saída desse nó terá a mesma estrutura de dados do nó anterior, mas o conteúdo
+terá os espaços iniciais e finais removidos.
+
+	DataFlow::Node::Dumper->new,
+
+Este nó, do tipo L<DataFlow::Node::Dumper>, utiliza o módulo L<Data::Dumper>
+para imprimir em C<STDERR> o conteúdo de cada item de dado. Neste caso ele
+listará, para cada pessoa inidônea ou sancionada das últimas duas páginas do
+cadastro, o conteúdo do I<ArrayRef> contendo os dados da pessoa.
+
+Para colocar a B<Chain> em ação, invocamos o método C<flush()>, que irá
+consumir itens da saída de um nó, no caso C<$chain>, até que não haja
+mais itens.
+
+    $chain->flush;
+
+=head2 Conclusão
+
+O L<DataFlow> é um projeto que está em um estágio muito novo do seu
+desenvolvimento, e por enquanto não há promessas ou garantias de que
+as interfaces serão mantidas. Se houver interesse em usar o DataFlow, sugiro
+acompanhar de perto o desenvolvimento do mesmo para ficar a par de quaisquer
+mudanças.
+
+Já existem várias idéias de melhorias, como por exemplo:
+
+=over
+
+=item * Execução em paralelo (com threads, com forks)
+
+=item * Nó para leitura/escrita de arquivos (em andamento)
+
+=item * Nó para I<encoding> de caracteres (em andamento)
+
+=item * Nó para envio/recebimento de mensagens em filas (RabbitMQ, MQ, etc...)
+
+=item * Nó para geração de dados em formato RDF
+
+=item * Nó para decodificar imagens com OCR
+
+=item * Nó para executar comandos externos
+(enviar ou receber dados para esses comandos)
+
+=item * Uso de operadores (concatenação de nós seria uma cadeia)
+
+=item * Construção de nós (e principalmente cadeias de nós) a partir de especificações em JSON e/ou YAML
+
+=item * Nós que permitam I<split> e I<join> de fluxos de informação
+
+=back
+
+Estas e outras idéias de melhorias estão no arquivo de
+L<TODO|https://github.com/russoz/DataFlow/blob/master/TODO> no repositório
+do projeto.
+
+B<Você pode ajudar!> De várias formas: escrevendo código, tanto para os módulos 
+quanto testes. Executando testes e enviando I<reports> - neste momento há, por
+exemplo, alguns reports de erro em FreeBSD que não estão ocorrendo no sistema
+dos mantenedores (Linux).
+
+=head2 Referências
+
+=over
+
+=item Portal Transparência
+
+L<http://www.portaltransparencia.gov.br/>
+
+=item Portal Transparência - CEIS (Cadastro de Empresas Inidôneas ou Sancionadas)
+
+L<http://goo.gl/UDNaG>
+
+=item OpenData-BR
+
+L<http://www.opendatabr.org/>
+
+=back
+
+=head2 Agradecimentos
+
+=over
+
+=item Nelson Ferraz
+
+Por lançar a sugestão de ter o Equinócio 2011 sobre o tema
+B<Hack de Dados Públicos>. Nelson, a culpa é toda sua. ;-)
+
+=item Thiago "Maluco" Rondon
+
+Por tirar o B<OpenData-BR> do plano das idéias e trazê-lo para a realidade.
+Pelos testes, idéias e discussões, muitas vezes em horários excusos.
+Muitos dos conceitos do L<DataFlow> germinaram a partir desses momentos.
+
+=item Blabos de Blebe
+
+Pela revisão deste texto. Valeu, Blabos!!
+
+=back
+
+=head2 Autor
+
+B<< Alexei "Russo" Znamensky E<lt> russoz no cpan org E<gt> >>
+
+Blog: L<http://russoz.wordpress.com/>
+
+LinkedIn:
+L<http://www.linkedin.com/profile?viewProfile=&key=754668&trk=tab_pro>
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
+
+=cut
+

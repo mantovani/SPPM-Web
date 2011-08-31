@@ -1,0 +1,220 @@
+=encoding utf8
+
+=head1 Twittando com o Perl
+
+B<Nota>: Este artigo visa passar as orientações básicas do funcionamento do módulo B<Net::Twitter>. Como aplicações que envolvem segurança de contas de twitter crackeadas podem causar danos a imagens e marcas, aplicações em produção devem realizar a limpeza dos dados assegurando que apenas entradas válidas sejam informadas. Estas aplicações também devem garantir a segurança dos usuários, armazenando as credenciais de forma segura - bancos de dados protegidos ou arquivos criptografados são opções. Isto está além dos objetivos deste tutorial. Para obter melhores conhecimentos de segurança leia:
+
+=over
+
+=item https://dev.twitter.com/pages/security_best_practices;
+
+=item O tutorial perlsec, na sua documentação online do Perl;
+
+=item SQL Injection Defenses por Martim Nystrom;
+
+=back
+
+Integrar o Perl com o Twitter® é uma das melhores formas de estudarmos como  o Perl pode se comunicar com as redes sociais modernas. O Perl oferece, por meio do CPAN os módulos Net::Twitter, Net::Twitter::Lite, App::Twitter e Net::Oauth como interfaces simplificadas para programação de uma aplicação integrada ao Twitter. Esta aplicação pode ser uma aplicação Web, um cliente desktop com Tk ou mesmo uma aplicação de linha de comando com GetOpt::Std. Enfim, com Perl e um pouco de criatividade as possibilidades tendem ao infinito.
+
+O Twitter não oferece nenhuma interface oficial para programadores Perl. Mas nossos amigos, criadores de módulos do CPAN, realizaram um trabalho decente e profissional desenvolvendo os módulos que nos fornecem uma API para o Twitter, bem como para outras redes sociais que podemos integrar com o Perl, como o polêmico Facebook.
+
+A escolha do módulo a ser utilizado é uma questão de analisar seu projeto e sua familiaridade com a forma de utilizar o módulo ou mesmo o framework. Alguns módulos do Twitter são integrados ao Moose, ao Catalyst ou até mesmo ao POE. Como o objetivo deste artigo é explicar como utilizar o Perl com o Twitter não vou complicar a vida dos iniciantes com o Moose ou o POE pois isto poderia excluir os programadores menos experientes, e este não é o objetivo da comunidade. Então utilizarei o módulo Net::Twitter.
+
+Eu gosto muito deste módulo pois, como administrador de sistemas, acabo utilizando muitos módulos do tipo Net:: como Net::SSH, Net::Ping, Net::SNMP, Net::SMTP, etc. Isso faz com que eu prefira os módulos Net:: pois eles tem muita familiaridade com sua forma de funcionamento. Mas acho que está na hora de um pouco de ação. Vamos preparar nosso kit para twittar.
+
+=head2 Registre sua aplicação:
+
+Para começar, nossa primeira aplicação será um comando shell que envia mensagens para uma conta específica do twitter. Vamos precisar dos módulos B<Geopt::Std>, B<Net::Twitter> e o B<Term::ReadKey> além de uma conta de desenvolvedor no twitter. Para criar esta conta acesse a página: dev.twitter.com/apps/new. Ela fornecerá os dados que sua aplicação necessita para efetuar conexão com o site via OAuth. Para uma aplicação cliente que ficará hospedada no desktop como um comando ou utilizando Perl TK o Twitter vai te fornecer:
+
+    API key
+    XXXXXXXXXXXX
+    Consumer key
+    XXXXXXXXXXXXXXXXXXXXXXXXX
+    Consumer secret
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    Request token URL
+    https://api.twitter.com/oauth/request_token
+    Access token URL
+    https://api.twitter.com/oauth/access_token
+    Authorize URL
+    https://api.twitter.com/oauth/authorize
+
+Estas informações são importantes, principalmente para a primeira vez que um usuário novo utilizar esta ferramenta. Então, vamos discutir como funciona a autenticação de uma aplicação externa ao Twitter. Depois de compreendido o processo de autenticação fica mais fácil decidir se o seu projeto vai manusear a autenticação via SQLite, arquivos de texto criptografados ou qualquer outra forma que você considere interessante.
+
+=head2 Autenticando seu usuário:
+
+Até 2010, existia a autenticação simplificada, onde você precisava apenas informar um usuário e senha e sua aplicação poderia acessar a API do Twitter como se fosse o usuário. Agora toda a autenticação deve ser feita via OAuth. A autenticação OAuth funciona:
+
+=over
+
+=item primeiro, obtendo um token de solicitação;
+
+=item segundo, confirmando a autorização do usuário;
+
+=item terceiro, modificando seu token de solicitação por um token de acesso.
+
+=back
+
+Um primeiro acesso a uma aplicação que acesse o Twitter via linha de comando deve conter:
+
+    use 5.12.0;
+    use Net::Twitter;
+    
+    my $t = Net::Twitter->new(
+        traits          => [qw/OAuth API::REST/],
+        consumer_key    => 'xxxxxxxxxxxxxxxxxxxxxxx',
+        consumer_secret => 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    );
+
+Aqui nós criamos nosso objeto Net::Twitter, que é instanciado na variável $t. Esse construtor informa o tipo de autenticação, OAuth, e a API que será utilizada. API::REST. Veremos as APIs mais adiante. Repare que sua aplicação deve informar os dados fornecidos pelo Twitter quando você registrou sua aplicação (consumer_key e consumer_secret). Lembre-se que a forma como você armazenas as suas credenciais também é importante para evitar que aplicações maliciosas se passem pela sua aplicação.
+
+Depois temos que solicitar que o usuário confirme que deseja que o nosso aplicativo use o twitter com as suas configurações de conta. Para isso, o Twitter fornece para nosso aplicativo uma url de acesso, onde ele irá confirmar que nosso aplicativo pode se passar por ele. Adicione este código ao final:
+
+    my $pin;
+
+    # Solicita confirmação do usuário
+    unless($t->authorized){
+        my $url = $t->get_authorization_url();
+        
+        say "Esta aplicação ainda não está autorizada para acessar o twitter" .
+        " como se fosse você.";
+        
+        say "Acesse o link ao lado. " . $url . "\n Ele vai lhe fornecer um PIN " .
+        "que permitira que esta aplicação acesse suas informações no twitter.\n" .
+        "Informe este PIN aqui: ";
+        
+        chomp($pin = <STDIN>);
+        
+        my ($access_token, $access_token_secret, $user_id, $screen_name) =
+            $t->request_access_token(verifier => $pin);
+    }
+
+A URL fornecida pelo método C<get_authorization_url> apontará para uma página que solicita as credenciais do seu usuário no Twitter e pede que ele confirme que sua aplicação pode acessar seus dados no twitter e até mesmo postar em seu nome.
+
+O Twitter então fornece um código numérico que representa a etapa 2, onde o usuário confirma que sua aplicação pode utilizar suas credenciais.
+
+Em seguida passamos para a terceira etapa, que é solicitar um token de acesso. O método C<request_access_token> informa o PIN para o Twitter que, por sua vez, retorna os códigos que sua aplicação precisa para acessar o twitter como se fora aquele usuário. Guarde estas informações de forma segura. Assim você não vai obrigar seu usuário a requisitar um PIN toda vez que rodar sua aplicação.
+
+Quando você já tiver estas informações a sua disposição poderá usar o construtor como abaixo:
+
+    my $t = Net::Twitter->new(
+        traits              => [qw/OAuth API::REST/], #Autenticação e as API's
+        consumer_key        => $key,
+        consumer_secret     => $secret,
+        access_token        => $access_token,
+        access_token_secret => $token_secret,
+    );
+
+O Net::Twitter é um módulo robusto, formado por diversos módulos menores. A interface de autenticação completa pode ser aprendida na documentação CPAN do módulo Net::Twitter::Role::OAuth. Mas é importante entender pelo menos os métodos abaixo:
+
+=over
+
+=item C<authorized>:
+
+Retorna um valor verdadeiro se todos o dados para autenticação foram recebidos pelo objeto. Não necessariamente a autenticação funcionará.
+
+=item C<get_authorization_url(callback => URL)>:
+
+Informa a URL que o usuário deve utilizar para autorizar sua aplicação. Aplicações web utilizam um callbak, que é uma URL que o Twitter acessará para enviar os dados de autorização.
+
+=item C<access_token e access_token_secret>: 
+
+Informa ou configura o token e a senha relacionada ao token respectivamente. Se você já tiver os tokens de usuário armazenados, poderá configurar seu objeto com estes métodos.
+
+=back
+
+Agora vamos falar das API's. O Twitter nos fornece diversas API's, que são informadas nos construtores dos objetos da aplicação que usa o Net::Twitter. Vamos ver um pouco delas agora.
+
+=head2 A API Search:
+
+A API Search é uma das mais simples e úteis, pois permite que pesquisemos termos no Twitter. Para utilizar esta API, temos que adicioná-la ao traits do construtor:
+
+    use 5.12.0;
+
+    use Net::Twitter; 
+    use Data::Dumper;
+
+    my $nt = Net::Twitter->new(
+        traits              => [qw/OAuth API::Search/], # Autenticação e API
+        consumer_key        => '11111111111111111111',
+        consumer_secret     => '22222222222222222222222222222222222222222',
+        access_token        => $access_token,
+        access_token_secret => $token_secret,
+    );
+
+O método mais importante desta API é o search. O método search pode receber como parâmetros nomeados:
+
+    q        => 'Query, termo a ser pesquisado'
+    callback => 'url para onde a pesquisa deve ser retornada'
+    lang     => 'idioma (codificação ISO 639-1)'
+    rpp      => resultados por página
+    page     => página
+    since_id => posts a apartir da data especificada
+    geocode  => localização dos posts
+    
+    my $result = $nt->search('Clean Energy');
+    say Dumper $result;
+
+O método search executa uma pesquisa no Twitter pelo termo informado no argumento, no caso, 'Clean Energy'. Esta pesquisa retorna um hashref.
+Seria muito interessante você imprimir alguns hashes retornados da pesquisa com o Data::Dumper e estudar o formato da estrutura de saída.
+
+    my $result = $nt->search({
+        q    => 'Energia limpa',
+        rpp  => 100,
+        lang => 'pt'
+    });
+
+    say Dumper $result;
+
+A documentação completada desta API está na documentação online do módulo Net::Twitter. É interessante que você leia também a documentação do próprio Twitter.
+
+=head2 A API REST
+
+A API REST permite acesso às informações de usuário, além de permitir que a aplicação poste como se fosse o próprio usuário. Esta é a API mais importante, portanto leia a documentação do Net::Twitter e do próprio Twitter.
+
+O método C<followers> retorna um array de hashrefs com as informações de seus seguidores. É interessante que você vejar o formato destas referências com o Data::Dumper
+
+    my $followers = $nt->followers();
+    say Dumper $followers;
+
+O método C<update> é o que você pode utilizar para twittar:
+
+    $nt->update("$message");
+
+O método C<following_ids> retorna um array com os ids das contas que são seguidas pelo usuário autenticado.
+
+Enfim, a API é imensa e não vale ficar aqui explicando método a método. Leia a documentação, estude os formatos de saída com Data::Dumper e os monges estarão a disposição para maiores dúvidas.
+
+=head2 Paginação.
+
+Uma outra coisa importantíssima é a paginação. Alguns métodos retornam resultados muito longos, como lista de seguidores ou mesmo os resultados de pesquisas tem diversas páginas. Para estes métodos que usam paginação o Net::Twitter tem os parâmetros page e cursor. O parametro page informa o número da página desejada:
+
+    for my $page (1 .. 5){
+        my $result = $nt->search({
+            q       => 'Linux',
+            rpp     => 10,
+            lang    => 'pt',
+            page    => $page
+        });
+        
+        say $_->{text} foreach @{$result->{results}};
+    }
+
+Já o cursor é uma referencia a próxima página:
+
+    for ( my $cursor = -1, my $result; $cursor; $cursor = $result->{next_cursor} ) {
+        $result = $nt->search({
+            q       => 'Linux',
+            pp      => 10,
+            lang    => 'pt',
+            cursor  => $cursor
+        });
+        
+        say $_->{text} foreach @{$result->{results}};
+    }
+
+=head2 Autor
+
+Thiago Glauco C<< <thiagoglauco at ticursos dot net> >>.
+
+=cut

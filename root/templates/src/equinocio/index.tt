@@ -1,0 +1,67 @@
+[% META title = 'Equin&oacute;cio' %]
+
+          <div class="top">
+<h2>Equin&oacute;cio Mar&ccedil;o (Hack de Dados p&uacute;blicos)</h2>
+            <div class="whois">
+         
+
+<p>Mar&ccedil;o &eacute; um m&ecirc;s especial para os Perl Mongers do Brasil! :)</p>
+
+<p>Nesse m&ecirc;s comemoramos o <a href="http://pt.wikipedia.org/wiki/Equin%C3%B3cio" target="_blank">
+Equin&oacute;cio</a>! Fen&ocirc;meno astron&ocirc;mico em que vemos o Sol bem 
+acima da linha do Equador. O termo vem do latim "aequus" (igual) e "nox" 
+(noite), e nessas datas o dia e a noite duram exatamente o mesmo tempo. Bacana 
+n&eacute;? Esses fen&ocirc;menos nos lembram que a natureza &eacute; muito mais 
+que s&oacute; um monte de contas de física que aprendemos na escola. Mas enfim :)</p>
+
+<p>Comemorando a data - que ocorre duas vezes por ano, uma em Mar&ccedil;o e outra
+em Setembro - a S&atilde;o Paulo Perl Mongers organiza mais uma edi&ccedil;&atilde;o do seu j&aacute; 
+tradicional calend&aacute;rio de Equin&oacute;cio! Todos os dias do m&ecirc;s de mar&ccedil;o vamos
+publicar um artigo feito pela comunidade brasileira de Perl.</p>
+
+<p>O tema desse Equin&oacute;cio gira em torno do "Hack de Dados P&uacute;blicos". Esse tema 
+remete a assuntos relacionados a scraping, tratamento e apresenta&ccedil;&atilde;o de
+dados do governo que est&atilde;o disponibilizados na internet.</p>
+
+<p>Pensando nisso a comunidade Perl Mongers do Brasil iniciou um projeto que visa tornar os esses
+dados acessíveis de forma f&aacute;cil e centralizada, esse &eacute; o 
+<a href="http://opendatabr.org/" target="_blank">OpenData-BR</a>.
+Projeto que foi <a href="http://www.youtube.com/watch?v=jXlze8WMC4A" target="_blank">
+apresentado na Campus Party</a> desse ano.</p>
+
+<p>Acompanhe nosso <a href="equinocio/2011">calend&aacute;rio</a> e divirta-se. :)</p>
+
+<center>
+    <a href="equinocio/2011">
+        <img src="/static/images/equinocio.jpg" alt="Equinócio São Paulo Perl Mongers"/>
+    </a>
+    <br/>
+    <br/>
+</center>
+
+<ul class="decimal">
+ <li><a href="equinocio/2011/mar/1">Publicidade de Dados Governamentais</a></li>
+ <li><a href="equinocio/2011/mar/2">Por que Perl ?</a></li>
+ <li><a href="equinocio/2011/mar/3">Extra&ccedil;&atilde;o de dados com Perl, XPATH e REGEX. Exportando em ODF</a></li>
+ <li><a href="equinocio/2011/mar/4">Perl e Unicode (entre outras codificações de texto)</a></li>
+ <li><a href="equinocio/2011/mar/5">DataFlow - um framework para fluxo de dados</a></li>
+ <li><a href="equinocio/2011/mar/6">Comparando textos aproximadamente quase parecidos</a></li>
+ <li><a href="equinocio/2011/mar/7">Twittando com o Perl</a></li>
+ <li><a href="equinocio/2011/mar/8">Lendo XLS e XLSX</a></li>
+ <li><a href="equinocio/2011/mar/9">Descobrindo endere&ccedil;os pelo CEP</a></li>
+ <li><a href="equinocio/2011/mar/10">Formatos para Transpar&ecirc;ncia de Dados P&uacute;blicos</a></li>
+ <li><a href="equinocio/2011/mar/11">Latitudes e Longitudes de cidades brasileiras</a></li>
+ <li><a href="equinocio/2011/mar/12">Scraping f&aacute;cil com Mojolicious</a></li>
+ <li><a href="equinocio/2011/mar/13">KinoSearch (engine de busca)</a></li>
+ <li><a href="equinocio/2011/mar/14">Divertindo-se com Daemons</a></li>
+ <li><a href="equinocio/2011/mar/15">infografografia em Dados Governamentais</a></li>
+ <li><a href="equinocio/2011/mar/16">Oh no!! it's Dist::Zilla!!</a></li>
+ <li><a href="equinocio/2011/mar/17">CSV: entre pipe e DBMS</a></li>
+ <li><a href="equinocio/2011/mar/18">Navegue pela Web usando Perl</a></li>
+ <li><a href="equinocio/2011/mar/19">PostGIS</a></li>
+ <li><a href="equinocio/2011/mar/20">Começando com RDF e Perl</a></li>
+</ul>
+
+             </div>
+           </div>
+
