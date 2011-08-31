@@ -1,3 +1,27 @@
+<h3>2011</h3>
+<ul>
+<li><a href="/artigo/2011/PUBLICIDADEDEDADOSGOVERNAMENTAIS" > Publicidade de Dados Governamentais </a><span class="autor"> [Thiago Rondon]</span > </li>
+<li><a href="/artigo/2011/ExtracaodedadoscomperlxpatheregexExportadoemODF" > Extração de dados com perl, xpath e regex. Exportado em ODF. </a><span class="autor"> [Hernan Lopes ]</span > </li>
+<li><a href="/artigo/2011/LatitudeseLongitudesdecidadesbrasileiras" > Latitudes e Longitudes de cidades brasileiras </a><span class="autor"> [Thiago Rondon]</span > </li>
+<li><a href="/artigo/2011/PostGIS" > PostGIS </a><span class="autor"> [Gabriel Andrade]</span > </li>
+<li><a href="/artigo/2011/ComecandocomRDFePerl" > Começando com RDF e Perl. </a><span class="autor"> [Thiago Rondon]</span > </li>
+<li><a href="/artigo/2011/DescobrindoenderecospeloCEP" > Descobrindo endereços pelo CEP </a><span class="autor"> [Renato CRON]</span > </li>
+<li><a href="/artigo/2011/DivertindosecomDaemons" > Divertindo-se com Daemons </a><span class="autor"> [Daniel Mantovani]</span > </li>
+<li><a href="/artigo/2011/LendoXLSeXLSX" > Lendo XLS e XLSX </a><span class="autor"> [Renato CRON]</span > </li>
+<li><a href="/artigo/2011/DataFlowUmFrameworkParaFluxodeDados" > DataFlow - Um Framework Para Fluxo de Dados </a><span class="autor"> [Alexei Znamensky]</span > </li>
+<li><a href="/artigo/2011/KinoSearchSearchEngine" > KinoSearch (Search Engine) </a><span class="autor"> [Marcio Ferreira]</span > </li>
+<li><a href="/artigo/2011/TwittandocomoPerl" > Twittando com o Perl </a><span class="autor"> [Thiago Glauco]</span > </li>
+<li><a href="/artigo/2011/FormatosparaTransparenciadeDadosPublicos" > Formatos para Transparência de Dados Públicos </a><span class="autor"> [Breno Oliveira]</span > </li>
+<li><a href="/artigo/2011/CSVENTREPIPEEDBMS" > CSV: Entre PIPE e DBMS </a><span class="autor"> [Stanislaw Pusep]</span > </li>
+<li><a href="/artigo/2011/ScrapingfacilcomMojoliciousefeedsAtom" > Scraping fácil com Mojolicious (e feeds Atom!) </a><span class="autor"> [Breno Oliveira]</span > </li>
+<li><a href="/artigo/2011/NaveguePelaWebUsandoPerl" > Navegue Pela Web Usando Perl </a><span class="autor"> [Daniel Mantovani]</span > </li>
+<li><a href="/artigo/2011/PERLEUNICODEENTREOUTRASCODIFICACOESDETEXTO" > Perl e Unicode (Entre Outras Codificações de Texto) </a><span class="autor"> [Stanislaw Pusep]</span > </li>
+<li><a href="/artigo/2011/Comparandotextosaproximadamentequaseparecidos" > Comparando textos aproximadamente quase parecidos </a><span class="autor"> [Blabos de Blebe]</span > </li>
+<li><a href="/artigo/2011/InfografiaemDadosGovernamentais" > Infografia em Dados Governamentais </a><span class="autor"> [Thiago Rondon]</span > </li>
+<li><a href="/artigo/2011/OhnoItsDistZilla" > Oh no!! It's Dist::Zilla!! </a><span class="autor"> [Alexei Znamensky]</span > </li>
+<li><a href="/artigo/2011/DataFlowUmFrameworkParaFluxodeDados" > DataFlow - Um Framework Para Fluxo de Dados </a><span class="autor"> [Alexei Znamensky]</span > </li>
+<li><a href="/artigo/2011/PorquePerl" > Por que Perl? </a><span class="autor"> [Breno Oliveira]</span > </li>
+</ul>
 <h3>2010</h3>
 <ul>
 <li><a href="/artigo/2010/comoescreverperlescalavelparaoseuclustermysql">Como Escrever Perl Escalável para o seu Cluster MySQL</a><span class="autor"> [Luis Motta Campos]</span></li>

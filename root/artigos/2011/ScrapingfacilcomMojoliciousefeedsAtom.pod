@@ -1,0 +1,536 @@
+=head1 Scraping fácil com Mojolicious (e feeds Atom!)
+
+A suíte Mojolicious de módulos para web pode ser mais conhecida
+por permitir a L<criação rápida e fácil de sites dinâmicos|http://sao-paulo.pm.org/artigo/2010/Mojolicious>,
+mas oferece muitas outras facilidades, em particular para varredura e
+coleta de dados de outros sites - ou I<Web Scraping>.
+
+Neste artigo, vamos mostrar como é fácil escrever um scraper em
+Perl sabendo apenas seletores CSS. Para completar, vamos adicionar
+um pequeno desafio - a criação de
+L<feeds Atom|https://secure.wikimedia.org/wikipedia/en/wiki/Atom_%28standard%29>
+- e mostrar como o L<CPAN|http://search.cpan.org> nos ajuda a
+desenvolver software como se fossem peças de Lego esperando
+para serem conectadas!
+
+=head2 O Cenário
+
+Digamos, por exemplo, que queremos obter uma lista de
+L<todos os artigos publicados no site da São Paulo Perl Mongers|http://sao-paulo.pm.org/artigos>.
+
+A primeira coisa a fazer é entender a estrutura do documento HTML
+em que as informações estão. Para isso, abrimos a página que lista
+os artigos e olhamos o código fonte. Abaixo, um trecho do que foi
+encontrado:
+
+   <div class="top">
+     <h2>Artigos</h2>
+     <div class="whois">
+       <h3>2010</h3>
+       <ul>
+         <li>
+           <a href="/artigo/2010/comoescreverperlescalavelparaoseuclustermysql">Como Escrever Perl Escalável para o seu Cluster MySQL</a><span class="autor"> [Luis Motta Campos]</span>
+         </li>
+         <li>
+           <a href="/artigo/2010/orliteumaabordagemsimplesparautilizarsqlite">ORLite - Uma abordagem simples para utilizar SQLite</a><span class="autor"> [Daniel Vinciguerra]</span>
+         </li>
+         ...
+       </ul>
+       <h3>2009</h3>
+       <ul>
+         ...
+       
+
+Ótimo, a página parece ter toda a informação que precisamos. Hora de
+automatizar!
+
+=head2 Obtendo a página
+
+Fazer um programa que acessa a página em questão
+(L<http://sao-paulo.pm.org/artigos>) é muito simples:
+
+   use strict;
+   use warnings;
+   use Mojo::UserAgent;
+
+   my $client = Mojo::UserAgent->new->get( 'http://sao-paulo.pm.org/artigos' );
+
+
+Pronto. L<Mojo::UserAgent|http://search.cpan.org/perldoc?Mojo::UserAgent> é
+um cliente HTTP 1.1 e WebSocket completo, com E/S assíncrona e suporte 
+transparente a TLS, epoll e kqueue. Sua API é bastante simples e direta,
+como pudemos observar, e a partir desse ponto em nosso código o objeto
+C<$client> já carregou o site e estamos prontos para acessar seu conteúdo.
+
+=head2 O "DOM" de ler o conteúdo de sites
+
+Após uma requisição web, o que nos interessa é a resposta obtida, ou,
+mais especificamente, o "DOM" da página recebida como resposta. O
+L<Modelo de Objetos de Documentos|https://secure.wikimedia.org/wikipedia/pt/wiki/Modelo_de_Objeto_de_Documentos>
+- ou DOM, I<Document Object Model> - é uma
+L<especificação do W3C|http://www.w3.org/DOM/> que possibilita acesso e
+atualização dinâmicas do conteúdo, estrutura e estilo de documentos. É o
+que o seu navegador constrói e interpreta para exibir o conteúdo de sites,
+e que vai nos ajudar imensamente na obtenção dos dados desejados.
+
+Se você não está familiarizado com o conceito, imagine um documento HTML
+como uma grande árvore hierárquica de tags, agrupadas e tratadas
+mais ou menos como a árvore de diretórios do seu sistema de arquivos. Veja
+novamente o trecho da página que queremos analisar:
+
+   <div class="top">
+     <h2>Artigos</h2>
+     <div class="whois">
+       <h3>2010</h3>
+       <ul>
+         <li>
+           <a href="/artigo/2010/comoescreverperlescalavelparaoseuclustermysql">Como Escrever Perl Escalável para o seu Cluster MySQL</a><span class="autor"> [Luis Motta Campos]</span>
+         </li>
+         <li>
+           <a href="/artigo/2010/orliteumaabordagemsimplesparautilizarsqlite">ORLite - Uma abordagem simples para utilizar SQLite</a><span class="autor"> [Daniel Vinciguerra]</span>
+         </li>
+         ...
+       </ul>
+       <h3>2009</h3>
+       <ul>
+         ...
+ 
+No código acima, o primeiro C<< <div> >> possui a classe "top" como atributo e
+podemos ver dois filhos: o C<< <h2> >>, sem atributos, com o texto "Artigos"
+e nenhum filho; e o outro C<< <div> >>, com a classe "whois" como atributo e
+vários filhos. Desses filhos, vemos dois C<< <h3> >> e dois C<< <ul> >>, e se
+você abrir o código completo da página verá muitos outros. Tags no mesmo nível
+são irmãs entre si, mesmo tendo tipos diferentes. Podemos seguir a estrutura
+adiante, ver que cada C<< <ul> >> tem vários filhos do tipo C<< <li> >>, que
+por sua vez contém tags C<< <a> >> com o link e título dos artigos, e tags
+C<< <span> >> com o nome dos autores entre colchetes.
+
+=head2 Acessando o DOM
+
+Sabendo a nomenclatura, podemos solicitar o I<DOM> da resposta obtida por nosso
+cliente Web e acessar cada um desses elementos facilmente através be buscas
+por seletores CSS!
+
+  my $dom = $client->res->dom;
+
+A chamada acima nos retorna um objeto
+L<Mojo::DOM|http://search.cpan.org/perldoc?Mojo::DOM>, que oferece
+o conteúdo do site já devidamente processado como uma árvore DOM
+XML/HTML5 minimalista e bastante relaxada, ou seja, funcional mesmo que
+o site em questão não tenha um html em conformidade com os padrões
+do W3C - o que, infelizmente, parece praxe nos dias de hoje.
+
+O Mojo::DOM nos fornece dois métodos principais para obtenção de
+elementos de uma página:
+
+=over 4
+
+=item $dom->at( 'seletor' )
+
+Retorna objeto representando o primeiro elemento que casa com o seletor
+especificado.
+
+=item $dom->find( 'seletor' )
+
+Retorna uma lista de objetos representando todos os elementos que casam
+com o seletor especificado.
+
+=back
+
+Portanto, para obter a lista de elementos representando artigos
+publicados, podemos fazer algo como:
+
+   my $artigos = $dom->find( 'div[class="whois"] > ul > li' );
+
+Ou seja, queremos todos os elementos "li" filhos de tags "ul" que sejam
+por sua vez filhas de tags "div" com a classe "whois". Confuso? Experimente
+ler da esquerda para a direita então: queremos ir de tags "div" com a
+classe "whois" para os "ul" filhos dela, e destes para os "li". Melhor?
+
+Note que assim o DOM vai pegar todos os "ul" disponíveis no documento, ou
+seja, todos os artigos, independente do ano - exatamente como queremos!
+
+=head3 Seletores CSS?
+
+Seletores como o acima são utilizados em CSS para associar um estilo
+de formatação a uma determinada tag - ou conjunto de tags - HTML.
+É uma notação simples e ao mesmo tempo muito versátil, que
+há alguns anos vem sendo usada com sucesso por bibliotecas
+javascript como o L<jQuery|http://jquery.com>, especialmente porque
+podemos combinar seletores da forma que acharmos mais adequada
+para acessarmos o(s) elemento(s) desejado(s).
+
+Essa naturalmente não é a única forma de se chegar aos elementos em
+questão, mas é a que vamos usar aqui. Sinta-se à vontade para
+experimentar L<outros seletores/Seletores Simples> :)
+
+Para quem ainda não está acostumado com a sintaxe de seletores, colocamos
+um L<guia de referência rápida com os principais seletores CSS/Guia de Referência Rápida: Seletores CSS>.
+
+
+=head2 Extraindo as informações
+
+Pronto para pegar o que nos interessa? Vamos lá! Primeiro, lembre-se que
+colocamos na variável C<$artigos> todos os elementos C<< <li> >> e o que eles
+contém. Assim, podemos utilizar os métodos auxiliares do Mojo::DOM para
+obter, de cada um deles, o título, a url e o autor:
+
+    foreach my $artigo (@$artigos) {
+        my $titulo = $artigo->at('a')->text;
+        my $url    = $artigo->at('a')->attrs->{'href'};
+        my $autor  = $artigo->at('span')->text;
+
+        # vamos retirar os "[" e "]" dos nomes dos autores,
+        # e aproveitar para eliminar espaços desnecessários.
+        $autor =~ s/\s*[\[\]]//g;
+
+        # agora vamos exibir o que encontramos
+        print "$titulo ($url) '$autor'\n";
+    }
+
+
+A primeira linha do laço acima diz para colocarmos em C<$titulo> o
+texto que estiver dentro da tag C<< <a> >>. Em outras palavras, se
+temos algo como:
+
+   <a href="link">isso é um texto</a>
+
+a chamada C<< at('a')->text >> retornará "C<isso é um texto>".
+
+Para obter a URL, precisamos do attributo "C<href>" desta tag, portanto
+escrevemos C<< at('a')->attrs->{'href'} >>.
+
+Finalmente, como o autor está envolvido em uma tag C<< <span> >>, utilizamos
+C<< ->text >> exatamente como fizemos para o título.
+
+O código completo de nosso crawler fica:
+
+   use strict;
+   use warnings;
+   use Mojo::UserAgent;
+
+   my $client = Mojo::UserAgent->new->get( 'http://sao-paulo.pm.org/artigos' );
+   my $dom = $client->res->dom;
+   my $artigos = $dom->find( 'div[class="whois"] > ul > li' );
+
+   
+   foreach my $artigo (@$artigos) {
+       my $titulo = $artigo->at('a')->text;
+       my $url = $artigo->at('a')->attrs->{'href'};
+       my $autor = $artigo->at('span')->text;
+
+       # vamos retirar os "[" e "]" dos nomes dos autores,
+       # e aproveitar para eliminar espaços desnecessários.
+       $autor =~ s/\s*[\[\]]//g;
+
+       # agora vamos exibir o que encontramos
+       print "$titulo ($url) '$autor'\n";
+   }
+
+
+Simples, não?
+
+
+=head3 Pulando etapas
+
+Você deve ter reparado que fazemos algumas chamadas encadeadas, como
+C<< ->new->get >> e C<< ->res->dom >>. De fato, Mojo::UserAgent e Mojo::DOM
+retornam sempre o próprio objeto, de modo que podemos encadear todas
+as chamadas! Mais ainda, o método C<find()> possui seus próprios iteradores
+para que não precisemos fazer o foreach nós mesmos. Assim, o mesmo código
+acima poderia ser escrito da seguinte forma:
+
+   use strict;
+   use warnings;
+   use Mojo::UserAgent;
+
+   Mojo::UserAgent->new->get( 'http://sao-paulo.pm.org/artigos' )
+               ->res->dom->find( 'div[class="whois"] > ul > li' )
+               ->each( sub {
+                    my $artigo = shift;
+
+                    my $titulo = $artigo->at('a')->text;
+                    my $url = $artigo->at('a')->attrs->{'href'};
+                    my $autor = $artigo->at('span')->text;
+
+                    # vamos retirar os "[" e "]" dos nomes dos autores,
+                    # e aproveitar para eliminar espaços desnecessários.
+                    $autor =~ s/\s*[\[\]]//g;
+
+                    # agora vamos exibir o que encontramos
+                    print "$titulo ($url) '$autor'\n";
+               });
+
+
+Existe sempre mais de uma maneira de se fazer as coisas :)
+
+
+=head2 O Desafio: Transformando os dados em um Feed RSS/Atom
+
+Quando falamos de L<OpenData|http://opendatabr.org>, pensamos em dados
+facilmente disponíveis e em formato livre. Suponha que você tenha feito
+o scraping deste site justamente porque reparou que ele não oferece um
+feed listando os artigos disponíveis. Temos que resolver este problema!
+
+Nosso web crawler já está pronto, mas estamos apenas imprimindo o conteúdo
+na tela. O desafio é portanto transformar os dados obtidos em
+um feed L<Atom|https://secure.wikimedia.org/wikipedia/en/wiki/Atom_%28standard%29>.
+
+E agora? Novamente o CPAN vem ao nosso auxílio, com o
+L<XML::Atom::SimpleFeed|http://search.cpan.org/perldoc?XML::Atom::SimpleFeed>.
+
+O processo é bem simples: Primeiro, criamos nosso objeto de feed no
+início do programa. Depois, para cada artigo encontrado, adicionamos
+uma nova entrada. Ao terminarmos, imprimimos todo o feed.
+
+Vale notar que feeds Atom precisam de um identificador único,
+que não pode mudar. Para criar um no formato aceito pelo padrão, utilizamos
+um UUID gerado pelo módulo
+L<Data::UUID|http://search.cpan.org/perldoc?Data::UUID> a partir de um
+namespace ('sao-paulo.pm.org') e um nome ('artigo').
+
+Veja como precisamos apenas colocar os trechos relacionados ao feed, sem
+modificar em nada o crawler. Colocamos um "+" no início de cada linha nova
+para que as modificações fiquem mais visíveis:
+
+    use strict;
+    use warnings;
+    use Mojo::UserAgent;
+  + use XML::Atom::SimpleFeed;
+  + use Data::UUID;
+
+  + # criamos nosso feed Atom
+  + my $feed = XML::Atom::SimpleFeed->new(
+  +     title => 'Artigos Publicados na SPPM',
+  +     id    => 'urn:uuid:' . Data::UUID->new->create_from_name_str('sao-paulo.pm.org', 'artigos'),
+  + );
+
+    # crawling pelo site da SPPM
+    Mojo::UserAgent->new->get( 'http://sao-paulo.pm.org/artigos' )->res
+                ->dom->find( 'div[class="whois"] > ul > li' )
+                ->each( sub {
+                     my $artigo = shift;
+                     my $titulo = $artigo->at('a')->text;
+                     my $url = $artigo->at('a')->attrs->{'href'};
+                     my $autor = $artigo->at('span')->text;
+
+                     # vamos retirar os "[" e "]" dos nomes dos autores,
+                     # e aproveitar para eliminar espaços desnecessários.
+                     $autor =~ s/\s*[\[\]]//g;
+
+  +                  # agora vamos adicionar o que encontramos
+  +                  $feed->add_entry(
+  +                      'author' => $autor,
+  +                      'title'  => $titulo,
+  +                      'link'   => $url,
+  +                  );
+                });
+
+    # agora que temos os artigos no feed,
+    # podemos imprimir
+  + $feed->print;
+
+
+=head2 Conclusão
+
+Criamos um webcrawler que extrai artigos de um site e gera um feed Atom
+completo com direito a UUID, tudo isso em apenas 36 linhas - incluindo
+linhas em branco, comentários e formatação!
+
+Imagine agora o que você também pode fazer :)
+
+
+=head2 Guia de Referência Rápida: Seletores CSS
+
+=head3 Seletores simples
+
+=head4 C<*>
+
+Qualquer elemento.
+
+  '*'
+
+=head4 C<E>
+
+Um elemento qualquer do tipo C<E> especificado - title, a, head, div, span, tr, ...
+
+  'td'
+
+=head4 C<E[foo]>
+
+Um elemento C<E> qualquer com um atributo C<foo> qualquer. Por exemplo,
+"C<a[alt]>" retorna os elementos "C<< <a> >>" que possuem o atributo "C<alt>".
+
+  'a[alt]'
+
+=head4 C<E[foo="bar"]>
+
+Um elemento C<E> qualquer com um atributo C<foo> possuíndo valor exatamente igual aC<bar>.
+
+  'input[class="obrigatorio"]'
+
+=head4 C<E[foo~="bar"]>
+
+Um elemento C<E> cujo atributo C<foo> é uma lista de valores separados por espaço,
+e um desses valores é exatamente igual a C<bar>.
+
+  'input[class~="obrigatorio"]'
+
+=head4 C<E[foo^="bar"]>
+
+Um elemento C<E> cujo atributo C<foo> começa exatamente com a string C<bar>.
+
+  'input[name^="obrig"]'
+
+=head4 C<E[foo$="bar"]>
+
+Um elemento C<E> cujo atributo C<foo> termina exatamente com a string C<bar>.
+
+  'input[name$="orio"]'
+
+=head4 C<E[foo*="bar"]>
+
+Um elemento C<E> cujo atributo C<foo> contém a substring C<bar>.
+
+  'input[name*="gato"]'
+
+=head4 C<E[foo=bar][bar=baz]>
+
+Elemento C<E> cujos atributos casam com o que for especificado - seguindo as
+mesmas regras de busca por atributo definidas acima.
+
+  'a[foo^="obrig"][foo$="ado"]'
+
+=head4 C<E F>
+
+Um elemento C<F> descendente de um elemento C<E>.
+
+  'div h1'
+
+=head4 C<< E > F >>
+
+Um elemento C<F> filho de um elemento C<E>.
+
+  'html > body > div > h1'
+
+=head4 C<E + F>
+
+Um elemento C<F> precedido imediatamente por um elemento C<E>.
+
+  'h1 + h2'
+
+=head4 C<E ~ F>
+
+Um elemento C<F> precedido (em algum momento) por um elemento C<E>.
+
+  'h1 ~ h2'
+
+=head4 C<E, F, G>
+
+Elementos do tipo C<E>, C<F> e C<G>.
+
+  'h1, h2, h3'
+
+
+=head3 Seletores Avançados
+
+=head4 C<E:root>
+
+O elemento C<E> raíz do documento. Em HTML4, é sempre o elemento C<< <html> >>.
+
+  ':root'
+
+=head4 C<E:checked>
+
+Um elemento C<E> marcado (ou ativado) no momento, como um radio-button ou
+uma checkbox.
+
+  ':checked'
+  'input:checked'
+
+=head4 C<E:empty>
+
+Um elemento C<E> que não possui texto nem subtags ("filhos").
+
+  ':empty'
+  'span:empty'
+
+=head4 C<E:nth-child(n)>
+
+Um elemento C<E>, n-ésimo filho de sua tag "pai".
+
+  'div:nth-child(3)'     # terceiro
+  'div:nth-child(odd)'   # impares
+  'div:nth-child(even)'  # pares
+  'div:nth-child(-n+3)'  # 3 primeiros
+
+=head4 C<E:nth-last-child(n)>
+
+Um elemento C<E>, n-ésimo filho de sua tag "pai", contando de trás para frente.
+
+  'div:nth-last-child(3)'     # terceiro
+  'div:nth-last-child(odd)'   # impares
+  'div:nth-last-child(even)'  # pares
+  'div:nth-last-child(-n+3)'  # 3 últimos
+
+=head4 C<E:nth-of-type(n)>
+
+Um elemento C<E>, o n-ésimo elemento ("irmão") do mesmo tipo.
+
+  'div:nth-of-type(3)'     # terceiro
+  'div:nth-of-type(odd)'   # impares
+  'div:nth-of-type(even)'  # pares
+  'div:nth-of-type(-n+3)'  # 3 primeiros
+
+=head4 C<E:nth-last-of-type(n)>
+
+Um elemento C<E>, o n-ésimo de seu mesmo tipo, contanto de trás para frente.
+
+  'div:nth-last-of-type(3)'     # terceiro
+  'div:nth-last-of-type(odd)'   # ímpares
+  'div:nth-last-of-type(even)'  # pares
+  'div:nth-last-of-type(-n+3)'  # 3 últimos
+
+=head4 C<E:first-child>
+
+Um elemento C<E>, primeiro filho de seu pai.
+
+  'div p:first-child'
+
+=head4 C<E:last-child>
+
+Um elemento C<E>, último filho de seu pai.
+
+  'div p:last-child'
+
+=head4 C<E:first-of-type>
+
+Um elemento C<E>, primeiro irmão de seu tipo.
+
+  'div p:first-of-type'
+
+=head4 C<E:last-of-type>
+
+Um elemento C<E>, último irmão de seu tipo.
+
+  my $last = $dom->at('div p:last-of-type');
+
+=head4 C<E:only-child>
+
+Um elemento C<E>, filho único de seu pai.
+
+  'div p:only-child'
+
+=head4 C<E:only-of-type>
+
+Um elemento C<E>, único irmão de seu tipo.
+
+  'div p:only-of-type'
+
+=head4 C<E:not(s)>
+
+Um elemento C<E> que não casa com o seletor C<s>.
+
+  'div p:not(:first-child)'
+
+=cut

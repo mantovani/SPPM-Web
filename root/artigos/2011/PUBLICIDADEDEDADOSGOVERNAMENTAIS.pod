@@ -1,0 +1,389 @@
+
+
+=pod
+
+=head1 PUBLICIDADE DE DADOS GOVERNAMENTAIS.
+
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/opendata-datasets.png">
+</center>
+
+=end pod:xhtml
+
+=head1 ABSTRAÇÃO
+
+A Internet é uma junção de pessoas e computadores em escala mundial, no qual há uma facilidade e grande utilização de documentos através da Word Wide Web, conhecido como WWW, que é um sistema de hipermídia que interligam documentos.
+
+Transparência na web não significa apenas colocar documentos na web, é preciso que as informações estejam disponíveis para que humanos e máquinas consigam interpretar elas de forma ágil. Oferecendo transparência via Internet, podemos esperar colaboração e participação para que exista uma inovação na criação de aplicativos, como por exemplo para criar novas visualizações dos dados ou mash-ups.
+
+Estas tecnologias podem prover para o governo uma maneira inovadora de expor os dados já públicos, de forma que muitos consigam usar de fato. Sabemos que há fatores como política, legais e de cultura, porém com um esforço para esta implementação o retorno será positivo.
+
+Jornalistas, analistas políticos, desenvolvedores de software, organizações, empresários, advogados, médicos e o público em geral irão ter recursos para acessar e entender todo o repositório de dados gerado pelo governo.
+
+A constituição brasileira prevê a publicidade de uma grande quantidade de informações de interesse da sociedade que atualmente não explora todo potencial de documentos na Web.
+
+A principal proposta deste documento é apontar os melhores caminhos para serem seguidos para facilitar a publicidade dos dados, assim como a exploração deles para a sociedade.
+
+=head2 OS 3 PONTOS FUNDAMENTAIS
+
+O entendimento dos pontos fundamentais deste documento oferece uma abordagem de que com a boa utilização da tecnologia existente e iniciativa da sociedade podemos potencializar cada um deles cada vez mais.
+
+=over
+
+=item * Transparência, prover acesso aos dados.
+
+=item * Participação, facilitar a educação pública, participação e inovação.
+
+=item * Colaboração, feedback e outreach.
+
+=back
+
+=head2 BRASIL, A LEI
+
+A constituição brasileira:
+
+     Art. 37. A administração pública direta e indireta de qualquer dos
+     Poderes da União, dos Estados, do Distrito Federal e dos Municípios
+     obedecerá aos princípios de legalidade, impessoalidade, moralidade,
+     publicidade e eficiência e, também, ao seguinte: (Redação dada pela
+     Emenda Constitucional nº 19, de 1998)
+
+     (...)
+
+     XXII - as administrações tributárias da União, dos Estados, do
+     Distrito Federal e dos Municípios, atividades essenciais ao
+     funcionamento do Estado, exercidas por servidores de carreiras
+     específicas, terão recursos prioritários para a realização de suas
+     atividades e atuarão de forma integrada, inclusive com o
+     compartilhamento de cadastros e de informações fiscais, na forma da
+     lei ou convênio. (Incluído pela Emenda Constitucional nº 42, de
+     19.12.2003)
+
+     § 1º - A publicidade dos atos, programas, obras, serviços e
+     campanhas dos órgãos públicos deverá ter caráter educativo,
+     informativo ou de orientação social, dela não podendo constar nomes,
+     símbolos ou imagens que caracterizem promoção pessoal de autoridades
+     ou servidores públicos.
+
+     § 2º - A não observância do disposto nos incisos II e III implicará
+     a nulidade do ato e a punição da autoridade responsável, nos termos
+     da lei.
+
+     § 3º - As reclamações relativas à prestação de serviços públicos
+     serão disciplinadas em lei.
+
+     § 3º A lei disciplinará as formas de participação do usuário na
+     administração pública direta e indireta, regulando especialmente:
+     (Redação dada pela Emenda Constitucional nº 19, de 1998)
+
+     I - as reclamações relativas à prestação dos serviços públicos em
+     geral, asseguradas a manutenção de serviços de atendimento ao
+     usuário e a avaliação periódica, externa e interna, da qualidade dos
+     serviços; (Incluído pela Emenda Constitucional nº 19, de 1998)
+
+     II - o acesso dos usuários a registros administrativos e a
+     informações sobre atos de governo, observado o disposto no art. 5º,
+     X e XXXIII; (Incluído pela Emenda Constitucional nº 19, de 1998)
+
+     III - a disciplina da representação contra o exercício negligente ou
+     abusivo de cargo, emprego ou função na administração pública.
+     (Incluído pela Emenda Constitucional nº 19, de 1998)
+
+     § 4º - Os atos de improbidade administrativa importarão a suspensão
+     dos direitos políticos, a perda da função pública, a
+     indisponibilidade dos bens e o ressarcimento ao erário, na forma e
+     gradação previstas em lei, sem prejuízo da ação penal cabível.
+
+     § 5º - A lei estabelecerá os prazos de prescrição para ilícitos
+     praticados por qualquer agente, servidor ou não, que causem
+     prejuízos ao erário, ressalvadas as respectivas ações de
+     ressarcimento.
+
+     § 6º - As pessoas jurídicas de direito público e as de direito
+     privado prestadoras de serviços públicos responderão pelos danos que
+     seus agentes, nessa qualidade, causarem a terceiros, assegurado o
+     direito de regresso contra o responsável nos casos de dolo ou culpa.
+
+     § 7º A lei disporá sobre os requisitos e as restrições ao ocupante
+     de cargo ou emprego da administração direta e indireta que
+     possibilite o acesso a informações privilegiadas. (Incluído pela
+     Emenda Constitucional nº 19, de 1998)
+
+     § 8º A autonomia gerencial, orçamentária e financeira dos órgãos e
+     entidades da administração direta e indireta poderá ser ampliada
+     mediante contrato, a ser firmado entre seus administradores e o
+     poder público, que tenha por objeto a fixação de metas de desempenho
+     para o órgão ou entidade, cabendo à lei dispor sobre: (Incluído pela
+     Emenda Constitucional nº 19, de 1998)
+
+     (...)
+
+O Portal da Transparência do governo federal diz:
+
+     Todo aquele que guarde, administre, gerencie, arrecade ou utilize
+     bens e valores públicos tem o dever constitucional e moral de
+     prestar contas dos recursos públicos. Essa prestação de contas
+     consiste no envio, aos órgãos responsáveis, do conjunto de
+     documentos e informações, obtidos direta ou indiretamente, que
+     permitam avaliar a conformidade e o desempenho da gestão dos
+     responsáveis por políticas públicas, bens, valores e serviços
+     públicos federais.
+
+     A CGU e o Ministério do Planejamento, Orçamento e Gestão
+     instituíram, por meio da Portaria Interministerial n.° 140, de 16 de
+     março de 2006, a criação das Páginas de Transparência Pública dos
+     órgãos e entidades da Administração Pública Federal. São site que
+     apresentam os dados relativos a execução orçamentária, licitações
+     públicas, contratações, convênios e diárias e passagens da
+     Presidência da República, dos ministérios e dos outros órgãos e
+     entidades do Governo Federal.
+
+     A CGU também desenvolve o Programa Olho Vivo no Dinheiro Público, a
+     fim de capacitar agentes públicos municipais em assuntos pertinentes
+     à transparência da gestão, à responsabilização e à necessidade do
+     cumprimento dos dispositivos legais.
+
+     A Controladoria ainda oferece regularmente o curso a distância
+     "Controle Social e Cidadania". Os objetivos da capacitação, voltada
+     para conselheiros e agentes públicos municipais, lideranças locais,
+     professores, estudantes e cidadãos em geral, são incentivar a
+     atuação no controle social das ações de governo e promover a melhor
+     aplicação dos recursos públicos. O curso está estruturado em três
+     módulos: "A participação popular no Estado brasileiro"; "O controle
+     das ações governamentais"; e "O encaminhamento de denúncias aos
+     órgãos responsáveis".
+
+=head2 PROPOSTA TÉCNICA
+
+Apenas liberar os documentos não torna o processo tão eficaz em relação a publicidade dos dados, pois a dificuldade em manipular a quantidade de documentos gerados pelo governo pode tornar a tarefa difícil.
+
+A missão deste documento é incentivar o governo a adotar padrões abertos de arquivos de dados para que haja uma facilidade maior para manipular estas informações pela sociedade, pois o que buscamos tecnicamente é:
+
+=over
+
+=item * Participação através de documentos em um formato de fácil manipulação por humanos.
+
+=item * Participação através de documentos em um formato de manipulação inteligente por máquinas.
+
+=back
+
+Para que isto ocorra, precisamos primeiramente definir o que são dados abertos.
+
+=head2 OPENDATA
+
+O conceito opendata não é novidade, porém esta sempre sendo utilizado em vários cenários distintos, pois o opendata é uma filosofia e pratica que requer que um determinado dado esteja disponível para todos sem nenhum tipo de restrição.
+
+=head3 Princípios
+
+Para que um dado seja considerado opendata, ele deve seguir alguns principios basicos, como:
+
+=head3 ACESSO LIVRE
+
+Qualquer pessoa na rede deverá ter acesso aos documentos sem discriminação de grupos ou pessoa. Algumas tecnologias podem excluir, como por exemplo a utilização de um sistema de captcha baseado apenas em imagem, no qual deficientes visuais quando tentarem acessarem seriam impedidos de buscar os dados.
+
+=head3 SEPARAR OS DADOS AO MÁXIMO
+
+Facilitar a utilização dos dados, também é fazer com que eles estejam ao máximo separados em arquivos distintos para facilitar o entendimento e analise da informação, ou seja as informações devem estar armazenadas em um arquivo da maior unidade possivel para análise, além de evitar resumos.
+
+Aplicar a mistura de informações distintas pode ser uma opção interessante em um segundo plano, e para facilitar o entendimento de um determinado dado em um contexto diferente.
+
+=head3 RESPONSABILIDADE
+
+Promover a responsabiliade dentro dos vários departamentos do governo para que eles possam publicar estes dados com qualidade e da maneira mais rápida possivel, de forma segura para o governo e a sociedade.
+
+=head3 RÁPIDA INTEGRAÇÃO
+
+Oferecer ferramentas e especificações técnicas para que estas integrações sejam realizadas de forma rápida e constante.
+
+=head3 COMPARTILHAMENTO DE BOAS PRÁTICAS
+
+Para que exista uma rápida integração, é necessário compartilhar informações e experiências relacionadas a boas práticas entre os orgãos.
+
+=head3 FORMATOS DE ARQUIVOS
+
+Formatos de arquivos próprietários podem criar dependencia tecnologica para o uso das informações, e isto pode criar restrição de acesso aos dados.
+
+Eles devem estar estruturados e organizados para que se tenha maior facilidade de softwares manipularem eles. Por exemplo, alguns documentos são oferecidos pelo governo em formato PDF, no qual são imagens e não há nenhuma estrutura do documento para ser visualizada por um software.
+
+=head3 SERIALIZAÇÃO DE DADOS
+
+Não disponibilizar apenas em um formato aberto os arquivos, pois isto também poderia prejudicar a utilização de um grupo de pessoas por falta de conhecimento, e em outros casos faltariam estruturação para manipular os arquivos.
+
+=head4 CSV
+
+Não há uma especificação formal deste padrão, porém o formato de arquivo CSV armazena dados tabelados em um arquivo de texto separados por um delimitador em comum para separar os valores, e pode ser utilizado aspas em campos no qual são usados os caracteres reservados (delimitador comum e quebra de linha).
+
+A utilização dos arquivos ".csv" é muito simples e suportado por quase todos os editores de texto, planilhas eletrônicas e SGDB disponíveis.
+
+Para distribuição dos dados governamentais a sugestão é que seja utilizada na primeira linha, o cabeçalho, o nome das colunas dos dados que estarão dispostos no arquivo, um exemplo:
+
+    EMPRESA,CNPJ,TELEFONE,ENDERECO,CEP
+    Empresa de exemplo, 0000-0000-0000/0000-1, 1234-1234, Rua exemplo, 42420-123
+    Empresa de exemplo 2, 0000-0000-0000/0000-2, 1234-1234, Rua exemplo, 42420-123
+
+=head4 RDF
+
+A linguagem para representação de informações na Internet, no qual são arquivos baseados em metadata com objetivo de criar um modelo de documento com uma semântica se utilizando de sintaxe XML.
+
+Com os dados estruturados, a utilização de linguagens para consulta pode auxiliar muito quem quer pesquisar ou apontar para os dados para documentos que estejam na Internet. Uma destas linguagems é a SPARQL.
+
+Em alguns casos há uma dificuldade técnica de implementação, pois os dados já estão formatos em um determinado padrão, ou em um banco de dados que não tem um modo trivial para serializar estes dados, porém existe já uma diversidade de tecnologias disponíveis na própria rede para facilitar este trabalho. Um exemplo muito bom de trabalho realizado neste sentido é o projeto DR2 Server, no qual ele trabalha como uma camada na frente de um banco de dados relacional que oferece os dados em RDF e a capacidade de oferecer consultas em SPARQL.
+
+A ideia de ter os arquivos usados em RDF, é principalmente usufruir do conceito principal do design deste framework, que ele é baseado em URI e XML. Isto significa que a utilização dos documentos nestes conceitos podem oferecer uma utilização muito trivial por muitas pessoas e com uma organização de dados unificada.
+
+Encontre mais informações para publicação de arquivos RDF no final deste documento, em referências.
+
+=head3 Perguntas
+
+=over
+
+=item 1. De onde os dados devem vir ?
+
+=item 2. Como ele deve ser alimentado ?
+
+=item 3. Quais os formatos ?
+
+=item 4. Existe um padrão para os dados ?
+
+=item 5. Com qual frequencia ?
+
+=item 6. Como dividir os dados ?
+
+=item 7. Data-driven para o jornalismo ?
+
+=back
+
+=head4 De onde os dados devem vir ?
+
+Quando o assunto é governo, os dados devem ser os que são já estabelecidos por lei como no caso do Brasil que garante a publicidade de uma enorme quantidade de dados.
+
+=head4 Como ele deve ser alimentado ?
+
+Estes dados além de alimentar banco de dados internos que só o governo pode visualizar eles, é interessante que ele seja alimenato hoje em formatos abertos na Internet, para que exista uma reutilização destas informações de maneira mais trivial pela sociedade.
+
+=head4 Quais os formatos ?
+
+Assim como os dados, os formatos devem ser abertos para que não exista dependencia tecnologica para o acesso aos dados. Existe sempre uma alternativa ao formato proprietário.
+
+Um exemplo muito comum de uso do formato proprietário, e oferecer os dados em formatos de planilhas excel, no qual uma das alternativas em formato livre seria o CSV.
+
+=head4 Existe um padrão para os dados ?
+
+Na Internet, existem padrões ótimas como por exemplo o RDF que define um padrão baseado em URI que define a localização dos arquivos na rede, e em XML que define como o documento será disposto.
+
+Além de oferecer os arquivos em RDF é interessante que seja oferecido em formatos que sejam de fácil manipulação por humanos, como por exemplo o CSV.
+
+=head4 Com qual frequencia ?
+
+Assim como quais dados devem ser alimentados, o ideal é que sejam oferecidos como a lei estabelece a publicidade dos dados e os prazos para que eles estejam dispostos também.
+
+=head4 Como dividir os dados ?
+
+A divisão dos dados é um fator muito importante para re-utilização deles de uma maneira mais proveitosa, isto significa que dividir as informações no máximo de arquivos possiveis é interessante para que a leitura seja mais simples.
+
+=head4 Data-driven para o jornalismo ?
+
+O processo do jornalismo é um exemplo interessante do que outros profissionais podem fazer com os dados obtidos em relação ao opendata, que basicamente um dado que passe por um filtro e seja bem visualizado possa criar uma boa noticia.
+
+Para que isto ocorra, boas praticas são necessárias tanto por quem abre os dados como para quem irá criar uma nova informação, como a notícia neste caso. Por exemplo, criar uma notícia e não oferecer esta nova visão como dado aberto não irá ajudar na reutilização desta nova visão.
+
+=head2 OWL (Web Ontology Language)
+
+OWL é uma linguagem para definir e instanciar modelos de dados para informações na web, que o objetivo é oferecer uma interpretação para as máquinas de forma semántica e não apenas de sintaxe, ao invés de apresentá-las apenas aos humanos.
+
+Tecnicamente é uma linguagem que se baseia em outras duas linguagens, a OIL e a DAML+OIL que hoje é uma recomendação da W3C.
+
+Esta definição e toda abordagem ao redor do OWL pode oferecer uma mecanica para elaboração de vocabulários para que a web seja mais semántica aos softwares.
+
+Com ela é possivel facilitar a interpretação de dados por máquinas por linguagens como XML, RDF, RDFS, e etc que iremos ver mais alguns artigos no decorrer deste equinócio.
+
+=head2 CONECTANDO DADOS
+
+Além de oferecer os arquivos para serem visualizados ou para download, a necessidade de que estes dados estejam prontos para serem conectados, ou seja integrados, através da WEB é essencial para muitos cenários.
+
+No documento "Design Issues: Linked Data" de Tim Berners-Lee, ele faz uma explicação para que os dados sejam facilmente interligados através da web eles devem resumidamente :
+
+=over
+     
+=item * Utilizar URI para identificar "coisas"
+
+=item * Utilizar HTTP URI para que as "coisas" possam ser localizadas por pessoas ou aplicativos
+
+=item * Forneceder informações úteis sobre "coisas", em formatos como RDF/XML
+
+=item * Incluir links para outros dados como forma de referência, para melhorar a visualização dos dados expostos.
+
+=back
+
+A serialização destes dados pode ser oferecida em RDFa, RDF/XML, N3, Turtle, ... .
+
+=head3 Datasets
+
+Há alguns tipos de banco de informações já definidos para dados como estes, alguns deles são:
+
+=head4 FOAF
+
+FOAF é um acronimo para Friend of Friend, que é um ontologia para descrever dados de pesssoas, suas atividades, o relacionamento com outras pessoas e objetos, no qual sejam interpretador por máquinas.
+
+Existe alguns módulos para tratar deste tipo de dataset no CPAN, L<XML::FOAF>, L<Gedcom::FOAF> e L<XML::FOAF::Person>.
+
+Mais informações sobre esta espeficação: http://rdfweb.org/foaf/
+
+=head4 GeoNames
+
+É um tipo de banco de dados que disponibiliza dados geograficos e pode ser acessado por vários tipos de "web services", que é o conjunto de vocabulário para adicionar a semática necessária nos padrões abertos para distribuição de dados, como RDF/XML, DBpedia e etc.
+
+Existe uma API em Perl para isto, que é L<Geo::GeoNames>, no qual utiliza o webservice http://ws.geonames.org/.
+
+=head4 DBpedia
+
+É um projeto que espera extrair informações estruturadas criadas no Wikipedia, no qual permite efetuar consultas e associar documentos entre eles.
+
+Para este projeto ainda não há um módulo no CPAN, quem sabe você não possa escrever o primeiro ?
+
+
+
+=head2 REPOSITÓRIO VISUAL
+
+A sugestão é que o repositório visual esteja hospedado dentro do governo, oferecendo um mapa com os recursos disponíveis dos dados que lá estejam para que as pessoas possam explorar.
+
+Este repositório pode se utilizar da colaboração dos demais orgãos do governo, no qual eles utilizaram a plataforma do repositório para divulgar os dados já disponíveis para compartilhamento, desta maneira os dados abertos (open data) estariam todos em um mesmo local como referencia para a sociedade, porem os dados seriam mantidos dentro de cada orgão, onde os dados são gerados.
+
+Desta forma fica mais fácil para todos, encontrarem os dados e também posteriormente identificar os locais que estejam com problemas. Dois exemplos ótimos são o repositório americano (L<http://data.gov>) e o inglês (vide L<http://data.gov.uk>).
+
+=head1 CONCLUSÃO
+
+O governo já realizou grandes passos, pois existem dispositivos na lei e os dados jão estão presentes na WEB, porém hoje a sociedade enfrenta grandes dificuldades para analisar estes dados.
+
+Acreditamos que com um trabalho mais elaborado e organizado para disponibilizar estes dados todos sairão ganhando, o governo com sugestões e particpação mais efetiva da sociedade e a sociedade sabendo mensurar melhor qual o trabalho do governo.
+
+Não encontrei uma conclusão ou frase melhor para expressar a motivação por trás deste esforço para que os dados estejam abertos do que a dita por Eric Raymond em um de seus ensaios do livro Bazar e Cateral, que é a Lei de Linus:
+
+	"Dados olhos suficientes, todos os erros são triviais."
+
+
+=head1 AGRADECIMENTO
+
+Em especial a Tim Berners-Lee pelo o seu trabalho constante em relação a dados abertos na web.
+
+
+=head1 Referências
+
+Design Issues: Linked Data por Tim Berners-Lee, L<http://www.w3.org/DesignIssues/LinkedData.html>
+
+Publishing Open Government Data por W3, L<http://www.w3.org/TR/gov-dataa/>
+
+SPARQL Working Group Wiki, L<http://www.w3.org/2009/sparql/wiki/Main_Page>
+
+Improving Access to Government through Better Use of the Web, L<http://www.w3.org/TR/egov-improving/>
+
+=head1 AUTOR
+
+Thiago Rondon, thiago.rondon no e-mail gratuito do google.
+
+=cut
+
+

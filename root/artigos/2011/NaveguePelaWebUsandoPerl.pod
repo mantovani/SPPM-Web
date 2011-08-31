@@ -6,7 +6,7 @@ Perl oferece uma quantidade robusta de código reutilizável(Módulos) para voc�
 
 =head2 Ferramentas
 
-A linguagem Perl tem o maior repositório do mundo de código reutilizável, L<CPAN/http://search.cpan.org/> além do código ter uma excelente documentação, os códigos tem uma camada de testes que garante as funcionalidades funcionarem no seu ambiente.
+A linguagem Perl tem o maior repositório do mundo de código reutilizável, L<CPAN/http://search.cpan.org/> além do código ter uma excelente documentação, os códigos tem uma camada de teste que garante as funcionalidades funcionarem no seu ambiente.
 
 Nesse artigo utilizarei o L<Mechanize/http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm>, esse módulo oferece os recursos necessários para uma navegação automatizada.
 
@@ -163,7 +163,7 @@ Você pode automatizar navegações web, para diversos usos. Esse artigo foi sim
 
 =head2 Autor
 
-Daniel de Oliveira Mantovani <daniel.oliveira.mantovani [a] gmail [dot] com
+Daniel de Oliveira Mantovani <daniel.oliveira.mantovani [a] gmail [dot] com>
 
 =head2 Referências
 

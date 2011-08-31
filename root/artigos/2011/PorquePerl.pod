@@ -1,0 +1,216 @@
+=head1 Por que Perl?
+
+Este não é um artigo de "evangelização". Não vou perder meu tempo
+- nem o seu - com palavras fanáticas de um programador apaixonado,
+repetidas como um mantra religioso. Claro, seria um discuso ótimo
+para novatos, perdidos na infinidade de opções de linguagem
+de programação, implorando para que alguém lhes aponte a bala de
+prata, a solução mágica e definitiva capaz de resolver todos os
+problemas do planeta. Mas o mesmo discurso que encanta o iniciante é
+imediatamente descartado por aqueles que em algum momento foram
+direcionados a I<outra> bala de prata e nela criaram sua zona de
+conforto. Os que insistem - de forma igualmente irracional e
+fanática - na noção infantil de que tudo que não é seu é feio,
+ultrapassado e inútil.
+
+Não. A escolha de Perl 5 como linguagem principal (notem: principal,
+não única) para o projeto L<OpenData-BR|http://www.opendatabr.org>
+não foi movida por fanatismo. Foi uma escolha consciente. Quase
+inevitável. E neste artigo vamos falar um pouco mais sobre os
+motivos que nos levaram a essa conclusão.
+
+A primeira coisa que devemos observar é que estamos usando o termo
+"Perl 5". Esse não é o Perl de scripts sujos e deselegantes dos
+anos 1990. Não estamos falando de uma linguagem de extensão para
+shell-scripts. Estamos falando de
+L<Perl Moderno|http://www.onyxneon.com/books/modern_perl>.
+
+=head2 Perl é uma linguagem em constante renovação
+
+Perl se orgulha em acompanhar de perto o que está sendo feito em
+outras linguagens de programação, e não tem medo de adotar o que
+funciona e descartar o que não dá certo.
+
+Hoje em sua 12a versão, o Perl 5 moderno é uma linguagem de uso
+geral, flexível e poderosa, que permite programação orientada
+a objetos, funcional, procedural, ou orientada a eventos. Ao
+adotarmos Perl não ficamos presos a um ou outro paradigma, e
+colaboradores tem liberdade para escolher a forma que mais se
+adeque ao problema em questão e à sua forma de pensar. 
+
+Ao mesmo tempo, a forte preocupação do Perl com retro-compatibilidade
+é muito importante, e permite que projetos como o OpenData utilizem
+todo esse poder e executem sem problemas em versões do perl lançadas
+hoje, a 5 anos atrás, ou daqui a 5 anos, sem qualquer modificação.
+
+Perl roda em
+L<mais de 100 plataformas diferentes|http://www.perl.org/get.html>,
+de portáteis a mainframes, e sua
+L<poderosa infraestrutura de testes|http://cpantesters.org> para
+módulos dá ao OpenData e seus subprojetos acesso imediato à uma
+L<detalhada matriz de compatibilidade|http://cpantesters.org/distro/D/DataFlow.html>
+entre versões, sistemas operacionais e arquiteturas, para que
+possamos verificar e garantir a qualidade do código disponibilizado
+facilmente.
+
+
+=head2 Perl reduz riscos de negócio
+
+Perl é L<software livre|http://dev.perl.org/licenses>, e não está
+amarrado a nenhuma empresa. A linguagem
+não fica limitada à saúde financeira de uma empresa ou às vontades de
+seus acionistas. Qualquer um pode
+L<verificar o código-fonte|http://dev.perl.org/perl5/>, enviar
+relatórios de erro, escrever correções ou
+L<compilar sua própria versão|http://search.metacpan.org/#/showpod/App::perlbrew>.
+
+De fato, Perl possui uma comunidade ativa de
+L<mais de 8000 contribuidores|http://search.cpan.org/author/>
+em todo o mundo, mais de 200 destes trabalhando
+L<diretamente no núcleo da linguagem|http://perl5.git.perl.org/perl.git>.
+Novas versões do Perl são
+L<lançadas regularmente|http://cpan.perl.org/src/README.html>, uma por ano,
+com pelo menos dois releases de manutenção nesse intervalo, sem contar
+os releases mensais da versão em desenvolvimento, que nos permite testar
+código e identificar problemas em novas versões antes mesmo delas terem
+sido lançadas.
+
+A estabilidade e robustez do Perl são garantidas por anos de maturidade
+e uma suíte de
+L<mais de 92.000 testes para a linguagem|http://qa.perl.org/cpan-testers>,
+sem contar os milhares de testes presentes em seus diversos módulos
+auxiliares. O código interno do Perl foi
+L<certificado|http://www.internetnews.com/dev-news/article.php/3589361>
+como possuidor de uma baixíssima densidade de defeitos, e passou na
+L<validação de segurança|http://www.builderau.com.au/news/soa/PHP-Perl-and-Python-pass-Homeland-Security-test/0,339028227,339284949,00.htm> do I<< Department of Homeland Security >> dos EUA. Perl possui ainda o
+L<modo "taint"|http://perldoc.perl.org/perlsec.html#SECURITY-MECHANISMS-AND-CONCERNS>,
+que analisa e discrimina entradas externas ao código - de usuários,
+arquivos ou via Internet - para evitar problemas mais comuns de segurança.
+
+Tudo isso fez com que Perl fosse
+L<adotado|http://rio.perl.org.br/quem_usa.pl#empresas> para projetos de
+missão crítica em todo o mundo, de sistemas de telecomunicações e finanças
+a sites na lista dos 100 mais acessados do mundo.
+
+Por ser uma linguagem de alto nível, desenvolvedores perdem menos tempo
+preocupados com gerenciamento de memória ou tipificação de variáveis e
+mais nos objetivos do programa em si. Desenvolvimento ágil é fundamental
+para projetos em larga escala como o OpenData, e Perl provou ser uma
+ótima opção nesse quesito.
+
+=head2 Perl se destaca no tratamento de informações
+
+E "tratamento de informações" é o centro do OpenData. Perl possui suporte
+nativo a Unicode, manipulação eficiente de strings e o
+L<mais poderoso sistema de expressões regulares da atualidade|http://perldoc.perl.org/perlre.html>.
+
+Como veremos ao longo deste equinócio, Perl oferece uma série
+de módulos para realizar
+L<parsing eficiente de conteúdo HTML|http://search.metacpan.org/#/showpod/HTML::TreeBuilder>
+e facilmente
+L<gerar|http://search.metacpan.org/#/showpod/Catalyst::Controller::REST>
+e interagir com web services em
+L<JSON|http://search.metacpan.org/#/showpod/JSON::Any>,
+L<XML|http://search.metacpan.org/#/showpod/XML::Compile>
+ou L<YAML|http://search.metacpan.org/#/showpod/YAML::Tiny>.
+Isso é fundamental para o sucesso de um projeto como o OpenData. Mesmo
+formatos mais esotéricos para disposição de dados públicos na Internet
+conseguem ser tratados com Perl para melhor visualização pela população.
+
+Mas coleta e separação de informações públicas são apenas metade da
+equação. Outra vantagem significativa de Perl para este projeto está na
+formatação das informações coletadas para exibição e interpretação pela
+população. Além de ser capaz de converter entre formatos facilmente,
+Perl permite a
+L<geração de diversos gráficos|http://search.cpan.org/perldoc?Chart::Clicker#Renderers>
+estáticos e dinâmicos.
+
+Outro desafio para o OpenData é a comunicação entre sistemas e interfaces.
+Para isso, além da natural habilidade de conversão entre formatações,
+processamento distribuido e interconectividade de rede, Perl oferece
+uma L<interface completa de integração de bancos de dados|http://dbi.perl.org>,
+capaz de conectar-se da bancos MySQL, Oracle, Sybase, Postgres,
+SQLite e muitos outros sem o menor esforço. Podemos até mesmo
+L<converter SQL entre diferentes sintaxes|http://search.metacpan.org/#/showpod/SQL::Translator>
+específicas de determinados bancos.
+
+=head2 90% do seu programa já esta pronto
+
+Com mais de 22.000 distribuições e 90.000 módulos, e uma média acima
+de L<200 uploads por mês|http://search.cpan.org/recent>, encontramos
+no L<CPAN|http://search.cpan.org> todos os componentes
+necessários para reduzir dramaticamente os ciclos de desenvolvimento 
+e nos concentrarmos praticamente apenas na lógica do software em si,
+tornando o desenvolvimento do OpenData e seus subprojetos algo rápido,
+gratificante e prazeroso.
+
+=head2 Baby-Perl é fácil de aprender
+
+Dominar qualquer linguagem de programação é algo que requer
+L<anos de experiência prática|http://norvig.com/21-days.html>.
+Mas em Perl a
+L<barreira de entrada é muito baixa|http://search.metacpan.org/#/showpod/POD2::PT_BR::perlintro>,
+e isso é importantíssimo para projetos como o OpenData.
+
+Alguém que nunca programou antes, em poucas horas já consegue escrever
+programas simples de coleta, manipulação e armazenamento de dados. Se
+você já é proficiente em outra linguagem de programação, esse intervalo
+cai para apenas alguns minutos, o suficiente para se familiarizar com a
+sintaxe.
+
+
+=head2 Comunidade vibrante e pronta para ajudar
+
+Os L<"Perl Mongers"|http://www.pm.org/> possuem comunidades de
+desenvolvedores e entusiastas espalhadas por todo o planeta e
+crescendo a cada dia, com
+L<listas de discussão|http://www.pm.org/groups/brazil.html> para
+que novatos possam tirar suas dúvidas e comentar novos
+projetos, encontros sociais, técnicos, participação em
+L<redes sociais|http://twitter.com/#!/sppm_workshop>,
+L<fóruns de tecnologia|http://info.abril.com.br/forum/viewforum.php?f=281>,
+L<eventos|http://hacknrio.org/organizacao> de
+L<software livre|http://fisl.org.br> e muitos mais.
+
+Este ano, por exemplo, haverá um
+L<excelente Workshop em São Paulo|http://perlworkshop.com.br> com
+presenças internacionais de peso falando sobre soluções modernas em
+Perl, e o L<tradicional YAPC no Rio de Janeiro|http://yapcbrasil.org.br/>,
+uma conferência anual da comunidade Perl para a comunidade Perl, onde
+todos são convidados para apresentar seus projetos e discutir novas
+técnicas, módulos, conceitos, e muito mais.
+
+Você está presenciando parte disso neste exato momento com o
+L<Equinócio|http://sao-paulo.pm.org/equinocio/2011/>,
+que mobilizou voluntários de todo o país para a confecção de material
+de qualidade para ampliar seu conhecimento e diminuir ainda mais a
+barreira de entrada no projeto OpenData.
+
+Esse tipo de apoio da comunidade é fundamental para a longevidade de
+projetos como o OpenData, movidos pela própria comunidade. 
+
+=head1 Conclusão
+
+Programadores experientes provavelmente reconheceram aqui vantagens
+de suas próprias linguagens de programação favoritas. Python é ótima
+para aprender a programar, Ruby possui muitos módulos auxiliares, Java
+é robusto, Lua é elegante, PHP é extremamente popular, Haskell é
+flexível, Smalltalk é reflexiva, entre tantas outras linguagens fantásticas.
+
+Perl não é melhor ou pior que qualquer outra linguagem, e pode
+não satisfazer as necessidades de seu projeto específico.
+Mas, para o OpenData, as características acima aliadas à enorme
+capacidade de integrar soluções em diferentes linguagens e interfaces
+fazem do Perl moderno a escolha certa para um projeto tão ambicioso e
+multifacetado.
+
+Estamos ansiosos para ajudá-lo a quebrar mais uma barreira e adicionar
+mais uma linguagem ao seu repertório. Ao longo deste Equinócio, você
+verá artigos com dicas da linguagem e de alguns dos diversos módulos
+para entrar de cabeça no hacking de dados públicos.
+
+Faça valer sua voz na democracia. Venha fazer parte da comunidade OpenData-BR!
+
+=head1 Autor
+
+Breno G. de Oliveira <garu@cpan.org>
