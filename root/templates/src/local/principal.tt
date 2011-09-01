@@ -5,7 +5,7 @@
 
     <div id="container_bottom">
 
-       [% # PROCESS equinocio/index.tt # %]
+       [% PROCESS equinocio/index.tt %]
 
         <div class="top">
             <div class="top_left">

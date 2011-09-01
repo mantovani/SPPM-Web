@@ -39,7 +39,6 @@ sub equinocio : Chained('base') : PathPart('') : CaptureArgs(1) {
     $c->stash(
         year         => $year,
         now          => DateTime->now(),
-        calendar_mar => [ calendar( 3, $year ) ],
         calendar_set => [ calendar( 9, $year ) ]
     );
 }
