@@ -23,8 +23,12 @@
 
 [% IF year == 2011 %]
 
+<h3>Equin&oacute;cio Setembro (Perl Moderno)</h3>
+[% INCLUDE equinocio/calendar.tt month='set' fcalendar=calendar_set%]
+
 <h3>Equin&oacute;cio Mar&ccedil;o (Dados públicos)</h3>
 [% INCLUDE equinocio/calendar.tt month='mar' fcalendar=calendar_mar %]
+
 
 [% END %]
 
