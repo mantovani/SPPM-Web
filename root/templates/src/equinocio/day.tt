@@ -5,13 +5,6 @@
           <div class="top">
             <div class="whois">
 
-<center>
-<a href="http://www.perlworkshop.com.br" target="_blank">
-<img src="/static/images/banner2.png" border="0"/>
-</a>
-<br/>
-</center>
-
 <br><br>
 
 [% yesterday = day - 1 %]
