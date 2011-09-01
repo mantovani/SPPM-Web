@@ -1,257 +1,350 @@
-=pod
-
 =encoding utf8
 
-=head1 Como montar um servidor web com Perl, Catalyst, Varnish, Nginx, MySQL e Postgres no Ubuntu
+=head1 Truques com Dist::Zilla
 
-=head2 Introdução
+No
+L<artigo do equinócio passado|http://sao-paulo.pm.org/equinocio/2011/mar/16>,
+falamos sobre como o L<Dist::Zilla> pode facilitar a sua vida de desenvolvedor
+Perl. Mostramos como migrar de um módulo "tradicional", para um módulo usando
+C<Dist::Zilla>.
 
-Este artigo tem por objetivo ensinar a você como preparar um servidor web Perl utilizando nginx, varnish, mysql, postgres e catalyst.
+Para fim de evitar confusões, repetimos que o L<Dist::Zilla>
+B<< não é um instalador >>, ele B<não> substitui instaladores como
+L<ExtUtils::MakeMaker>, L<Module::Install> ou L<Module::Build>. O que o
+C<Dist::Zilla> faz é B<ajudar a gerar o pacote de instalação da distribuição>,
+que irá utilizar um (ou mais) desses sistemas para ser instalado em seus
+destinos finais.
 
-O Varnish é um acelerador HTTP projetado para sites de conteúdo dinâmicos com grandes volumes de acesso. Ele foi desenvolvido inicialmente pelo tablóide norueguês Verdens Gang tendo como arquiteto inicial Poul Henning Kamp, também desenvovedor freebsd.
+Neste artigo, vamos mostrar como levar a sua experiência com o C<Dist::Zilla>
+para o próximo nível.
 
-Aviso desde já que o varnish limita o cache em 2GB para máquinas 32bit... portanto, recomendo a utilização de uma máquina 64bits.
+=head2 Depois de algum tempo de uso...
 
-Primeiro passo, instale o ubuntu na sua máquina virtual antes de iniciar os procedimentos a seguir.
+O seu arquivo C<dist.ini> pode acabar se parecendo com algo assim:
 
-=head2 Instalando o Perl no Ubuntu
+  name    = DataFlow
+  author  = Alexei Znamensky <russoz@cpan.org>
+  license = Perl_5
+  copyright_holder = Alexei Znamensky
 
-Por default o ubuntu sempre trouxe o perl já instalado em suas distros.
+  [AutoVersion]
+  [MetaResources]
+  bugtracker.web  = http://github.com/russoz/DataFlow/issues
+  repository.web  = http://github.com/russoz/DataFlow
+  repository.url  = git://github.com/russoz/DataFlow.git
+  repository.type = git
 
-Verifique se sua distro já possúi o perl instalado. Para verificar, digite:
+  [@Basic]
+  [MetaJSON]
+  [ReadmeFromPod]
+  [InstallGuide]
+  [GitFmtChanges]
+  max_age    = 365
+  tag_regexp = ^.*$
+  file_name  = Changes
+  log_format = short
 
-    perl -v
+  [OurPkgVersion]
+  [PodWeaver]
+  [AutoPrereqs]
+  [Prereqs]
+  perl = 5.008
+  LWP::Curl = 0.08
 
-Se aparecer a versão do perl, quer dizer que ele está instalado. 
+  [Prereqs / TestRequires]
+  aliased                  = 0
+  Test::UseAllModules      = 0
 
-Se não tiver instalado, digite o comando: 
+  [ReportVersions::Tiny]
+  [CompileTests]
+  [EOLTests]
+  [PodCoverageTests]
+  [UnusedVarsTests]
+  [CriticTests]
+  [HasVersionTests]
+  [KwaliteeTests]
+  [MetaTests]
+  [PodSyntaxTests]
 
-    sudo apt-get install perl
+  [@Git]
+  [Twitter]
+  tweet_url = http://search.cpan.org/~{{$AUTHOR_LC}}/{{$DIST}}
+  hash_tags = #perl #cpan #opendata #dataflow
+  url_shortener = TinyURL
 
-E em seguida:
+Este exemplo, na verdade, é como estava de fato o arquivo C<dist.init> da
+distribuição L<DataFlow> no dia até o começo de Maio de 2011, como podemos
+ver no seu
+L<repositório|https://github.com/russoz/DataFlow/blob/22f75adf696c31c72405862e7ea30b8c32764375/dist.ini>.
 
-    perl -v
+Enquanto era apenas um arquivo, em um projeto, não há nenhuma grande
+dificuldade. Quando precisamos de mais um plugin, acrescentamos ele ao
+C<dist.ini>, quando não queremos o removemos, e modificações estão a um
+I<:wq> de distância.
 
-Agora sim, podemos prosseguir.
+O problema acontece, no entanto, quando começamos a cuidade de vários módulos
+diferentes, porque o nosso conjunto "preferido" de plugins para o
+C<Dist::Zilla> precisa ser (ou gostaríamos que fosse) o mesmo para todos os
+projetos. A partir daí começa um o pesadelo da sincronização de C<dist.ini>.
 
-Existe mais de uma opção para instalar módulos perl... Ao invés de instalar como root, você pode usar a combinação de "perlbrew e cpanm" que permite a instalação de módulos perl sem a necessidade de privilégios administrativos... o que na minha opinião é muito melhor e mais seguro.
+Mas existe um jeito mais fácil.
 
-Enquanto o perlbrew é utilizado para instalar uma distribuição Perl completa diretamente no seu home, o cpanm é o aplicativo que será usado para baixar, descompactar e instalar os módulos do CPAN, tudo sem a necesidade que qualquer privilégio especial.
+=head2 Use o Bundle dos Outros
 
-=head3 Instalação do perlbrew e do cpanm
+O C<Dist::Zilla> possui um
+L<role|http://search.cpan.org/perldoc?Moose::Role> que define um
+I<PluginBundle>, mais especificamente L<Dist::Zilla::Role::PluginBundle>.
 
-    sudo apt-get install curl build-essential
+Um I<bundle> nada mais é que uma coleção de I<plugins> e/ou outros I<bundles>
+(sim, podemos "aninhar" I<bundles>). Eles ficam tipicamente no I<namespace>
+C<Dist::Zilla::PluginBundle::>, mas isso não obrigatório.
 
-    curl -L http://xrl.us/perlbrewinstall | bash  
-    echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bashrc
-    source ~/perl5/perlbrew/etc/bashrc
-    perl -v # e veja a versao insatlada atualmente
-    perlbrew install 5.14.1
-    perlbrew switch perl-5.14.1
-    perl -v # e veja a nova versao
-    curl -L http://cpanmin.us | perl - App::cpanminus
+No exemplo de C<dist.ini> acima, estamos usando I<bundles>. As linhas:
 
-=head2 Instalação dos softwares adicionais
+  [@Basic]
+  ...
 
-    sudo apt-get install nginx varnish postgresql mysql-server mysql-client sqlite
+  [@Git]
 
-Configure uma senha para seu mysql... Vejamos, vou digitar ******** ( senha é segredo! ).
+Denotam a utilização, respectivamente do I<bundle>
+L<Dist::Zilla::PluginBundle::Basic> e L<Dist::Zilla::PluginBundle::Git>.
 
-Em seguida instale o módulo perl Task::Catalyst ( que instala todos os módulos necessários para iniciar uma app catalyst )
+Os I<plugins> favoritos de cada autor também podem ser vistos como coleções, e
+por conseguinte cada um pode criar um I<bundle> com essa coleção. De fato,
+L<vários autores fazem isso|http://search.cpan.org/search?query=Dist%3A%3AZilla%3A%3APluginBundle%3A%3A&mode=dist>.
 
-    cpanm Task::Catalyst
+=head2 Criando o seu Bundle
 
-=head2 Configuração do FastCGI para o Catalyst
+Para fazer o seu próprio I<bundle>, a melhor forma é usar o I<role>
+L<Dist::Zilla::Role::PluginBundle::Easy>, que já vem com o próprio
+L<Dist::Zilla>. O C<dist.init> acima pode ser (e
+L<foi|https://github.com/russoz/Dist-Zilla-PluginBundle-Author-RUSSOZ/blob/6f843e375a284bb6cc0760faa51a75814ceb1c4a/lib/Dist/Zilla/PluginBundle/Author/RUSSOZ.pm>) parcialmente convertido no seguinte código:
 
-    vim /etc/nginx/fastcgi_params_catalyst
+  package Dist::Zilla::PluginBundle::Author::RUSSOZ;
 
-Adicione o conteúdo:
+  use Moose 0.99;
+  use namespace::autoclean 0.09;
+
+  use Dist::Zilla 4.102341;    # dzil authordeps
+  with 'Dist::Zilla::Role::PluginBundle::Easy';
+
+  sub configure {
+    my $self = shift;
+
+    $self->add_bundle('Basic');
+
+    $self->add_plugins(
+      'MetaJSON',
+      'ReadmeFromPod',
+      'InstallGuide',
+      [
+        'GitFmtChanges' => {
+          max_age    => 365,
+          tag_regexp => q{^.*$},
+          file_name  => q{Changes},
+          log_format => q{short},
+        }
+      ],
+
+      'OurPkgVersion',
+      'AutoPrereqs',
     
-    fastcgi_param  QUERY_STRING       $query_string;
-    fastcgi_param  REQUEST_METHOD     $request_method;
-    fastcgi_param  CONTENT_TYPE       $content_type;
-    fastcgi_param  CONTENT_LENGTH     $content_length;
-        
-    # Catalyst requires setting PATH_INFO (instead of SCRIPT_NAME) to $fastcgi_script_name
-    fastcgi_param  PATH_INFO          $fastcgi_script_name;
-    fastcgi_param  REQUEST_URI        $request_uri;
-    fastcgi_param  DOCUMENT_URI       $document_uri;
-    fastcgi_param  DOCUMENT_ROOT      $document_root;
-    fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+      'ReportVersions::Tiny',
+      'CompileTests',
+      'EOLTests',
+      'PodCoverageTests',
+      'UnusedVarsTests',
+      'CriticTests',
+      'HasVersionTests',
+      'KwaliteeTests',
+      'MetaTests',
+      'PodSyntaxTests',
+      'NoTabsTests',
+    );
+  }
 
-    fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
-    fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+Para utilizar esse bundle posteriormente, basta acrescentar ao C<dist.ini> a
+linha:
 
-    fastcgi_param  REMOTE_ADDR        $remote_addr;
-    fastcgi_param  REMOTE_PORT        $remote_port;
-    fastcgi_param  SERVER_ADDR        $server_addr;
-    fastcgi_param  SERVER_PORT        $server_port;
-    fastcgi_param  SERVER_NAME        $server_name;
+  [@Author::RUSSOZ]
 
-Altere a configuração do seu nginx
+Todos esses plugins, mais o I<bundle>
+L<Basic|Dist::Zilla::PluginBundle::Basic> são automaticamente incluídos na sua
+configuração, devemos removê-los do C<dist.ini>.
 
-    vim /etc/nginx/nginx.conf
+O I<bundle> é uma classe Perl, que utiliza o L<Moose>. Dessa forma, podemos
+também customizar o I<bundle> programaticamente. Por exemplo, numa versão
+mais recente do L<Dist::Zilla::PluginBundle::Author::RUSSOZ> temos:
 
-E insira o conteudo (altere SEU_USUARIO)
+  has signature => (
+    is      => 'ro',
+    isa     => 'Bool',
+    lazy    => 1,
+    default => sub {
+        ( defined $_[0]->payload->{signature}
+              and $_[0]->payload->{signature} == 1 ) ? 1 : 0;
+    },
+  );
 
-    user SEU_USUARIO; #modifique aqui para o seu usuario
-    worker_processes  1;
+  sub configure {
+    ...
+	$self->add_plugins('Signature') if $self->signature;
+  }
 
-    error_log  /var/log/nginx/error.log;
-    pid        /var/run/nginx.pid;
+Na hora de usar, dentro do C<dist.ini>, podemos usar a opção C<signature>:
 
-    events {
-        worker_connections  1024;
-    }
+  [@Author::RUSSOZ]
+  signature = 0
 
-    http {
-        server_names_hash_bucket_size 64;
-        include       /etc/nginx/mime.types;
-        default_type  application/octet-stream;
-        access_log  /var/log/nginx/access.log;
-        sendfile        on;
-        #tcp_nopush     on;
-        #keepalive_timeout  0;
-        keepalive_timeout  65;
-        tcp_nodelay        on;
-        gzip  on;
-        gzip_disable  msie6;
-        include /etc/nginx/conf.d/*.conf;
-        include /etc/nginx/sites-enabled/*;
-        client_max_body_size 30m;
-    }
+E o C<Dist::Zilla> incluirá o plugin L<Dist::Zilla::Plugin::Signature>
+somente se o valor de C<signature> for igual a 1.
 
-=head2 Configuração do NGINX
+A versão mais recente de C<Author::RUSSOZ> está
+disponível em
+L<http://github.com/russoz/Dist-Zilla-PluginBundle-Author-RUSSOZ/>.
 
-    sudo su root
-    vim /etc/nginx/sites-available/app_example
+=head2 Números de Versão
 
-Como vamos utilizar o varnish, ele precisa da porta 80 liberada, entao antes de mais nada precisamos retirar o site default do nginx que aponta para a porta 80:
+O C<Dist::Zilla>, por si só, já provê a propagação do número de versão do
+módulo para os diversos arquivos que compõe a distribuição.
 
-    unlink /etc/nginx/sites-enabled/default
+No entanto, se você quiser ir além disso, você pode também automatizar a
+configuração (e propagação para os diversos arquivos) do número de versão do
+módulo. Os principais plugins que fornecem essa funcionalidade são o
+L<Dist::Zilla::Plugin::Git::NextVersion> e o
+L<Dist::Zilla::Plugin::AutoVersion>.
 
-Insira o conteudo ( altere o diretório do /static ):
+No C<@Author::RUSSOZ> colocamos uma opção C<version> B<dentro> do I<bundle>,
+que pode ter, entre outros, os valores C<gitnext> e C<auto>, respectivamente.
 
-   server {
-      listen       8080;
-      server_name 127.0.0.1;
-      #server_name appexample.com.br *.appexample.com.br; # Utilize esta configuração para apontar para seu domínio/subdomínios
-      #server_tokens   off;
-      access_log  /var/log/nginx/appexample.com.br.access.log;
-      
-      location /static {  
-        alias  /home/SEU-USUARIO-AQUI/sites/App-Example/root/static; #indica o dir dos arq static # ** ALTERE DE ACORDO COM SEU SISTEMA
-        expires 30d;        #indica ao varnish que os arquivos static expiram em 30 dias
-      }
-      
-      location / {
-        include /etc/nginx/fastcgi_params_catalyst; #inclúi o conteúdo do arquivo que acabamos de criar
-        fastcgi_param  SERVER_PORT 80;
-        fastcgi_pass  127.0.0.1:5006; #mesma porta da app catalyst inicializada com (mais abaixo no artigo) script/app_example_fastcgi.pl  -l :5006 -n 1 -p script/pid.pid -d
-      }
-   }
+=head2 Bundle de Teste
 
-Depois ative a configuração do site com 
+Ao invés de listar todos esses plugins de teste, existe um I<bundle> que
+já faz quase todo o serviço para você:
+L<Dist::Zilla::PluginBundle::TestingMania>.
 
-    ln -s /etc/nginx/sites-available/app_example /etc/nginx/sites-enabled/app_example
+=head2 Git Bundle
 
-E reinicie o nginx
+Usando o bundle L<Dist::Zilla::PluginBundle::Git>, você pode automaticamente
+fazer com que o seu repositório git seja atualizado a cada release.
 
-    /etc/init.d/nginx restart
+=head2 Meta no Bundle
 
-Acesse 127.0.0.1:8080 para ver se seu nginx está rodando e verifique que não existe nada rodando em 127.0.0.1:80
+Se você usa git e mantém os seus repositórios no github, então o plugin
+L<Dist::Zilla::Plugin::GithubMeta> irá preencher automagicamente as
+meta-informações da sua distribuição.
 
-=head2 CONFIGURAÇÃO DO VARNISH
+=head2 Twittando do seu Bundle
 
-Edite o arquivo de cofniguração
+Use o plugin L<Dist::Zilla::Plugin::Twitter> para anunciar no
+L<http://twitter.com/> o release das novas versões da sua distribuição.
 
-    vim /etc/varnish/default.vcl
+=head2 POD no Bundle?
 
-e insira o conteúdo
+O plugin L<Dist::Zilla::Plugin::PodWeaver> permite que vários pedaços do
+seu POD sejam gerados automagicamente, em conformidade com as boas práticas
+de documentação de Perl.
 
-    backend default {
-        .host = "127.0.0.1";
-        .port = "8080";
-    }
+=head2 Espiando o Dist::Zilla
 
-Agora inicie o varnish ( esta opção irá armazenar o conteúdo dentro de um arquivo. Especifique o caminho desejado para este arquivo e altere o diretório do arquivo de cache ):
+Se quiser "espiar" o que o C<Dist::Zilla> está fazendo, um plugin muito legal
+é o L<Dist::Zilla::Plugin::ReportPhase>, que mostra cada fase de execução do
+C<Dist::Zilla>.
 
-    varnishd -f /etc/varnish/default.vcl -s file,/home/DIRETORIO/PARA/ARQUVIVO/CACHE/DO/VARNISH/varnish_cache_DONT_DELETE.bin,50% -T 127.0.0.1:2000 -a :80  
+=head2 Resultado Final
 
-=head2 Configuração de uma App Catalyst
+Hoje o C<dist.ini> do projeto C<DataFlow> está assim:
 
-Vamos criar uma aplicação básica para testar nossa aplicação
+  name    = DataFlow
+  author  = Alexei Znamensky <russoz@cpan.org>
+  license = Perl_5
+  copyright_holder = Alexei Znamensky
 
-    mkdir ~/sites
-    cd ~/sites
-    catalyst.pl App::Example
-    cd ~/sites/App-Example
+  [@Author::RUSSOZ]
+  version = auto
+  twitter_tags = #opendata #dataflow
 
-E vamos criar dois métodos para permitir acesso a uma página com cache  e outra sem cahe
+  [Prereqs]
+  perl = 5.008
 
-Edite o Controller Root 
+E um outro projeto qualquer? Como por exemplo o L<Queue::Base>, deste mesmo
+autor:
 
-    vim lib/App/Example/Controller/Root.pm
+  name    = Queue-Base
+  author  = Alexei Znamensky <russoz@cpan.org>
+  license = Perl_5
+  copyright_holder = Farkas Arpad, Alexei Znamensky
+  copyright_year   = 2011
 
-Insira um novo método para nossa página:
+  [@Author::RUSSOZ]
+  version = gitnext
+  twitter_tags = #queue-base
 
-    sub index :Path :Args(0) {
-        my ( $self, $c ) = @_;
-        
-        # Hello World
-        $c->response->body( $c->welcome_message );
-    }
-    
-    sub page_semcache :Path( '/page-sem-cache' ) :Args(0) {
-            my ( $self, $c ) = @_;
-            $c->res->header( 'Cache-Control' => 'no-cache' ); #avisa ao varnish para nao cachear
-            $c->res->body( 'página sem cache' );
-    }
-    
-    sub page_comcache :Path( '/page-com-cache' ) :Args(0) {
-            my ( $self, $c ) = @_;
-            $c->res->header( 'Cache-Control' => 'max-age=6000' ); #avisa ao varnish para cachear por 6000 segundos
-            $c->res->body( 'página com cache por 6000' );
-    }
+Todo e qualquer projeto agora poderá se beneficiar desse I<bundle> de plugins
+chamado C<Author::RUSSOZ>.
 
-Inicie sua aplicação catalyst 
+=head2 Agradecimentos
 
-    script/app_example_fastcgi.pl  -l :5006 -n 1 -p script/pid.pid -d
+=over
 
-Agora acesse as páginas que você criou em:
+=item Ricardo Signes (RJBS)
 
-    http://127.0.0.1
-    http://127.0.0.1/page-sem-cache
-    http://127.0.0.1/page-com-cache
+Pelo Dist::Zilla e pela sua prestatividade.
 
-Você deve ver o conteúdo das mesmas.
+=item Fayland Lam (FAYLAND)
 
-O pid da sua app será apresentado na tela através da mensagem B<FastCGI daemon started (pid XXXXX)>, mas ele também estará gravado em ~/sites/App-Example/srcipt/pid.pid
+Pelo novo release do L<Dist::Zilla::Plugin::PerlTidy> com a correção que
+forneci, permitindo que ele conviva em paz com
+L<Dist::Zilla::Plugin::ReportVersions::Tiny>.
 
-Então para verificar se o varnish está trabalhando, vamos matar a applicação catalyst e ver o que acontece.
+=item Comunidade São Paulo Perl Mongers
 
-Faça um cat ~/sites/App-Example/script/pid.pid e de um kill no pid da sua app.
+Pelo companheirismo, pelas infinitas risadas, pela dedicação com que todos zelam
+pela nossa linguagem de programação predileta.
 
-Agora acesse as mesmas páginas, e veja o que aconteceu
+=item Revisão: blabos
 
-    http://127.0.0.1                      #vai estar fora do ar
-    http://127.0.0.1/page-sem-cache       #vai estar fora do ar
-    http://127.0.0.1/page-com-cache       #vai carregar diretamente do cache
+Obrigado pelo olho clínico, revisando este artigo.
 
-Percebeu que a page-com-cache continua no ar porém as oturas estão fora do ar ?
+B<Nota do revisor>: Nem adianta vir querendo botar no meu bundle, ok? O mérito é todo seu.
 
-Então, isso quer dizer que deu tudo certo !
-
-=head2 Conclusão
-
-Você acaba de criar um servidor web simples com nginx, varnish para uma aplicação catalyst com fastcgi!
+=back
 
 =head2 Autor
 
-Hernan Lopes < hernanlopes at gmail >
+B< Alexei "Russo" Znamensky E<lt> russoz no cpan org E<gt> >
 
-cpan: http://search.cpan.org/~hernan/
+=over
 
-github:  http://github.com/hernan604/
+=item *
+Twitter: L<russoz|http://twitter.com/#!/russoz>
 
-Repasse este conhecimento e ajude a fortalecer linguagem Perl no Brasil.
+=item *
+Blog: L<http://russoz.org/>
+
+=item *
+LinkedIn:
+L<http://www.linkedin.com/profile?viewProfile=&key=754668&trk=tab_pro>
+
+=back
+
+=head2 Fonte
+
+O fonte deste artigo encontra-se disponível em:
+
+L<https://github.com/russoz/artigos/blob/master/2011/09-sppm-equinocio/p2-distzilla/distzilla.pod>
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
+
+=cut
