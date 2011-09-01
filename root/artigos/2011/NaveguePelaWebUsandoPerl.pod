@@ -6,9 +6,9 @@ Perl oferece uma quantidade robusta de código reutilizável(Módulos) para voc�
 
 =head2 Ferramentas
 
-A linguagem Perl tem o maior repositório do mundo de código reutilizável, L<CPAN/http://search.cpan.org/> além do código ter uma excelente documentação, os códigos tem uma camada de teste que garante as funcionalidades funcionarem no seu ambiente.
+A linguagem Perl tem o maior repositório do mundo de código reutilizável, L<CPAN|http://search.cpan.org/> além do código ter uma excelente documentação, os códigos tem uma camada de teste que garante as funcionalidades funcionarem no seu ambiente.
 
-Nesse artigo utilizarei o L<Mechanize/http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm>, esse módulo oferece os recursos necessários para uma navegação automatizada.
+Nesse artigo utilizarei o L<Mechanize|http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm>, esse módulo oferece os recursos necessários para uma navegação automatizada.
 
 =head2 Instalando
 
@@ -159,7 +159,7 @@ O I<Mechanize> também oferece alguns métodos para você checar o estado da sua
 
 =head2 O Uso
 
-Você pode automatizar navegações web, para diversos usos. Esse artigo foi simplesmente para demonstrar como é simples navegar em páginas usando Perl. O módulo L<WWW::Mechanize/http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm> oferece muito mais recursos do que eu descrevi nesse breve artigo, eu recomendo que o leitor leia a documentação com calma.
+Você pode automatizar navegações web, para diversos usos. Esse artigo foi simplesmente para demonstrar como é simples navegar em páginas usando Perl. O módulo L<WWW::Mechanize|http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm> oferece muito mais recursos do que eu descrevi nesse breve artigo, eu recomendo que o leitor leia a documentação com calma.
 
 =head2 Autor
 
@@ -167,7 +167,7 @@ Daniel de Oliveira Mantovani <daniel.oliveira.mantovani [a] gmail [dot] com>
 
 =head2 Referências
 
-L<WWW::Mechanize/http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm>
+L<WWW::Mechanize|http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm>
 
 L<http://en.wikipedia.org/wiki/Web_scraping>
 
