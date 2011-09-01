@@ -1,0 +1,241 @@
+=pod
+
+=encoding utf8
+
+=head1 Instalação de Aplicações Perl Catalyst
+
+=head2 Introdução
+
+Este artigo tem por objetivo mostrar de uma forma bem prática como é simples a instalação de uma aplicação web em Perl.
+
+Para exemplificar, utilizarei uma aplicação em 'catalyst' imaginária.
+
+=head2 Objetivo do Instalador
+
+O objetivo do instalador é nos auxiliar na configuração inicial do software. 
+
+Em perl utiliza-se o arquivo Makefile.PL. Este arquivo contem uma série de informações que servirão de base para a instalação do software em questão. Para melhor visualizar o Makefile.PL, vou demonstrar este arquivo em 2 etapas.
+
+=head2 Makefile.PL - Etapa 1/2 - Resolvendo dependências
+
+O Makefile.PL deve listar as dependências do seu software para que ele seja instalado corretamente. Ou seja, quando você executar um: C<make install>, o instalador vai verificar se as dependências estão instaladas e instalá-las caso necessário.
+
+Exemplo de dependências no Makefile.PL:
+
+    name 'MyApp';
+    all_from 'lib/MyApp.pm';
+    requires 'Catalyst::Runtime' => '5.80033';
+    requires 'Catalyst::Plugin::ConfigLoader';
+    requires 'Catalyst::Plugin::Static::Simple';
+    requires 'Catalyst::Action::RenderView';
+    requires 'Moose';
+    .....
+
+
+=head2 Makefile.PL - Etapa 2/2 - Opções extras para deploy e instalação
+
+Ainda dentro do Makefile.PL, é possível colocar um detector de parâmetros que pode permitir executar passos extras de acordo com o parâmetro passado ao executar o Makefile.PL, ou seja, ao instalar uma aplicação Perl, podemos executar o tradicional: 'perl Makefile.PL && make install' ou, podemos criar uma opção de parâmetro extra
+
+Por exemplo:
+
+    perl Makefile.PL --deploy && make install'
+
+Perceba o parâmetro adicional --deploy junto com o Makefile.PL
+
+Este parâmetro adicional junto ao Makefile.PL pode permitir à sua aplicação executar alguns passos extras, como criar um arquivo de configuração inicial, ou criar as tabelas do seu banco de dados, ou ainda solicitar login e senha, etc...
+
+Mas como fazemos para incluir uma nova opção de parâmetro no arquivo Makefile.PL? Ahaa, é bastante simples... Veja o exemplo a seguir de um trecho de Makefile.PL com o parâmetro --deploy:
+
+    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
+    use Cwd;
+    my $cwd;
+    BEGIN {
+      warn '**** DEPLOYING YOUR APP ****';
+      $cwd = Cwd::cwd();
+      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
+        # ****** Trecho que será executado ao utilizar: 'perl Makefile.PL --deploy'
+        # aqui você pode criar as tabelas do seu banco de dados, 
+        # adicionar usuarios iniciais, e configurações iniciais
+        # pedir para a pessoa digitar o usuario e senha a serem criados
+        # etc...
+        use lib "./lib";
+        use MyApp;
+        my $umb = MyApp->new;
+        $umb->model('DB')->schema->deploy; # deploy de banco de dados utilizando DBIx::Class::Schema
+      }
+    }
+    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
+
+O trecho acima será executado sempre que fizer: "perl Makefile.PL --deploy" ( Você pode criar quantos parâmetros quiser e com quaisquer nomes; foi utilizado --deploy para este exemplo. )
+
+A grande vantagem ao utilizar esta técnica é que o trecho mencionado será executado apenas quando existir o parâmetro --deploy. Ou seja, se a pessoa executar 'perl Makefile.PL' sem --deploy, esse trecho não será executado.
+
+
+=head2 Deploy de tabelas utilizando DBIx::Class::Schema
+
+Se você utiliza banco de dados no seu app, você provavelmente vai querer que suas tabelas sejam criadas durante a instalação do seu aplicativo.
+
+Esta tarefa pode ser automatizada facilmente de maneira eficiente utilizando a opção deploy do DBIx::Class::Schema . A opção de deploy permite que você crie as tabelas facilmente para qualquer banco de dados.
+
+A grande vantagem ao utilizar esta opção, é dar liberdade ao seu usuário para que este possa gerar as tabelas independente do banco de dados que ele utilize.. ou seja, você pode estar trabalhando com postgres/sqlite para desenvolvimento, e seu cliente  optou por ter um oracle em produção... isto não altera em nada o código da sua aplicação já que o DBIx::Class suporta todos estes bancos de dados e cria as tabelas em todos eles.
+
+Veja como é simples criar as tabelas com o deploy do DBIx::Class:
+
+    $c->model('DB')->schema->deploy; #vai ler as configurações do banco de dados escolhido e criar as tabelas para você.
+
+* é necessário que você crie o banco de dados antes e garanta a permissão para criação de tabelas ao usuário em questão.
+
+=head2 Colocando a mão na massa no instalador, vamos criar uma aplicação catalyst de teste com deploy
+
+Vamos criar uma aplicação de teste em catalyst:
+
+    catalyst.pl Tutorial::Deploy::Catalyst::App
+
+    cd Tutorial-Deploy-Catalyst-App
+    vim Makefile.PL
+
+Antes da linha: 'name 'Tutorial-Deploy-Catalyst-App';', vamos incluir nosso script --deploy
+
+    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
+    use Cwd;
+    my $cwd;
+    BEGIN {
+      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
+        warn '**** DEPLOYING ****';
+        use lib "./lib";
+        use Tutorial::Deploy::Catalyst::App;
+        my $app = Tutorial::Deploy::Catalyst::App->new;                                                                                                                                                                                            
+        $cwd = Cwd::cwd();
+        $app->model('DB')->schema->deploy;
+      }
+    }
+    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
+
+Ok, agora vamos criar umas tabelas para exemplificar melhor.... Vou criar um banco de dados chamado: tutorial_deploy e vou utilizar postgres. Você pode utilizar o banco de sua preferência.
+
+    postgres=# create database tutorial_deploy;
+    postgres=# grant all privileges on database tutorial_deploy to webdev;
+
+E vou criar 2 tabelas 
+
+    CREATE TABLE tabela_foo
+    (
+      age integer
+    );
+
+    CREATE TABLE tabela_bar
+    (
+      "name" text
+    );
+
+Agora vou executar o dbix schema loader para gerar os models de nossa aplicação 
+  
+    #se você usou postgres:
+    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:Pg:dbname=tutorial_deploy webdev passssworrrdd
+    
+    #se você usou mysql:
+    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:mysql:db=tutorial_deploy webdev passssworrrdd
+    
+    #se você usou sqlite:
+    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:SQLite:dbname=tutorial_deploy webdev passssworrrdd
+
+Certo, agora que geramos os models, vamos deletar nossas tabelas (apenas as tabelas... deixe o banco lá) e vamos executar o deploy de nossa aplicação e ver se deu certo. 
+
+Até agora tudo ok!, aqui as tabelas foram criadas conforme o esperado.
+
+Agora vamos inserir alguns itens na tabela, que podem ser necessários na instalação inicial... para tal, vamos alterar o script de --deploy no Makefile.PL , subistitua por:
+
+    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
+    use Cwd;
+    my $cwd;
+    BEGIN {
+      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
+        warn '**** DEPLOYING ****';
+        use lib "./lib";
+        use Tutorial::Deploy::Catalyst::App;
+        my $app = Tutorial::Deploy::Catalyst::App->new;                                                                                                                                                                                            
+        $cwd = Cwd::cwd();
+        $app->model('DB')->schema->deploy;
+        my $item ;
+        $item = $app->model('DB')->resultset( 'TabelaFoo' )->new_result( {
+          age => 18
+        } );
+        $item->insert;
+        $item = $app->model('DB')->resultset( 'TabelaFoo' )->new_result( {
+          age => 19
+        } );
+        $item->insert;
+        $item = $app->model('DB')->resultset( 'TabelaBar' )->new_result( {
+          name => 'Maria'
+        } );
+        $item->insert;
+      }
+    }
+    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
+
+E execute novamente 'perl Makefile.PL --deploy' e faça um 'select' no conteúdo das tabelas... desta vez você vai notar que existem alguns registros inseridos nas mesmas.
+
+
+=head2 Mova as credenciais do db de seu controller para seu arquivo de configuração
+
+Edite o arquivo lib/Tutorial/Deploy/Catalyst/App/Model/DB.pm , e retire o trecho a seguir do arquivo
+
+    __PACKAGE__->config(
+        schema_class => 'Tutorial::Deploy::Catalyst::App::DB',
+        connect_info => {
+            dsn => 'dbi:Pg:dbname=tutorial_deploy',
+            user => 'webdev',
+            password => 'passssworrrdd',
+        }
+    );
+
+e, para facilitar a confgiguração, vamos mover as credenciais para o arquivo tutorial_deploy_catalyst_app.conf .
+
+Edite tutorial_deploy_catalyst_app.conf e adicione o conteúdo:
+
+    <Model::DB>
+      schema_class = Tutorial::Deploy::Catalyst::App::DB
+      <connect_info>
+        dsn = dbi:Pg:dbname=tutorial_deploy
+        user = webdev
+        password = passssworrrdd
+      </connect_info>
+    </Model::DB>
+
+** altere seu dsn de acordo com o banco de dados escolhido...
+
+Vamos testar para ver se deu tudo certo, delete as tabelas e execute perl Makefile.PL --deploy novamente 
+
+E voilá!
+
+Dica: Agora, você pode solicitar que a pessoa digite o nome do db, selecione o banco de dados(pg,mysql,etc), digite usuário e senha para que seja criado um arquivo .conf durante --deploy
+
+=head2 Conclusão
+
+O deploy das aplicações em perl moderno é bastante prático e agiliza muito seu ciclo de desenvolvimento. 
+
+Saber utilizar o arquivo Makefile.PL facilita na automatização da instalação de dependências e configuração inicial do software. 
+
+O DBIx::Class::Schema deploy é uma maravilha na questão de bancos de dados, já que tem suporte a todos os bancos de dados conhecidos e ainda permite que você crie todas as tabelas de forma automágica.
+
+Esta facilidade é um diferencial positivo na sua aplicação.
+
+Espero ter acrescentado conhecimento extra a vocês.
+
+Agradecimentos em ordem alfabetica: Edenc, Lorn, maluco, Russoz e toda a Trupe Perl do Brasil. 
+
+=head2 Autor
+
+Hernan Lopes < hernanlopes at gmail >
+
+cpan: http://search.cpan.org/~hernan/
+
+github:  http://github.com/hernan604/
+
+Repasse este conhecimento e ajude a fortalecer linguagem perl no brasil.
+
+=head2 Apêndice
+
+Veja também: 
+
+http://babyl.dyndns.org/techblog/entry/dbix-class-deploymenthandler-rocks
