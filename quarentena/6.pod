@@ -1,241 +1,304 @@
-=pod
+=pod 
 
-=encoding utf8
+=encoding utf-8
 
-=head1 Instalação de Aplicações Perl Catalyst
+=head1 NOME
+
+Construindo uma aplicação desktop usando os módulos Tk e Moose
+
+
+=head2 Motivação
+
+Vejo muitas pessoas perguntando sobre um uso melhor estruturado e atual do
+módulo Tk em aplicações com interfaces gráficas (Graphic User Interfaces).
+Neste pequeno artigo, eu procuro mostrar uma das inúmeras formas de se
+estruturar aplicações desktops, utilizando o módulo de orientação a objetos
+Moose.
+
 
 =head2 Introdução
 
-Este artigo tem por objetivo mostrar de uma forma bem prática como é simples a instalação de uma aplicação web em Perl.
+O módulo Tk é um dos mais antigos responsáveis por criações de interfaces
+gráficas em Perl. É uma biblioteca muito poderosa, leve e prática para
+desenvolvimento de interfaces gráficas de usuários.
 
-Para exemplificar, utilizarei uma aplicação em 'catalyst' imaginária.
+O Tk inicialmente escrito para ser utilizado com a linguagem Tcl, hoje é
+usado por uma vasta gama de linguagens dinâmicas ou não como o c/c++, Perl,
+python e várias outras.
 
-=head2 Objetivo do Instalador
-
-O objetivo do instalador é nos auxiliar na configuração inicial do software. 
-
-Em perl utiliza-se o arquivo Makefile.PL. Este arquivo contem uma série de informações que servirão de base para a instalação do software em questão. Para melhor visualizar o Makefile.PL, vou demonstrar este arquivo em 2 etapas.
-
-=head2 Makefile.PL - Etapa 1/2 - Resolvendo dependências
-
-O Makefile.PL deve listar as dependências do seu software para que ele seja instalado corretamente. Ou seja, quando você executar um: C<make install>, o instalador vai verificar se as dependências estão instaladas e instalá-las caso necessário.
-
-Exemplo de dependências no Makefile.PL:
-
-    name 'MyApp';
-    all_from 'lib/MyApp.pm';
-    requires 'Catalyst::Runtime' => '5.80033';
-    requires 'Catalyst::Plugin::ConfigLoader';
-    requires 'Catalyst::Plugin::Static::Simple';
-    requires 'Catalyst::Action::RenderView';
-    requires 'Moose';
-    .....
+A idéia principal deste artigo então é mostrar uma forma de estruturar a sua
+aplicação Tk e mostrar que o desenvolvimento com este módulo pode ser uma
+alternativa no mínimo interessante, além de mostrar que as telas em Tk nem
+sempre precisam ser feias e mal acabadas.
 
 
-=head2 Makefile.PL - Etapa 2/2 - Opções extras para deploy e instalação
+=head2 Começando do Começo
 
-Ainda dentro do Makefile.PL, é possível colocar um detector de parâmetros que pode permitir executar passos extras de acordo com o parâmetro passado ao executar o Makefile.PL, ou seja, ao instalar uma aplicação Perl, podemos executar o tradicional: 'perl Makefile.PL && make install' ou, podemos criar uma opção de parâmetro extra
+Vamos começar instalando os módulos citados acima que, adivinha!? são
+pré-requisitos para seguir com este artigo. Então... mãos a obra!
 
-Por exemplo:
+Instalando o Tk na máquina:
 
-    perl Makefile.PL --deploy && make install'
+    $ sudo perl -MCPAN -e “install Tk”
 
-Perceba o parâmetro adicional --deploy junto com o Makefile.PL
+Instalando o Moose na máquina:
 
-Este parâmetro adicional junto ao Makefile.PL pode permitir à sua aplicação executar alguns passos extras, como criar um arquivo de configuração inicial, ou criar as tabelas do seu banco de dados, ou ainda solicitar login e senha, etc...
+    $ sudo perl -MCPAN -e “install Moose”
 
-Mas como fazemos para incluir uma nova opção de parâmetro no arquivo Makefile.PL? Ahaa, é bastante simples... Veja o exemplo a seguir de um trecho de Makefile.PL com o parâmetro --deploy:
-
-    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
-    use Cwd;
-    my $cwd;
-    BEGIN {
-      warn '**** DEPLOYING YOUR APP ****';
-      $cwd = Cwd::cwd();
-      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
-        # ****** Trecho que será executado ao utilizar: 'perl Makefile.PL --deploy'
-        # aqui você pode criar as tabelas do seu banco de dados, 
-        # adicionar usuarios iniciais, e configurações iniciais
-        # pedir para a pessoa digitar o usuario e senha a serem criados
-        # etc...
-        use lib "./lib";
-        use MyApp;
-        my $umb = MyApp->new;
-        $umb->model('DB')->schema->deploy; # deploy de banco de dados utilizando DBIx::Class::Schema
-      }
-    }
-    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
-
-O trecho acima será executado sempre que fizer: "perl Makefile.PL --deploy" ( Você pode criar quantos parâmetros quiser e com quaisquer nomes; foi utilizado --deploy para este exemplo. )
-
-A grande vantagem ao utilizar esta técnica é que o trecho mencionado será executado apenas quando existir o parâmetro --deploy. Ou seja, se a pessoa executar 'perl Makefile.PL' sem --deploy, esse trecho não será executado.
+E pronto, agora podemos começar a brincadeira! ; )
 
 
-=head2 Deploy de tabelas utilizando DBIx::Class::Schema
+=head2 Aplicação clássica em TK
 
-Se você utiliza banco de dados no seu app, você provavelmente vai querer que suas tabelas sejam criadas durante a instalação do seu aplicativo.
+A título de curiosidade quero mostrar aos que não estão familiarizados com a
+sintaxe e o uso do módulo Tk, como seria criada uma aplicação. Farei isso até
+mesmo para que possa ficar mais clara a diferença entre criar uma aplicação
+usando o módulo Tk (como veio ao mundo err... ao computador) e estruturar
+uma aplicação usando boas práticas de desenvolvimento.
 
-Esta tarefa pode ser automatizada facilmente de maneira eficiente utilizando a opção deploy do DBIx::Class::Schema . A opção de deploy permite que você crie as tabelas facilmente para qualquer banco de dados.
+Simples tela com o módulo Tk:
 
-A grande vantagem ao utilizar esta opção, é dar liberdade ao seu usuário para que este possa gerar as tabelas independente do banco de dados que ele utilize.. ou seja, você pode estar trabalhando com postgres/sqlite para desenvolvimento, e seu cliente  optou por ter um oracle em produção... isto não altera em nada o código da sua aplicação já que o DBIx::Class suporta todos estes bancos de dados e cria as tabelas em todos eles.
-
-Veja como é simples criar as tabelas com o deploy do DBIx::Class:
-
-    $c->model('DB')->schema->deploy; #vai ler as configurações do banco de dados escolhido e criar as tabelas para você.
-
-* é necessário que você crie o banco de dados antes e garanta a permissão para criação de tabelas ao usuário em questão.
-
-=head2 Colocando a mão na massa no instalador, vamos criar uma aplicação catalyst de teste com deploy
-
-Vamos criar uma aplicação de teste em catalyst:
-
-    catalyst.pl Tutorial::Deploy::Catalyst::App
-
-    cd Tutorial-Deploy-Catalyst-App
-    vim Makefile.PL
-
-Antes da linha: 'name 'Tutorial-Deploy-Catalyst-App';', vamos incluir nosso script --deploy
-
-    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
-    use Cwd;
-    my $cwd;
-    BEGIN {
-      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
-        warn '**** DEPLOYING ****';
-        use lib "./lib";
-        use Tutorial::Deploy::Catalyst::App;
-        my $app = Tutorial::Deploy::Catalyst::App->new;                                                                                                                                                                                            
-        $cwd = Cwd::cwd();
-        $app->model('DB')->schema->deploy;
-      }
-    }
-    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
-
-Ok, agora vamos criar umas tabelas para exemplificar melhor.... Vou criar um banco de dados chamado: tutorial_deploy e vou utilizar postgres. Você pode utilizar o banco de sua preferência.
-
-    postgres=# create database tutorial_deploy;
-    postgres=# grant all privileges on database tutorial_deploy to webdev;
-
-E vou criar 2 tabelas 
-
-    CREATE TABLE tabela_foo
-    (
-      age integer
-    );
-
-    CREATE TABLE tabela_bar
-    (
-      "name" text
-    );
-
-Agora vou executar o dbix schema loader para gerar os models de nossa aplicação 
-  
-    #se você usou postgres:
-    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:Pg:dbname=tutorial_deploy webdev passssworrrdd
+    #!/usr/bin/perl 
     
-    #se você usou mysql:
-    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:mysql:db=tutorial_deploy webdev passssworrrdd
+    use Tk;
     
-    #se você usou sqlite:
-    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:SQLite:dbname=tutorial_deploy webdev passssworrrdd
-
-Certo, agora que geramos os models, vamos deletar nossas tabelas (apenas as tabelas... deixe o banco lá) e vamos executar o deploy de nossa aplicação e ver se deu certo. 
-
-Até agora tudo ok!, aqui as tabelas foram criadas conforme o esperado.
-
-Agora vamos inserir alguns itens na tabela, que podem ser necessários na instalação inicial... para tal, vamos alterar o script de --deploy no Makefile.PL , subistitua por:
-
-    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
-    use Cwd;
-    my $cwd;
-    BEGIN {
-      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
-        warn '**** DEPLOYING ****';
-        use lib "./lib";
-        use Tutorial::Deploy::Catalyst::App;
-        my $app = Tutorial::Deploy::Catalyst::App->new;                                                                                                                                                                                            
-        $cwd = Cwd::cwd();
-        $app->model('DB')->schema->deploy;
-        my $item ;
-        $item = $app->model('DB')->resultset( 'TabelaFoo' )->new_result( {
-          age => 18
-        } );
-        $item->insert;
-        $item = $app->model('DB')->resultset( 'TabelaFoo' )->new_result( {
-          age => 19
-        } );
-        $item->insert;
-        $item = $app->model('DB')->resultset( 'TabelaBar' )->new_result( {
-          name => 'Maria'
-        } );
-        $item->insert;
-      }
+    my $mw = MainWindow->new( 
+        -title => "Minha aplicacao usando TK" 
+    );
+    
+    my $pnl_header = $mw->Frame->pack;
+    
+    my $lbl_title = $pnl_header->Label(
+        -text => "Minha aplicacao",
+        -background => 'gray',
+        -width => 50,
+        -heigh => 2,
+    )->pack;
+    
+    my $txt_something = $mw->Entry(
+        -width => 25,
+        -borderwidth => 1,
+        -background => 'white',
+        -text => 'escreva alguma coisa...',
+    )->pack;
+    
+    my $btn_entrar = $mw->Button(
+        -text => 'entrar',
+        -borderwidth => 1,
+        -width => 10,
+        -command => sub { &write_something }
+    )->pack;
+    
+    my $lbl_something = $mw->Label(
+        -text => '',
+    )->pack;
+    
+    
+    MainLoop;
+    
+    
+    sub write_something {
+        $lbl_something->configure( -text => $txt_something->get );
     }
-    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
 
-E execute novamente 'perl Makefile.PL --deploy' e faça um 'select' no conteúdo das tabelas... desta vez você vai notar que existem alguns registros inseridos nas mesmas.
+Bom acima pode-se ver uma aplicação muito simples usando o Tk que exibe uma
+caixa de texto que quando entrado algo e pressionado o botão, passa o texto
+para um label abaixo exibindo o que foi digitado.
+
+O exemplo é bem simples, mas imagine uma aplicação de grande porte mantendo
+esta mesma “arquitetura”... inviável não acha!?
 
 
-=head2 Mova as credenciais do db de seu controller para seu arquivo de configuração
+=head2 Estruturando a aplicação com TK + Moose
 
-Edite o arquivo lib/Tutorial/Deploy/Catalyst/App/Model/DB.pm , e retire o trecho a seguir do arquivo
+Agora que vocês viram como as coisas funcionam (ou funcionavam até agora ;] ),
+vamos ver como faremos para estruturar nossa aplicação. Nada melhor que
+ilustrar como as coisas vão ficar para termos uma noção macro de como as
+coisas vão se comunicar...
 
-    __PACKAGE__->config(
-        schema_class => 'Tutorial::Deploy::Catalyst::App::DB',
-        connect_info => {
-            dsn => 'dbi:Pg:dbname=tutorial_deploy',
-            user => 'webdev',
-            password => 'passssworrrdd',
+Vamos passar um pouco de graxa nos cotovelos então... ; )
+
+    [ Main Caller ] --> [ Especificação do Formulário ] --> [  Moose+Tk Base ]
+
+Optei por utilizar esta estrutura por ser bem simples e muito fácil de
+implementar. Isso garante o entendimento do funcionamento das coisas,
+deixando-as menos complicadas.
+
+Note que com esta estrutura, podemos separar a parte de contrução da nossa
+interface gráfica das regras de negócios da nossa aplicação, o que é
+altamente recomendavel se você quiser garantir uma maior organização e menor
+dor de cabeça quando for corrigir ou implementar algo em seu projeto.
+
+
+=head3 Base.pm
+
+Para garantir que nossos esforços sejam aproveitados, vamos colocar as funções
+comuns em uma classe base que será herdada por todas as nossas classes que vão
+implementar a criação das nossas telas.
+
+    package MyApp::Form::Base;
+    
+    use Moose;
+    use Tk;
+    
+    # this is a window property
+    has 'window' => ( 
+        is => 'rw',
+        lazy => 0,
+        default => sub {
+            return MainWindow->new;
         }
     );
+    
+    
+    # configure screen widgets
+    sub init {
+        die "Method not implemented!";
+    }
+    
+    
+    # start to show window
+    sub show {
+        return MainLoop;
+    }
+    
+    
+    no Moose;
+    __PACKAGE__->meta->make_immutable;
+    
+    1;
 
-e, para facilitar a confgiguração, vamos mover as credenciais para o arquivo tutorial_deploy_catalyst_app.conf .
+=head3 Main.pm
 
-Edite tutorial_deploy_catalyst_app.conf e adicione o conteúdo:
+Agora vamos implementar uma classe que construa aquela mesma tela simples que
+criamos inicialmente, em nosso exemplo sobre o módulo Tk.
 
-    <Model::DB>
-      schema_class = Tutorial::Deploy::Catalyst::App::DB
-      <connect_info>
-        dsn = dbi:Pg:dbname=tutorial_deploy
-        user = webdev
-        password = passssworrrdd
-      </connect_info>
-    </Model::DB>
+    package MyApp::Form::Main;
+    
+    use Moose;
+    extends 'MyApp::Form::Base';
+    
+    
+    ## window widgets
+    has 'txt_username' => ( is => 'rw' );
+    has 'txt_password' => ( is => 'rw' );
+    has 'btn_login' => ( is => 'rw' );
+    
+    
+    ## configure widgets
+    after 'init' => sub {
+        my $self = shift;
+        
+        $self->window->configure( 
+            -title => 'Teste Tk Moose',
+        );
+        
+        $self->txt_username(
+            $self->window->Entry(
+                -borderwidth => 1,
+            )->pack
+        );
+        
+        $self->txt_password(
+            $self->window->Entry(
+                -borderwidth => 1,
+            )->pack
+        );
+        
+        $self->btn_login(
+            $self->window->Button(
+                -text => 'Login',
+                -borderwidth => 1,
+                -command => sub { $self->do_login }
+            )->pack
+        );
+    };
+    
+    
+    ## widget actions
+    sub do_login {
+        my $self = shift;
+        $self->btn_login->configure( -text => 'testando o moose com tk' );
+    }
+    
+    
+    no Moose;
+    __PACKAGE__->meta->make_immutable;
+    
+    1;
 
-** altere seu dsn de acordo com o banco de dados escolhido...
 
-Vamos testar para ver se deu tudo certo, delete as tabelas e execute perl Makefile.PL --deploy novamente 
+=head3 main
 
-E voilá!
+Agora vamos botar a nossa tela pra “dar as caras”...
 
-Dica: Agora, você pode solicitar que a pessoa digite o nome do db, selecione o banco de dados(pg,mysql,etc), digite usuário e senha para que seja criado um arquivo .conf durante --deploy
+    #!/usr/bin/perl
+    
+    use MyApp::Form::Main;
+    
+    
+    # build a new form object... and show it
+    my $app = MyApp::Form::Main->new;
+    $app->show;
 
-=head2 Conclusão
+=head1 Explicando
 
-O deploy das aplicações em perl moderno é bastante prático e agiliza muito seu ciclo de desenvolvimento. 
+Vamos explicar o que foi feito...
 
-Saber utilizar o arquivo Makefile.PL facilita na automatização da instalação de dependências e configuração inicial do software. 
+Nós criamos uma classe base com 1 atributo, onde este é responsável por
+manter o objeto MainWindow do Tk, os demais são responsáveis por
+persistir/manipular os widgets usados para construir suas telas e o método
+init serve para efetuar a configuração dos widgets propriamente dita.
 
-O DBIx::Class::Schema deploy é uma maravilha na questão de bancos de dados, já que tem suporte a todos os bancos de dados conhecidos e ainda permite que você crie todas as tabelas de forma automágica.
+As classes que herdam a classe base, por sua vez, tem a função de configurar
+as telas conforme as necessidades. No exemplo acima criamos MyApp::Form::Main,
+onde configuramos uma tela principal para nossa aplicação mas poderíamos ter
+criado outras como MyApp::Form::Client, MyApp::Form::User, etc...
 
-Esta facilidade é um diferencial positivo na sua aplicação.
+No caso acima chamaríamos as classes segundo a demanda, instanciando as
+classes e chamando o método show conforme o exemplo abaixo:
 
-Espero ter acrescentado conhecimento extra a vocês.
+    package MyApp::Form::Main;
+    
+    use MyApp::Form::Client;
+    
+    has ‘btn_client’ => ( is => ‘rw’ );
+    
+    ...
+    
+    after ‘init’ => sub {
+        my $self = shift;
+        
+        ...
+        
+        $self->btn_client(
+            $self->window->Button(
+                -text => ‘Open Client Form’,
+                -command => sub { MyApp::Form::Client->new->show; }
+            )->pack
+        );
+    };
+    ...
 
-Agradecimentos em ordem alfabetica: Edenc, Lorn, maluco, Russoz e toda a Trupe Perl do Brasil. 
+E pronto, temos um botão que abre uma outra janela, de clientes, em nosso
+projeto. 
 
-=head2 Autor
+Uma outra implementação que costumo usar é criar um hash e abrigar todos os
+widgets nele... imagino que desta forma fica mais simples e dinâmico o acesso
+e criação 'at runtime' de algo na sua interface. ;)
 
-Hernan Lopes < hernanlopes at gmail >
+Bom pessoal, a idéia deste artigo foi somente ilustrar como é possível
+escrever aplicações em Perl / Tk usando uma arquitetura um pouco mais
+organizada e assim almentando a organização e dividindo melhor as obrigações
+entre as classes do seu projeto.
 
-cpan: http://search.cpan.org/~hernan/
+Em meu blog é possivel ver alguns projetos desenvolvidos, ou em
+desenvolvimento, usando Perl Tk para ilustrar o que disse aqui neste artigo.
 
-github:  http://github.com/hernan604/
+=head1 AUTOR
 
-Repasse este conhecimento e ajude a fortalecer linguagem perl no brasil.
+Daniel Vinciguerra  < dan.vinciguerra at gmail.com >
 
-=head2 Apêndice
+http://github.com/dvinciguerra
 
-Veja também: 
-
-http://babyl.dyndns.org/techblog/entry/dbix-class-deploymenthandler-rocks
+http://dvinciguerra.wordpress.com
