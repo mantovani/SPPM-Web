@@ -1,0 +1,404 @@
+=pod
+
+=head1 ElasticSearch com Catalyst
+
+Este artigo foi publicado em L<http://www.catalystframework.org/calendar/2010/2>,
+escrito por Devin Austin em inglês. Alguns trechos foram alterados para podermos
+testar.
+
+O módulo L<ElasticSearch> é muito mais poderoso do que será apresentado neste
+artigo.
+
+Então vamos ao artigo!
+
+=head1 Criando facilmente buscas de documentos com Catalyst e ElasticSearch
+
+ElasticSearch é um motor de busca baseado em C<Lucene> que tem uma série de
+características muito legais, que na minha opinião, superam
+L<vários|http://lucene.apache.org/solr/>
+L<outros|http://sphinxsearch.com/>
+L<motores de busca|http://www.rectangular.com/kinosearch/>.
+
+Por exemplo, é schema-less, o que alguns podem argumentar que é uma coisa
+ruim, mas da maneira como as coisas são indexadas ("coisas" indexadas são
+chamadas de documentos) o ElasticSearch permite ao usuário criar uma espécie
+de documento/esquema muito parecido com MongoDB ou outros motores baseados em
+documentos de armazenamento. Ele também tem uma "autodescoberta" de instâncias
+do ElasticSearch abertas na rede. Tudo que você precisa fazer é executar
+bin/elasticsearch nas máquinas que você deseja colocar como cluster e pronto,
+você tem um índice distribuído e tolerante a falhas.
+
+Então, vamos colocar ele para rodar e programar um pouco!
+
+=head2 Instalando o ElasticSearch
+
+=over
+
+=item Download
+
+Faça o download da versão desejada do ElasticSearch pela URL
+L<http://www.elasticsearch.org/download/> (você também pode escolher compilar
+pelo fonte)
+
+=item Descompactação
+
+Descomprima o ElasticSearch (ou compile) no local desejado. Não é importante
+onde você faz isso (desde que você não apague), mas é costume instalar em
+C</opt/elasticsearch>.
+
+=item Inicialização
+
+Inicie sua instância executando o binário encontrado em bin/elasticsearch.
+Você pode rodar com o parâmetro -f para não jogar para background e poder
+visualizar as informações de debug.
+
+=back
+
+=head2 Introdução simples da API
+
+L<ElasticSearch> é um módulo perl que utiliza-se da API REST do ElasticSearch,
+e é escrito (quase que completamente) por Clinton Gormley. Aqui estão alguns
+dos métodos que serão utilizados pelo nosso código.
+
+=over
+
+=item new
+	
+Cria uma nova conexão com o ElasticSearch. Você pode conectar-se com vários
+servidores ao mesmo tempo.
+
+=item index
+
+Indexa seu documento. Recebe um nome de indexe, um id (se não for enviado,
+será gerado um número único), e seu conteúdo (que deve estar em forma de
+HASHREF).
+
+=item searchqs
+	
+Procura através dos dados indexados. Recebe o nome do índice, um tipo
+(você também pode indexar por tipo, por exemplo, tweet, texto, e-mail), e a
+sua consulta. Existem vários parâmetros da consulta. Neste artigo, usaremos
+apenas estes 3.
+
+=back
+
+Você pode encontrar vários exemplos na documentação do módulo
+L<elasticsearch> e também no L<site oficial|http://www.elasticsearch.org/guide/reference/api/search/>.
+
+Agora, vamos ao Catalyst!
+
+Eu (tradutor) resolvi (para poder testar!) indexar os livros do
+L<Catalyst::Manual::Tutorial>, afinal, você tem ele salvo em algum lugar,
+não tem?
+
+=head2 Módulo e Catalyst::Model
+
+Criaremos um arquivo com nossa classe (e configurações) do ElasticSearch em
+<catalyst root>/lib/Search.pm
+
+Código:
+
+	package Search;
+
+	use Moose;
+	use namespace::autoclean;
+	use ElasticSearch;
+
+	has 'es_object' => (
+		is       => 'ro',
+		isa      => 'ElasticSearch',
+		required => 1,
+		lazy     => 1,
+		default  =>  sub {
+			ElasticSearch->new(
+				servers     => 'localhost:9200',    # aqui tambem pode receber
+				                                    # uma arrayref com todos os
+				                                    # servidores
+				                                    
+				transport   => 'http',              # alterei do original que
+				                                    # era httplite porque o
+				                                    # mesmo não funciona
+				                                    
+				trace_calls => '/tmp/log_file',     # na verdade, ainda não
+				                                    # descobri para que este
+				                                    # log é util! /dev/null
+				                                    # deve funcionar perfeitamente
+				                                    # aqui!
+			);
+		},
+	);
+
+	sub index_data {
+		my ($self,  %p) = @_;
+		$self->es_object->index(
+		index => $p{'index'},
+			type  => $p{'type'},
+			data  => $p{'data'},
+		);
+	}
+
+	sub execute_search {
+		my ($self, %p) = @_;
+		my $results =  $self->es_object->searchqs(
+			index => $p{'index'},
+			type  => $p{'type'},
+			'q'  =>  $p{'terms'} 
+		);
+		$results;
+	}
+
+	1;
+
+Não se esqueça de ter instaldo módulo L<ElasticSearch>. Você pode fazer isto
+com L<cpanm e perlbrew|http://sao-paulo.pm.org/equinocio/2011/set/3>
+
+E agora crie um modelo:
+
+<catalyst root>/lib/MyApp/Model/Search.pm
+
+	package MyApp::Model::Search;
+
+	use Moose;
+	use namespace::autoclean;
+	use base 'Catalyst::Component';
+	use base 'Search';
+
+	sub COMPONENT {
+		my ($class, $c, $config) = @_;
+
+		my $self = $class->new(%{ $config });
+
+		return $self;
+	}    
+
+	sub results {
+		my ($class, %params) = @_;
+		return $class->execute_search(%params);
+	}
+
+	__PACKAGE__->meta->make_immutable;
+
+Com algumas variações, é claro! Se você não tiver uma estrutura parecida,
+alguma coisa de errado ocorreu =/.
+
+
+Okay. Então podemos procurar usando chamadas assim:
+C<my $results = $c-E<gt>model('Search')-E<gt>results(%opts)>
+de dentro de nossa aplicação (controlador).
+
+O próximo passo é criar um indexador. No meu exemplo, utilizo o DBIx::Class
+como fonte de informação, utilizando o banco de dados do exemplo de
+livros/autores. Porém, você pode indexar qualquer coisa desde que você
+consiga separar as informações do jeito que o ElasticSearch precisa
+(coluna=> texto).
+
+Vamos criar um script em <catalyst root>/script/refresh_index.pl
+
+	use strict;
+	use lib 'lib/';
+
+	use Search;
+	use MyApp::Schema;
+	use Data::Dumper;
+
+	my $schema = MyApp::Schema->connect('dbi:SQLite:myapp.db');
+	my @books = $schema->resultset('Book')->all;
+
+
+	my $search = Search->new;
+	print "Search obj: " . Dumper $search;
+	print "Beginning indexing\n";
+
+	foreach my $entry (@books) {
+
+		print "Indexing " . $entry->title . "\n";
+
+		my $result = $search->index_data(
+			index => 'books',
+			type => 'book_or_author',
+			# id   => $entry->id, porem sera necessario adicionar ele no index_data tambem
+			data => {
+				title       => $entry->title,
+				author_list => $entry->author_list,
+				created     => $entry->created . "" || undef, # algo me diz que ele detecta quando eh uma data e proibe de entrar valores em branco
+				updated     => $entry->updated . "" || undef,
+				id          => $entry->id , # este é um ID que entra como atributo, pode ser qualquer coisa
+			},
+		);
+
+	}
+
+Depois de executar (C<perl script/refresh_index.pl>) você poderá testar via C<curl>.
+
+	curl -XGET 'http://127.0.0.1:9200/_all/_search'  -d '
+		{
+		"query" : {
+				"field" : {
+					"_all" : "richard"
+				}
+			}
+		}
+	'
+
+Irá retornar um json parecido com este:
+
+	{
+		"took": 21,
+		"timed_out": false,
+		"_shards": {
+			"total": 5,
+			"successful": 5,
+			"failed": 0
+		},
+		"hits": {
+			"total": 36,
+			"max_score": 0.46320972,
+			"hits": [
+				{
+					"_index": "books",
+					"_type": "book_or_author",
+					"_id": "dW_bEFumS1uracbXoXHhIA",
+					"_score": 0.46320972,
+					"_source": {
+						"created": null,
+						"updated": null,
+						"title": "TCPIP_Illustrated_Vol-2",
+						"author_list": "Richard Stevens"
+					}
+				},
+				...
+			]
+		}
+	}
+
+Com algumas variações, é claro! Se você não teve uma estrutura parecida,
+alguma coisa de errado ocorreu =/.
+
+=head2 Executando pesquisas pelo controlador.
+
+Resolvi utilizar o L<Catalyst::Controller::REST> assim podemos facilmente
+visualizar nossas pesquisas sem mesmo criar uma view.
+
+Crie um controlador chamado Search, e adicione o seguinte código:
+
+	package MyApp::Controller::Search;
+	use Moose;
+	use namespace::autoclean;
+	BEGIN { extends 'Catalyst::Controller::REST'; }
+
+	sub base : Chained('/') PathPart('') CaptureArgs(0) {
+		my ($self, $c) = @_;
+		my $data = $c->req->data || $c->req->params;
+
+
+		my $results = $c->model('Search')->results(
+			'terms' => $data->{'q'} , 
+			'index' => ($data->{'index'} ||  "books"), 
+			'type'  =>  ($data->{'type'} || "book_or_author" )
+		);
+
+		my @results;
+		for my $result ( @{$results->{'hits'}{'hits'}} ) {
+			my $r = $result->{'_source'};
+
+			my $body = $r->{'title'} . ' com os autores ' . $r->{'authors_list'} . ' sobre o id ' . $r->{'id'};
+
+			push @results, {
+				display_title => uc $r->{'title'},
+				title   => $r->{'title'},
+				created => $r->{'created'},
+				updated => $r->{'updated'},
+				author  => $r->{'authors_list'},
+				id      => $r->{'id'},
+				body    => $body,
+			};
+
+		}
+
+		$c->stash( results => \@results ); 
+
+	}
+
+
+	sub index :Chained('base') PathPart('search') Args(0) ActionClass('REST'){
+		my ($self, $c) = @_;
+
+	}
+
+	sub index_GET {
+		my ($self, $c) = @_;
+		$self->status_ok($c, 
+			entity => {
+				results => $c->stash->{'results'} ,
+			},
+		);
+	}
+
+	__PACKAGE__->meta->make_immutable;
+	1;
+
+Mas, a parte que importa é:
+
+	my $results = $c->model('Search')->results(
+		'terms' => 'SUA PESQUISA' , 
+		'index' => 'NOME DO INDEXE ONDE FOI SALVO', 
+		'type'  => 'TAG DO TIPO' ou ['TAG1', 'TAG2']
+	);
+
+Agora, você pode subir sua aplicação catalyst (C<perl script/server>) e
+acessar L<localhost:3000/search?q=richard>. O resultado deve ser parecido com:
+
+	--- 
+	results: 
+	- 
+		author: ~
+		body: "TCPIP_Illustrated_Vol-2 of  with id "
+		created: ~
+		display_title: TCPIP_ILLUSTRATED_VOL-2
+		title: TCPIP_Illustrated_Vol-2
+		updated: ~
+	...
+
+você pode alterar o parâmetro content-type para application/json (na verdade,
+vários) e receber em JSON:
+
+	{
+		"results": [
+			{
+				"body": "TCPIP_Illustrated_Vol-2 of  with id ",
+				"created": null,
+				"author": null,
+				"updated": null,
+				"title": "TCPIP_Illustrated_Vol-2",
+				"display_title": "TCPIP_ILLUSTRATED_VOL-2"
+			},
+			...
+		]
+	}
+
+=head2 Notas de despedida
+
+ElasticSearch é B<extremamente personalizável e ajustável>
+(o tradutor concorda!). Você pode obter uma grande melhoria de desempenho,
+brincando com as opções de indexação, os algoritmos de classificação,
+armazenamento e de transporte. Tudo isso está documentado no site do
+L<ElasticSearch|http://www.elasticsearch.org/guide/>!
+
+Mais uma coisa: você pode deixar o seu código de indexação logo após as
+informações serem adicionadas à tabela (no caso do livro, logo após
+C<form_create_do>). Desta forma, você começa a indexação de seu documento
+instananeamente após a sua criação.
+
+Aproveite e eu espero que você ache este artigo tão útil quanto eu achei!
+
+=head1 AUTOR
+
+Devin Austin, <dhoss@cpan.org>
+
+Criado usando Catalyst 5.80029 com Mac Book Pro Perl version 5 revision 12 subversion 0
+
+=head1 TRADUTOR
+
+Renato CRON. <rentocron@cpan.com>.
+
+Testado no ubuntu, com perl v5.10.1 e catalyst 5.80032 e elasticsearch 0.17.6.
