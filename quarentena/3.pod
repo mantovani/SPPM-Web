@@ -268,7 +268,7 @@ falhar, reclamando de não ter permissão para acessar o C</usr/bin/env>:
     ## Done.
     [failserver]$
 
-Neste caso, Pode parecer meio ocnfuso, mas basta executar a instalação passo
+Neste caso, Pode parecer meio confuso, mas basta executar a instalação passo
 a passo, ao invés de usar o instalador do perlbrew conforme mostraremos
 abaixo:
 
