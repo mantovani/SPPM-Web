@@ -2,7 +2,9 @@
 
 =encoding utf-8
 
-=head1 Construindo uma aplicação desktop usando os módulos Tk e Moose
+=head1 NOME
+
+Construindo uma aplicação desktop usando os módulos Tk e Moose
 
 
 =head2 Motivação

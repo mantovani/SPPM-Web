@@ -1,0 +1,473 @@
+=pod
+
+=encoding utf8
+
+=head1 Boas práticas para agentes do nagios
+
+=head2 Pragma padrão
+
+Pragmas[1] são instruções que altera o comportamento padrão do 
+interpretador Perl durante a execução do seu programa. Entre as 
+várias opções de pragma existente, o B<strict> é imprescindível 
+em qualquer programa. Ativar este pragma ocorre da seguinte 
+maneira, no inicio do programa :
+
+  use strict;
+
+O pragma B<strict> dificulta o desenvolvimento de programa ruim 
+forçando a declaração de todas as variáveis utilizada e se ocorrer 
+uma tentativa de acesso a uma variável não declarada previamente, 
+o programa será abortado.
+
+=head2 Processar opções da linha de comando
+
+A passagem de valores através de opções na linha de comando é muito 
+comum para os scripts. A maneira nativa que o Perl utiliza para 
+receber estes valores é através do array B<@ARGV>, como no exemplo 
+abaixo.
+
+  #!/usr/bin/env perl
+  use strict;
+  
+  if ( scalar @ARGV < 2 ) {
+    print "\nUsage : script opcao_1 valor_da_opcao_1\n";
+    exit 0;
+  }
+  
+  print "Capturei o argumento $ARGV[0] com o valor $ARGV[1]\n";
+  
+Esta abordagem para capturar e processar os valores da linha 
+de comando pode facilmente transformar-se num pesadelo conforme 
+a quantidade de opções aumenta. Invariavelmente a tendência será 
+utilizar uma enorme lista de C<if> para processar cada opção, ou 
+para os mais atualizado, utilizar a técnica do Dispatch Tables[2].
+
+Mas o Perl possui o módulo B<Getopt::Long>[3] que é muito mais 
+simples e versátil que processar o B<@ARGV> manualmente. A 
+simplificação do programa é o primeiro impacto positivo deste 
+módulo, o outro é uma poderosa ferramenta de tratamento da linha 
+de comando, possibilitando definir o tipo de dado desejado para a 
+opção, atribuição de múltiplos valores para uma única opção entre 
+outras funções interessante.
+
+  #!/usr/bin/env perl
+  use strict;
+  use Getopt::Long;
+
+  my $warning;
+  my $critical;
+  my @disks;
+
+  Getopt::Long::Configure('bundling');
+  GetOptions(
+    "v|version"    => sub { show_version() } ,
+    "h|help"       => sub { show_help() }    ,
+    "w|warning=f"  => \$warning              ,
+    "c|critical=f" => \$critical             ,
+    "d|disk=s"     => \@disks                ,
+  );
+
+O código acima é um exemplo de como o B<Getopt::Long> deixa o 
+programa muito mais poderoso e simples. As opções '-v', 
+'--version', '-h' e '--help' executará uma subrotina; enquanto 
+que as opções '-w', '--warning', '-c', '--critical', '-d' e  
+'--disks' atribuirá o valor diretamente na variável informada, 
+permitindo a seguinte linha de comando
+
+  my_script -w 15.5 -c 16.9 --disk /dev/sda /dev/sdb /dev/sdc
+
+A documentação do L<Getopt::Long> é uma excelente fonte de 
+informação sobre todas as opções deste módulo, e mostrará 
+que qualquer coisa que você esteja utilizando sem ser este 
+módulo é perda de tempo.
+
+=head2 Documentação
+
+A documentação e o help são informações importante para quem 
+for utilizar o teu programa. O ideal seria fazer as duas 
+coisas de uma única fez, e para isto podemos utilizar 
+o B<Pod::Usage>[4].
+
+O L<Pod::Usage> transforma a documentação do programa no 
+formato POD[5] em mensagens úteis para o usuário. A utilização 
+do Pod::Usage é muito prático, inviabilizando qualquer 
+justificativa por parte programador por não ter uma boa 
+documentação e um help útel.
+
+  #!/usr/bin/env perl
+  use strict;
+  use Pod::Usage;
+  use Getopt::Long;
+
+  Getopt::Long::Configure('bundling');
+  GetOptions(
+    "v|version"    => sub { show_version() } ,
+    "h|help"       => sub { pod2usage( -verbose  => 2,
+                                       -sections => [ qw(NAME SYNOPSIS DESCRIPTION ARGUMENTS AUTHOR COPYRIGHT DATE) ] ) },
+  ) or pod2usage(2);
+
+  __END__
+
+  =pod
+
+  =encoding utf8
+
+  =head1 NAME
+
+    meu_script - Agente do Nagios que faz alguma coisa
+
+  =head1 SYNOPSIS
+
+  Uso:
+
+      meu_script [--help] [--opcional] --obrigatório valor --obrigatório_com_valor_padrão valor
+
+  Exemplo:
+
+      meu_script --help
+
+      meu_script --obrigatório alguma_coisa --obrigatório_com_valor_padrão outra_coisa
+
+  =head1 DESCRIPTION
+
+  Descreva aqui o que o script faz, e como ele faz. Que tipo de informação será
+  retornado pelo script, bem como interpretar as informações que foram retornadas.
+  A descrição dos argumentos será apresentado abaixo.
+
+  =head1 ARGUMENTS
+
+  meu_script recebe os seguintes argumentos :
+
+  =over 4
+
+  =item help
+
+    --help
+
+  (Opcional.) Mostra a mensagem de utilização do script.
+
+  =item opcional
+
+    --opcional
+
+  (Opcional.) Define alguma que opcional. Informar o que ocorre ao definir este valor
+  e se existe algum valor padrão caso não for informado esta opção.
+
+  =item obrigatório
+
+    --obrigatório valor
+
+  (Requirido.) Detalhar para que serve esta opção e qual o valor esperado. Informar 
+  se existe limites para o valor informado.
+
+  =item obrigatório_com_valor_padrão
+
+    --obrigatório_com_valor_padrão valor
+
+    (Opcional.) Informar para que serve e qual é o valor padrão caso não seja informado.
+
+  =back
+
+  =head1 AUTHOR
+
+  Nome e email do autor.
+
+  =head1 COPYRIGHT
+
+  Informar a licença que rege este script.
+
+  =head1 DATE
+
+  Data e versão do script
+
+O exemplo acima mostra como é simples e prático documentar 
+o programa, e ao mesmo tempo apresentar uma ajuda (--help) 
+útil ao usuário. Chamo a atenção sobre onde a documentação 
+foi escrita, logo depois do C<__END__>. Desta maneira código 
+não fica poluído com fragmentos de documentação.
+
+=head2 Estruture bem o programa
+
+Não menospreze a importância de escrever o código de 
+maneira limpa e simples. Evite ao máximo tratar o agente 
+Nagios como algo menor e sem a preocupação de adotar as 
+boas práticas do Perl Moderno, transformando o programa 
+numa lingüiça de código.
+
+=head3 Variáveis global
+
+A recomendação para a programação de Perl é definir as 
+variáveis próximo a utilização. É muito chato abrir um 
+código e ver as 100 primeiras linhas apenas com declarações 
+de variáveis global que será utilizado apenas uma vez. 
+Para resolver o problema, é recomendado que você quebre 
+o código em subrotinas e declare as variáveis referente a 
+estas rotinas apenas lá. Outra recomendação é utilizar 
+um hash para organizar as informações globais.
+
+Por exemplo, podemos substituir uma longa seqüência de 
+declaração de variáveis que possui o mesmo contexto
+
+  #!/usr/bin/env perl
+  my $OK        = 0;
+  my $WARNING   = 1;
+  my $CRITICAL  = 2;
+  my $UNKNOWN   = 3;
+  my $DEPENDENT = 4;
+
+por um hash 
+
+  #!/usr/bin/env perl
+  my %ERRORS  = ( 'OK'=> 0, 'WARNING'=> 1, 'CRITICAL'=> 2, 'UNKNOWN'=> 3, 'DEPENDENT'=> 4 );
+ 
+O mesmo exemplo podemos utilizar com as opções passada na 
+linha de comando, rescrevendo o código exemplo de utilização 
+do Getop::Long da seguinte maneira
+
+  #!/usr/bin/env perl
+  use strict;
+  use Getopt::Long;
+
+  my %CONFIG;
+
+  Getopt::Long::Configure('bundling');
+  GetOptions(
+    "v|version"    => sub { show_version() } ,
+    "h|help"       => sub { show_help() }    ,
+    "w|warning=f"  => \$CONFIG{warning}      ,
+    "c|critical=f" => \$CONFIG{critical}     ,
+    "d|disk=s@"    => \$CONFIG{disks}        ,
+  );
+
+=head3 Tratamento dos valores, e definição de valores padrão
+
+Toda informação fornecida via linha de comando deve ser 
+verificada antes de ser utilizado no programa. Eu recomendo 
+fortemente que seja criado uma rotina com o objetivo de 
+validar, atribuir o valor padrão e normalizar as variáveis 
+capturadas via linha de comando.
+
+Desta maneira, fica muito claro que tipo de tratamento 
+os dados estão sofrendo, e permite também construir
+mensagens de erros úteis.
+
+  sub check_data{
+    $CONFIG{'warning'}           ||= 90;
+    $CONFIG{'critical'}          ||= 95;
+    $CONFIG{'diskstats'}         ||= '/proc/diskstats';
+    $CONFIG{'cachefile'}         ||= '/tmp/diskstats.cachefile';
+    $CONFIG{'blocksize'}         ||= 512;
+    $CONFIG{'disk'}              ||= 'sda';
+    $CONFIG{'warnning_waittime'} ||= 180;
+    $CONFIG{'critical_waittime'} ||= 200;
+
+    for my $key ( qw(warning critical) ) {
+      $CONFIG{$key} = ( $CONFIG{$key} =~ /(\d+)/, $1);
+      show_help("(--crit) $key must be between 1 and 100.\n")
+        if ( ( $CONFIG{$key} < 1 ) or ( $CONFIG{$key} > 100 ) );
+    }
+
+   (my $disk = $CONFIG{disk}) =~ s/\//_/g;
+    $CONFIG{cachefile} = "$CONFIG{cachefile}_$disk";
+} 
+
+No exemplo acima, todos os valores definido passam por 
+uma definição de valor padrão através do operador C<||=>, 
+aplicando o valor padrão apenas se a variável já não 
+tenha sido previamente definida. Depois segue o fluxo com 
+validações e normalizações. A normalização é muito útil 
+quando existe a opção de valores em escala diferente 
+(tipo padronizar tudo para Bytes num script de monitoramento 
+de espaço, por exemplo).
+
+=head3 Abrir recursos
+
+Tome muito cuidado ao abrir recursos externos, o artigo B<Análise 
+das Técnicas para Abrir e Ler Arquivos>[6] possui informações 
+importante se o teu script estiver processando algum arquivo de log. 
+
+=head3 Executar um comando externo
+
+Quando eu preciso executar algo externo, simplesmente entro
+em modo de pânico e faça com o máximo atenção.
+
+A minha recomendação é ler a perlfaq8[7] e o perlipc[8], e 
+procurar ajuda na lista do São Paulo Perl Mongers se você não 
+estiver seguro sobre o que fazer nesta situação.
+
+=head3 Armazenar dados temporário
+
+Em algumas situações o script precisa armazenar informações 
+que será utilizada na próxima execução. Para esta situação 
+recomendo utilizar B<Storable>[9]. As informações sobre 
+este módulo está disponível na documentação, prefiro aqui 
+mostrar como utilizar este cara na prática.
+
+  #!/usr/bin/env perl
+  use strict;
+  use Getopt::Long;
+  use Storable qw(store retrieve);
+  
+  my %CONFIG;
+  my %ERRORS  = ( 'OK'=> 0, 'WARNING'=> 1, 'CRITICAL'=> 2, 'UNKNOWN'=> 3, 'DEPENDENT'=> 4 );
+
+  Getopt::Long::Configure('bundling');
+  GetOptions(
+      "v|version"             => sub { show_version() }        ,
+      "h|help"                => sub { show_help() }           ,
+      "w|warning=f"           => \$CONFIG{'warning'}           ,
+      "c|critical=f"          => \$CONFIG{'critical'}          ,
+      "d|disk=s"              => \$CONFIG{'disk'}              ,
+      "t|warnning_waittime=f" => \$CONFIG{'warnning_waittime'} ,
+      "T|critical_waittime=f" => \$CONFIG{'critical_waittime'} ,
+    );
+
+  # verifica se todas os valores são válidos
+  check_data();
+
+  # e faz a captura dos dados corrente
+  $CONFIG{stats} = load();
+
+  # carrega o cache
+  if (! load_cache_file() ) {
+    # e não conseguir carregar o cache, cria um e aborta o script
+    create_cache_file();
+    print 'UNKNOWN - Creating cache file by plugin.';
+    exit $ERRORS{'UNKNOWN'};
+  } else {
+    $CONFIG{delta} = deltas();
+    create_cache_file();
+  }
+
+  # ... códigos relevantes ...
+
+  # cria o arquivo de cache utilizando o Storable
+  sub create_cache_file {
+    unlink $CONFIG{cachefile};
+    eval { store($CONFIG{stats}, $CONFIG{cachefile}) };
+  
+    if ($@) {
+      print "Critical - unable to create $CONFIG{cachefile} ($@)";
+      exit $ERRORS{CRITICAL};
+    }
+  }
+
+  # carrega o cache, se ocorrer algum problema retorna erro
+  sub load_cache_file {
+    eval { 
+      my $rt = retrieve($CONFIG{cachefile});
+      %{$CONFIG{cache}} = %{$rt};
+    };
+  
+    return 0 if ! exists $CONFIG{cache}{$CONFIG{disk}};
+    return 1;
+  }
+
+=head3 Mensagem de erro útil
+
+Neste item não tem exemplo e sim bom senso. Não tenha medo
+de sair do programa com informações úteis e clara para o 
+usuário, como na subrotina C<create_cache_file> do exemplo 
+assim. Lembre-se que quem vai consumir esto script será o 
+Nagios e um operador que não tem a obrigação de entender 
+o que script faz. Então deixe bem claro onde está ocorrendo 
+o erro e porquê.
+
+=head3 Defina timeout
+
+Tenha o bom hábito de definir timeout na execução do teu 
+programa, principalmente se você estiver utilizando algum 
+recurso externo. Você deve utilizar o C<%SIG> para configurar 
+o comportamento num timeout e C<alarm> para definir o timeout.
+
+  # define o comportamento quando ocorrer o timeout
+  $SIG{'ALRM'} = sub { nagexit('CRITICAL', "Timeout trying to reach device $host") };
+  # define o timeoute informando um valor ao alarm
+  alarm $CONFIG{time_out};
+
+  # execute o código ...
+
+  # desative o timeout
+  alarm 0;
+
+=head2 Performance data
+
+O Nagios processa somente a saída STDOUT do programa e a 
+trata de duas formas distintas. A primeira forma, e a mais 
+comum, é utilizada apenas como informativo e a mensagem 
+impressa no painel do Nagios. 
+
+A outra forma é utilizar a saída como um dado que poderá 
+ser facilmente parseado e armazenado de maneira estrutura 
+por um outro programa, já que o Nagios em si não faz uso 
+do performance data.
+
+O Nagios utiliza o caractere C<|> para separar a parte 
+informativa da parte de dados na mensagem. O exemplo e 
+como imprimir a saída com o performance data é apresentado 
+abaixo.
+
+  if ( $free <= $CONFIG{'critical_value'} ) {
+    print "CRITICAL - ";
+    $return  = $ERRORS{'CRITICAL'};
+  }
+  elsif ( $free <= $CONFIG{'warning_value'} ) {
+    print "WARNING - ";
+    $return  = $ERRORS{'WARNING'};
+  } else {
+    print "OK - ";
+    $return  = $ERRORS{'OK'};
+  }
+
+  printf "Size: %0.2fGB Used: %0.2fGB (%02.02f%%) Free: %0.2fGB (%02.02f%%)|disk_size=%dGB disk_used=%dGB;%0.2f;%0.2f\n",
+        ( $size/$SCALE{'GB'} ), 
+        ( $used/$SCALE{'GB'} ), $used_percent,
+        ( $free/$SCALE{'GB'} ), 100 - $used_percent,
+        int ( $size/$SCALE{'GB'} ), 
+        int ( $used/$SCALE{'GB'} ), 
+        $CONFIG{'warning_value'}/$SCALE{'GB'},
+        $CONFIG{'critical_value'}/$SCALE{'GB'};
+
+  exit $return;
+
+Com a popularização de interfaces alternativas ao Nagios 
+padrão, como o Centreon[10], o performance data é muito 
+útil para que programas externo processem os dados gerados 
+pelo agente do Nagios e gere gráficos e análises de capacity 
+planning.
+
+O documento B<Nagios plug-in development guidelines>[11] possuí 
+informações detalhada de como formatar corretamente as mensagens 
+e deve ser consultada para a construção do agente do Nagios.
+
+=head2 Autor
+
+Solli M. Honório at L<http://br.linkedin.com/in/shonorio>
+
+=head2 Referências
+
+B<1> L<http://perldoc.perl.org/index-pragmas.html>
+
+B<2> L<http://www.perlmonks.org/?node_id=456530>
+
+B<3> L<http://perldoc.perl.org/Getopt/Long.html>
+
+B<4> L<http://perldoc.perl.org/Pod/Usage.html>
+
+B<5> L<http://perldoc.perl.org/perlpod.html>
+
+B<6> L<http://sao-paulo.pm.org/artigo/2010/analisedastecnicasparaabrirelerarquivos>
+
+B<7> L<http://perldoc.perl.org/perlfaq8.html#How-can-I-open-a-pipe-both-to-and-from-a-command%3f>
+
+B<8> L<http://perldoc.perl.org/perlipc.html>
+
+B<9> L<http://perldoc.perl.org/Storable.html>
+
+B<10> L<http://www.centreon.com/>
+
+B<11> L<http://nagiosplug.sourceforge.net/developer-guidelines.html>
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da Creative Commons by-sa, L<http://creativecommons.org/licenses/by-sa/3.0/br/>
