@@ -1,0 +1,330 @@
+=head1 Plack - Super-Cola para a Web
+
+Então você já montou um "hello world", já montou um blog em 10 minutos, já
+até montou uma aplicação de verdade, mas e agora? Acontece que o
+desenvolvimento é apenas uma parcela do trabalho envolvido num serviço para
+web. O trabalho apenas começou, agora você vai precisar testar, homologar,
+depurar, implantar, otimizar, atualizar e escalar sua aplicação, tudo isso
+com milhares de usuários em potencial acessando sua aplicação.
+
+Foi levando isso em consideração, que um desenvolvedor bastante prolífico na
+comunidade perl internacional, o Tasuhiko Miyagawa, inspirado por soluções
+dos ecosistemas de Ruby (Rack) e Python (WSGI), escreveu uma especificação
+de para servidores web em perl chamada PSGI.
+
+=head2 Um breve passeio pelo PSGI
+
+PSGI significa "Perl web Server Gateway Interface". Um gateway atua como uma
+espécie de tradutor de informação para que dois ou mais programas usando
+protocolos diferentes consigam se comunicar.
+
+=begin html
+
+<img src="receiver-emitter.png"/>
+
+=end html
+
+Vale observar que o PSGI é apenas uma interface, um padrão para coordenar a
+"conversa" com todos os outros padrões.
+
+O PSGI define três abstrações básicas:
+
+=over
+
+=item * Servidores
+
+Um servidor é uma implementação do PSGI, também chamado de
+"Backend". Espera-se que servers aceitem requisições HTTP, despache-as para
+aplicações web, e retorne a resposta HTTP para o cliente.
+
+=item * Aplicações
+
+Uma aplicação é uma referência de subrotina que aceita uma requisição HTTP
+através da interface PSGI e devolve uma resposta HTTP, também através da
+interface.
+
+Essa subrotina recebe como parâmetro uma referência prum hash, que contém o
+ambiente de execução da aplicação, e precisa retornar uma referência pra
+array, contendo exatamente 3 valores:
+
+    my $app = sub {
+        my $env = shift;
+        return [
+            '200',
+            [ 'Content-Type' => 'text/plain' ],
+            [ "Hello World" ], # ou um objeto similar ao IO::Handle
+        ];
+    }
+
+O exemplo acima é uma aplicação completa e pronta para rodar em qualquer
+servidor web.
+
+=item * Middleware
+
+Um middleware é uma aplicação PSGI que executa outra aplicação PSGI,
+possivelmente modificando o ambiente de execução antes da aplicação, ou
+modificando a resposta da aplicação. Isso também é conhecido como "Wrapper",
+que em português significa "embrulho", porque o middleware fica "envolto" da
+aplicação e decide o que entra e sai:
+
+   # $app é uma aplicação PSGI simples
+    my $app = sub {
+        my $env = shift;
+        return [
+            '200',
+            [ 'Content-Type' => 'text/plain' ],
+            [ "Hello World" ], # ou um objeto similar ao IO::Handle
+        ];
+    }
+
+    # $xheader é um middleware que modifica $app
+    my $xheader = sub {
+        my $env = shift;
+        my $res = $app->($env);
+        push @{$res->[1]}, 'X-PSGI-Used' => 1;
+        return $res;
+    };
+
+=back
+
+Essa combinação de elementos é conhecida como "web application stack", ou
+"pilha de aplicativos web". O PSGI formaliza a construção dessa pilha
+através das suas abstrações.
+
+=head2 Afinal de contas, o que é esse tal de Plack?
+
+=begin html
+
+<img src="plack-architecture.png"/>
+
+=end html
+
+O Plack é um toolkit que fornece ferramentas para implementação das pilha de
+aplicação do PSGI, e fornece também algumas implementações prontas. Como de
+costume, uma boa forma de compreender rapidamente como os elementos
+funcionam, é através de exemplos.
+
+Já vimos uma aplicação PSGI antes:
+
+    my $app = sub {
+        my $env = shift;
+        return [ '200', [ 'Content-Type' => 'text/plain' ], [ "Hello World" ] ];
+    };
+
+Essa aplicação vai ficar dentro de um arquivo chamado app.psgi. Antes de
+prosseguir com os exemplos, precisamos primeiro instalar o Plack.
+
+  $ cpanm Plack
+
+=head3 plackup
+
+O plackup é um executor de aplicações PSGI para linha de comando. Para
+executar uma aplicação basta passar o nome do arquivo .psgi:
+
+    $ plackup app.psgi
+    HTTP::Server::PSGI: Accepting connections at http://0:5000/
+
+Tada! Temos um servidor HTTP completo executando nossa aplicação e escutando
+na porta 5000, basta visitar o endereço indicado para visualizar a
+aplicação, é simples assim.
+
+Observa que o plackup mencionou o uso do HTTP::Server::PSGI, isso é porque
+tem alguns módulos bastante úteis trabalhando por trás das cenas, vejamos
+cada um com um pouco mais de detalhe.
+
+=head3 Plack::Handler
+
+Um Handler é um adaptador para servidores HTTP e interfaces HTTP, como CGI,
+FCGI, mod_perl, etc. A distribuição core do Plack vem com adaptadores para
+CGI, FCGI, Apache1 (mod_perl1), Apache2 (mod_perl2), HTTP::Server::Simple e
+HTTP::Server::PSGI.
+
+=head3 Plack::Loader
+
+Esse módulo carrega handlers automaticamente a partir do ambiente. Por
+exemplo, se você quiser implantar sua aplicação num Apache configurado para
+executar CGI, não será necessário mudar nada na aplicação, basta criar o
+um arquivo app.cgi:
+
+    #!/usr/bin/plackup
+    do 'app.psgi'
+
+Agora, é só acessar /cgi-bin/app.cgi e a aplicação estará lá funcionado. O
+Plack::Loader vai detectar o ambiente CGI automaticamente e usar o
+Plack::Handler::CGI pra executar sua aplicação. Como o arquivo app.psgi é um
+arquivo válido em perl, que retorna uma aplicação PSGI, o arquivo app.cgi
+também é uma aplicação PSGI válida. O arquivo app.cgi só foi criado para
+podermos acrescentar o shebang correto necessário para execução no ambiente
+CGI.
+
+Se você quiser executar a sua aplicação através de um FCGI externo:
+
+   $ cpanm FCGI FCGI::ProcManager
+   $ plackup -s FCGI app.psgi
+
+Analogamente, se fossemos implantar no apache através de mod_perl, tudo se
+configuraria automaticamente. Isso elimina uma preocupação antiga de
+desenvolvedores web, que era embutir código na aplicação para tratar de
+problemas específicos do ambiente de implantação. Com o Plack, a mesma
+aplicação funciona sem qualquer modificação em qualquer ambiente que tenha
+um Plack::Handler.
+
+=head3 Plack::Middleware
+
+Até agora, nossa aplicação está bastante simples, podemos rapidamente
+implementar melhorias usando mais alguns componentes baseados em plack. Por
+exemplo, nossa resposta está gerando uma página do tipo text/plain. Vamos
+transformar essa página em HTML automaticamente, sem tocar na aplicação em
+si, através de um middleware. Para implementar um middleware no Plack, basta
+criar uma subclasse de Plack::Middleware, ou utilizar um middleware pronto
+disponível no CPAN. Nesse caso iremos usar o Plack::Middleware::HTMLify.
+
+  $ cpanm Plack::Middleware::HTMLify
+
+=head3 Plack::Builder
+
+Com a grande quantidade de middlewares disponíves, eventualmente vamos
+precisar de uma forma conveniente de "amarrar" todos eles juntos. O
+Plack::Builder é um módulo que fornece uma DSL para acoplar middlewares na
+sua aplicação. No nosso exemplo, vamos criar um segundo arquivo
+app_html.psgi
+
+  use Plack::Builder;
+
+  builder {
+    enable 'HTMLify';
+    do 'app.psgi';
+  }
+
+Executamos com plackup:
+
+  $ plackup app_html.psgi
+
+Agora, a página 'text/plain' que tinhamos antes, virou uma página
+'text/html', devidamente formatada. O middleware conseguiu fazer isso porque
+ele tem acesso à resposta da nossa aplicação e ele sabe que é uma resposta
+no formato PSGI e por isso pode modificá-la da forma correta.
+
+Não existe limite na quantidade de middlewares que podemos ativar. Vamos
+experimentar um core middleware que filtra as respostas:
+
+    use strict;
+    use warnings;
+
+    use Plack::Builder;
+
+    builder {
+      enable 'HTMLify';
+      enable 'SimpleContentFilter', filter => sub { s/World/Universe/ };
+      do 'app.psgi';
+    };
+
+Vamos ativar outro middleware que mostra um painel de depuração bastante útil:
+
+    $ cpanm Plack::Middleware::Debug
+
+    use strict;
+    use warnings;
+
+    use Plack::Builder;
+
+    builder {
+      enable 'Debug';
+      enable 'HTMLify';
+      enable 'SimpleContentFilter', filter => sub { s/World/Universe/ };
+      do 'app.psgi';
+    };
+
+=begin html
+
+<img src="plack-ss1.png"/>
+
+<img src="plack-ss2.png"/>
+
+=end html
+
+E ainda outro, que inclui um depurador interativo:
+
+    use strict;
+    use warnings;
+
+    use Plack::Builder;
+
+    builder {
+      enable 'InteractiveDebugger';
+      enable 'Debug';
+      enable 'HTMLify';
+      enable 'SimpleContentFilter', filter => sub { s/World/Universe/ };
+      do 'app.psgi';
+    };
+
+Para testar esse, precisamos introduzir um erro proposital na aplicação,
+para que o console de depuração apareça:
+
+    use warnings;
+    use strict;
+
+    my $app = sub {
+      my $env = shift;
+      die "test";
+      return [
+        '200',
+        [ 'Content-Type' => 'text/html' ],
+        ["Hello World"]
+      ];
+    };
+
+=begin html
+
+<img src="plack-ss3.png"/>
+<img src="plack-ss4.png"/>
+<img src="plack-ss5.png"/>
+
+=end html
+
+Relembrando que todos esses middlewares funcionam em qualquer aplicação
+compatível com PSGI.
+
+=head3 Plack::App
+
+Algumas aplicações prontas para plack também já estão disponíveis no
+cpan, como o Plack::app::Proxy, que é um proxy de servidor HTTP.
+
+  $ cpanm Plack::App::Proxy
+
+  use Plack::Builder;
+
+  builder {
+    Plack::App::Proxy->new(remote => 'http://plackperl.org')->to_app;
+  }
+
+Como as requisições vão ser um tanto quanto lentas, podemos acrescentar um
+middleware de caching:
+
+  use Plack::Builder;
+
+  builder {
+    enable 'Cache', match_url => '.*', cache_dir => '/tmp/plack-cache';
+    Plack::App::Proxy->new(remote => 'http://plackperl.org')->to_app;
+  }
+
+Você também pode rodar mais de uma aplicação sob o mesmo servidor:
+
+  use Plack::Builder;
+
+  builder {
+    mount '/plack' => builder {
+      enable 'Cache', match_url => '.*', cache_dir => '/tmp/plack-cache';
+      Plack::App::Proxy->new(remote => 'http://plackperl.org')->to_app;
+    };
+    mount '/app' => do 'app.psgi';
+  }
+
+As possibilidades são infinitas, o CPAN já tem mais de 160
+Middlewares/Aplicações Plack disponíveis, além de frameworks compatíveis com
+PSGI. Antes de escolher um framework web, verifique se ele é compatível com
+PSGI/Plack, baixe no mirror mais próximo e divirta-se.
+
+=head2 Autor
+
+Eden Cardim - http://edencardim.com
