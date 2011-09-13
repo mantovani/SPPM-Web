@@ -1,0 +1,367 @@
+=encoding utf8
+
+=head1 GRID com DHTMLX, Catalyst e DBIx::Class
+
+
+Nesse artigo vou mostrar como é fácil fazer um Grid de L<DHTMLX|http://dhtmlx.com>, usando dois dos
+melhores modulos em B<Perl>.
+
+=head2 Instalação
+
+Instale os modulos abaixo:
+
+   Catalyst::Devel
+   Catalyst::Runtime
+   Catalyst::View::TT
+   Catalyst::View::JSON
+   DBIx::Class
+   DBIx::Class::Schema::Loader
+
+Faça download do dhtmlxGrid no site L<DHTMLX Download|http://dhtmlx.com/docs/download.shtml>.
+
+=head2 Criar tabela e adicionar dados
+
+Para esse exemplo vamos criar um tabela em B<PostgreSQL> com dados pessoais:
+
+   CREATE TABLE pessoa (
+      pes_id SERIAL,
+      pes_nome VARCHAR(30) NOT NULL,
+      pes_endereco VARCHAR(40) NOT NULL,
+      pes_bairro VARCHAR(30) NOT NULL,
+      pes_cidade VARCHAR(25) NOT NULL,
+      pes_estado VARCHAR(2) NOT NULL,
+      pes_cep VARCHAR(9) NOT NULL,
+      pes_telefone VARCHAR(12) NOT NULL,
+      PRIMARY KEY(pes_id)
+   );
+
+Agora vamos adicionar dados em nossa tabela:
+
+   INSERT INTO pessoa VALUES (1, 'João Paulo', 'Rua João Moreira', 'Jardim Brasil', 'São Paulo', 'SP', '99999-991', '11-9999-9999');
+   INSERT INTO pessoa VALUES (2, 'Ricardo dos Santos', 'Rua Antonio Sales', 'Vila Amazonas', 'Rio de Janeiro', 'RJ', '99999-881', '21-9999-9999');
+
+Você pode adicionar quantos dados quiser.
+
+=head2 Criar e configurar nossa aplicação
+
+Criar aplicação em B<Catalyst>:
+   
+   catalyst.pl MyApp
+
+Entrar no diretório de nossa aplicação:
+
+   cd MyApp
+
+Criar a view com TT:
+
+   script/myapp_create.pl view TT TT
+
+Criar a view com JSON:
+
+   script/myapp_create.pl view JSON JSON
+
+Criar o model com B<DBIx::Class>:
+
+   script/myapp_create.pl model DB DBIC::Schema MyApp::Schema \dbi:Pg:dbname=nome_do_banco usuario_postgre senha_postgre
+
+Gerar as classes do schema:
+
+   dbicdump -o dump_directory=./lib \MyApp::Schema dbi:Pg:dbname=nome_do_banco usuario_postgre senha_postgre
+
+Agora vamos criar o controller com de nossa aplicação com nome Grid:
+
+   script/myapp_create.pl controller Grid
+
+Agora vamos criar a pasta grid no diretório root de nossa aplicação:
+
+   mkdir root/grid
+
+Agora vamos criar o arquivo index.tt:
+
+   touch root/grid/index.tt 
+
+Coloque a pasta do B<DHTMLX> "dhtmlxGrid" dentro da pasta "static" que fica no diretório "/MyApp/root"
+
+=head2 Alterar controller
+
+Abra o arquivo Grid.pm que esta no diretório "/MyApp/lib/MyApp/Controller" com o editor de usa preferência.
+
+Altera o a linha que esta escrito:
+
+   $c->response->body('Matched MyApp::Controller::Grid in Grid.');
+
+Para:
+
+   $c->forward('View::TT');
+
+Essa linha vai invocar a view TT, que o mesmo carrega o arquivo index.tt que esta no diretório "/MyApp/root/grid"
+
+Agora vamos fazer um select com B<DBIx::Class>:
+
+Pule duas linhas do código:
+
+   sub index :Path :Args(0) {
+      my ( $self, $c ) = @_;
+
+      $c->forward('View::TT');
+   }
+
+Agora coloque esse código:
+
+   sub dados :Local {
+      my ( $self, $c ) = @_;
+    
+      # seleciona todos os dados da tabela pessoa
+      my @ver = $c->model('DB')->resultset('Pessoa')->all;
+    
+      # declara a variavel $i com o valor zero
+      my $i = 0;
+    
+      # usa um foreach para montar nossa aplicação em JSON
+      foreach my $row (@ver){
+         $c->stash->{rows}[$i] = {
+            id => $row->pes_id,
+            data => [
+                $row->pes_id,
+                $row->pes_nome,
+                $row->pes_endereco,
+                $row->pes_bairro,
+                $row->pes_cidade,
+                $row->pes_estado,
+                $row->pes_cep,
+                $row->pes_telefone
+            ]
+        };
+        $i++;
+      }
+    
+      # invocar a view JSON
+      $c->forward('View::JSON');
+   }
+
+Pule mais duas linhas e coloque o código para alterar:
+
+   sub alterar :Local {
+      my ( $self, $c ) = @_;
+    
+      # POST
+      my $id = $c->req->param('id') ? $c->req->param('id') : '';
+      my $valor = $c->req->param('valor') ? $c->req->param('valor') : '';
+      my $campo = $c->req->param('campo') ? $c->req->param('campo') : '';
+    
+      # seleciona pessoa para alterar
+      my $alt = $c->model('DB')->resultset('Pessoa')->find($id);
+    
+      # alterar campo nome
+      if($campo eq 'nome'){
+         $alt->update(
+            {
+                pes_nome => qq{$valor}
+            }
+         );
+      }
+    
+      # alterar campo endereco
+      if($campo eq 'endereco'){
+         $alt->update(
+            {
+                pes_endereco => qq{$valor}
+            }
+         );
+      }
+    
+      # alterar campo bairro
+      if($campo eq 'bairro'){
+         $alt->update(
+            {
+                pes_bairro => qq{$valor}
+            }
+         );
+      }
+    
+      # alterar campo cidade
+      if($campo eq 'cidade'){
+         $alt->update(
+            {
+                pes_cidade => qq{$valor}
+            }
+         );
+      }
+    
+      # alterar campo estado
+      if($campo eq 'estado'){
+         $alt->update(
+            {
+                pes_estado => qq{$valor}
+            }
+         );
+      }
+    
+      # alterar campo estado
+      if($campo eq 'estado'){
+         $alt->update(
+            {
+                pes_nome => qq{$valor}
+            }
+         );
+      }
+    
+      # alterar campo cep
+      if($campo eq 'cep'){
+         $alt->update(
+            {
+                pes_cep => qq{$valor}
+            }
+         );
+      }
+    
+      # alterar campo telefone
+      if($campo eq 'telefone'){
+         $alt->update(
+            {
+                pes_telefone => qq{$valor}
+            }
+         );
+      }
+
+      $c->forward('View::JSON');
+   }
+
+=head2 Alterar view
+
+Agora abra o arquivo index.tt que esta no diretório "/MyApp/root/grid" e coloque esse código:
+
+   <?xml version="1.0" encoding="UTF-8"?>
+   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+   <head>
+      <title>GRID com DHTMLX, Catlyst e DBIx::Class</title>
+      <link rel="stylesheet" type="text/css" href="/static/dhtmlxGrid/dhtmlxGrid/codebase/dhtmlxgrid.css">
+      <link rel="stylesheet" type="text/css" href="/static/dhtmlxGrid/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css">
+      <script src="/static/dhtmlxGrid/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
+      <script src="/static/dhtmlxGrid/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>		
+      <script src="/static/dhtmlxGrid/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>	
+      <script src="/static/dhtmlxGrid/dhtmlxGrid/codebase/excells/dhtmlxgrid_excell_dhxcalendar.js"></script>
+      <script src="/static/js/alterar.js"></script>
+  </head>
+  <body>
+      <div id="gridbox" style="width:703px;height:120px;background-color:white;"></div>
+      <script>
+	 mygrid = new dhtmlXGridObject('gridbox');
+	 mygrid.setImagePath("/static/dhtmlxSuite/dhtmlxGrid/codebase/imgs/");
+	 mygrid.setHeader("ID, Nome, Endereço, Bairro, Cidade, Estado, CEP, Telefone");
+	 mygrid.setInitWidths("30,*,120,100,100,50,60,80");
+	 mygrid.setColAlign("right,left,left,left,left,center,center,center");
+	 mygrid.setColTypes("ro,ed,ed,ed,ed,ed,ed,ed");
+	 mygrid.setColSorting("int,str,str,str,str,str,str,str");
+	 mygrid.attachEvent("onEditCell", function(state, id, campo, valor , valorantigo){
+                if(state == 2)
+                {
+                        // atualiza os campos
+                        function Result(result){
+                            mygrid.cells(id, campo).setValue(valor);
+                        }
+                       
+                        // alterar campo nome
+                        if(campo == 1){
+                            var dados = "id="+id+"&valor="+valor+"&campo=nome";
+                            dhtmlxAjax.post("/grid/alterar",encodeURI(dados), Result);
+                        }
+                       
+                        // alterar campo endereco
+                        if(campo == 2){
+                            var dados = "id="+id+"&valor="+valor+"&campo=endereco";
+                            dhtmlxAjax.post("/grid/alterar",encodeURI(dados), Result);
+                        }
+                       
+                        // alterar campo bairro
+                        if(campo == 3){
+                            var dados = "id="+id+"&valor="+valor+"&campo=bairro";
+                            dhtmlxAjax.post("/grid/alterar",encodeURI(dados), Result);
+                        }
+                       
+                        // alterar campo cidade
+                        if(campo == 4){
+                            var dados = "id="+id+"&valor="+valor+"&campo=cidade";
+                            dhtmlxAjax.post("/grid/alterar",encodeURI(dados), Result);
+                        }
+                       
+                        // alterar campo estado
+                        if(campo == 5){
+                            var dados = "id="+id+"&valor="+valor+"&campo=estado";
+                            dhtmlxAjax.post("/grid/alterar",encodeURI(dados), Result);
+                        }
+                       
+                        // alterar campo cep
+                        if(campo == 6){
+                            var dados = "id="+id+"&valor="+valor+"&campo=cep";
+                            dhtmlxAjax.post("/grid/alterar",encodeURI(dados), Result);
+                        }
+                       
+                        // alterar campo telefone
+                        if(campo == 7){
+                            var dados = "id="+id+"&valor="+valor+"&campo=telefone";
+                            dhtmlxAjax.post("/grid/alterar",encodeURI(dados), Result);
+                        }
+                }
+         });
+	 mygrid.setSkin("dhx_skyblue");
+	 mygrid.init();
+         mygrid.load('/grid/dados',"json");
+      </script>
+   </body>
+   </html>
+
+
+Esse div abaixo define o tamanho da grid, cor do fundo com style.
+
+   <div id="gridbox" style="width:703px;height:120px;background-color:white;"></div>
+
+Pequena explicação sobre as funções do B<DHTMLX:>
+
+   mygrid.setImagePath() define o path das imagens do grid.
+   mygrid.setHeader() define o nome do campo.
+   mygrid.setInitWidths() define o tamanho do campo.
+   mygrid.setColAlign() define a posição do texto no campo.
+   mygrid.setColTypes() define a permissão do campo, como ro leitura, ed leitura e alterar.
+   mygrid.setColSorting() define o tipo do campo, com intiger, string e etc...
+   mygrid.attachEvent() define o evento e invoca o callbackr.
+   mygrid.setSkin() define a aparência.
+   mygrid.init() inicia a grid.
+   mygrid.load() carrega a pagina com os dados e define o tipo de leitura json ou xml.
+
+Explicação sobre Callback
+
+   Parâmetro id contem o id do campo alterado.
+   Parâmetro campo contem o número do campo alterado.
+   Parâmetro valor contem o valor do campo alterado.
+   Parâmetro valorantigo contem o valor antigo do campo alterado.
+
+A função B<dhtmlxAjax.post()> é um ajax tipo post que envia os dados para alterar.
+O código mygrid.cells(id, campo).setValue(valor); atualiza o campo com o novo valor.
+
+Pronto, agora é só executar o server de teste do B<Catalyst>:
+
+   script/myapp_server.pl
+
+Para acessar:
+
+   http://localhost:3000
+
+Espero que tenha gostado!
+
+=head2 Agradecimentos 
+
+B<Eden Cardim>
+
+Pela ajuda com JSON
+
+B<José Eduardo Perotta de Almeida>
+
+Pela ajuda com DHTMLX
+
+=head2 Autor
+
+B<Lucas Tiago de Moraes> (Lucas1)
+
+lucastiagodemoraes@gmail.com
