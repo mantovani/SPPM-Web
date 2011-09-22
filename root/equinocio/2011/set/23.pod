@@ -83,8 +83,8 @@ Escolha a opção 2:
 =head2 O Projeto
 
 Vamos construir um Piano de Luz, quando você apertar uma tecla do seu teclado uma luz vai acender, permitindo que várias luzes sejam acesas simultaneamente.
-Nesse artigo vamos usar alguns truques que só é possível com o nível de interface com o teclado que o SDL oferece. É apenas uma demonstração, mas o objetivo
-é mostrar o conceito que pode ser aplicado para B<qualquer coias que a sua imaginação possa pensar>.
+Nesse artigo utilizaremos alguns truques que só são possíveis com o nível de interface com o teclado que o SDL oferece. É apenas uma demonstração, mas o objetivo
+é mostrar o conceito que pode ser aplicado para B<qualquer coisa que a sua imaginação possa pensar>.
 
 Você pode pensar, "que projeto tosco, é tão fácil fazer isso". Mas eu desafio o leitor a ler o artigo para entender o que vamos fazer, e que é B<impossível>
 fazer o que eu vou fazer sem o nível de interface que o SDL oferece.
