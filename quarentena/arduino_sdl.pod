@@ -325,7 +325,7 @@ Abrirá uma tela preta, não se assuste é isso mesmo o que precisamos. Quando v
 que quando você segura uma tecla e aperta a outra, você vai ver ela sendo impresa consecutivamente e as luzes serão acesas
 de acordo com o botão que você apertar, e isso pode ser em conjunto com outras teclas.
 
-=head2 Resumo
+=head2 Conclusão
 
 O grande truque é o SDL nos oferecer a informação de quando as tecla está apertada e quando a tecla é solta. Com isso podemos
 apertar multiplas técnicas simultaneamente, só precisamos pegar a "frag" das teclas no Arduino.
@@ -343,6 +343,8 @@ L<http://search.cpan.org/~cook/Device-SerialPort-1.04/SerialPort.pm>
 =head2 Agradecimento
 
 Solli Honorio
+
+Otávio Fernandes
 
 =head2 AUTOR
 
