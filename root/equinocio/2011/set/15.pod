@@ -1,0 +1,89 @@
+=encoding UTF-8
+
+=head1 NAME
+
+Redis::Dump - Uma simples maneira de realizar "dump", backup e recuperar seus dados do redis.
+
+=head1 Introdução
+
+Eu escrevi este módulo para suprir uma necessidade pessoal há alguns meses atrás, no qual
+eu precisava procurar por chaves de uma forma especifica, efetuar backup e até restaurar
+os dados de um servidor redis para outro.
+
+Enfim, desta necessidade saiu o aplicativo Redis::Dump que esta disponível no CPAN, e 
+pode ser considero já estável.
+
+Para instalar ele, basta:
+
+	cpanm Redis::Dump
+
+Instalando ele, ele irá lhe oferecer dois aplicativos, além dos módulos, estes aplicativos
+são baseados na serialização em JSON, mas nada impede que você use os módulos para serializar
+em outros formatos.
+
+=head1 redis-dump
+
+Este aplicativo pode ser executado pela linha de comando, por exemplo para visualizar todo
+o conteúdo existente no servidor redis local em JSON:
+
+	# redis-dump --server 127.0.0.1:6379
+	{
+		"foo" : "1"
+	}
+
+Caso queira filtrar por alguma palavra chave, basta adicionar o parametro "--filter":
+
+	redis-dump --server 127.0.0.1:6379 --filter f*o
+	{
+		"foo" : "1"
+	}
+
+Caso você não informe o "--server", ele irá assumir o valor "127.0.0.1:6379". Você pode selecionar o tipo que deseja buscar, por exemplo, apenas o tipo de "lista:
+
+	redis-dump --type list
+	{
+		"listbar" :  [
+		            "{\"uuid\":\"F3D4BA06-9793-11E0-AAB9-D0A1E5EB3B8E\", \"foo\":\"1\"}"
+			    ]
+	}
+
+
+Você ainda pode pedir para visualizar o tipo da chave, com a opção "--show_type".
+
+	redis-dump --type list --show_type
+	{
+		"listbar (list)" :  [
+		            "{\"uuid\":\"F3D4BA06-9793-11E0-AAB9-D0A1E5EB3B8E\", \"foo\":\"1\"}"
+			    ]
+	}
+
+Caso queira efetuar uma cópia para backup de todos os dados, ou apenas de alguns, basta
+direcionar a saída para um arquivo.
+
+	redis-dump > redis.dump
+
+=head1 redis-restore
+
+Para restaurar o backup gerado pelo redis-dump, basta utilizar este aplicativo com a 
+seguinte linha de comando:
+
+	redis-restore --file redis.dump --flushall
+
+A opção  "--flushall" irá apagar todos os registros existentes no banco antes de 
+restaurar os dados que estão presentes no arquivo redis.dump.
+
+=head1 Desenvolvimento.
+
+=over
+
+=item * http://github.com/maluco/Redis-Dump
+
+=item * http://search.cpan.org/~tbr/Redis-Dump-0.014
+
+=back
+
+=head1 Autor
+
+Thiago Rondon, <thiago@aware.com.br>, http://www.aware.com.br/
+
+=cut

@@ -14,5 +14,27 @@
 
 
 <ul class="decimal">
- <li><a href="/equinocio/2011/">Acompanhe os artigos !</a></li>
+ <li><a href="/equinocio/2011/set/1">Boas Vindas (por: Blabos de Blebe)</a></li>
+ <li><a href="/equinocio/2011/set/2">Truques com Dist::Zilla (por: Alexei "Russo" Znamensky)</a></li>
+ <li><a href="/equinocio/2011/set/3">Perlbrew - Instale quantas versões do Perl quiser, sem precisar de root! (por: Breno Oliveira)</a></li>
+ <li><a href="/equinocio/2011/set/4">Como montar um servidor Web com, Perl, Catalyst, Varnish, Nginx, MySQL e Postgres no Ubuntu (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/5">Scheme Para Programadores Perl (por: Nelson Ferraz)</a></li>
+ <li><a href="/equinocio/2011/set/6">CONSTRUINDO UMA APLICAÇÃO DESKTOP USANDO OS MÓDULOS TK E MOOSE (por: Daniel Vinciguerra)</a></li>
+ <li><a href="/equinocio/2011/set/7">INSTALAÇÃO DE APLICAÇÕES PERL CATALYST (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/8">BOAS PRÁTICAS PARA AGENTES DO NAGIOS (por: Solli M. Honório )</a></li>
+ <li><a href="/equinocio/2011/set/9">ELASTICSEARCH COM CATALYST (por: Renato CRON)</a></li>
+ <li><a href="/equinocio/2011/set/10">DATA::PRINTER - O PRETTY-PRINTER DO PERL (por: Breno Oliveira)</a></li>
+ <li><a href="/equinocio/2011/set/11">PLACK - SUPER-COLA PARA A WEB (por: Eden Cardim)</a></li>
+ <li><a href="/equinocio/2011/set/12">EFETUANDO TESTES COM O TEST::TCP (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/13">PERL ASSÍNCRONO (por: Stanislaw Pusep)</a></li>
+ <li><a href="/equinocio/2011/set/14">GRID COM DHTMLX, CATALYST E DBIX::CLASS (por: Lucas Tiago de Moraes)</a></li>
+ <li><a href="/equinocio/2011/set/15">Redis::Dump (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/16">COMO CRIAR E PUBLICAR MÓDULOS PARA O CPAN (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/17">DEPLOY / INSTALAÇÃO DE APLICAÇÕES PERL CATALYST (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/18">EMMA - SIMPLES DISCADOR PARA EFETUAR CHAMADAS VIA UM PROXY SIP COM UM ARQUIVO DE AUDIO (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/19">Statim (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/20">ENCRIPTAÇÃO DE SENHAS - UMA ABORDAGEM COM BCRYPT (por: Blabos de Blebe)</a></li>
+ <li><a href="/equinocio/2011/set/21">EU NÃO QUERO MAIS USAR "PERL -MMODULE\ 999" (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/22">ATALYST: DICAS E TRUQUES (por: Wallace Reis)</a></li>
+ <li><a href="/equinocio/2011/set/23">PERL, ARDUINO E SDL (por: Daniel Mantovani)</a></li>
 </ul>

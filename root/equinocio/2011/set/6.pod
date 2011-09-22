@@ -1,0 +1,302 @@
+=pod 
+
+=encoding utf-8
+
+=head1 Construindo uma aplicação desktop usando os módulos Tk e Moose
+
+
+=head2 Motivação
+
+Vejo muitas pessoas perguntando sobre um uso melhor estruturado e atual do
+módulo Tk em aplicações com interfaces gráficas (Graphic User Interfaces).
+Neste pequeno artigo, eu procuro mostrar uma das inúmeras formas de se
+estruturar aplicações desktops, utilizando o módulo de orientação a objetos
+Moose.
+
+
+=head2 Introdução
+
+O módulo Tk é um dos mais antigos responsáveis por criações de interfaces
+gráficas em Perl. É uma biblioteca muito poderosa, leve e prática para
+desenvolvimento de interfaces gráficas de usuários.
+
+O Tk inicialmente escrito para ser utilizado com a linguagem Tcl, hoje é
+usado por uma vasta gama de linguagens dinâmicas ou não como o c/c++, Perl,
+python e várias outras.
+
+A idéia principal deste artigo então é mostrar uma forma de estruturar a sua
+aplicação Tk e mostrar que o desenvolvimento com este módulo pode ser uma
+alternativa no mínimo interessante, além de mostrar que as telas em Tk nem
+sempre precisam ser feias e mal acabadas.
+
+
+=head2 Começando do Começo
+
+Vamos começar instalando os módulos citados acima que, adivinha!? são
+pré-requisitos para seguir com este artigo. Então... mãos a obra!
+
+Instalando o Tk na máquina:
+
+    $ sudo perl -MCPAN -e “install Tk”
+
+Instalando o Moose na máquina:
+
+    $ sudo perl -MCPAN -e “install Moose”
+
+E pronto, agora podemos começar a brincadeira! ; )
+
+
+=head2 Aplicação clássica em TK
+
+A título de curiosidade quero mostrar aos que não estão familiarizados com a
+sintaxe e o uso do módulo Tk, como seria criada uma aplicação. Farei isso até
+mesmo para que possa ficar mais clara a diferença entre criar uma aplicação
+usando o módulo Tk (como veio ao mundo err... ao computador) e estruturar
+uma aplicação usando boas práticas de desenvolvimento.
+
+Simples tela com o módulo Tk:
+
+    #!/usr/bin/perl 
+    
+    use Tk;
+    
+    my $mw = MainWindow->new( 
+        -title => "Minha aplicacao usando TK" 
+    );
+    
+    my $pnl_header = $mw->Frame->pack;
+    
+    my $lbl_title = $pnl_header->Label(
+        -text => "Minha aplicacao",
+        -background => 'gray',
+        -width => 50,
+        -heigh => 2,
+    )->pack;
+    
+    my $txt_something = $mw->Entry(
+        -width => 25,
+        -borderwidth => 1,
+        -background => 'white',
+        -text => 'escreva alguma coisa...',
+    )->pack;
+    
+    my $btn_entrar = $mw->Button(
+        -text => 'entrar',
+        -borderwidth => 1,
+        -width => 10,
+        -command => sub { &write_something }
+    )->pack;
+    
+    my $lbl_something = $mw->Label(
+        -text => '',
+    )->pack;
+    
+    
+    MainLoop;
+    
+    
+    sub write_something {
+        $lbl_something->configure( -text => $txt_something->get );
+    }
+
+Bom acima pode-se ver uma aplicação muito simples usando o Tk que exibe uma
+caixa de texto que quando entrado algo e pressionado o botão, passa o texto
+para um label abaixo exibindo o que foi digitado.
+
+O exemplo é bem simples, mas imagine uma aplicação de grande porte mantendo
+esta mesma “arquitetura”... inviável não acha!?
+
+
+=head2 Estruturando a aplicação com TK + Moose
+
+Agora que vocês viram como as coisas funcionam (ou funcionavam até agora ;] ),
+vamos ver como faremos para estruturar nossa aplicação. Nada melhor que
+ilustrar como as coisas vão ficar para termos uma noção macro de como as
+coisas vão se comunicar...
+
+Vamos passar um pouco de graxa nos cotovelos então... ; )
+
+    [ Main Caller ] --> [ Especificação do Formulário ] --> [  Moose+Tk Base ]
+
+Optei por utilizar esta estrutura por ser bem simples e muito fácil de
+implementar. Isso garante o entendimento do funcionamento das coisas,
+deixando-as menos complicadas.
+
+Note que com esta estrutura, podemos separar a parte de contrução da nossa
+interface gráfica das regras de negócios da nossa aplicação, o que é
+altamente recomendavel se você quiser garantir uma maior organização e menor
+dor de cabeça quando for corrigir ou implementar algo em seu projeto.
+
+
+=head3 Base.pm
+
+Para garantir que nossos esforços sejam aproveitados, vamos colocar as funções
+comuns em uma classe base que será herdada por todas as nossas classes que vão
+implementar a criação das nossas telas.
+
+    package MyApp::Form::Base;
+    
+    use Moose;
+    use Tk;
+    
+    # this is a window property
+    has 'window' => ( 
+        is => 'rw',
+        lazy => 0,
+        default => sub {
+            return MainWindow->new;
+        }
+    );
+    
+    
+    # configure screen widgets
+    sub init {
+        die "Method not implemented!";
+    }
+    
+    
+    # start to show window
+    sub show {
+        return MainLoop;
+    }
+    
+    
+    no Moose;
+    __PACKAGE__->meta->make_immutable;
+    
+    1;
+
+=head3 Main.pm
+
+Agora vamos implementar uma classe que construa aquela mesma tela simples que
+criamos inicialmente, em nosso exemplo sobre o módulo Tk.
+
+    package MyApp::Form::Main;
+    
+    use Moose;
+    extends 'MyApp::Form::Base';
+    
+    
+    ## window widgets
+    has 'txt_username' => ( is => 'rw' );
+    has 'txt_password' => ( is => 'rw' );
+    has 'btn_login' => ( is => 'rw' );
+    
+    
+    ## configure widgets
+    after 'init' => sub {
+        my $self = shift;
+        
+        $self->window->configure( 
+            -title => 'Teste Tk Moose',
+        );
+        
+        $self->txt_username(
+            $self->window->Entry(
+                -borderwidth => 1,
+            )->pack
+        );
+        
+        $self->txt_password(
+            $self->window->Entry(
+                -borderwidth => 1,
+            )->pack
+        );
+        
+        $self->btn_login(
+            $self->window->Button(
+                -text => 'Login',
+                -borderwidth => 1,
+                -command => sub { $self->do_login }
+            )->pack
+        );
+    };
+    
+    
+    ## widget actions
+    sub do_login {
+        my $self = shift;
+        $self->btn_login->configure( -text => 'testando o moose com tk' );
+    }
+    
+    
+    no Moose;
+    __PACKAGE__->meta->make_immutable;
+    
+    1;
+
+
+=head3 main
+
+Agora vamos botar a nossa tela pra “dar as caras”...
+
+    #!/usr/bin/perl
+    
+    use MyApp::Form::Main;
+    
+    
+    # build a new form object... and show it
+    my $app = MyApp::Form::Main->new;
+    $app->show;
+
+=head1 Explicando
+
+Vamos explicar o que foi feito...
+
+Nós criamos uma classe base com 1 atributo, onde este é responsável por
+manter o objeto MainWindow do Tk, os demais são responsáveis por
+persistir/manipular os widgets usados para construir suas telas e o método
+init serve para efetuar a configuração dos widgets propriamente dita.
+
+As classes que herdam a classe base, por sua vez, tem a função de configurar
+as telas conforme as necessidades. No exemplo acima criamos MyApp::Form::Main,
+onde configuramos uma tela principal para nossa aplicação mas poderíamos ter
+criado outras como MyApp::Form::Client, MyApp::Form::User, etc...
+
+No caso acima chamaríamos as classes segundo a demanda, instanciando as
+classes e chamando o método show conforme o exemplo abaixo:
+
+    package MyApp::Form::Main;
+    
+    use MyApp::Form::Client;
+    
+    has ‘btn_client’ => ( is => ‘rw’ );
+    
+    ...
+    
+    after ‘init’ => sub {
+        my $self = shift;
+        
+        ...
+        
+        $self->btn_client(
+            $self->window->Button(
+                -text => ‘Open Client Form’,
+                -command => sub { MyApp::Form::Client->new->show; }
+            )->pack
+        );
+    };
+    ...
+
+E pronto, temos um botão que abre uma outra janela, de clientes, em nosso
+projeto. 
+
+Uma outra implementação que costumo usar é criar um hash e abrigar todos os
+widgets nele... imagino que desta forma fica mais simples e dinâmico o acesso
+e criação 'at runtime' de algo na sua interface. ;)
+
+Bom pessoal, a idéia deste artigo foi somente ilustrar como é possível
+escrever aplicações em Perl / Tk usando uma arquitetura um pouco mais
+organizada e assim almentando a organização e dividindo melhor as obrigações
+entre as classes do seu projeto.
+
+Em meu blog é possivel ver alguns projetos desenvolvidos, ou em
+desenvolvimento, usando Perl Tk para ilustrar o que disse aqui neste artigo.
+
+=head1 AUTOR
+
+Daniel Vinciguerra  < dan.vinciguerra at gmail.com >
+
+http://github.com/dvinciguerra
+
+http://dvinciguerra.wordpress.com

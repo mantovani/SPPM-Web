@@ -1,0 +1,428 @@
+=pod
+
+=encoding utf-8
+
+=head1 Scheme para programadores Perl
+
+=head2 Introdução
+
+A maioria dos textos sobre Scheme introduzem a linguagem de baixo para cima:
+começam com primitivas simples, como números e strings; constroem pares
+(pairs) com C<cons>; constroem listas com pares; e assim por diante,
+construindo as estruturas de dados mais complexas praticamente do zero.
+
+Esse texto é diferente.
+
+Nós assumimos que você tem uma base sólida em programação Perl. Você conhece
+as estruturas de dados básicas (escalares, arrays, hashes), sabe como usar
+expressões regulares, referências, etc. E uma das coisas que você mais gosta
+em Perl é a atitude pragmática: "easy things easy, complex things possible".
+
+Assim, ao invés de começar com os detalhes, vamos iniciar com uma visão geral
+sobre a linguagem. Assim que você souber o básico, poderá ir tão fundo quanto
+quiser.
+
+=head3 Nota sobre a versão
+
+Neste texto nós usaremos racket, que é uma linguagem derivada de Scheme e do
+LISP. Você pode baixar a linguagem, que vem com uma IDE, no endereço:
+
+L<http://racket-lang.org/download/>
+
+=head2 Quais as principais diferenças entre Scheme e Perl
+
+Perl é uma linguagem fortemente inspirada por linguagens naturais.
+
+Scheme, em contrapartida, não se parece nada com uma linguagem natural.
+
+A razão para isso é que, como uma linguagem descendente de LISP, todos os
+programas e estruturas de dados são formados por s-expressions (expressões
+simbólicas).
+
+    > (display "Hello, World!")
+    Hello, World!
+    
+    > (+ 1 2)
+    3
+
+E esta é talvez a maior diferença entre Perl e Scheme: a sintaxe.
+
+Mas ao invés de focar nas diferenças, vamos olhar para as similaridades.
+O que Perl e Scheme têm em comum?
+
+A primeira coisa que você irá perceber é que as variáveis, em Scheme, são
+como as escalares em Perl: elas podem guardar qualquer tipo de valor.
+
+    > (define a 1)
+    > (define b 2)
+    > (+ a b)
+    3
+
+    > (define name "Larry")
+    > (display name)
+    Larry
+
+
+Mas atenção: diferente do Perl, você não pode usar apóstrofe (') no lugar de
+aspas ("):
+
+    > (define name 'Larry')
+    . read: unexpected `)'
+
+A razão para isso é que a apóstrofe tem um significado especial em Scheme.
+Nós vamos falar sobre isso mais tarde.
+
+Uma outra diferença importante é que Scheme não é tão permissivo com relação
+à mistura de variáveis de tipos diferentes:
+
+    > (define a 1)
+    > (define name "Larry")
+
+    > (+ a name)
+    +: expects type <number> as 2nd argument, given: "Larry"; other
+    arguments were: 1
+
+A solução para isso é simples: basta converter as variáveis, usando funções
+com nomes fáceis de lembrar, como C<number->string> e C<string->number>:
+
+    > (define x 1)
+    > (define y "2")
+    > (+ x y)
+    +: expects type <number> as 2nd argument, given: "2"; other arguments
+    were: 1
+    > (+ x (string->number y))
+    3
+
+
+Note que a sequência "->" é parte do nome da função, e, por convenção, indica
+a transformação do tipo da variável.
+
+Outra convenção interessante é o uso de "?" para indicar funções booleanas:
+
+    > (number? "abc")
+    #f
+    > (number? 123)
+    #t
+    
+E procedures que modificam a variável usam o caractere "!":
+
+    > (define x 1)
+    > (set! x (+ x 1))
+
+É importante lembrar que estes símbolos são apenas uma convenção, e não parte
+da sintaxe. 
+
+E isso significa também que nós podemos criar nossas próprias convenções:
+podemos usar $, @ e % em nossos nomes de variáveis:
+
+    > (define $foo 123)
+    > (define @bar (list "x" "y" "z"))
+    > (define %baz (hash "a" 1 "b" 2 "c" 3))
+
+E agora nós podemos passar para o próximo tópico:
+
+=head2 Listas
+
+A maioria dos textos sobre Scheme começariam a falar sobre "dotted lists",
+C<cons>, C<car>, C<cdr>, etc. Nós vamos pular essa parte.
+
+Aqui está um exemplo prático de como criar uma lista em Scheme:
+
+    > (define @list (list 1 2 3))
+    
+E aqui está o resultado:
+
+    > @list
+    '(1 2 3)
+
+Isto foi fácil!
+
+Você deve estar se perguntando, o que significa aquele apóstrofe antes da
+lista?
+
+O apóstrofe é usado para "quotar" uma lista, de modo que o primeiro item não
+seja interpretado como uma procedure.
+
+Estas duas linhas são completamente diferentes:
+
+    > (1 2 3)
+    ERROR: procedure application: expected procedure, given: 1
+    
+    > '(1 2 3)
+    '(1 2 3)
+
+
+=head2 A dualidade programa-lista
+
+Você já deve ter ouvido falar que programas em Lisp são listas; e listas
+podem ser programas. Isto é verdade, e aqui você pode ver um pequeno exemplo:
+
+Você já conhece a expressão:
+
+    > (+ 1 2 3)
+    6
+
+Que basicamente significa: "aplique a procedure + aos valores 1, 2 e 3".
+
+Nesse momento você poderia estar pensando em tentar algo como:
+
+    > (define @list (list 1 2 3))
+    > (+ @list)
+    +: expects argument of type <number>; given '(1 2 3)
+    
+Por que isso não funcionou? Por que o código acima é o mesmo que:
+
+    > (+ '(1 2 3))
+    +: expects argument of type <number>; given '(1 2 3)
+
+Como a mensagem de erro diz, você está passando '(1 2 3) ao invés de números.
+
+A maneira correta de aplicar a procedure + a uma lista de números é:
+
+    > (apply + @list)
+    6
+
+=head3 Mais listas
+
+O que mais podemos fazer com listas? Algumas procedures são parecidas com
+perl:
+
+    > (define @list '(1 2 3 4 5))
+    
+    > (length @list)
+    5
+    
+    > (reverse @list)
+    '(5 4 3 2 1)
+
+A sintaxe para obter o n-ésimo elemento da lista é um pouco mais obfuscada:
+
+    > (list-ref @list 2)
+    3
+
+Mas você deve se lembrar que, assim como acontece com Perl, nós raramente
+precisamos nos referir aos elementos de uma lista pelo seu índice. 
+
+Aqui está um exemplo de como podemos iterar pelos elementos de uma lista:
+
+    > (define @list '("foo" "bar" "baz"))
+    > (for ([i @list])
+        (display i)
+        (newline))
+    foo
+    bar
+    baz
+
+Scheme oferece muitas outras funções úteis para manipular listas:
+
+    > (define @list '(1 2 3 4 5))
+    > (first @list)
+    1
+
+    > (rest @list)
+    '(2 3 4 5)
+
+    > (second @list)
+    2
+
+    > (last @list)
+    5
+
+
+Uma função que poderá surpreendê-lo é C<sort>. Se você tentar a solução mais
+óbvia, irá falhar:
+
+    > (sort @list)
+    procedure sort: expects 2 arguments plus optional arguments with keywords
+    #:cache-keys? and #:key, given 1: '(5 4 3 2 1)
+
+O que aconteceu? Como a mensagem de erro diz, C<sort> espera dois argumentos,
+mas nós só usamos um.
+
+O argumento que falta é a função usada para ordenar:
+
+    > (sort @list <)
+    '(1 2 3 4 5)
+
+    > (sort @list >)
+    '(5 4 3 2 1)
+
+Sim, como você pode ver, "<" e ">" também são funções, e podem ser passadas
+como parâmetros para outras funções.
+
+Se você quiser comparar strings, pode usar as funções específicas para isso:
+C<<string<?>> and C<<string>?>>.
+
+Então:
+
+    > (sort '("foo" "bar" "baz") string<?)
+    '("bar" "baz" "foo")
+
+Eu não vou listar todas as funções relacionadas a listas aqui; basta dizer que
+você encontrará equivalentes para todas as funções de List::Util e
+List::MoreUtils em Scheme.
+
+Vamos terminar vendo duas funções muito importantes: C<map> e C<filter>, que
+são equivalentes ao C<map> e C<grep> de Perl:
+
+    > (map (lambda (x) (* x 2)) @list)
+    '(2 4 6 8 10)
+    
+    > (filter (lambda (x) (<= x 3)) @list)
+    '(1 2 3)
+
+Nós vamos falar mais sobre funções lambda mais tarde -- por ora, vamos dizer
+que são similares às subs anônimas de Perl.
+
+
+=head2 Hashes
+
+Assim como no caso das listas, a sintaxe para criar hashes é simples:
+
+    > (define %foo (hash "a" 1 "b" 2 "c" 3))
+
+Existem diversas funções úteis para lidar com hashes:
+
+    > (hash-ref %foo "a")
+    1
+    
+    > (hash-keys %foo)
+    '("a" "b" "c")
+
+    > (hash-values %foo)
+    '(1 2 3)
+
+Da mesma forma como acontece com Perl, você poderia iterar sobre um hash
+usando suas chaves; mas é mais simples usar C<hash-for-each>:
+
+    > (hash-for-each %foo
+        (lambda (k v) (display k) (newline)))
+    a
+    b
+    c
+
+=head3 Conjuntos
+
+Em Perl, os hashes são frequentemente usados para operações de conjuntos:
+verificar se um elemento existe em uma lista, ou se duas listas têm elementos
+em comum.
+
+Em Scheme nós temos um tipo de variável semelhante ao hash, mas otimizado
+para esse tipo de operações: os conjuntos ("sets"):
+
+    > (set 1 2 3 4 5)
+    (set 1 2 3 4 5)
+
+Como os sets são parecidos com hashes, vou reaproveitar o caractere "%" para
+indicar variáveis desse tipo:
+
+    > (define %foo (set 1 2 3 4 5))
+    > %foo
+    (set 1 2 3 4 5)
+
+    > (define %bar (set 2 4 6 8 10))
+    > %bar
+    (set 2 4 6 8 10)
+
+Agora podemos fazer alguns testes:
+
+    > (set-member? %foo 1)
+    #t
+    > (set-member? %bar 1)
+    #f
+
+    > (set-union %foo %bar)
+    (set 1 2 3 4 5 6 8 10)
+
+    > (set-intersect %foo %bar)
+    (set 2 4)
+
+    > (set-subtract %foo %bar)
+    (set 1 3 5)
+
+    > (set-subtract %bar %foo)
+    (set 6 8 10)
+
+
+=head3 Atenção
+
+Diferentemente do Perl, hashes e sets são imutáveis em Scheme.
+
+Apesar disso, nós podemos usar a função C<hash-set> para retornar um hash
+modificado:
+
+    > (define %foo
+        (hash-set %foo "a" 123))
+
+E, no caso de sets, você pode usar C<set-add> e C<set-remove>:
+
+    > (define %foo
+        (set-add %foo 10))
+    
+    > (define %bar
+        (set-remove %bar 10))
+
+No caso dos sets você também pode convertê-los facilmente:
+
+    > (list->set @list)
+
+    > (set->list %set)
+
+</Trap>
+
+=head2 Expressões Regulares
+
+Perl é conhecida por tomar emprestado características de diversas linguagens;
+Scheme tomou emprestado pelo menos uma característica diretamente de Perl: as
+expressões regulares.
+
+Da mesma forma como usamos "$", "@" e "%" para denotar certos tipos de
+variáveis, usarei aqui o caractere "~" para indicar uma variável que contém
+uma expressão regular:
+
+    > (define ~re (regexp "^[A-Z]+$"))
+
+    > (regexp-match? ~re "TEST")
+    #t
+    > (regexp-match? ~re "123")
+    #f
+
+Existe uma outra maneira de definir uma expressão regular: ao invés de
+C<(regexp "string")>, podemos escrever C<#rx"string">. Isso é útil quando
+queremos colocar a expressão regular dentro de uma s-expression, como nos
+exemplos a seguir:
+
+    > (define $str "There's More Than One Way To Do It")
+
+    > (regexp-split #rx" " $str)
+    '("There's" "More" "Than" "One" "Way" "To" "Do" "It")
+
+    > (regexp-replace #rx" " $str "!")
+    "There's!More Than One Way To Do It"
+
+Ops! Nós substituimos apenas a primeira ocorrência. Para fazer uma
+substituição global, precisamos usar a função C<regexp-replace*>:
+
+    > (regexp-replace* #rx" " $str "!")
+    "There's!More!Than!One!Way!To!Do!It"
+
+
+E se quisermos obter uma lista de elementos que batem com uma expressão
+regular dentro de uma string?
+
+    > (define ~re (regexp "[A-Z]"))
+    > (regexp-match* ~re "There's More Than One Way To Do It")
+    '("T" "M" "T" "O" "W" "T" "D" "I")
+
+    > (regexp-match* #rx"[A-Za-z]+" $str)
+    '("There" "s" "More" "Than" "One" "Way" "To" "Do" "It")
+
+=head1 Conclusão
+
+Este artigo procurou mostrar as semelhanças entre Scheme e Perl; a partir
+daqui você poderá continuar com mais segurança suas pesquisas no mundo das
+linguagens derivadas de Lisp.
+
+=head1 Autor
+
+    Nelson Ferraz <nferraz no gmail com>
