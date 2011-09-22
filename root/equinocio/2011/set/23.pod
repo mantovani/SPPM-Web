@@ -54,7 +54,7 @@ onde ttyUSB0 é o USB conectado ao Arduino, o segundo argumento é a velocidade 
 
 Simple DirectMedia Layer é uma biblíoteca "cross-platform multimedia library" desenhada para prover acesso de baixo nível ao aúdio,
 teclado, joystick, 3D hardware via OpenGL e  2D video framebuffer. É uma biblíoteca toda escrita em C, que tem binds para outras linguagem como,
-Ada, C#, D, Eiffel, Erlang, Euphoria, Go, Guile, Haskell, Java, Lisp, Lua, ML, Objective C, Pascal, Perl, PHP, Pike, Pliant, Python, Ruby, Smalltalk, and Tcl.
+Ada, C#, D, Eiffel, Erlang, Euphoria, Go, Guile, Haskell, Java, Lisp, Lua, ML, Objective C, Pascal, Perl, PHP, Pike, Pliant, Python, Ruby, Smalltalk, e Tcl.
 
 
 =head3 Bind em Perl
@@ -328,7 +328,7 @@ de acordo com o botão que você apertar, e isso pode ser em conjunto com outras
 =head2 Conclusão
 
 O grande truque é o SDL nos oferecer a informação de quando as tecla está apertada e quando a tecla é solta. Com isso podemos
-apertar multiplas técnicas simultaneamente, só precisamos pegar a "frag" das teclas no Arduino.
+apertar multiplas técnicas simultaneamente, só precisamos pegar a "flag" das teclas no Arduino.
 
 =head2 Fontes
 
@@ -345,6 +345,8 @@ L<http://search.cpan.org/~cook/Device-SerialPort-1.04/SerialPort.pm>
 Solli Honorio
 
 Otávio Fernandes
+
+Stanislaw Pusep
 
 =head2 AUTOR
 
