@@ -190,7 +190,7 @@ Usaremos o módulo Device::SerialPort para enviar informações providas do SDL 
         }
     }
 
-O código faz exatamente o que foi citado acima, você sabe quando a teclado foo foi apertada e quando você soltou a tecla.
+O código faz exatamente o que foi citado acima, você sabe quando a tecla foo foi apertada e quando você soltou a tecla.
 Quando você está apertando a tecla nós mandamos ao Arduino a "tecla" mais uma flag chamada "0", quando estamos soltando a tecla
 nós mandamos a "tecla" e uma flag chamada "1".
 
