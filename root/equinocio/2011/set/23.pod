@@ -328,7 +328,7 @@ de acordo com o botão que você apertar, e isso pode ser em conjunto com outras
 =head2 Conclusão
 
 O grande truque é o SDL nos oferecer a informação de quando a tecla é pressionada e quando a tecla é solta. Com isso podemos
-apertar multiplas técnicas simultaneamente, só precisamos pegar a "flag" das teclas no Arduino.
+apertar multiplas teclas simultaneamente, só precisamos pegar a "flag" no Arduino.
 
 =head2 Fontes
 
