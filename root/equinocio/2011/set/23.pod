@@ -83,8 +83,8 @@ Escolha a opção 2:
 =head2 O Projeto
 
 Vamos construir um Piano de Luz, quando você apertar uma tecla do seu teclado uma luz vai acender, permitindo que várias luzes sejam acesas simultaneamente.
-Nesse artigo vamos usar alguns truques que só é possível com o nível de interface com o teclado que o SDL oferece. É apenas uma demonstração, mas o objetivo
-é mostrar o conceito que pode ser aplicado para B<qualquer coias que a sua imaginação possa pensar>.
+Nesse artigo utilizaremos alguns truques que só são possíveis com o nível de interface com o teclado que o SDL oferece. É apenas uma demonstração, mas o objetivo
+é mostrar o conceito que pode ser aplicado para B<qualquer coisa que a sua imaginação possa pensar>.
 
 Você pode pensar, "que projeto tosco, é tão fácil fazer isso". Mas eu desafio o leitor a ler o artigo para entender o que vamos fazer, e que é B<impossível>
 fazer o que eu vou fazer sem o nível de interface que o SDL oferece.
@@ -190,7 +190,7 @@ Usaremos o módulo Device::SerialPort para enviar informações providas do SDL 
         }
     }
 
-O código faz exatamente o que foi citado acima, você sabe quando a teclado foo foi apertada e quando você soltou a tecla.
+O código faz exatamente o que foi citado acima, você sabe quando a tecla foo foi apertada e quando você soltou a tecla.
 Quando você está apertando a tecla nós mandamos ao Arduino a "tecla" mais uma flag chamada "0", quando estamos soltando a tecla
 nós mandamos a "tecla" e uma flag chamada "1".
 
@@ -327,8 +327,8 @@ de acordo com o botão que você apertar, e isso pode ser em conjunto com outras
 
 =head2 Conclusão
 
-O grande truque é o SDL nos oferecer a informação de quando as tecla está apertada e quando a tecla é solta. Com isso podemos
-apertar multiplas técnicas simultaneamente, só precisamos pegar a "flag" das teclas no Arduino.
+O grande truque é o SDL nos oferecer a informação de quando a tecla é pressionada e quando a tecla é solta. Com isso podemos
+apertar multiplas teclas simultaneamente, só precisamos pegar a "flag" no Arduino.
 
 =head2 Referências
 
