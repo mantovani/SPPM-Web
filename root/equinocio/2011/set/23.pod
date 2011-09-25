@@ -330,7 +330,7 @@ de acordo com o botão que você apertar, e isso pode ser em conjunto com outras
 O grande truque é o SDL nos oferecer a informação de quando as tecla está apertada e quando a tecla é solta. Com isso podemos
 apertar multiplas técnicas simultaneamente, só precisamos pegar a "flag" das teclas no Arduino.
 
-=head2 Fontes
+=head2 Referências
 
 L<http://arduino.cc/en/Tutorial/HomePage>
 
@@ -339,6 +339,8 @@ L<http://en.wikipedia.org/wiki/Arduino>
 L<http://search.cpan.org/~kthakore/SDL-2.533/lib/pods/SDL.pod>
 
 L<http://search.cpan.org/~cook/Device-SerialPort-1.04/SerialPort.pm>
+
+L<http://www.libsdl.org/>
 
 =head2 Agradecimento
 
