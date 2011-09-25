@@ -1,0 +1,635 @@
+=encoding utf8
+
+=head1 Deploy de aplicativo rico para web com Plack e CGI.
+
+=head2 O que são Aplicativos Ricos?
+
+A grande rede mundial vem se modernizando cada vez mais e com isso possibilitando o avanço e surgimento de diversas tecnologias e metodologias.
+
+Graças ao aumento de velocidade de acesso à rede e a diminiuição de problemas como intermitência no sinal, foi possível aprimorar metodologias de desenvolvimento web 
+e trazer para esse ambiente, características até então somente presentes em aplicativos desktop. Então, eis surge um novo conceito para desenvolvimento web: RIA.
+
+RIA, da sigla em inglês Rich Internet Application, nada mais é que um aplicativo web com características de aplicativos desktop com interface. Um aplicativo RIA, tem 
+por conceito uma interface que mimifica os recursos encontrados em aplicativos GUI presente em qualquer Sistema Operacional.
+
+Nos aplicativos RIA, todos (ou quase todos) os recuros pertinentes a interface são processados pelo browser, e estado e dados da aplicação continuam sendo executados 
+no servidor de aplicativos.
+
+"Aplicações web tradicionais centralizam todo seu código em torno de uma arquitetura de Cliente-servidor e um cliente magro. Todo o processamento é realizado no 
+servidor, e o cliente apenas utiliza uma tela estática (neste caso em HTML). A grande desvantagem deste sistema é que a interação com a aplicação deve ser feita 
+através do servidor, onde os dados são enviados para o servidor, são respondidos e a página é recarregada no cliente como resposta. Utilizando uma tecnologia uma 
+aplicação-cliente que possa executar instruções no computador do usuário, RIAs podem reduzir significativamente o número de sincronizações e aumentar a interatividade 
+com o cliente. Esta diferença pode ser verificada fazendo uma analogia entre terminal e mainframe e servidor de aplicação/Cliente Gordo. " (trecho retirado da WIKIPEDIA)
+
+Em alguns contextos, fica difícil dizer o que é RIA ou não, porém uma característica é comum a este conceito: eles introduzem uma camada intermediária de código, 
+chamada normalmente de client engine, entre o usuário e o servidor. Este client engine é normalmente carregado no início da aplicação, e pode ser acrescido de outras 
+atualizações do código que são baixadas enquanto a aplicação ainda está rodando. O client engine atua como uma extensão do navegador, e é responsável pela 
+renderização da interface de aplicação do usuário e fazer a comunição com o servidor.
+
+Atualmente, para o desenvolvimento RIA, ainda não há um grande número de ferramentas e recursos se comparados com outros conceitos, porém existem alguns frameworks 
+bem ricos e maduros com esse propósito, como DHTMLX e EXTJS.
+
+Eu não incluiría frameworks como Jquery e Prototype nessa lista, porque esses frameworks tem como propósito simplificar a escrita de códigos Javascript, e nao implementar
+componentes característicos de softwares GUI como DHTMLX e EXTJS fazem.
+
+
+
+=head2 Liberdade pra uns, escravidão pra outros
+
+Com o amadurecimento da web, foram surgindo diversos ambientes servidores, e consecutivamente diversas outras APIs para esses servidores. Muitos enchergam essa vasta
+quantidade de opções de servers web como uma "liberdade", porém, o que muitos não vêem, é que na maioria dos casos, ao escolher aquele ambiente e aquela API, o 
+desenvolvedor se tornou eterno escravo daquele ambiente. Ou seja, seu aplicativo, pra "rodar" sempre dependerá daquela tecnologia, e assim, ele acabou de virar 
+um escravo.
+
+E assim, o conceito de Middleware nunca foi tão valioso, e esse sim, pode ser intitulado por "liberdade", pois lhe garante desenvolver um aplicativo que funcione em
+qualquer ambiente servidor, e o tempo que seria perdido com peculiaridades do ambiente, poderá ser empenhado em tarefas pertinentes a melhoria da aplicação em si.
+
+
+Seguindo os ensinamentos de meu querido amigo e professor Edem Cardim, resolvi estudar e empregar um fantástico modulo perl que consiste num "kit" de ferramentas, dentre 
+elas um middleware e server de teste que é o Plack -> http://search.cpan.org/dist/Plack/lib/Plack.pm
+
+Então resumindo, com o Plack, pude constuir um aplicativo sem me preocupar com o ambiente servidor, e com isso me dedicar mais ao aplicativo em si.
+
+
+=head2 Definindo "ferramentas & recursos"
+
+
+1 - IDE Perl: Padre (http://padre.perlide.org/)
+
+2 - Ambiente de desenvolvimento: Plack
+
+3 - Interface HTTP: CGI (http://search.cpan.org/~markstos/CGI.pm-3.55/lib/CGI.pm), poderia ser qualquer outra.
+
+4 - Framework Javascript: DHTMLX (www.dhtmlx.com)
+	O framework DHTMLX é um framework muito rico e maduro e oferece diversos componentes RIA para aplicações de propósitos diversos. Possui versão open e paga.
+	Iremos utilizar a open, lógico.
+
+
+=head2 Definindo o "aplicativo"
+
+O aplicativo tem como idéia principal mimificar um aplicativo do tipo Gerenciador de Arquivos
+
+Funções Principais:
+	
+	# Visualização dos diretórios em "estrutura de árvore"
+
+	# Visualização dos arquivos contidos no diretório com informações particulares sobre cada um
+
+	# Criação de diretórios
+
+	# Exclusão de diretórios
+
+	# Visualização de arquivos
+
+	# Download de arquivos
+
+	# Exclusão de arquivos
+
+
+=head2 Preparando o Ambiente
+
+Pra mostrar a verdadeira liberdade 	que o Plack dá ao desenvolvedor, vou fazer o deploy de nossa aplicação em um SO Windows 2008 Server e esta mesma aplicação 
+rodará em qualquer ambiente que tenha Perl instalado. Porém, quem quiser fazer o deploy num SO linux ou unix, poderá efetuar os mesmos procedimentos 
+correspondentes.
+
+=head2 1º passo: Instalar o Perl
+
+	# Windows
+	
+	1 - Vá até a url http://strawberryperl.com/ e baixe o Strawberry Perl seguindo o link  Download Strawberry Perl 5.12.3.0 e instale. Durante a instalação, 
+	escolha o diretório C:\strawberry para a instalação do Strawberry Perl
+	
+	# Linux, Unix, Mac
+	A maioria desses SOs ja vêm com perl instalado. Digite perl -v numa linha de comando para saber qual a versao do seu Perl
+	
+
+=head2 2º passo: Instalar os módulos Perl que utilizaremos em nossa aplicação
+	
+	1 - Abra o prompt de comando. Menu Iniciar => Executar => cmd "enter".
+	
+	2 - Já no prompt de comando, digite o seguinte comando cd c:\strawberry\perl\bin para "entrarmos" no diretório onde se encontram os binários do Perl
+	
+	3 - Digite o comando => cpanm CGI => dê enter para instalar o Modulo CGI. Após terminar, siga o próximo comando.
+	
+	4 - Digite o comando => cpanm CGI::Emulate::PSGI => dê enter para instalar o Modulo CGI::Emulate::PSGI. Após terminar, siga o próximo comando.
+	
+	5 - Digite o comando => cpanm CGI::Compile => dê enter para instalar o Modulo CGI::Compile. Após terminar, siga o próximo comando.
+	
+	6 - Digite o comando => cpanm Plack => dê enter para instalar o Modulo Plack. Após terminar, siga o próximo comando.
+	
+	7 - Digite o comando => cpanm JSON => dê enter para instalar o Modulo JSON. Após terminar, siga o próximo comando.
+	
+	8 - Digite o comando => cpanm Date::Day => dê enter para instalar o Modulo Date::Day. Após terminar, siga o próximo comando.
+	
+	9 - Digite o comando => cpanm Date::Language => dê enter para instalar o Modulo Date::Language. Após terminar, siga o próximo comando.
+	
+	10 - Digite o comando => cpanm Path::Class => dê enter para instalar o Modulo Path::Class. Após terminar, siga o próximo comando.
+	
+	11 - Digite o comando => cpanm HTML::Entities => dê enter para instalar o Modulo HTML::Entities.
+	
+
+=head2 3º passo: Criar estrutura de diretórios para a aplicação
+
+	Como meu HD é particionado, vou criar o minha estrutura de diretórios no drive D:\
+	A estrutura de diretórios ficará assim:
+	
+	D:\artigo\
+	=>	diretório "container"  de nossa aplicação
+	
+	D:\artigo\plack_conf\
+	=>	diretório onde armazenaremos o arquivo de configuracao de nossa aplicação plack
+	
+	D:\artigo\www\
+
+	=>	diretório raiz de nosso aplicativo web que vamos construir
+	
+	D:\artigo\www\cgi-bin\
+	=>	diretório onde armazenaremos os arquivos Perl de nosso aplicativo web que vamos construir
+	
+	D:\artigo\www\gerenciadordedocumentos\
+	=>	diretório que servirá para armazenar os files que nosso aplicativo web irá gerenciar
+	
+	D:\artigo\www\static\
+	=> diretório onde armazenaremos os arquivos estáticos de nossa aplicação web. aqui ficarão os arquivos como html, javascripts e imagens
+	
+	D:\artigo\www\static\codebase\
+	=> 	diretório onde iremos armazenar os arquivos dos componentes do framework DHTMLX que iremos utilizar em nossa aplicação
+	
+	D:\artigo\www\static\javascript\
+	=> diretório onde armazenaremos os scripts javascript que iremos construir para nossa aplicação
+	
+	D:\artigo\www\static\tinymce\
+	=> diretório onde armazenaremos o aplicativo TinyMCE - Editor WYSIWYG
+
+
+=head2 4º passo: Criar o arquivo de configuracao da aplicação plack
+	
+Abra seu editor de texto preferido e cole o seguinte código:
+
+=begin pod:xhtml
+
+<pre>
+		use warnings;
+		use strict;
+		
+		# Importar modulos Plack
+		use Plack::Builder;
+		use Plack::App::CGIBin;
+		use Plack::App::Directory;
+
+		# configuracao do mapeamento da raiz do aplicativo web, com possibilidade de usar arquivos dinamicos como .pl
+		my $root = Plack::App::CGIBin->new(
+		  root => "D:/artigo/www/",
+		)->to_app;
+
+		# configuracao do mapeamento para o diretório que estão os arquivos dinâmicos como os .pl
+		my $cgi_bin = Plack::App::CGIBin->new(
+		  root => "D:/artigo/www/cgi-bin/",
+		)->to_app;
+		
+		# configuracao do mapeamento para o diretório onde estão os arquivos estáticos diversos
+		my $static = Plack::App::Directory->new(
+		  root => "D:/artigo/www/static/"
+		)->to_app;
+
+		# configuracao do mapeamento para o diretório que servirá como container dos files gerenciados pela aplicação
+		my $files_dir = Plack::App::Directory->new(
+		  root => "D:/artigo/www/gerenciadordedocumentos/"
+		)->to_app;
+
+		# montagem dos mapeamentos da aplicação plack
+		builder {
+		  mount '/' => $root;
+		  mount '/cgi-bin' => $cgi_bin;
+		  mount '/static'  => $static;
+		  mount '/gerenciadordedocumentos'  => $files_dir;
+		}
+</pre>
+
+=end pod:xhtml
+	
+Salve o arquivo com o nome de app.psgi no diretório D:\artigo\plack_conf\
+	
+=head2 5º passo: Iniciar a aplicação plack na porta 5000 da máquina
+
+	1 - Abra o prompt de comando. Menu Iniciar => Executar => cmd "enter".
+	
+	2 - Já no prompt de comando, digite o seguinte comando cd c:\strawberry\perl\bin para "entrarmos" no diretório onde se encontram os binários do Perl
+	
+	3 - Digite o seguinte comando: plackup d:\artigo\plack_conf\app.psgi			=> dê enter
+	
+	4 - Você verá no terminal escrito: HTTP::Server::PSGI: Accepting connections at http://0:5000/  => a partir deste momento, você ja pode acessar sua aplicação
+	pelo browser, digitando por exemplo a seguinte url: http://127.0.0.1:5000
+	Porém, nossa aplicação web ainda não foi construída, e logo, o plack não tem nada à servir para o browser.
+	
+=begin pod:xhtml
+
+<img src="/static/images/equinocio/2011/set/listening.jpg" />
+
+=end pod:xhtml
+	
+	
+=head2 6 passo: Construir o aplicativo web
+
+=head3 1 - Baixar e armazenar os arquivos do framework DHTMLX que iremos utilizar na interface RIA.
+
+Em nossa aplicação, iremos utilizar os seguintes componentes da versão 2.5 :
+	
+	# DHTMLX layout API
+	# DHTMLX tree API
+	# DHTMLX windows API
+	# DHTMLX folders  API - atual DATAVIEW na lib 3.0 (versao current)
+	# DHTMLX toolbar API
+	# DHTMLX menu API
+	
+	Baixe o arquivo /static/images/equinocio/2011/set/codebase.rar contendo todos os componentes já "instalados" no mesmo diretório.
+	Descompacte os arquivos dentro do diretório D:\artigo\www\static\codebase\
+	
+Você ainda poderá baixar a suite DHTMLX diretamente no site da fabricante em http://www.dhtmlx.com.br. A suíte vem com cada componente isolado em seus respectivos diretórios
+	
+	
+=head3 2 - Vamos criar o arquivo principal de nossa interface.
+	
+Abra seu editor de texto preferido e crie um novo arquivo do tipo XHTML (contendo doctype, head e body).
+	
+Seguindo "as boas práticas", dentro do HEAD do nosso arquivo html iremos disponibilizar os arquivos CSS e Javascript dos componentes DHTMLX
+	
+=head4 CSSs das LIBS DHTMLX dentro do HEAD
+	
+Os arquivos CSS devem sempre anteceder os arquivos Javascript
+	
+	<style type="text/css" media="screen"> 
+		html, body {/* ============ Essa regra é importante para o resize automatico do painel de acordo com a resolucao do monitor ============ */
+			width: 100%;
+			height: 100%;
+			margin: 0px;
+			overflow: hidden;
+			font-family:monospace;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="codebase/dhtmlxlayout.css"><!-- ============ API LAYOUT STYLE ============ -->
+	<link rel="stylesheet" type="text/css" href="codebase/skins/dhtmlxlayout_dhx_skyblue.css"><!-- ============ API LAYOUT STYLE ============ -->
+	<link rel="stylesheet" type="text/css" href="codebase/dhtmlxtree.css"><!-- ============ API TREE MENU STYLE ============ -->
+	<link rel="stylesheet" type="text/css" href="codebase/skins/dhtmlxtoolbar_dhx_skyblue.css"><!-- ============ API TOOLBAR STYLE ============ -->
+	<link rel="STYLESHEET" type="text/css" href="codebase/dhtmlxfolders.css"><!-- ============ API FOLDERS STYLE ============ -->
+	<link rel="stylesheet" type="text/css" href="codebase/dhtmlxwindows.css"><!-- ============ API WINDOW STYLE ============ -->
+	<link rel="stylesheet" type="text/css" href="codebase/skins/dhtmlxwindows_dhx_skyblue.css"><!-- ============ API WINDOW STYLE ============ -->
+	<link rel="stylesheet" type="text/css" href="codebase/skins/dhtmlxmenu_dhx_skyblue.css"><!-- ============ API MENU STYLE ============ -->
+	<link rel="stylesheet" type="text/css" href="codebase/skins/dhtmlxmenu_dhx_blue.css"><!-- ============ API MENU STYLE ============ -->
+
+
+=head4 Javascripts das LIBS DHTMLX dentro do HEAD
+	
+	<script src="codebase/dhtmlxcommon.js"></script><!-- ============ LIB DHTMLX ============ -->
+	<script src="codebase/dhtmlxlayout.js"></script><!-- ============ LAYOUT API ============ -->
+	<script src="codebase/dhtmlxtree.js"></script><!-- ============ MENU TREE API ============ -->
+	<script src="codebase/dhtmlxwindows.js"></script><!-- ============ WINDOW API ============ -->
+	<script src="codebase/dhtmlxcontainer.js"></script><!-- ============ CONTAINER LIB - Auxilia componentes diversos ============ -->
+	<script src="codebase/dhtmlxfolders.js"></script><!-- ============ FOLDERS API - atual DATAVIEW na lib 3.0 ============ -->
+	<script src="codebase/dhtmlxtoolbar.js"></script><!-- ============ TOOLBAR API ============ -->
+	<script src="codebase/dhtmlxmenu.js"></script><!-- ============ MENU API ============ -->
+	<script src="codebase/ext/dhtmlxmenu_ext.js"></script><!-- ============ LIB MENU EXTEND ============ -->
+	
+Ainda no HEAD, faremos uma "chamada" para um arquivo Javascript contendo um Objeto especialmente construído para representar nossa aplicação
+
+	
+=head4 Objeto Javascript principal da aplicação
+	
+
+	<script src="javascript/Perl_File_Explorer.js"></script><!-- ============ OBJETO FILE EXPLORER ============ -->
+	
+Ainda na tag HEAD, instanciaremos nosso objeto FILE EXPLORER e faremos um controle simples de carregamento da aplicação utilizando o evento onload do DOM
+
+	
+=head4 Instanciando o Objeto Javascript principal da aplicação
+	
+=begin pod:xhtml
+
+<pre>
+	//===> instanciamos o objeto
+	var explorer = new Perl_File_Explorer(); //==> Cria o objeto explorer no escopo
+	//===> certificamos que o documento foi totalmente carregado
+	window.onload = function() //==> quando o DOM tiver totalmente carregado, inicia o processo de parser do FILE EXPLORER
+	{
+		//===> iniciamos nossa aplicação através do método init
+		explorer.init();
+	}
+</pre>
+
+=end pod:xhtml
+
+	
+=head4 O BODY
+
+Agora iremos construir body de nossa aplicação. O seletor body será utilizado para o parser o layout DHTMLX principal da aplicação. Em aplicaçõs RIA com javascript, é normal utilizar elementos inline do DOM para fazer parser de elementos construídos (componentes), bem como a criação de elementos html em tempo de execução, e a partir daí contruir terceiros elementos (componentes).	No nosso exemplo, todos os elementos HTML serão criados em tempo de execução. Assim, crie o body de sua página vazio e atribua a ele o id ¨body¨
+	
+Salve o arquivo como view.html no diretório D:\artigo\www\static\
+	
+	
+=head3 3 - Objeto Javascript Perl File Explorer
+	
+Vamos criar um objeto Javascript que controlará boa parte de nossa aplicação web. Nesse objeto haverão as funções principais de nossa interface web.
+Funcionará como uma camada intermediária entre os componentes DHTMLX e a aplicação em si
+	
+Abra seu editor de texto preferido e cole o seguinte código do objeto que pode ser encontrado no seguinte paste: http://pastebin.com/rWtyxtk4">http://pastebin.com/rWtyxtk4
+	
+=begin pod:xhtml
+
+<pre>
+
+		function Perl_File_Explorer()
+		{
+			//==> copie e cole o código do paste :  http://pastebin.com/rWtyxtk4 
+		}
+
+</pre>
+
+Paste: <a href="http://pastebin.com/rWtyxtk4">http://pastebin.com/rWtyxtk4</a>
+
+=end pod:xhtml
+	
+Salve o arquivo como Perl_File_Explorer.js no diretório D:\artigo\www\static\javascript\
+	
+	
+=head2 "Dando vida" ao Javascript
+	
+Agora com a interface gráfica construída, precisamos criar os arquivos Perl que serão responsáveis por receber as requisições de nossa interface 
+e realizar as tarefas necessárias no servidor
+	
+=head3 1 - Alimentando o treeview com diretórios
+	
+Vamos criar o arquivo que fornece a estrutura de diretórios em XML para interface renderizar o menu em árvore
+	
+Abra seu editor de texto preferido e cole o seguinte código:	
+	
+=begin pod:xhtml
+
+<pre>
+
+		#!/usr/bin/env perl
+		use strict;
+		use CGI;
+		use Path::Class;
+
+		use utf8;
+		no utf8;
+		my $q = new CGI;		
+
+		my $strXML;
+
+		$strXML = $strXML."<?xml version='1.0' encoding='utf-8'?>";
+		$strXML = $strXML."<tree id='0'>";
+		$strXML = $strXML."<item text='documentos' id='documentos' call='1' open='1' select='1'>";
+
+		my $pdir  = dir('../gerenciadordedocumentos');
+
+		chdir $pdir;
+
+		opendir(DIR, $pdir) or die "Não foi possível abrir o diretório $!";
+
+		while (my $file = readdir DIR)
+		{
+			my $ediretorio = -d $file;
+				if($ediretorio eq 1)
+				{
+					if($file ne "." && $file ne "..")
+					{
+						$strXML = $strXML.'		<item text="'.$file.'" id="'.$file.'"></item>';
+					}
+				}
+		}
+		closedir DIR;
+		$strXML = $strXML.'		</item>';
+		$strXML = $strXML.'	</tree>';
+
+		print $q->header('text/xml');
+
+		print $strXML;
+
+</pre>
+
+=end pod:xhtml
+	
+Salve o arquivo como tree_files.pl no diretório D:\artigo\www\cgi-bin
+	
+	
+=head2 2 - Alimentando o diretório da aplicação com arquivos
+	
+Vamos criar o arquivo que fornece a estrutura de arquivos em XML para interface renderizar a visualização dos arquivos contido no diretório
+selecionado
+	
+Abra seu editor de texto preferido e cole o seguinte código:	
+	
+=begin pod:xhtml
+
+<pre>
+
+		#!/usr/bin/env perl
+		use strict;
+		use CGI;
+		use File::Path qw{mkpath}; # make_path
+		use File::stat;
+		use Date::Day;
+		use Date::Language;
+		use POSIX qw(strtod);
+		use Path::Class;
+
+		my $q = new CGI;		
+		my $strXML;
+		my $diretorio=$q->param("diretorio");
+		my $imagemtipo;
+		my $pegadir  = dir('../gerenciadordedocumentos');       # Path::Class::Dir object
+		my $file;
+
+		$strXML = $strXML. '<?xml version="1.0" encoding="UTF-8"?>';
+		$strXML = $strXML. '<data>';
+
+		if($diretorio eq "raiz")
+		{
+			my @files = <$pegadir/*>;
+			foreach my $file (@files)
+			{
+				$file = file($file); # Path::Class::File object
+				my $ediretorio = -d $file;
+				my @vettipo=split(/\./, $file);
+				my $tipofile=@vettipo[3];
+				#my @vetnome=split(/\\/, $file); #windows
+				my @vetnome=split(/\//, $file); #linux
+		
+				my $nomefile=@vetnome[2];
+				if($ediretorio ne 1)
+				{
+					my $filesize = stat($file)->size;
+					$filesize = $filesize/1024;
+					$filesize=sprintf("%.2f",strtod($filesize));
+					my $st = stat($file) or die "erro ao ler tamanho $file: $!"; 
+					my $mtime = $st->mtime; # modification time in seconds since epoch 
+					my $localtimept = Date::Language->new('Brazilian');
+					my $ultimamodificacao=$localtimept->time2str("%A %d %B  %Y %T\n",$mtime);
+					$strXML = $strXML. "<item id='$nomefile' name='$nomefile' path='$pegadir' pathm='$pegadir' tipo='$tipofile' type='file' filesize='$filesize'><filesize>$filesize</filesize><modifdate>$ultimamodificacao</modifdate></item>";
+				}
+			}
+			closedir DIR;
+		}
+		else
+		{
+			my $subdir  = $pegadir->subdir($diretorio);
+
+			my @files = <$subdir/*>;
+			foreach my $file (@files)
+			{
+				$file = file($file); # Path::Class::File object
+				my $ediretorio = -d $file;
+				my @vettipo=split(/\./, $file);
+				my $tipofile=@vettipo[3];
+				#my @vetnome=split(/\\/, $file); #windows
+				my @vetnome=split(/\//, $file); #linux
+		
+				my $nomefile=@vetnome[3];
+		
+				if($ediretorio ne 1)
+				{
+					my $filesize = stat($file)->size;
+					$filesize = $filesize/1024;
+					$filesize=sprintf("%.2f",strtod($filesize));
+					my $st = stat($file) or die "erro ao ler tamanho"; 
+					my $mtime = $st->mtime; # modification time in seconds since epoch 
+					my $localtimept = Date::Language->new('Brazilian');
+					my $ultimamodificacao=$localtimept->time2str(" %d %B  %Y %T\n",$mtime);
+					$strXML = $strXML. "<item id='$nomefile' name='$nomefile' path='$subdir' pathm='$subdir' tipo='$tipofile' type='file' filesize='$filesize'><filesize>$filesize</filesize><modifdate>$ultimamodificacao</modifdate></item>";
+				}
+			}
+			closedir DIR;
+		}
+		$strXML = $strXML. '</data>';
+		
+		print $q->header('text/xml');
+
+		print $strXML;
+</pre>
+
+=end pod:xhtml
+
+
+Salve o arquivo como folder_files.pl no diretório D:\artigo\www\cgi-bin
+	
+
+
+=head2 3 - Criando diretórios
+
+Vamos criar o arquivo que cria diretórios baseados nos parâmetros passados pela interface RIA
+	
+
+Abra seu editor de texto preferido e cole o seguinte código:	
+	
+=begin pod:xhtml
+
+<pre>
+
+		#!/usr/bin/env perl
+		use strict;
+		use CGI;
+		use File::Path qw{mkpath}; # make_path
+		use JSON;
+		use Path::Class;
+		use HTML::Entities;
+
+		my $q = new CGI;
+
+		my $dirtarget=$q->param("dirtarget");
+		my $nomenovo=$q->param("nomenovo");
+
+		my $path = "../gerenciadordedocumentos/$nomenovo";
+
+
+		my $direxiste = -d $path || mkpath($path) || dir "erro ao criar o dir"; 
+	
+		my %resposta = (
+			status  => "sucesso",
+			resposta =>  decode_entities("Novo diretório $nomenovo criado com sucesso"),
+		);
+
+		my $json = \%resposta;
+		my $json_text = to_json($json);
+		print $q->header('application/json');
+		print $json_text;
+</pre>
+
+=end pod:xhtml
+	
+Salve o arquivo como makedir.pl no diretório D:\artigo\www\cgi-bin
+
+
+
+=head2 Observações
+
+Como o foco do artigo era mostrar o deploy de aplicativos RIA com Plack, idependentemente de servidor web, partes de nossa aplicação, como a geração do XMLs que alimentam nossa interface, foram feitas da forma mais simples possível.
+
+Porém, quem for seguir esse artigo, ou até mesmo utilizar a aplicação construída, aconselho fazer alguns melhoramentos, como exemplo, usar um módulo Perl específico
+para manipulação e geração de arquivos XML.
+
+Outros recursos interessante de serem implementado seriam a recursividade entre diretórios listados por nossa aplicação e uploado de arquivos. Inclusive, já há na aplica
+ção, alguma coisa implementadas visando a futura implementação do uploado de arquivos utilizando o DHTMLX Vault
+
+A aplicação desse artigo é meramente para fins educacionais.
+
+A fim de fazer o leitor se envolver com assunto, o recurso de exclusão de arquivos foi implementado em partes, faltando fazer o arquivo em perl que receba os comandos para exclusão e que devolva a reposta à aplicação no formato JSON
+
+
+
+=head2 Conclusão
+
+Desenvolver aplicativos web utilizando o Plack, além de dar ao desenvolvedor uma liberdade real, permite que o mesmo mantenha o foco na aplicação em si, e não no ambiente onde ela será executada.
+
+A aplicação desse artigo foi testada nos seguinte ambientes com sucesso:
+
+* Windows 2008 + Active Perl + Plack
+
+* Windows 2008 + Cygwin + Perl + Plack
+
+* Windows 2008 + Strawberry + Plack
+
+* Windows 2008 + Active Perl + IIS7
+
+* Ubuntu 11 + Perl + Plack
+
+* Ubuntu 11 + Perl + Apache
+
+
+	
+=head2 Demo da aplicação
+
+=begin pod:xhtml
+
+<img src="/static/images/equinocio/2011/set/app.jpg" />
+
+<img src="/static/images/equinocio/2011/set/app2.jpg" />
+
+<img src="/static/images/equinocio/2011/set/app3.jpg" />
+
+=end pod:xhtml
+
+
+=head2 Aplicação completa compactada para download
+
+L<http://www.web2solutions.com.br/artigo/artigo.tar.gz>
+
+	
+=head2 Referências	
+
+# RIA - http://pt.wikipedia.org/wiki/Internet_rica
+
+# Plack - http://sao-paulo.pm.org/equinocio/2011/set/11
+
+# DHTMLX - http://docs.dhtmlx.com/doku.php
+
+# TinyMCE - http://www.tinymce.com/wiki.php/API3:class.tinymce
+
+
+=head2 Agradecimentos
+
+# Eden Cardim que me ensinou a usar o Plack
+
+=head2 Autor
+
+José Eduardo Perotta de Almeida <eduardo@web2solutions.com.br>
