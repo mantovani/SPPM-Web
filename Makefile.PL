@@ -31,6 +31,8 @@ requires 'Cache::File';
 requires 'Cache::Memcached';
 requires 'JSON';
 
+requires 'REST::Google';
+
 requires 'parent';
 requires 'Config::General'
     ;    # This should reflect the config file format you've chosen
