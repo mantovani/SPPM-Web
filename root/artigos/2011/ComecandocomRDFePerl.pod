@@ -1,0 +1,129 @@
+
+=pod
+
+=encoding utf8
+
+=head1 Começando com RDF e Perl.
+
+=head1 Abstração
+
+A web pode ser considerada um local universal para armazenar documentos e isto significa que podemos ter isto para dados, e tornar a web uma tabela de dados dinâmica definindo um formato para eles. 
+
+Utilizando a infra-estrutura da web, os dados podem ir crescendo desde que haja uma identificação esperta para isto e a melhor forma é utilizado o esquema que é ofercido pelas URIs, ou seja os nossos dados serão identificandos por endereços na web.
+
+RDF é um modelo padrão para troca de informações na WEB, isto significa que com este modelo é possivel facilitar tarefas como facilitar o merge de dados testando em schemas diferentes e como facilitar a evolução dos dados e esquemas.
+
+O RDF extende o modelo de estrutura de "ligação" (links) da Web para usar o relacionamento de documentos via nomes de URI's e interligar eles entre si, com este simples modelo é possivel criar estruturadas de dados que possam ser misturadas, compilados, interpretados e compartilhados através de diferentes tipos de aplicativos.
+
+O conceito essencial do RDF é a tripla, no qual definie o sujeito, a propriedade e o valor, que representam afirmações.
+
+Os conceitos usados por RDF - L<http://www.w3.org/TR/rdf-concepts> -, são:
+
+=over
+
+=item Grafo de modelo de dados ;
+
+=item Vocabulário baseado em URIs ;
+
+=item Tipos de dados ;
+
+=item Literais ;
+
+=item Sintaxe de serialização XML ;
+
+=item Expressão de fatos simples ;
+
+=item Entailment
+
+=back
+
+O conceito de arquitetura de metadata é que ele seja de fácil compreensão por máquinas, e neste caso em especifico que os dados sejam interpretados que estão na web de forma trivial por máquinas.
+
+Recursos na web são chamados de documentos que estão dispostos na web, no qual em muitos casos são compreensiveis por humanos.
+
+=head1 Ontologias
+
+Na filosofia, ontologia é o estudo da existência ou do ser, que significa a maneira de compreender as identidades e grupos de identidades.
+
+Na ciencias da computação, é um modelo de dados que representa um conjunto de conceitos dentro de um domínio e os relacionamentos.
+
+Isto é basicamente o que iremos descrever com o RDF, um conjunto de dados e os seus relacionamentos em formas de triplas.
+
+=head1 Criando um documento em RDF.
+
+Existem vários módulos no L<http://search.cpan.org> disponíveis, mas abaixo um exemplo simple:
+
+=head2 FOAF
+
+Uma prova de conceito interessante, é criarmos um documento RDF para demonstrar a facilidade que a linguagem Perl oferece nestes casos. Vamos utilizar um tipo de dataset que é o FOAF já comentado em um artigo anterior.
+
+FOAF é um acronimo para Friend of Friend, que é um ontologia para descrever dados de pesssoas, suas atividades, o relacionamento com outras pessoas e objetos, no qual sejam interpretador por máquinas.
+
+Existe alguns módulos para tratar deste tipo de dataset no CPAN, L<XML::FOAF>, L<Gedcom::FOAF> e L<XML::FOAF::Person>.
+
+Porém vamos utilizar neste exemplo o L<RDF::Simple::Serialiser>.
+
+	use RDF::Simple::Serialiser;
+
+	my $ser = RDF::Simple::Serialiser->new;
+	
+	# Qual o vocabulário que será usado ? Veja o RDF::Simple::NS
+	# para mais detalhes.
+	$ser->addns( foaf => 'http://xmlns.com/foaf/0.1/' );
+
+	# Gerar um identificador randomico.
+	my $node1 = $ser->genid;
+	my $node2 = $ser->genid;
+
+	# Informações na estrutura perl.
+	my @triples = (
+    		[ $node1, 'foaf:name', 'Thiago Rondon'],
+    		[ $node1, 'foaf:know', $node2 ],
+    		[ $node2, 'foaf:name', 'Alice Rondon'],
+    		[ $node2, 'foaf:type', 'foaf:Person'],
+	);
+	
+	# Serializando em RDF.
+	print $ser->serialise(@triples);
+
+O resultdo do código será:
+
+	<rdf:RDF
+	xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	>
+	<rdf:Description rdf:about="_id:85623079">
+	<foaf:name>Alice Rondon</foaf:name>
+	<foaf:type>foaf:Person</foaf:type>
+	</rdf:Description>
+	<rdf:Description rdf:about="_id:38921350">
+	<foaf:name>Thiago Rondon</foaf:name>
+	<foaf:know rdf:nodeID="_id:85623079"/>
+	</rdf:Description>
+	</rdf:RDF>
+
+=head1 Buscando informações.
+
+Com os dados disponiveis em RDF, agora precisamos de um padrão para buscar estes dados de forma esperta e uma das respostas para esta necessidade é a SPARQL que é uma linguagem de consulta. (TODO: Escrever um artigo sobre isto).
+
+=head1 Conclusão
+
+Podemos utilizar a linguagem Perl para agilizar a criação de documentos RDF, assim como para consultar dados em páginas que já utilizam o RDF.
+
+=head2 Referências
+
+Resource Description Framework (RDF): Concepts and Abstract Syntax -
+http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/
+
+RDF Semantics - http://www.w3.org/TR/2004/REC-rdf-mt-20040210/
+
+RDF Primer - http://www.w3.org/TR/2004/REC-rdf-primer-20040210/
+
+Metadata Architecture - http://www.w3.org/DesignIssues/Metadata
+
+=head1 Autor 
+
+I<Thiago Rondon>, B<thiago.rondon no e-mail gratuito do google>
+
+=cut
+

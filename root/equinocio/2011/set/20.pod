@@ -1,0 +1,187 @@
+=pod
+
+=encoding utf-8
+
+=head1 Encriptação de senhas - Uma abordagem com bcrypt
+
+=head2 Introdução
+
+Desde a invenção dos sistemas multi-usuário na pré-história da computação, até
+os ambientes em nuvem de hoje em dia, o par usuário-senha tem sido de longe a
+forma usual de se verificar a identidade de usuários.
+
+Para isso é necessário armazenar esse par de alguma forma que possa ser
+consultada e comparada com o que um usuário fornece quando necessário, e
+embora pareça algo simples, o armazenamento de credenciais esconde algumas
+pegadinhas que derrubam muita gente grande do cavalo ainda hoje.
+
+=head2 (En)crypt(tando)
+
+Por incrível que pareça, na idade da pedra lascada o pessoal do UNIX já sabia
+que guardar usuário e senha como vieram ao mundo, ou seja, em texto plano,
+não era uma decisão muito inteligente pois quem obtivesse acesso (autorizado
+ou não) a essa base de dados descobriria todos os usuários e senhas do sistema.
+
+E por mais incrível que pareça, uma consulta rápida ao L<oráculo|http://www.google.com>
+mostra que em pleno século XXI ainda tem L<anta que insiste|http://bit.ly/qJ14wh>
+em armazenar senhas em texto plano.
+
+Como as L<trilobitas|http://en.wikipedia.org/wiki/Trilobite> já faziam,
+encriptar as senhas antes de armazená-las é uma escolha óbvia pra qualquer
+arquiteto de software dotado de L<carioteca|http://en.wikipedia.org/wiki/Eukaryote>.
+Nada pessoal!
+
+O que não é tão trivial assim é B<como> encriptar direito.
+
+O problema é que tanto na criptografia simétrica quanto na assimétrica existe pelo meno uma
+B<chave> que é usada para encriptar e decriptar informação, ou seja, obtendo
+a chave e os dados encriptados, é possível reverter a encriptação e obter os
+dados originais. Portanto, nesse caso, se uma base de dados de senhas for obtida, basta
+quebrar uma única senha para comprometer todas.
+
+    Ida:
+    +------+     Chave     +--------+
+    | dado | ------------> | #$%DxF |
+    +------+               +--------+
+                   |
+                   V
+    Volta:               
+    +--------+   Chave       +------+
+    | #$%DxF | ------------> | dado |
+    +--------+               +------+
+
+Para resolver esse problema, desde o UNIX, são usados algoritmos de
+B<hashing criptográfico> como o L<crypt|http://en.wikipedia.org/wiki/Crypt_(Unix)>,
+que em termos grosseiros podemos entender como uma
+forma irreversível de se embaralhar os dados, ou seja, uma vez embaralhados,
+é impossível obter os dados originais.
+
+Assim para validar um login, basta calcular o hash da senha fornecida pelo
+usuário e comparar com o hash no banco. 
+
+Dessa forma, mesmo que se obtenha acesso aos dados B<E> e se obtenha uma
+das senhas, as outras continuarão (em teoria) seguras. Um atacante precisaria
+ficar tentando criar hashes de senhas até que o resultado coincida com algum
+hash do banco de senhas.
+
+=head2 Na Brutalidade
+
+Infelizmente (ou não), com o aumento exponencial do poder computacional
+disponível, tornou-se relativamente barato e trivial quebrar hashes por força
+bruta. E embora diversos algoritmos mais eficientes tenham sido criados,
+invariavelmente, mais cedo ou mais tarde, haverá poder computacional suficiente
+para quebrá-los por força bruta.
+
+Para resolver esse problema, só uma abordagem ainda mais bruta.
+
+Entra em cena o B<bcrypt>. Ele foi proposto em 1999 em um
+L<paper|http://www.usenix.org/events/usenix99/provos/provos.pdf> de
+L<Niels Provos|http://en.wikipedia.org/wiki/Niels_Provos> e
+L<David Mazières|http://www.scs.stanford.edu/~dm/>.
+
+A idéia básica é que se o poder computacional aumenta, o algoritmo tem que se
+adaptar ficando cada vez mais lento, de forma a dificultar um ataque por força
+bruta.
+
+Assim é possível configurá-lo conforme a necessidade, tornando-o lento o
+suficiente para não atrapalhar o uso legítimo, enquanto fica inviável ficar
+chutando senhas até acertar.
+
+Recentemente em um projeto meu, estou experimentando o bcrypt através do módulo
+L<Crypt::Eksblowfish::Bcrypt|https://metacpan.org/module/Crypt::Eksblowfish::Bcrypt>.
+Ele possui a função B<bcrypt_hash> que recebe uma hashref com configurações
+seguida por uma senha, e retorna o hash. Para minha conveniência passo o resultado
+para base64 antes de guardar no banco.
+
+Veja no trecho de código abaixo, como é simples não fazer cocô na cabeça dos
+seus usuários:
+
+    #!/usr/bin/env perl
+    
+    # foo.pl
+    # Testando o bcrypt
+    
+    use Digest::MD5 qw( md5_base64 );
+    use Crypt::Eksblowfish::Bcrypt qw( bcrypt_hash en_base64 );
+    
+    print encrypt(q{foo@bar.com}, q{foobar},  $ARGV[0] || 1), $/;
+    
+    sub encrypt {
+        my ( $email, $pass, $cost ) = @_;
+    
+        return en_base64(
+            bcrypt_hash(
+                {
+                    key_nul => 1,
+                    cost    => $cost,
+                    salt    => substr( md5_base64( $email ), 0 , 16 ),
+                },
+                $pass
+            )
+        );
+    }
+
+Agora veja a diferença com diferentes valores para C<cost>:
+
+    user@host$ time ./foo.pl 5
+    qQiJ3485Fi7LXb6mjsv63OfLdlQiG7i
+    
+    real    0m0.047s
+    user    0m0.032s
+    sys     0m0.010s
+    
+    user@host$ time ./foo.pl 10
+    OSOvi.5ETTGn6JMKWE4R1NSMsL5nmsm
+    
+    real    0m0.190s
+    user    0m0.177s
+    sys     0m0.010s
+    
+    user@host$ time ./foo.pl 15
+    3x3iblh1CO84S1djE55Sg26EBr7d.Cq
+    
+    real    0m4.834s
+    user    0m4.793s
+    sys     0m0.018s
+    
+    user@host$ time ./foo.pl 20
+    55kwG1cbfceJTYYku6qq8ZE0Ce..5vq
+    
+    real    2m36.004s
+    user    2m32.576s
+    sys     0m0.332s
+
+O valor de C<cost> define exponencialmente uma determinada quantidade de loops
+que o algoritmo executa, portanto, define o quanto de CPU ele vai devorar cada
+vez que precisar calcular um hash desses.
+
+Faça as contas e escolha um valor que ao mesmo tempo não exponha os seus
+usuários nem derrube seu servidor (o que num hardware médio de 2011 significa
+algo entre 10 e 15).
+
+De tempos em tempos, refaça as contas e expire as senhas se necessário,
+mudando apenas um parâmetro de configuração de sua aplicação. 
+
+Lembre-se que até os dinossauros foram extintos!
+
+Note que para cada valor de C<cost>, obviamente um hash diferente é gerado,
+assim mesmo que você expire as senhas no banco e o usuário maldito insira a
+mesma senha novamente, um novo hash será gerado. O bcrypt é muito bom em
+proteger os usuários deles mesmos.
+
+=head2 Conclusões
+
+O bcrypt não é a panacéia mas pelo menos oferece uma forma relativamente
+segura para encriptar senhas.
+
+Lembre-se que proteção e quebra de segurança é uma corrida de gato e rato,
+onde ambos os lados evoluem com o tempo. O bcryp é um algoritmo adaptativo
+que evolui mudando apenas um parâmetro.
+
+=head2 Autor
+
+B< Blabos de Blebe E<lt> blabos no cpan org E<gt> >
+
+=head2 Agradecimentos
+
+Dica e links: B< Breno G. Oliveira E<lt> garu no cpan org E<gt> >

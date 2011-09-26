@@ -1,0 +1,355 @@
+=head1 Perl, Arduino e SDL
+
+
+=head2 Introdução
+
+O objetivo desse artigo não é explicar como funciona o Arduino, é mostrar como Perl, Arduino e SDL podem trabalhar juntos. 
+Se você quer saber mais sobre como o Arduino funciona, L<http://arduino.cc/en/Tutorial/HomePage>.
+
+Os exemplos desse artigo podem ser repetidos usando esse kit, L<http://robocore.net/modules.php?name=GR_LojaVirtual&prod=105>
+
+=head2 O que é Arduino ?
+
+Arduino é um protótipo eletrônico open source baseado em "easy-to-use hardware and software".
+Além de ser cross-platform o que nos permite utiliza-lo em diferentes O.S.
+
+=head3 Funções Básicas
+
+A interface de programação com o hardware é baseado em linguagem C, com a obrigatoriedade de serem programadas duas funções, sendo elas :
+
+	void setup() {
+
+	}
+
+	void loop() {
+
+	}
+
+A função setup() deve ser utilizada para inicializar e ajustas os valores iniciais do sistema. Já a função loop() é onde ocorre todo o controle de interação com o sistema. Todo o código existente nesta função entrará em laço infinito, cabendo ao desenvolvedor aplicar as lógicas de interação.
+
+Existe uma IDE para o Arduino que faz a comunicação e publicação do código para o hardware, no Ubuntu a instalação é simples, basta digitar :
+
+
+	$sudo apt-get install arduino
+
+Você também pode baixar pelo site para diferentes plataformas, L<http://www.arduino.cc/en/Main/Software>
+
+=begin pod:xhtml
+
+<img src="/static/images/equinocio/2011/set/arduino_perl_sdl-1.png" />
+
+=end pod:xhtml
+
+
+=head3 Comunicação
+
+Podemos nos comunicar com o arduino utilizando serial, que é através da porta USB. Se você estiver usando um unix-based tudo o que você precisa fazer é:
+
+	screen /dev/ttyUSB0 9600
+
+onde ttyUSB0 é o USB conectado ao Arduino, o segundo argumento é a velocidade de transmissão.
+
+
+=head2 SDL
+
+Simple DirectMedia Layer é uma biblíoteca "cross-platform multimedia library" desenhada para prover acesso de baixo nível ao aúdio,
+teclado, joystick, 3D hardware via OpenGL e  2D video framebuffer. É uma biblíoteca toda escrita em C, que tem binds para outras linguagem como,
+Ada, C#, D, Eiffel, Erlang, Euphoria, Go, Guile, Haskell, Java, Lisp, Lua, ML, Objective C, Pascal, Perl, PHP, Pike, Pliant, Python, Ruby, Smalltalk, e Tcl.
+
+
+=head3 Bind em Perl
+
+Você pode encontrar o bind escrito em Perl por alguns hackers no CPAN L<http://search.cpan.org/~kthakore/SDL-2.533/lib/pods/SDL.pod>
+
+=head3 Instação
+
+Para instalar o bind você só precisa digitar no seu terminal,
+
+	$cpan SDL
+
+Caso você não tenha os headers da lib escrita em C o próprio software vai baixar e compilar para você. Quando você rodar o código acima, ele vai te perguntar:
+
+	You have the following options:
+	[1] Source code build: SDL-1.2.14 & co. (no PANGO, no TTF)
+		builds: SDL, SDL_(image|mixer|gfx)
+	[2] Source code build: SDL-1.2.14 & co. + all prereq. libraries
+		builds: zlib, jpeg, tiff, png, freetype, SDL, SDL_(image|mixer|ttf|gfx)
+	[3] Quit installation
+
+Escolha a opção 2:
+
+	What way do you wanna go? [ 2 ] 
+
+=head2 O Projeto
+
+Vamos construir um Piano de Luz, quando você apertar uma tecla do seu teclado uma luz vai acender, permitindo que várias luzes sejam acesas simultaneamente.
+Nesse artigo utilizaremos alguns truques que só são possíveis com o nível de interface com o teclado que o SDL oferece. É apenas uma demonstração, mas o objetivo
+é mostrar o conceito que pode ser aplicado para B<qualquer coisa que a sua imaginação possa pensar>.
+
+Você pode pensar, "que projeto tosco, é tão fácil fazer isso". Mas eu desafio o leitor a ler o artigo para entender o que vamos fazer, e que é B<impossível>
+fazer o que eu vou fazer sem o nível de interface que o SDL oferece.
+
+
+=begin pod:xhtml
+
+<img src="/static/images/equinocio/2011/set/arduino_perl_sdl-2.jpg" />
+
+=end pod:xhtml
+
+=head2 Materiais
+
+Como eu disse acima todo o material pode ser encontrado no kit, mas aqui eu vou descrever item por item do que é necessário:
+
+=over 
+
+=item 1 - Placa Arduino 
+
+=item 3 - / Leds Verdes / Leds Amarelos / Leds Vermelhos
+
+=item 1 - Protoboard
+
+=item 20~25 Fios Jumper Premium
+
+=back
+
+=head2 O Circuito
+
+=begin pod:xhtml
+
+<img src="/static/images/equinocio/2011/set/arduino_perl_sdl-3.png" />
+
+=end pod:xhtml
+
+O circuito é bem simples apenas para demonstrar o conceito do SDL.
+
+=head2 SDL Events
+
+Nesse tutorial a única coisa que vamos aproveitar do SDL é a iteração que ele nos fornece com o teclado.
+Vamos precisar de dois tipos de percepção:
+
+=over
+
+=item Apertar a Tecla
+
+=item Soltar a Tecla
+
+=back
+
+=head3 Programando o SDL
+
+Usaremos o módulo Device::SerialPort para enviar informações providas do SDL para o Arduino:
+
+    use 5.10.1;
+
+    use strict;
+    use warnings;
+
+    use SDL;
+    use SDL::Video;
+    use SDL::Surface;
+    use SDL::Rect;
+    use SDL::Event;    # for the event object itself
+    use SDL::Events ':all';
+
+    use Device::SerialPort;
+    my $port = Device::SerialPort->new("/dev/ttyUSB0");
+
+    $port->baudrate(9200);
+    $port->databits(8);
+    $port->parity("none");
+    $port->stopbits(0);
+
+    my $screen_width  = 800;
+    my $screen_height = 600;
+
+    SDL::init(SDL_INIT_VIDEO);
+
+    # setting video mode
+    my $screen_surface =
+      SDL::Video::set_video_mode( $screen_width, $screen_height, 32,
+        SDL_ANYFORMAT );
+
+    my $event = SDL::Event->new;
+    my $success = SDL::Events::enable_key_repeat( 100, 60 );
+
+    while (1) {
+        SDL::Events::pump_events();
+        if ( SDL::Events::poll_event($event) ) {
+            if ( $event->type == SDL_KEYDOWN ) {
+                my $char = chr( $event->key_sym );
+                $port->write($char);
+                $port->write(0);
+                say $char;
+            }
+            if ( $event->type == SDL_KEYUP ) {
+                my $char = chr( $event->key_sym );
+                $port->write($char);
+                $port->write(1);
+            }
+            last if $event->type == SDL_QUIT;
+        }
+    }
+
+O código faz exatamente o que foi citado acima, você sabe quando a tecla foo foi apertada e quando você soltou a tecla.
+Quando você está apertando a tecla nós mandamos ao Arduino a "tecla" mais uma flag chamada "0", quando estamos soltando a tecla
+nós mandamos a "tecla" e uma flag chamada "1".
+
+=head2 Programando o Arduino
+
+Nós sabemos que o nosso código vai receber dois valores,
+
+=over
+
+=item Tecla
+
+=item Flag
+
+=back
+
+Faremos que enquanto o botão foo estiver pressionado uma luz bar permanecerá acesa e só quando o usuário soltar a tecla que ela vai
+se apagar.
+
+Vou mapear da seguinte forma, as teclas 'q','w' e 'e' acendem a luz vermelha, as 'a','s' e 'd' acendem as amarelas e as 'z','x' e 'c' vão
+acender as luzes verdes. No começo do código vamos fazer um "parser" para o Arduino poder receber o char do teclado e a flag.
+
+  void setup() {
+    Serial.begin(9600);
+    for(int i = 2; i <= 10; i++)
+      pinMode(i, OUTPUT);
+  }
+
+  char key;
+  char value;
+  int count_char = 0;
+
+  void loop() {
+    char val = Serial.read();
+
+    if (val!=-1) {
+      if (count_char == 0) {
+        key = val;
+        count_char++;
+        Serial.println(val);
+      }
+      else if (count_char == 1) {
+        value = val;
+        count_char++;
+        Serial.println(val);
+      }
+    }
+
+    if (count_char == 2) {
+      if(val!=-1)
+      {
+        switch(key)
+        {
+        case 'q':
+          if (value == '0') {
+            digitalWrite(2,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(2,LOW);
+          break;
+        case 'w':
+          if (value == '0') {
+            digitalWrite(3,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(3,LOW);
+          break;
+        case 'e':
+          if (value == '0') {
+            digitalWrite(4,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(4,LOW);
+          break;
+        case 'a':
+          if (value == '0') {
+            digitalWrite(5,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(5,LOW);
+          break;
+        case 's':
+          if (value == '0') {
+            digitalWrite(6,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(6,LOW);
+          break;
+        case 'd':
+          if (value == '0') {
+            digitalWrite(7,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(7,LOW);
+          break;
+        case 'z':
+          if (value == '0') {
+            digitalWrite(8,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(8,LOW);
+          break;
+        case 'x':
+          if (value == '0') {
+            digitalWrite(9,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(9,LOW);
+          break;
+        case 'c':
+          if (value == '0') {
+            digitalWrite(10,HIGH);
+          }
+          if(value == '1')
+            digitalWrite(10,LOW);
+          break;
+
+        }
+      }
+      count_char = 0;
+    }
+  }
+
+Envia o código para o Arduino.
+
+=head2 Executando Tudo
+
+Execute o código Perl:
+
+	$perl sdl.pl
+
+Abrirá uma tela preta, não se assuste é isso mesmo o que precisamos. Quando você apertar uma tecla o terminal irá mostrar, repare
+que quando você segura uma tecla e aperta a outra, você vai ver ela sendo impresa consecutivamente e as luzes serão acesas
+de acordo com o botão que você apertar, e isso pode ser em conjunto com outras teclas.
+
+=head2 Conclusão
+
+O grande truque é o SDL nos oferecer a informação de quando a tecla é pressionada e quando a tecla é solta. Com isso podemos
+apertar multiplas teclas simultaneamente, só precisamos pegar a "flag" no Arduino.
+
+=head2 Referências
+
+L<http://arduino.cc/en/Tutorial/HomePage>
+
+L<http://en.wikipedia.org/wiki/Arduino>
+
+L<http://search.cpan.org/~kthakore/SDL-2.533/lib/pods/SDL.pod>
+
+L<http://search.cpan.org/~cook/Device-SerialPort-1.04/SerialPort.pm>
+
+L<http://www.libsdl.org/>
+
+=head2 Agradecimento
+
+Solli Honorio
+
+Otávio Fernandes
+
+Stanislaw Pusep
+
+=head2 AUTOR
+
+Daniel de Oliveira Mantovani L<daniel.oliveira.mantovani@gmail.com>

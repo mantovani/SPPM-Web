@@ -39,7 +39,6 @@ sub equinocio : Chained('base') : PathPart('') : CaptureArgs(1) {
     $c->stash(
         year         => $year,
         now          => DateTime->now(),
-        calendar_mar => [ calendar( 3, $year ) ],
         calendar_set => [ calendar( 9, $year ) ]
     );
 }
@@ -91,11 +90,20 @@ sub day : Chained('month') : PathPart('') : Args(1) {
 
     $c->stash( templates => 'local/error.tt' ) and return if $@;
     
+    my $md5;
+    eval { $md5 = md5_hex($artigo->content); };
+    if ($@) {
+	eval { $md5 = md5_hex($artigo->title); };
+	if ($@) {
+	$md5 = join('-', 'equinocio', $year, $month, $day);
+    	}
+    }
+
     $c->stash(
         day      => $day,
         pod      => $artigo->content,
         eqtitle  => $artigo->title,
-        md5      => md5_hex($artigo->content),
+        md5      => $md5,
         template => 'equinocio/day.tt',
     );
 	$c->detach;

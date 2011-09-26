@@ -19,6 +19,7 @@ requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store::File';
 requires 'Catalyst::Plugin::Facebook';
 requires 'Catalyst::Plugin::Unicode::Encoding';
+requires 'Catalyst::Plugin::Cache';
 
 requires 'Catalyst::Controller::reCAPTCHA';
 requires 'Catalyst::Action::RenderView';

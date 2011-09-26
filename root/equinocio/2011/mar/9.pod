@@ -1,0 +1,293 @@
+=pod
+
+=encoding utf8
+
+=head1 Descobrindo endereços pelo CEP
+
+Quem nunca precisou descobrir qual era o endereço de um determinado CEP? O banco de dados que você recebeu do seu cliente semana passada foi feito sem nenhum tratamento, e você tem o mesmo endereço 10 vezes na mesma tabela para a mesma pessoa fisicamente, mas virtualmente não.
+
+Se você tem o CEP da pessoa, e confia nesta informação a ponto de ignorar todo o resto, ótimo!
+
+Ao longo deste artigo vou mostrar-lhes situações em que o módulo L<WWW::Correios::CEP> pode ser útil.
+
+=head2 Confiança no CEP
+
+Se tudo que você tem é o CEP, então você necessariamente é obrigado a extrair o endereço, porém se você tem alguma parte do endereço, como bairro ou cidade, é sempre bom dar uma comparada, pois o usuário pode ter digitado o CEP errado.
+
+Vou mostrar algumas soluções para descobrir endereços semelhantes, porém, na vida real, ainda sobrarão alguns registros sem solução. Esse número vai depender de quantos registros no total estamos falando.
+
+=head2 WWW::Correios::CEP
+
+O módulo foi criado para extrair endereços do site do correios, sem utilizar qualquer API. Não há garantias de que este método funcionará para sempre, porém é uma solução enquanto você não tem o DNE do correios.
+
+Ao iniciar, ele faz alguns testes para verificar se está tudo funcionando conforme esperado, pois como não há API, é necessário extrair os dado a partir do HTML, que pode mudar algum dia.
+
+Se você quiser saber um pouco mais a fundo sobre o funcionamento do módulo, recomendo que você leia o código, não é muito grande!
+
+=head3 Extraindo um CEP
+
+Na sua forma mais básica, podemos utilizar o módulo assim:
+
+    use WWW::Correios::CEP;
+    
+    my $cepper = new WWW::Correios::CEP();
+    my $address = $cepper->find( $cep );
+
+Vejamos o resultado para uma pesquisa pelo CEP 03661-000:
+
+    use WWW::Correios::CEP;
+    use Data::Dumper;
+    use utf8;
+    
+    my $cepper  = new WWW::Correios::CEP();
+    my $address = $cepper->find( '04032-000' );
+    
+    print Dumper $address;
+    
+    ...
+    
+    $VAR1 = {
+          'uf' => 'SP',
+          'location' => "S\x{e3}o Paulo",
+          'status' => '',
+          'street' => 'Rua do Gama',
+          'address_count' => 1,
+          'cep' => '04032-000',
+          'neighborhood' => "Jardim Luzit\x{e2}nia"
+        };
+
+Não preciso nem dizer o por quê do C<use utf8> nem para salvar em B<UTF8>, não é?
+
+Vamos lá, descobrimos então que este é um CEP de São Paulo, SP, que o nome da rua é 'Rua do Gama', e que o bairro é Jardim Luzitânia.
+
+Um dos retornos, é a chave I<address_count>, que diz quantos endereços foram encontrados para aquele CEP.
+
+Isso é assunto para outro artigo! No Brasil, existem CEPs genéricos que represetam uma cidade inteira.
+
+=head3 Comparando endereços
+
+Antes de começar a comparar endereços, vamos criar um algoritmo de cache offline. Assim você economiza tempo e banda. Também vamos desativar os testes do módulo usando C<require_tests =E<gt> 0>.
+
+Para isso, vou utilzar o módulo L<Cache::File>, e o L<Mordern::Perl> apenas por causa do C<use strict> e C<use warnings>.
+
+    use utf8;
+    use Modern::Perl;
+    
+    use WWW::Correios::CEP;
+    use Cache::File;
+    use Data::Dumper;
+    
+    my $cache   = Cache::File->new( cache_root => '/tmp/cache-correios' );
+    my $cepper  = new WWW::Correios::CEP({require_tests => 0});
+    my $address = get_address('04032-000');
+    
+    print Dumper $address;
+    
+    sub get_address {
+        my ($cep) = @_;
+        
+        my $obj = $cache->thaw( $cep );
+        
+        unless ($obj) {
+            $obj = $cepper->find( $cep  );
+            $cache->freeze( $cep, $obj, '6 months' );
+        }
+        
+        return $obj;
+    }
+
+Agora vamos escolher alguns endereços para tratar, encontrei pelo site L<http://www.busquemail.com.br>:
+
+    R. Abilheira, 04 - Campo Limpo, São Paulo, SP, 05791-020
+    avenida francisco ferreira dos santos, centro, central, BA, 44940-000
+    Rua Sargento João Lopes nº 85,  Jardim Carioca, Rio de Janeiro, RJ, 21931-420
+
+Agora vamos popular estes dados numa estrutura para que possamos pesquisar no correios:
+
+    my @enderecos_testes = (
+        # RUA                                      BAIRRO              CIDADE             UF   CEP
+        ['R. Abilheira, 04'                     , 'Campo Limpo'      , 'São Paulo'     , 'SP', '05791-020'],
+        ['avenida francisco ferreira dos santos', 'centro'           , 'central'       , 'BA', '44940-000'],
+        ['Rua Sargento João Lopes nº 85'        , 'Jardim Carioca'   , 'Rio de Janeiro', 'RJ', '21931-420']
+    );
+    
+
+Portanto, $enderecos_testes[0][0] é a rua do primeiro endereço, e assim por diante.
+
+Agora vamos dar uma lida no artigo do Blabos de Blebe: L<Comparando textos aproximadamente quase parecidos|http://sao-paulo.pm.org/equinocio/2011/mar/6>.
+
+A idéia inicial é utilzar o algoritimo de I<LCS>, pois teoricamente, o endereço digitado pelo seu cliente contém o número da casa, e o do correios não.
+
+Portanto, vamos instalar o L<String::Similarity> e modificar um pouco nosso código para comparar os endereços.
+
+A escolha do L<String::Similarity> é porque ele retorna um número entre 0 e 1, que representa a % de similaridade entre duas strings.
+
+Fica à sua escolha uma porcentagem que você considere segura. Acho que 70% já é uma boa margem de segurança. Para aumentar o grau de complexidade e assertividade, você pode criar médias ponderadas e colocar pesos diferentes, por exemplo, se o bairro for 'bastante parecido' ter mais valor do que a rua.
+
+Outro módulo que será necessário é o L<Text::Unidecode> para limpar os textos antes de comparar.
+
+Este módulo serve basicamente para trocar os acentos, porém, também troca coisas bizarras pelas mais parecidas.
+
+    use utf8;
+    use Modern::Perl;
+    use WWW::Correios::CEP;
+    use Cache::File;
+    use String::Similarity;
+
+    # utilizando o conveter para remover acentos, pois em UTF8 temos uma tabela
+    # que diz que o ç é parecido com c, da mesma forma que ü é parecido com u.
+    use Text::Unidecode;
+
+    use Data::Dumper;
+
+    my $cache = Cache::File->new( cache_root => '/tmp/cache-correios' );
+
+    # declara os tipos de logradouros que existem
+    my @tipo_logradouros = (
+        'ACESSO','ADRO','ALAMEDA','ALTO','ATALHO','AVENIDA','BALNEARIO','BELVEDERE',
+        'BECO','BLOCO','BOSQUE','BOULEVARD','BAIXA','CAIS','CAMINHO','CHAPADAO','CONJUNTO',
+        'COLONIA','CORREDOR','CAMPO','CORREGO','DESVIO','DISTRITO','ESCADA','ESTRADA',
+        'ESTACAO','ESTADIO','FAVELA','FAZENDA','FERROVIA','FONTE','FEIRA','FORTE','GALERIA',
+        'GRANJA','ILHA','JARDIM','LADEIRA','LARGO','LAGOA','LOTEAMENTO','MORRO','MONTE',
+        'PARALELA','PASSEIO','PATIO','PRACA','PARADA','PRAIA','PROLONGAMENTO','PARQUE',
+        'PASSARELA','PASSAGEM','PONTE','QUADRA','QUINTA','RUA','RAMAL','RECANTO','RETIRO',
+        'RETA','RODOVIA','RETORNO','SITIO','SERVIDAO','SETOR','SUBIDA','TRINCHEIRA',
+        'TERMINAL','TREVO','TRAVESSA','VIA','VIADUTO','VILA','VIELA','VALE','ZIGUEZAGUE',
+        'TRECHO','VEREDA','ARTERIA','ELEVADA','PORTO','BALAO','PARADOURO','AREA','JARDINETE',
+        'ESPLANADA','QUINTAS','ROTULA','MARINA','DESCIDA','CIRCULAR','UNIDADE','CHACARA',
+        'RAMPA','PONTA','VIA DE PEDESTRE','CONDOMINIO','HABITACIONAL','RESIDENCIAL','CANAL',
+        'BURACO','módulo','ESTANCIA','LAGO','NUCLEO','AEROPORTO','PASSAGEM SUBTERRANEA',
+        'COMPLEXO VIARIO','PRACA DE ESPORTES','VIA ELEVADA','ROTATORIA','ESTACIONAMENTO','VALA',
+        'RUA DE PEDESTRE','TUNEL','VARIANTE','RODO ANEL','TRAVESSA PARTICULAR','CALCADA',
+        'VIA DE ACESSO','ENTRADA PARTICULAR','ACAMPAMENTO','VIA EXPRESSA','ESTRADA MUNICIPAL',
+        'AVENIDA CONTORNO','ENTREQUADRA','RUA DE LIGACAO','AREA ESPECIAL'
+    );
+
+    my $cepper = new WWW::Correios::CEP({require_tests => 0});
+
+    my @enderecos_testes = (
+        # RUA                                      BAIRRO              CIDADE             UF   CEP
+        ['R. Abilheira, 04'                     , 'Campo Limpo'      , 'São Paulo'     , 'SP', '05791-020'],
+        ['avenida francisco ferreira dos santos', 'centro'           , 'central'       , 'BA', '44940-000'],
+        ['Rua Sargento João Lopes nº 85'        , 'Jardim Carioca'   , 'Rio de Janeiro', 'RJ', '21931-420']
+    );
+
+    foreach my $teste (@enderecos_testes){
+        my ($rua, $bairro, $cidade, $uf, $cep) = @$teste;
+    
+        my $end_correios = get_address($cep);
+        my $ruaA = limpa_endereco($rua);    
+        my $ruaB = limpa_endereco($end_correios->{street});
+    
+        my $similarity = similarity $ruaA, $ruaB, 0.7;
+        if ($similarity > 0.7){
+            say "O endereço $rua é muito parecido com $end_correios->{street}",
+                " ($similarity). Portanto, CEP está ok";
+            say "$rua, $end_correios->{neighborhood}, $end_correios->{location},",
+                " $end_correios->{uf}, $cep";
+        }else{
+            say "O endereço $rua não é muito parecido com $end_correios->{street}",
+                " ($similarity). Portanto, a precisão do CEP é duvidosa";
+            say "$rua, $bairro, $cidade, $uf, $cep";
+        }
+        say "Foram comparados os textos: $ruaA com $ruaB";
+        say '-' x 60;
+    }
+
+    sub get_address {
+        my ($cep) = @_;
+    
+        my $obj = $cache->thaw( $cep );
+    
+        unless ($obj) {
+            $obj = $cepper->find( $cep  );
+            $cache->freeze( $cep, $obj, '6 months' );
+        }
+    
+        return $obj;
+    }
+
+    # funcao criada para remover acentos, caracteres especiais, etc..
+    sub limpa_endereco {
+        my $string = shift;
+    
+        $string = uc(unidecode($string));
+        $string =~ s/$_//g for (@tipo_logradouros);
+        $string =~ s/\bNO\s*\d+//go;
+        $string =~ s/\bBL\s*\d+//go;
+        $string =~ s/\bR\s?//go;
+        $string =~ s/\bAV\s?//go;
+        $string =~ s/\bD[OA]s?\b//go;
+        $string =~ s/[^A-Z\s]//go;
+        $string =~ s/\s+/ /go;
+        $string =~ s/^\s+//go;
+        $string =~ s/\s+$//go;
+    
+        return $string;    
+    }
+
+Com este código, obtive como resultado:
+
+    $ perl cep.extract.pl
+    O endereço R. Abilheira, 04 é muito parecido com Rua Abilheira (1). Portanto, CEP está ok
+    R. Abilheira, 04, Jardim Mitsutani, São Paulo, SP, 05791-020
+    Foram comparados os textos: ABILHEIRA com ABILHEIRA
+    ------------------------------------------------------------
+    O endereço avenida francisco ferreira dos santos não é muito parecido com Praça do Mercado (0.638888888888889). Portanto, a precisão do CEP é duvidosa
+    avenida francisco ferreira dos santos, centro, central, BA, 44940-000
+    Foram comparados os textos: FRANCISCO FERREIRA DOS SANTOS com MERCADO
+    ------------------------------------------------------------
+    O endereço Rua Sargento João Lopes nº 85 é muito parecido com Rua Sargento João Lópes (1). Portanto, CEP está ok
+    Rua Sargento João Lopes nº 85, Jardim Carioca, Rio de Janeiro, RJ, 21931-420
+    Foram comparados os textos: SARGENTO JOAO LOPES com SARGENTO JOAO LOPES
+    ------------------------------------------------------------
+
+Note que dois dos 3 endereços que encontrei foram detectados com 100% de certos.
+
+Isso ocorreu pois na função I<limpa_endereco> eu procurei por 'NO' seguido de números, pois no terceiro endereço é isso que acontece, e é um caso bem comum.
+
+Já no primeiro endereço, foi porque eu resolvi retirar todos os números, e como caractes fora de A-Z saíram nenhum sobrou.
+
+Veja que você provavelmente terá que adicionar mais regras, de acordo com sua necessidade.
+
+No segundo caso, não houve como ter certeza do CEP/Endereço informado, pois 'Praça do Mercado' não é o que o endereço que temos diz. Talvez como o bairro e o estado estejam parecidos, você possa considerar, porém, você terá que extrair as informações como número e complemento do endereço.
+
+=head3 Outras aplicações
+
+Você também pode utilizar o módulo para auto-completar o endereço em sites, assim, você evita no futuro, ter que arrumar os endereços.
+
+Lembre-se de colocar um tempo limite, pois o site do correios pode sair do ar e é muito lento.
+
+    my $cepper = new WWW::Correios::CEP({require_tests => 0});
+
+O cache não deixa de ser atraente, depende da quantidade de acessos do site, e se tem a mesma pessoa se cadastrando!
+
+=head2 Considerações finais
+
+Comparar endereços, e não só, mas como todos os textos é um trabalho complicado, e tem campos de pesquisas até relacionadas a IA e semântica.
+
+Quanto mais informações você tiver, mais fácil será para chegar a um objetivo.
+
+Espero que você tenha mais bases ao comparar textos. E que não seja tímido, e compartilhe suas experiências conosco.
+
+Você pode enviar pela lista, ou até mesmo, deixar um comentário abaixo! Sua opinião é bem vinda!
+
+=head1 Sobre o autor
+
+I<Renato CRON>, L<http://renatocron.com>
+
+CPANID: RENTOCRON
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Este artigo é Software Livre; você pode redistribuí-lo e/ou modificá-lo sob os termos da GNU Public License como publicada
+pela Free Software Foundation; versão 2 datada a Junho, 1991, ou qualquer versão mais recente, à sua discrição.
+
+Este artigo é distribuído na esperança de que ele pode ser útil, mas SEM QUALQUER GARANTIA; mesmo a garantia implicada de
+COMERCIABILIDADE ou ADEQUAÇÃO PAR UMA FINALIDADE EM PARTICULAR. Veja a GNU Public License para mais detailhes.
+
+Uma cópia da GNU General Public License (deveria) estar disponível com este artigo; se não, escreva para a Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+=cut

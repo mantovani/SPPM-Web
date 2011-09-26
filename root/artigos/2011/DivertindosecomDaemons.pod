@@ -1,0 +1,367 @@
+=head1 Divertindo-se com Daemons
+
+=head2 Origem
+
+Nesse artigo você irá aprender a criar I<daemons>. Acredito que ficará contente em saber que essa é uma tarefa bem simples, na verdade.
+
+O termo "I<daemon>" foi cunhado pelos programadores do "L<Projeto MAC|https://secure.wikimedia.org/wikipedia/en/wiki/Project_MAC#Project_MAC>", do MIT, baseando-se no L<Demônio de Maxwell|https://secure.wikimedia.org/wikipedia/en/wiki/Maxwell%27s_demon>, um ser imaginário que realiza tarefas sem ser visto. O termo é derivado da palavra grega I<daimon> que significa "ser sobrenatural", "espírito". Mais tarde, algumas pessoas tentaram definir o termo como um acrônimo para "Disk And Execution MONitor".
+
+
+=head2 Um passo Para Esquerda 
+
+Para o conteúdo deste artigo, presumimos que o leitor esteja usando um Sistema Operacional baseado em UNIX que siga o POSIX, como o Linux. Os exemplos desse artigo não funcionarão no Windows, talvez se você conheça alguma mágica que implemente C<fork()>, os exemplos funcionem.
+L<http://search.cpan.org/~rjbs/perl-5.12.3/pod/perlfork.pod>
+
+=head2 Martelo de Ouro
+
+I<"if all you have is a hammer, everything looks like a nail".>
+
+Uma série de programas usam I<daemon>, como o sshd, ftpd, apache e etc. Muitas vezes apenas queremos executar uma determina rotina em um período de tempo, não se esqueça do L<cron|http://focalinux.cipsga.org.br/guia/intermediario/ch-manut.html#s-manut-cron>, uma solução nativa desses sistemas para o agendamento de tarefas.
+
+Em situações onde é esperado um evento que ocorra a qualquer hora, onde a tarefa é frequente, um I<daemon> é necessário. Um I<daemon> é eficiente porque reside na memória e não exige todo o "run script", evitando os ciclos da sua CPU e I/O que são usados quando você chama o seu programa.
+
+=head2 Os Mandamentos
+
+Existem algumas regras para a criação de um I<daemon>, a seguir veremos essas regras separadas e explicadas.
+
+=head3 O 1º Mandamento
+
+Desassociar o controle do terminal.
+
+A Primeira coisa que um I<daemon> deve fazer é um C<fork()>, fazendo o C<fork()> como a baixo você desassocia o programa do terminal.
+
+    use warnings;
+    use strict;
+
+    use POSIX qw(setsid);
+
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+	...
+
+A função C<fork()> cria um novo processo executando seu programa, efetivamente dividindo ele em dois processos independentes: o pai e o filho. A função retorna 0 para o filho e um número maior do que 1 para o processo pai - o I<process id>, ou PID, do filho. Caso alguma coisa dê errado, o C<fork()> retorna C<undef>.
+
+No código acima, chamamos o C<fork()> e finalizamos o processo pai. Assim nosso processo pode executar de forma independente, sem associações a outros processos em execução - um órfão.
+
+=head3 O 2º Mandamento
+
+Tornar-se o líder da sessão e o líder do sessão do grupo.
+
+Processos órfãos podem ser eliminados pelo sistema operacional. Para evitar isso, chamamos a função POSIX C<setsid()>, que executa o programa em uma nova sessão. A partir desse ponto, o processo filho possui um SID exclusivo do kernel.
+
+    use warnings;
+    use strict;
+
+    use POSIX qw(setsid);
+
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+    setsid;
+
+
+=head3 O 3º Mandamento
+
+Mudar o diretório de execução para "/".
+
+Se o diretório em que o I<daemon> está executando for desmontado durante sua execução, ele vai simplesmente parar de rodar. Mudando o diretório para a raíz do sistema de arquivos, evitamos que isso aconteça.
+
+    use warnings;
+    use strict;
+
+    use POSIX qw(setsid);
+
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+    setsid;
+    chdir '/';
+
+
+=head3 O 4º Mandamento
+
+Mudar o C<umask> para 0.
+
+    use warnings;
+    use strict;
+
+    use POSIX qw(setsid);
+
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+    setsid;
+    chdir '/';
+    umask 0; 
+
+Para que o I<daemon> possa escrever arquivos sem estar sujeito a restrições de permissão do processo pai, o C<umask> deve ser mudado para 0 (zero).
+
+=head3 O 5º Mandamento
+
+Fechar todos os descritores padrões: STDOUT, STDIN e STDERR.
+
+	use warnings;
+    use strict;
+
+    use POSIX qw(setsid);
+
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+    setsid;
+    chdir '/';
+    umask 0; 
+    open STDIN,  '<', '/dev/null' or die $!;
+    open STDOUT, '>', '/dev/null' or die $!;
+    open STDERR, '<', '/dev/null' or die $!;
+
+Fazemos isso pelo simples fato do I<daemon> não estar associado a nenhum terminal específico. Assim, não faz sentido que ele leia ou escreva em um.
+
+
+=head3 O Último Mandamento
+
+Usar algum tipo de log para ter informações sobre seu programa, já que fechamos todos descritores no mandamento acima.
+
+    use warnings;
+    use strict;
+
+    use POSIX qw(setsid);
+
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+    setsid;
+    chdir '/';
+    umask 0; 
+    open STDIN,  '<', '/dev/null' or die $!;
+    open STDOUT, '>', '/dev/null' or die $!;
+    open STDERR, '<', '/dev/null' or die $!;
+
+    open my $log, '>>', '/tmp/mylog.txt' or die $!;
+
+Aqui, abrimos o arquivo C</tmp/mylog.txt>, e podemos escrever o que quisermos, de mensagens de erro a informações de execução.
+
+=head2 Peão
+
+Agora que já sabemos todas as regras para criar um I<daemon>, podemos ter o nosso primeiro exemplo.
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/Peonza.png">
+</center>
+
+=end pod:xhtml
+
+Abra um terminal e digite:
+	
+	$ touch /tmp/mylog.txt
+	$ tail -f /tmp/mylog.txt
+
+O comando acima cria e monitora o arquivo de texto C</tmp/mylog.txt>, que por enquanto está vazio. Agora vamos para a parte interessante, que é rodar o nosso programa-peão.
+
+    use warnings;
+    use strict;
+
+    use POSIX qw(setsid);
+
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+    setsid;
+    chdir '/';
+    umask 0; 
+    open STDIN,  '<', '/dev/null' or die $!;
+    open STDOUT, '>', '/dev/null' or die $!;
+    open STDERR, '<', '/dev/null' or die $!;
+
+    open my $log, '>>', '/tmp/mylog.txt' or die $!;
+    
+    for ( 1 .. 10 ) {
+        print $log "teste\n";
+    }
+    exit;
+
+Salve o arquivo e execute-o em outro terminal. Em seguida olhe o terminal em que o comando:
+	
+	tail -f /tmp/mylog.txt
+
+estava executando. Perceba que o morto acordou, aqui temos o nosso primeiro exemplo de I<daemon>.
+
+=head2 Criando e Parando o Script
+
+Você já percebeu como iniciamos ou interrompemos daemons como o do apache?
+
+	/etc/init.d/apache2 start
+	/etc/init.d/apache2 stop
+
+Bem, você deve estar se perguntando, "Como o meu I<daemon> faz isso?". Isso é o que vamos aprender agora!
+
+A partir desse ponto, vamos assumir que você está usando uma distribuição Linux similar ao Debian (como o Ubuntu). Na prática, a maioria das distribuições Linux tem os atalhos que serão ensinados abaixo. 
+
+=head3 Meu Esqueleto
+	
+O Ubuntu tem o arquivo C</etc/init.d/skeleton> que é para você ter uma base do script de iniciar ou parar o seu I<daemon>.
+
+	sudo cp /etc/init.d/skeleton /etc/init.d/meudaemon
+	sudo chmod +x /etc/init.d/meudaemon
+
+Vamos fazer as mudanças necessárias no esqueleto:
+
+	PATH=/sbin:/usr/sbin:/bin:/usr/bin
+	DESC="Descricao do nosso servico"
+	NAME=nomedoexecutavel
+	DAEMON=/usr/bin/$NAME
+	DAEMON_ARGS="--options args"
+	PIDFILE=/var/run/$NAME.pid
+	SCRIPTNAME=/etc/init.d/$NAME
+
+Mude a descrição para o que você preferir, e a variável $NAME para o nome exato do seu I<daemon>.
+
+	PATH=/sbin:/usr/sbin:/bin:/usr/bin
+	DESC="Super incrível daemon"
+	NAME=mudaemon
+	DAEMON=/usr/bin/$NAME
+	DAEMON_ARGS="--options args"
+	PIDFILE=/var/run/$NAME.pid
+	SCRIPTNAME=/etc/init.d/$NAME
+
+=head3 Nosso I<daemon>
+
+Vamos criar um espelho para o site da SPPM, L<http://sao-paulo.pm.org/principal>.
+A única coisa de diferente nesse script, é que vamos criar um arquivo com o nosso pid.
+
+	#!/usr/bin/perl
+    use strict;
+    use warnings;
+    use POSIX qw(setsid);
+    use File::Pid;
+    use LWP::Simple;
+
+	$| = 1; #auto flush
+
+    my $nome        = "meudaemon";
+    my $pidlocation = "/var/run/$nome.pid";
+
+    # daemonize
+    my $pid = fork()
+        or die "problema no fork";
+
+    if ( $pid > 0 ) {
+        exit;
+    }
+    setsid;
+    chdir '/';
+    umask 0;
+    open STDIN,  '<', '/dev/null' or die $!;
+    open STDOUT, '>', '/dev/null' or die $!;
+    open STDERR, '<', '/dev/null' or die $!;
+
+    # Log
+    open my $log, '>>', "/var/log/$nome/log.txt" or die $!;
+
+    # Criar o pid no /var/run/
+    my $pidfile = File::Pid->new( { file => $pidlocation, } );
+
+    # Se não conseguir escrever erro e morrer
+    $pidfile->write
+        or die "Erro criando o arquivo de PID, /dev/null: $!";
+
+    while (1) {
+        if ( mirror( "http://sao-paulo.pm.org/principal", "/tmp/meuespelho" ) == 200 ) {
+            print $log "Espelho criado com sucesso\n";
+        }
+        else {
+            print $log "Espelho não foi criado com sucesso\n";
+        }
+        sleep(1);
+    }
+
+Bem, salve o script como "C<meudaemon>" e dê permissão de execução.
+
+	chmod +x meudaemon
+
+Copie o arquivo para o diretório C</usr/sbin>.
+
+	sudo cp meudaemon /usr/sbin/
+
+Agora vamos iniciar o nosso I<daemon>.
+
+	$ /etc/init.d/meudaemon start
+	$ pgrep meudaemon
+	17803
+	$ cat /tmp/meuespelho
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
+		<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	...
+
+Pronto, já sabemos o básico para criar um I<daemon>.
+
+=head2 Paiol
+
+A linguagem Perl, tem um imenso repositório de código reutilizável. A seguir segue uma lista de alguns módulos específicos para daemons:
+
+L<http://search.cpan.org/~deti/Proc-Daemon-0.07/lib/Proc/Daemon.pod>
+
+L<http://search.cpan.org/~markov/Any-Daemon-0.10/lib/Any/Daemon.pod>
+
+L<http://search.cpan.org/~mschilli/App-Daemon-0.11/Daemon.pm>
+
+L<http://search.cpan.org/~rokr/Daemon-Daemonize-0.0052/lib/Daemon/Daemonize.pm>
+
+Existem outras L<centenas de módulos que também podem lhe auxiliar|http://search.cpan.org/search?q=daemon;s=0> . Além de ter código pronto, você tem documentação e código testado. Portando não se desgaste fazendo tudo manualmente, seja preguiçoso.
+
+Não deixe que o daemon vire um demônio, use o CPAN :)
+
+=head2 Agradecimentos
+
+B<Thiago Rondon> O grande organizador do Equinócio desde o começo, e que se não fosse por ele não teria o equinócio.
+
+B<Breno G. Oliveira> Contribuiu com ideias além de revisar o artigo.
+
+B<Alexei Znamensky> Contribuiu com ideias além de revisar o artigo.
+
+B<Blabos de Bleble> Revisou o artigo.
+
+=head2 Referências
+
+L<http://en.wikipedia.org/wiki/Daemon_(computer_software)>
+
+L<http://www.webreference.com/perl/tutorial/9/>
+
+L<https://secure.wikimedia.org/wikipedia/en/wiki/Law_of_the_instrument>
+
+L<http://pt.wikipedia.org/wiki/Pi%C3%A3o>
+
+B<Advanced Programming in the UNIX Environment>
+
+L<http://www.andrewault.net/2010/05/27/creating-a-perl-daemon-in-ubuntu/>
+
+=head2 Autor
+
+Daniel de Oliveira Mantovani

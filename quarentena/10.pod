@@ -1,0 +1,267 @@
+=head1 Data::Printer - o pretty-printer do Perl
+
+Todo programador Perl cedo ou tarde esbarra no
+L<Data::Dumper|https://metacpan.org/module/Data::Dumper>.
+Trata-se de um módulo muito bacana que faz parte do core e é capaz de exibir
+estruturas de dados complexas como strings. O problema é que o Data::Dumper
+(e variações, como o L<Data::Dump|https://metacpan.org/module/Data::Dump>)
+são projetadas para criar strings que possam ser transformadas novamente em
+código através de um C<eval>. Essa restrição, embora essencial para
+serialização de dados, torna-se um problema quando nosso objetivo não é
+serialização e sim a inspeção visual do conteúdo.
+
+Veja uma comparação visual rápida entre o Data::Dumper e o
+L<Data::Printer|https://metacpan.org/module/Data::Printer>:
+
+=begin html
+
+<img src="dataprinter-1.png" />
+
+=end html
+
+A primeira coisa que notamos é a saída colorida, índices nos arrays e
+algumas informações a mais em expressões regulares. Mas o Data::Printer
+oferece muito mais que isso. Que tal depurarmos um objeto?
+
+=begin html
+
+<img src="dataprinter-2.png" />
+
+=end html
+
+E se a sua estrutura de dados estiver associada a outros elementos?
+
+=begin html
+
+<img src="dataprinter-3.png" />
+
+=end html
+
+
+A idéia por trás do Data::Printer é a de que a grande maioria dos
+desenvolvedores (pelo menos os que eu conheço) usa ferramentas como essa
+principalmente para ver o que está acontecendo dentro de suas variáveis e
+objetos, e não para serializar dados pra dentro e fora do Perl. Por isso,
+seu foco não é serialização, e sim exibir variáveis e objetos do Perl na
+tela, devidamente formatados (para serem inspecionados por um humano).
+O Data::Printer é de certa forma similar ao
+"L<awesome_print|https://github.com/michaeldv/awesome_print>" do Ruby, mas
+possui muito mais opções de personalização e algumas features bacanas
+adaptadas dos "dumpers" tradicionais do Perl.
+
+Por exemplo, a função de exibição é a "p()", um mnemônico simples e fácil de
+lembrar. Mas se você está acostumado a chamar a função "Dumper()" tradicional,
+mudar o nome da função é muito simples:
+
+  use Data::Printer alias => 'Dumper';
+
+  Dumper( %foo );  # pronto, problema resolvido!
+
+O Data::Printer vem com configurações padrão bastante coerentes, então para
+usá-lo você normalmente só precisa escrever "C<use Data::Dumper>" (ou melhor
+ainda: "C<use DDP>") e começar a olhar suas variáveis com a função "p()".
+Mas, se necessário, você pode personalizar praticamente todos os aspectos do
+Data::Printer tais como cores, índices, separadores de hash, valores padrão,
+o que mais quiser!
+
+Veja um exemplo que expõe absolutamente todas as opções do Data::Printer, com
+seus valores padrão:
+
+    use Data::Printer {
+        name           => 'var',   # nome a ser exibido em referências cíclicas
+        indent         => 4,       # quantos espaços por identação
+        hash_separator => '   ',   # o que usar para separar chaves de valores em hash
+        colored        => 'auto',  # colorizar saída (1 para sempre colorir, 0 para nunca)
+        index          => 1,       # exibir índices de arrays
+        multiline      => 1,       # exibir em várias linhas
+        max_depth      => 0,       # quão fundo percorrer as estruturas (0 para tudo)
+        sort_keys      => 1,       # ordenar chaves de hash
+        deparse        => 0,       # usar B::Deparse para expandir (expor) funções
+        show_tied      => 1,       # expor variáveis amarradas (tied)
+        show_tainted   => 1,       # expor variáveis manchadas (tainted)
+        show_weak      => 1,       # expor referências fracas (weak refs)
+        return_value   => 'dump',  # tipo do valor de retorno (mais detalhes abaixo no artigo)
+     
+        caller_info    => 0,       # incluir informação sobre o que está sendo exibido
+        use_prototypes => 1,       # usar protótipos: permite p(%foo) (sem referência),
+                                   # mas impede passagem de dados anônimos
+
+        color => {
+             array       => 'bright_white',  # número dos índices em arrays
+             number      => 'bright_blue',   # números
+             string      => 'bright_yellow', # strings
+             class       => 'bright_green',  # nome de classes
+             undef       => 'bright_red',    # o valor 'undef'
+             hash        => 'magenta',       # chaves de hash
+             regex       => 'yellow',        # expressões regulares
+             code        => 'green',         # referências para código
+             glob        => 'bright_cyan',   # globs (normalmente handles de arquivos)
+             repeated    => 'white on_red',  # referência para valores já vistos
+             caller_info => 'bright_cyan',   # mensagem de detalhes sobre exibição
+             weak        => 'cyan',          # referências fracas (weak refs)
+             tainted     => 'red',           # conteúdo manchado (tainted)
+        },
+     
+        class_method   => '_data_printer', # permite que classes usem métodos com esse nome
+                                           # para exibir a si próprias
+     
+        class => {
+            internals  => 1,       # exibir estrutura interna de classes
+     
+            inherited  => 'none',  # exibir métodos herdados. Valores possíveis são
+                                   # 'none' (nenhum), 'all' (todos), 'private' (apenas métodos privados)
+                                   # ou 'public' (apenas métodos públicos)
+     
+            parents    => 1,       # exibir classes pai
+            linear_isa => 1,       # exibir toda a hierarquia @ISA, linearizada
+     
+            expand     => 1,       # quão fundo percorrer objeto (caso ele contenha outros objetos).
+                                   # '1' para apenas se expandir. '0' para não se expandir, e 'all'
+                                   # para expandir a si e a todos os sub-objetos
+     
+            sort_methods => 1,     # ordenar métodos públicos e privados
+     
+            show_methods => 'all'  # exibir métodos. 'all' para todos, 'none' para nenhum,
+                                   # 'public' para exibir apenas métodos públicos e 'private'
+                                   # para privados
+        },
+    };
+
+=head2 Legal, mas eu não vou digitar isso cada vez que for usar!
+
+Claro que não! Para isso o Data::Printer procura sempre por um arquivo chamado
+"C<.dataprinter>" no HOME do seu usuário. Basta colocar as suas configurações
+lá exatamente como faria na inicialização e nunca mais se preocupar com elas :)
+
+O meu arquivo de configuração, por exemplo, hoje está assim:
+
+  {
+    colored        => 1,
+    hash_separator => ':  ',
+    return_value   => 'pass',
+    caller_info    => 1,
+    filters        => {
+      -external => [ 'DateTime', 'DB' ],
+    },
+  }; 
+
+Assim, na hora de usar o Data::Printer basta escrever:
+
+  use DDP;
+
+E ele carrega automaticamente isso pra mim :)
+
+
+=head2 Filtros
+
+Algumas vezes não queremos ver o conteúdo de determinados objetos, apenas uma
+ou outra informação que ele contenha. Sabendo disso, o Data::Printer também
+oferece a opção de criar filtros para sobrescrever qualquer tipo de exibição:
+
+  use Data::Printer filters => {
+     'DateTime'      => sub { $_[0]->ymd },
+     'HTTP::Request' => sub { $_[0]->uri },
+  };
+
+Caso seu filtro seja muito complexo, você ainda pode
+L<< criá-lo como um módulo separado facilmente|https://metacpan.org/module/Data::Printer::Filter >> -
+pode até mesmo colocar seu filtro no CPAN para que outros também possam se
+beneficiar dele! O próprio Data::Printer já vem com filtros para a
+L<família DateTime|https://metacpan.org/module/DateTime> e
+L<DBI|https://metacpan.org/module/DBI>. Abaixo, um exemplo da exibição de um
+DBI handle simples no tradicional Data::Dumper e no Data::Printer com o filtro "DB":
+
+=begin html
+
+<img src="dataprinter-4.png" />
+
+=end html
+
+
+Outra coisa bacana é a possibilidade de criar filtros automáticos para suas
+classes simplesmente adicionando o método _data_printer() a elas.
+Você não precisa nem adicionar o Data::Printer como dependência, e ele vai
+usar essa função para filtrar sua classe em vez de fazer um dump genérico.
+
+
+=head2 Algumas dicas de uso
+
+Por padrão, o Data::Printer exibe a saída no STDERR sempre que chamado
+puramente (contexto "void"):
+
+    p @var;
+
+Se preferir fazer algo diferente com a saída, basta chamar usar a função
+C<p()> em um contexto não-void, atribuindo a uma variável ou usada como
+parâmetro para outra função. Nesses casos, o C<p()> vai retornar a string em
+vez de escrever no STDERR. Por exemplo:
+
+    print p(@var);        # exibe no STDOUT
+
+    my $saida = p(@var);  # coloca string de dump em $saida
+
+Note que, dessa forma, o Data::Printer não colore a string e retorna apenas o
+texto - o que é útil para manipular a string sem se preocupar com os símbolos
+ANSI de coloração. Para os casos em que você quer a string colorida, é só
+ativar a opção C<< colored => 1 >> - seja no arquivo de configuração
+(o C<.dataprinter>), durante o "C<use>" ou como argumento para a função C<p()>.
+
+Veja, por exemplo, como é fácil transformar a saída do Data::Printer em um
+HTML colorido, pronto para ser exibido no navegador:
+
+   use HTML::FromANSI;
+   use DDP;
+ 
+   my $objeto = ...;
+
+   my $html = ansi2html( p($objeto) );
+
+Agora, se você não pretende usar a string retornada e pretende sempre
+exibi-la no terminal, uma dica bacana é trocar o tipo do valor de retorno,
+alterando a opção C<return_value> do valor padrão 'dump' para 'pass'.
+Isso fará com que o Data::Printer exiba o conteúdo da estrutura de dados no
+STDERR e retorne B<a própria> estrutura de dados recebida. Assim você pode
+facilmente fazer dumps sem precisar adicionar novas linhas de código. Por
+exemplo, pode mudar uma linha que fiz:
+
+  return %valores;
+
+por:
+
+  return p %valores;
+
+Com o modo 'pass' você consegue até mesmo usar o Data::Printer no meio de uma
+chamada encadeada de métodos, para ver o conteúdo de seu objeto em um
+determinado estado facilmente. Basta trocar isso:
+
+  $objeto->foo->bar->baz->bleep;
+
+por:
+
+  use DDP;
+
+  $objeto->foo->bar->DDP::p->baz->bleep;
+
+
+E o dump será exibido sem interferir no seu código!
+
+
+=head2 Em Resumo...
+
+Se você quer serializar/armazenar/restaurar estruturas de dados Perl, o
+Data::Printer NÃO vai te ajudar. O melhor que você tem a fazer é procurar
+soluções como a família Dumper/Dump,
+L<Storable|https://metacpan.org/module/Storable>,
+L<JSON|https://metacpan.org/module/JSON> ou o que você encontrar no CPAN.
+
+Mas se você só quer mesmo ver/examinar o conteúdo de estruturas de dados e
+objetos, experimente o Data::Printer! Ah, e se você gosta de REPLs, você pode
+usá-lo como
+L<dumper padrão do Devel::REPL|https://metacpan.org/module/Devel::REPL::Plugin::DataPrinter> =)
+
+O L<código está no github|https://github.com/garu/Data-Printer>. Comentários,
+sugestões e patches são muito bem vindos!
+
+=head2 Autor
+
+B< Breno G. Oliveira E<lt> garu no cpan org E<gt> >

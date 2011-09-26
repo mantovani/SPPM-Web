@@ -1,0 +1,174 @@
+=head1 Navegue Pela Web Usando Perl
+
+=head2 Os Meios
+
+Perl oferece uma quantidade robusta de código reutilizável(Módulos) para você automatizar a sua navegação web, criando robôs, web crawlers ou qualquer coisa que a sua imaginação possa pensar.
+
+=head2 Ferramentas
+
+A linguagem Perl tem o maior repositório do mundo de código reutilizável, L<CPAN|http://search.cpan.org/> além do código ter uma excelente documentação, os códigos tem uma camada de teste que garante as funcionalidades funcionarem no seu ambiente.
+
+Nesse artigo utilizarei o L<Mechanize|http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm>, esse módulo oferece os recursos necessários para uma navegação automatizada.
+
+=head2 Instalando
+
+A maioria dos Unix-likes têm por padrão o Perl instalado, e consequentemente o CPAN, para instalar um módulo Perl, você apenas precisa digitar:
+
+  $cpan WWW::Mechanize
+
+Se você tiver alguma dúvida de como instalar algum módulo Perl esse artigo irá te iluminar, L<http://blog.blabos.org/2011/01/perl-cada-vez-mais-facil/>.
+
+=head2 Recursos
+
+Vou listar os recursos que o I<Mechanize> oferece,
+
+   All HTTP methods
+
+   High-level hyperlink and HTML form support, without having to parse HTML yourself
+
+   SSL support
+
+   Automatic cookies
+
+   Custom HTTP headers
+
+   Automatic handling of redirections
+
+   Proxies
+
+   HTTP authentication
+
+=head2 O Começo
+
+Nesse artigo eu vou abordar, alguns exemplos do poder que o I<Mechanize> nos oferece.
+Vamos automatizar uma busca no site da IBM,L<http://www.ibm.com/search/csass/search>, entre no website e  você perceberá que existem três campos,
+um para você digitar a busca, e dois campos tipo "select" que é para você escolher o país e o idioma.
+
+=head2 O Necessário
+
+Quando você instala o I<Mechanize> você ganha o comando "mech-dump", que é extremamente útil para obter informações sobre formulários, bem vamos lá.
+
+	mantovani@mantovani-laptop:~$ mech-dump http://www.ibm.com/search/csass/search
+	GET http://www.ibm.com/Search/
+	  q=                             (text)
+	  v=16                           (hidden readonly)
+	  en=utf                         (hidden readonly)
+	  lang=en                        (hidden readonly)
+	  cc=us                          (hidden readonly)
+	  Search=Search                  (submit)
+
+	GET http://www.ibm.com/search/csass/search (multipart/form-data)
+	  q=                             (text)
+	  co=us                          (option)   [any/Worldwide|dz/Algeria|ai/Anguilla|ag/Antigua and Barbuda|ar/Argentina|aw/Aruba|au/Australia|at/	Austria|bs/Bahamas|bh/Bahrain|bd/Bangladesh|bb/Barbados|be/Belgium|bm/Bermuda|bo/Bolivia|br/Brazil|vg/British Virgin Islands|bg/Bulgaria|ca/Canada|ky/Cayman Islands|cl/Chile|cn/China|co/Colombia|hr/Croatia|cy/Cyprus|cz/Czech Republic|dk/Denmark|dm/Dominica|ec/Ecuador|eg/Egypt|ee/Estonia|fi/Finland|fr/France|de/Germany|gr/Greece|gd/Grenada|gy/Guyana|hk/Hong Kong|hu/Hungary|in/India|id/Indonesia|ie/Ireland|il/Israel|it/Italy|jm/Jamaica|jp/Japan|jo/Jordan|kr/Korea, Republic of|kw/Kuwait|lv/Latvia|lb/Lebanon|lt/Lithuania|my/Malaysia|mx/Mexico|ms/Montserrat|ma/Morocco|nl/Netherlands|an/Netherlands Antilles|nz/New Zealand|no/Norway|om/Oman|pk/Pakistan|py/Paraguay|pe/Peru|ph/Philippines|pl/Poland|pt/Portugal|qa/Qatar|ro/Romania|ru/Russian Federation|kn/Saint Kitts and Nevis|lc/Saint Lucia|vc/Saint Vincent and the Grenadines|sa/Saudi Arabia|rs/Serbia|sg/Singapore|sk/Slovakia|si/Slovenia|za/South Africa|es/Spain|lk/Sri Lanka|sr/Suriname|se/Sweden|ch/Switzerland|tw/Taiwan|th/Thailand|tt/Trinidad and Tobago|tn/Tunisia|tr/Turkey|tc/Turks and Caicos Islands|ua/Ukraine|ae/United Arab Emirates|gb/United Kingdom|*us/United States|uy/Uruguay|ve/Venezuela|vn/Vietnam]
+	  lo=any                         (option)   [*any/All languages|bg/Bulgarian|zh-simplified/Chinese (Simplified)|zh-traditional/Chinese (Traditional)|hr/Croatian|cs/Czech|da/Danish|nl/Dutch|en/English|et/Estonian|fi/Finnish|fr/French|de/German|el/Greek|he/Hebrew|hu/Hungarian|it/Italian|ja/Japanese|ko/Korean|lv/Latvian|lt/Lithuanian|no/Norwegian|pl/Polish|pt/Portuguese|ro/Romanian|ru/Russian|sr/Serbian|sk/Slovak|sl/Slovenian|es/Spanish|sv/Swedish|tr/Turkish|uk/Ukrainian]
+	  ibm-submit=                    (submit)
+	  sn=                            (hidden readonly)
+ 	 lang=en                        (hidden readonly)
+ 	 cc=US                          (hidden readonly)
+ 	 en=utf                         (hidden readonly)
+ 	 hpp=                           (hidden readonly)
+
+
+O primeiro formulário é para aquele campo simples de busca do lado direito em cima no site da IBM, e o segundo campo é o campo que queremos que podemos ser mais "precisos" na nossa busca.
+
+=head2 Montando o Formulário
+
+O I<Mechanize> oferece um suporte incrível para automatização de formulários, além do comando mágico I<mech-dump>. Agora iremos utilizar o método "submit_form":
+
+           use WWW::Mechanize;
+           my $mech = WWW::Mechanize->new();
+
+           $mech->get("http://www.ibm.com/search/csass/search");
+
+           $mech->submit_form(
+               form_number => 2,
+               fields      => {
+                   q    => 'O que eu quero buscar',
+                   co   => 'br', # país
+                   lo    => 'any',# idioma
+               }
+           );
+
+        print $mech->content;
+
+
+Pronto, primeiro passamos qual formulário nós queremos, no caso o segundo formulário (2), depois passamos os campos, em "fields".
+Como o mech-dump mostrou, "q" é para busca, "co" o páis e "lo" para o idioma. Logo após segue um "print", que mostrará o resultado do conteúdo
+da página após o envio do formulário. Se o site da IBM usasse "https", ao invés "http" não mudaria "nada" para nós pois o I<Mechanize> cuidaria de tudo por baixo
+dos panos.
+
+=head2 Os Agentes
+
+Você também pode simular ser um navegador, como FireFox, Internet Explorer entre outros, você apenas precisa modificar o atributo "agent_alias"
+
+   $mech->agent_alias( $alias );
+
+Segue uma lista de navegadores que você pode "fingir" ser,
+
+	Windows IE 6
+	Windows Mozilla
+	Mac Safari
+	Mac Mozilla
+	Linux Mozilla
+	Linux Konqueror
+
+=head2 Estados 
+
+O I<Mechanize> também oferece alguns métodos para você checar o estado da sua requisição, você pode utilizá-los após utilizar o método "get" pelo menos uma vez.
+
+  $mech->get(url)...
+
+=head3 Métodos de Estado
+   
+    $mech->success()
+	Returna uma condição booleana dizendo se a última requisição foi um sucesso ou não.
+
+        É equivalente ao método "$mech->res->is_success".
+
+   $mech->uri()
+       Retorna um objeto URI, que contém a URI que você atualmente está.      
+
+   $mech->response() / $mech->res()
+       Retorna a atual resposta como um objeto HTTP::Response
+
+       Sinimo "$mech->response()"
+
+   $mech->status()
+       Retorna o estado da resposta HTTT. É um digito de 3 números como 200 para OK, 404 para página não encontrada e etc.
+
+   $mech->ct() / $mech->content_type()
+       Retorna o tipo de conteúdo da resposta.
+
+   $mech->base()
+       Retorna a base URI para a resposta atual.
+
+   $mech->forms()
+      Quando chamado no contexto de lista, retorna uma lista com os formulários encontrados da última requisição. No contexto escalar, retorna uma referência de array com esses formulários. Os formulários retornados são um objeto HTML::Form.
+
+   $mech->current_form()
+       Retorna os formulários atuais como um  objeto HTML::Form.
+
+   $mech->links()
+       Quando chamados no contexto de lista, retornam a lista de todos os links encontradas na última requisição. No contexto escalar retorna a referência de array com toso os links. Cada link é um objeto WWW::Mechanize::Link.
+
+   $mech->is_html()
+      Retorna verdadeiro/falso de acordo com a resposta HTTP, se verdadeiro o conteúdo é HTML.
+
+   $mech->title()
+  Retorna o título da página atual.
+
+=head2 O Uso
+
+Você pode automatizar navegações web, para diversos usos. Esse artigo foi simplesmente para demonstrar como é simples navegar em páginas usando Perl. O módulo L<WWW::Mechanize|http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm> oferece muito mais recursos do que eu descrevi nesse breve artigo, eu recomendo que o leitor leia a documentação com calma.
+
+=head2 Autor
+
+Daniel de Oliveira Mantovani <daniel.oliveira.mantovani [a] gmail [dot] com>
+
+=head2 Referências
+
+L<WWW::Mechanize|http://search.cpan.org/~petdance/WWW-Mechanize-1.66/lib/WWW/Mechanize.pm>
+
+L<http://en.wikipedia.org/wiki/Web_scraping>
+
+L<http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol>

@@ -1,0 +1,244 @@
+=pod
+
+=encoding utf8
+
+=head1 Como montar um servidor web com Perl, Catalyst, Varnish, Nginx, MySQL e Postgres no Ubuntu
+
+=head2 Introdução
+
+Este artigo tem por objetivo ensinar a você como preparar um servidor web Perl utilizando nginx, varnish, mysql, postgres e catalyst.
+
+O Varnish é um acelerador HTTP projetado para sites de conteúdo dinâmicos com grandes volumes de acesso. Ele foi desenvolvido inicialmente pelo tablóide norueguês Verdens Gang tendo como arquiteto inicial Poul Henning Kamp, também desenvovedor freebsd.
+
+Aviso desde já que o varnish limita o cache em 2GB para máquinas 32bit... portanto, recomendo a utilização de uma máquina 64bits.
+
+Primeiro passo, instale o ubuntu na sua máquina virtual antes de iniciar os procedimentos a seguir.
+
+=head2 Instalando o Perl no Ubuntu
+
+Por default o ubuntu sempre trouxe o perl já instalado em suas distros.
+
+Verifique se sua distro já possui o perl instalado. Para verificar, digite:
+
+    perl -v
+
+Se aparecer a versão do perl, quer dizer que ele está instalado. 
+
+Se não tiver instalado, digite o comando: 
+
+    sudo apt-get install perl
+
+E em seguida:
+
+    perl -v
+
+Agora sim, podemos prosseguir.
+
+Existe mais de uma opção para instalar módulos perl... Ao invés de instalar como root, você pode usar a combinação de "perlbrew e cpanm" que permite a instalação de módulos perl sem a necessidade de privilégios administrativos... o que na minha opinião é muito melhor e mais seguro.
+
+Enquanto o perlbrew é utilizado para instalar uma distribuição Perl completa diretamente no seu home, o cpanm é o aplicativo que será usado para baixar, descompactar e instalar os módulos do CPAN, tudo sem a necesidade que qualquer privilégio especial. A instalação do perlbrew pode ser conferida em detalhes em L<http://sao-paulo.pm.org/equinocio/2011/set/3>.
+
+=head2 Instalação dos softwares adicionais
+
+    sudo apt-get install nginx varnish postgresql mysql-server mysql-client sqlite
+
+Configure uma senha para seu mysql... Vejamos, vou digitar ******** ( senha é segredo! ).
+
+Em seguida instale o módulo perl Task::Catalyst ( que instala todos os módulos necessários para iniciar uma app catalyst )
+
+    cpanm Task::Catalyst
+
+=head2 Configuração do FastCGI para o Catalyst
+
+    vim /etc/nginx/fastcgi_params_catalyst
+
+Adicione o conteúdo:
+    
+    fastcgi_param  QUERY_STRING       $query_string;
+    fastcgi_param  REQUEST_METHOD     $request_method;
+    fastcgi_param  CONTENT_TYPE       $content_type;
+    fastcgi_param  CONTENT_LENGTH     $content_length;
+        
+    # Catalyst requires setting PATH_INFO (instead of SCRIPT_NAME) to $fastcgi_script_name
+    fastcgi_param  PATH_INFO          $fastcgi_script_name;
+    fastcgi_param  REQUEST_URI        $request_uri;
+    fastcgi_param  DOCUMENT_URI       $document_uri;
+    fastcgi_param  DOCUMENT_ROOT      $document_root;
+    fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+
+    fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+    fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+
+    fastcgi_param  REMOTE_ADDR        $remote_addr;
+    fastcgi_param  REMOTE_PORT        $remote_port;
+    fastcgi_param  SERVER_ADDR        $server_addr;
+    fastcgi_param  SERVER_PORT        $server_port;
+    fastcgi_param  SERVER_NAME        $server_name;
+
+Altere a configuração do seu nginx
+
+    vim /etc/nginx/nginx.conf
+
+E insira o conteudo (altere SEU_USUARIO)
+
+    user SEU_USUARIO; #modifique aqui para o seu usuario
+    worker_processes  1;
+
+    error_log  /var/log/nginx/error.log;
+    pid        /var/run/nginx.pid;
+
+    events {
+        worker_connections  1024;
+    }
+
+    http {
+        server_names_hash_bucket_size 64;
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+        access_log  /var/log/nginx/access.log;
+        sendfile        on;
+        #tcp_nopush     on;
+        #keepalive_timeout  0;
+        keepalive_timeout  65;
+        tcp_nodelay        on;
+        gzip  on;
+        gzip_disable  msie6;
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+        client_max_body_size 30m;
+    }
+
+=head2 Configuração do NGINX
+
+    sudo su root
+    vim /etc/nginx/sites-available/app_example
+
+Como vamos utilizar o varnish, ele precisa da porta 80 liberada, entao antes de mais nada precisamos retirar o site default do nginx que aponta para a porta 80:
+
+    unlink /etc/nginx/sites-enabled/default
+
+Insira o conteudo ( altere o diretório do /static ):
+
+   server {
+      listen       8080;
+      server_name 127.0.0.1;
+      #server_name appexample.com.br *.appexample.com.br; # Utilize esta configuração para apontar para seu domínio/subdomínios
+      #server_tokens   off;
+      access_log  /var/log/nginx/appexample.com.br.access.log;
+      
+      location /static {  
+        alias  /home/SEU-USUARIO-AQUI/sites/App-Example/root/static; #indica o dir dos arq static # ** ALTERE DE ACORDO COM SEU SISTEMA
+        expires 30d;        #indica ao varnish que os arquivos static expiram em 30 dias
+      }
+      
+      location / {
+        include /etc/nginx/fastcgi_params_catalyst; #inclúi o conteúdo do arquivo que acabamos de criar
+        fastcgi_param  SERVER_PORT 80;
+        fastcgi_pass  127.0.0.1:5006; #mesma porta da app catalyst inicializada com (mais abaixo no artigo) script/app_example_fastcgi.pl  -l :5006 -n 1 -p script/pid.pid -d
+      }
+   }
+
+Depois ative a configuração do site com 
+
+    ln -s /etc/nginx/sites-available/app_example /etc/nginx/sites-enabled/app_example
+
+E reinicie o nginx
+
+    /etc/init.d/nginx restart
+
+Acesse 127.0.0.1:8080 para ver se seu nginx está rodando e verifique que não existe nada rodando em 127.0.0.1:80
+
+=head2 CONFIGURAÇÃO DO VARNISH
+
+Edite o arquivo de cofniguração
+
+    vim /etc/varnish/default.vcl
+
+e insira o conteúdo
+
+    backend default {
+        .host = "127.0.0.1";
+        .port = "8080";
+    }
+
+Agora inicie o varnish ( esta opção irá armazenar o conteúdo dentro de um arquivo. Especifique o caminho desejado para este arquivo e altere o diretório do arquivo de cache ):
+
+    varnishd -f /etc/varnish/default.vcl -s file,/home/DIRETORIO/PARA/ARQUVIVO/CACHE/DO/VARNISH/varnish_cache_DONT_DELETE.bin,50% -T 127.0.0.1:2000 -a :80  
+
+=head2 Configuração de uma App Catalyst
+
+Vamos criar uma aplicação básica para testar nossa aplicação
+
+    mkdir ~/sites
+    cd ~/sites
+    catalyst.pl App::Example
+    cd ~/sites/App-Example
+
+E vamos criar dois métodos para permitir acesso a uma página com cache  e outra sem cahe
+
+Edite o Controller Root 
+
+    vim lib/App/Example/Controller/Root.pm
+
+Insira um novo método para nossa página:
+
+    sub index :Path :Args(0) {
+        my ( $self, $c ) = @_;
+        
+        # Hello World
+        $c->response->body( $c->welcome_message );
+    }
+    
+    sub page_semcache :Path( '/page-sem-cache' ) :Args(0) {
+            my ( $self, $c ) = @_;
+            $c->res->header( 'Cache-Control' => 'no-cache' ); #avisa ao varnish para nao cachear
+            $c->res->body( 'página sem cache' );
+    }
+    
+    sub page_comcache :Path( '/page-com-cache' ) :Args(0) {
+            my ( $self, $c ) = @_;
+            $c->res->header( 'Cache-Control' => 'max-age=6000' ); #avisa ao varnish para cachear por 6000 segundos
+            $c->res->body( 'página com cache por 6000' );
+    }
+
+Inicie sua aplicação catalyst 
+
+    script/app_example_fastcgi.pl  -l :5006 -n 1 -p script/pid.pid -d
+
+Agora acesse as páginas que você criou em:
+
+    http://127.0.0.1
+    http://127.0.0.1/page-sem-cache
+    http://127.0.0.1/page-com-cache
+
+Você deve ver o conteúdo das mesmas.
+
+O pid da sua app será apresentado na tela através da mensagem B<FastCGI daemon started (pid XXXXX)>, mas ele também estará gravado em ~/sites/App-Example/srcipt/pid.pid
+
+Então para verificar se o varnish está trabalhando, vamos matar a applicação catalyst e ver o que acontece.
+
+Faça um cat ~/sites/App-Example/script/pid.pid e de um kill no pid da sua app.
+
+Agora acesse as mesmas páginas, e veja o que aconteceu
+
+    http://127.0.0.1                      #vai estar fora do ar
+    http://127.0.0.1/page-sem-cache       #vai estar fora do ar
+    http://127.0.0.1/page-com-cache       #vai carregar diretamente do cache
+
+Percebeu que a page-com-cache continua no ar porém as oturas estão fora do ar ?
+
+Então, isso quer dizer que deu tudo certo !
+
+=head2 Conclusão
+
+Você acaba de criar um servidor web simples com nginx, varnish para uma aplicação catalyst com fastcgi!
+
+=head2 Autor
+
+Hernan Lopes < hernanlopes at gmail >
+
+cpan: http://search.cpan.org/~hernan/
+
+github:  http://github.com/hernan604/
+
+Repasse este conhecimento e ajude a fortalecer linguagem Perl no Brasil.

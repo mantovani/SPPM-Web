@@ -1,0 +1,513 @@
+=pod
+
+=encoding utf8
+
+=head1 PERL E UNICODE (ENTRE OUTRAS CODIFICAÇÕES DE TEXTO)
+
+=cut
+
+=head1 INTRODUÇÃO
+
+Em primeiro lugar: qual é o objetivo desse artigo, já que a documentação oficial do Perl é acompanhada de L<perlunitut> e L<perlunifaq>?
+Simples: um amplo espectro de erros relacionados à codificação observados em nossos scripts, desde um inofensivo I<Wide character in print at ...> e até o enigmático I<Parsing of undecoded UTF-8 will give garbage when decoding entities at ...>.
+Se, por um lado, para quem quer que o tenha implementado, o suporte de Unicode do Perl é trivial, para nós, reles mortais, aquelas linhas de código da documentação oficial mais parecem fórmulas mágicas que copiamos e colamos até que encontremos uma que dê um resultado aceitável no nosso caso específico (atire a primeira pedra...).
+Não que isso seja um critério de complexidade, mas o fato do módulo L<Encode> ocupar mais de 10MB instalado já indica que aí tem coisa.
+
+Agora, cronologicamente: o suporte B<nativo> a Unicode surgiu na versão 5.6 do Perl, lançada em meados de 2000. Passou por várias correções e refinamentos, sendo que eu, pessoalmente, só confiaria em Unicode do Perl 5.10, lançado 7 anos (!) depois. Outra comparação duvidosa: PHP que, no momento da escrita desse artigo, está na versão 5.3.5, não possui suporte B<nativo> a Unicode. E, convenhamos, a sua extensão C<mbstring> faz um excelente trabalho.
+
+Então por que toda essa confusão no Perl? Vamos por partes.
+
+=head1 MITOS E VERDADES
+
+=over
+
+=item *
+
+B<Unicode nada mais é do que usar 2 bytes no lugar de 1 só para representar texto, tendo assim um alfabeto de até 65,536 caracteres>
+
+B<FALSO>. Arrisco a dizer que essa é a origem de 49% da confusão ao redor do Unicode. No momento, C<The Unicode Standard 6.0> possui cerca de 109 mil caracteres.
+Entretanto, de fato, o padrão C<UCS-2>, adotado no Windows NT, era quase exatamente isso: 2 bytes por caractere, com 63,488 possibilidades no total.
+Depois, no Windows 2000, passou-se a usar o C<UTF-16>, que B<na maioria> dos casos tinha 2 bytes por caractere, mas podia ter mais (assim como o C<utf8> I<aparenta> "representar os caracteres com acentos com 2 bytes").
+
+=item *
+
+B<Caracteres codificados com C<utf8> sempre tem 2 bytes>
+
+B<FALSO>. A razão é a mesma que para o item anterior.
+
+=item *
+
+B<Para deixar um script compatível com C<utf8>, deve-se empregar o pragma C<use utf8>>
+
+Verdadeiro para Perl 5.6. B<FALSO> para o resto. Atualmente, esse pragma serve para indicar que strings constantes presentes no código-fonte empregam C<utf8>.
+Aliás, programar Perl em um sistema C<utf8> e B<não> usar esse pragma é a origem dos outros 49% da confusão: por razões históricas, o Perl "entende" os scripts como C<latin1> por default.
+Portanto, enquanto você enxerga "®" no seu código, o Perl enxergará "Â®".
+No melhor caso, isso não muda absolutamente nada, por que todo o resto do seu sistema "espera" por C<utf8> e está pouco se lixando para o que o Perl "acha".
+Já no pior caso, um script aonde regexp C</\bPreço:\s+(\d+)/i> é crítica deixa de funcionar em um sistema configurado como C<iso-8859-1>.
+
+=item *
+
+B<Mesma coisa, para C<use Encode>, C<use encoding '...'>, C<use open '...'>, etc.>
+
+Cada caso é um caso (tentarei esclarecer adiante qual é qual), e não existe uma "linha milagrosa" que resolverá todos os problemas de uma vez.
+
+=item *
+
+B<Dane-se a codificação, viva o C<use bytes> e/ou C<binmode(FH, ':bytes')!>>
+
+B<FALSO>. Isso se chama "escapismo" C<:)>
+
+Tratando-se de textos em português, é insensato desprezar o poder de processamento textual do Perl.
+Por exemplo: para tokenizar um texto devidamente codificado, pode-se empregar o seguinte script:
+
+ #!/usr/bin/perl -w
+ use strict;
+ use utf8;
+
+ use Data::Dumper;
+ use Text::Unaccent;
+
+ my $texto = 'À noite, vovô Kowalsky vê o ímã cair no pé do pingüim queixoso e vovó põe açúcar no chá de tâmaras do jabuti feliz.';
+ my @token;
+ push @token, unac_string('utf8', lc $_) foreach (split /\W+/, $texto);
+
+ print Dumper \@token;
+
+Já sem a codificação...
+
+ #!/usr/bin/perl -w
+ use strict;
+
+ use Data::Dumper;
+
+ my $texto = 'À noite, vovô Kowalsky vê o ímã cair no pé do pingüim queixoso e vovó põe açúcar no chá de tâmaras do jabuti feliz.';
+ $texto =~ y/ÇçÑñÃÕãõÂÊÎÔÛâêîôûÀÈÌÒÙàèìòùÁÉÍÓÚáéíóúÄËÏÖÜäëïöü/ccnnaoaoaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiou/;
+ my @token = split /\W+/, lc $texto;
+
+ print Dumper \@token;
+
+Detalhe importantíssimo: somente o primeiro script foi salvo com a codificação C<utf8>. Se existisse a necessidade do segundo tratar dados em C<utf8>, antes de usar a transliteração teria que dar um jeito de converter manualmente (sequência de vários C<s///g>) os caracteres de C<utf8> para C<latin1>, o que seria deveras laboroso e ineficiente (imagina se precisasse de contemplar os quase 200 caracteres do C<iso-8859-1>?!).
+
+=item *
+
+B<C<iso-8859-1>, C<iso-8859-15> e C<win-1252> são tudo a mesma coisa>
+
+B<FALSO>. Se fossem, não teriam nomes diferentes C<:P>
+
+Apesar de todos serem I<Western Latin character sets> e apresentarem similaridades, também tem diferenças. Entretanto, para os fins de processamento de texto em português, I<podem ser considerados iguais>, pois todos os caracteres usadas em palavras em português coincidem. O que muda são as letrinhas bonitinhas como "E<#128>", "E<#8482>" ou "E<#159>", que interessam mais à juventude na hora da elaboração do nickname C<:)>
+
+B<Observação>: já C<iso-8859-1> e C<latin1>, são sinônimos.
+
+=item *
+
+B<Unicode é a codificação que oferece maior compatibilidade>
+
+B<VERDADEIRO>. Infelizmente (ou não), texto sem codificação não existe. Muitos chamam ASCII de "texto puro", talvez por ser uma das codificações mais antigas. Mas também temos o EBCDIC, e por que não código Morse?
+Nos tempos mais primórdios, o esforço era acomodar a maior quantidade possível de caracteres em 7 ou 8 bits, o que garantidamente resultava em colisões (ver o item anterior).
+
+=back
+
+=head1 O QUE É UNICODE, AFINAL?
+
+Trocando em miúdos: um alfabeto ideal (no sentido platônico), com potencial para representar todo e qualquer sistema de escrita real ou fictício que já existiu ou virá a existir, desde o tibetano arcaico e até vogon.
+Para isso, foi reservado um índice não de 256 e nem de 65,536, mas de 2**31 posições (I<code points>). Dentro desse espaço, existe uma divisão por categorias e I<scripts>, além de um mapeamento de equivalência (por exemplo: Unicode "sabe" que "©" é aproximadamente equivalente a "C", e "ö" é similar a "o").
+Porém, o mais importante a saber é que Unicode ainda pode ser abstraído como um índice unidimensional: quem mexe com XML (e HTML) já viu I<entities> no formato C<&#8305;>, que renderiza como "E<#185>", e nada mais é do que o caractere Unicode com índice decimal 8305, e, respectivamente, hexadecimal C<"\x{2071}">. Um formato padronizado, independente da linguagem (XML ou Perl, no caso) é C<U+2071>.
+Voltando ao Perl; este trata os dados textuais como Unicode, e armazena internamente como C<utf8>.
+
+=head2 E O QUE É UTF-8?
+
+Cada caractere de Unicode pode ter índice de até 31 bits, mas, historicamente, linguagens de programação e I<markup> usam apenas os primeiros 7 bits do ASCII, suficientes para representar os textos em inglês.
+Então, C<utf8> nada mais é do que uma codificação capaz de acomodar todos os 31 bits do Unicode, porém mantendo o I<backward compatibility> com ASCII. Simplificando, funciona da seguinte forma
+(sendo que "E<#185>" representa bit setado, "0" - não-setado, e "x" é o espaço reservado para o índice do caractere codificado):
+
+  BYTE 1   BYTE 2   BYTE 3   BYTE 4   BYTE 5   BYTE 6
+
+ 0xxxxxxx
+ 110xxxxx 10xxxxxx
+ 1110xxxx 10xxxxxx 10xxxxxx
+ 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+ 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+ 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+
+Assim, se o índice do caractere a ser codificado couber em 7 bits, será utilizado apenas 1 byte, mantendo a compatibilidade com ASCII. Se couber em 13 bits, serão 2 bytes; 16 bits - 3 bytes; e assim por diante.
+Para dar uma pista de que o arquivo B<não é> ASCII, existe o BOM (I<Byte Order Mark>): sequência de 3 bytes C<(0xEF, 0xBB, 0xBF)> no começo do arquivo, no caso do C<utf8>. "Coincidentemente", essa sequência traduz para caractere Unicode C<U+FEFF>, também conhecido como I<zero-width non-breaking space>.
+
+B<OBSERVAÇÃO>: apesar do espaço reservado ser de 2**31, nem todos os índices decodificam para caracteres Unicode válidos!!!
+
+Voltando ao exemplo anterior, o caractere C<U+2071> ("E<#185>"), representado em C<utf8>, é sequencia de bytes C<(0xE2, 0x81, 0xB1)>. Eis um aparente paradoxo: string "ímã" tem 3 caracteres, mas, codificada em C<utf8>, ocupa 5 bytes! Outro ponto importante é que C<utf8> é interpretável em uma só direção, já que é o primeiro byte da sequencia que determina o tamanho do bloco todo. Então, para que a coisa toda dê certo, e C<substr("ímã", 1, 1)> retorne "m", Perl armazena metadados juntamente com strings em C<utf8>. Vejamos:
+
+ #!/usr/bin/perl
+ use utf8;
+ use Devel::Peek;
+
+ my $str = "ímã";
+ Dump $str;
+
+Retorna:
+
+ SV = PV(0x1c61b78) at 0x1c80850
+   REFCNT = 1
+   FLAGS = (PADMY,POK,pPOK,UTF8)
+   PV = 0x1c7b150 "\303\255m\303\243"\0 [UTF8 "\x{ed}m\x{e3}"]
+   CUR = 5
+   LEN = 8
+
+Para comparação, se C<$str = "teste">, temos:
+
+ SV = PV(0x75fb78) at 0x77e850
+   REFCNT = 1
+   FLAGS = (PADMY,POK,pPOK)
+   PV = 0x779150 "teste"\0
+   CUR = 5
+   LEN = 8
+
+Obviamente, este I<flag> de C<utf8> é legível e configurável a partir do código-fonte; apesar de L<perlunifaq> condenar isso (com razão ou não, não vem ao caso).
+
+Então, concluindo sobre a relação do Perl com C<utf8>. O Perl a partir da versão 5.8 armazena e trata strings Unicode B<internamente> codificadas com C<utf8>. Entretanto, B<externamente>, o Perl, por default e visando I<backward compatibility>, emprega... C<latin1> no código-fonte e I<"literal bytes"> para I/O! Ou seja: é de se esperar encrenca em OS moderno, tal como Ubuntu, a menos que os devidos cuidados sejam tomados.
+
+=head1 CONVERSÃO DE CODIFICAÇÃO EM PERL
+
+Recapitulando: Perl, apesar de empregar Unicode (e com grande êxito) e armazenar strings como C<utf8> internamente, é um tanto quanto inconsistente ao se comunicar com o "mundo exterior".
+O próprio interpretador espera que o código-fonte esteja em C<latin1>, a menos que seja empregado o pragma C<use utf8> (o que não implica que I/O deixe de ser visto como I<"literal bytes">!!!).
+Portanto, a codificação do texto precisa ser especificada explicitamente.
+
+=head2 Usando PerlIO
+
+Frequentemente, a entrada de dados se dá por meio dos filehandles. Se o seu Perl foi compilado com suporte a L<perlio> (e quem, em sã consciência, não o faria?), este é o jeito mais natural de codificar (até mesmo encriptar!) os dados. É importante destacar que o Perl não seleciona layer de C<utf8> automaticamente mesmo que o arquivo a ser aberto contenha o I<Byte Order Mark>. Então, para abrir um arquivo em C<utf8>:
+
+ open(my $fh, '<:encoding(UTF-8)', 'lista.txt');
+
+C<utf8> em especial possui um atalho:
+
+ open(my $fh, '<:utf8', 'lista.txt');
+
+Se o arquivo tem o BOM ou qualquer outra marcação de codificação (como no caso do XML), é possível abrir o arquivo, verificar a codificação só depois aplicar layer de codificação:
+
+ open(my $fh, '<:bytes', 'lista.xml'); # ':bytes' é o inverso do ':utf8'!
+ my $header = <$fh>;
+ # exemplo tosquíssimo de detector de codificação para XML relativamente bem-formatado:
+ if ($header =~ /\butf-?8\b/i) {
+     binmode $fh, ':utf8';
+ } elsif ($header =~ /\b(iso-?8859-?1|latin1)\b/i) {
+     binmode $fh, ':latin1';
+ }
+
+Algumas vezes, é interessante configurar um layer de codificação padrão. Para isso, temos o pragma L<open>:
+
+ use open IO    => ':encoding(utf8)';
+
+Por outro lado, muitas vezes sabe-se que a entrada é sempre em C<utf8>, enquanto a saída depende da configuração do I<locale> do sistema em questão. Neste caso:
+
+ use open IN    => ':utf8';
+ use open OUT   => ':locale';
+
+Aliás, o pragma L<open> só atua em open()/readpipe()/afins que se situam no mesmo escopo léxico. Para propagar o efeito para os handles STDIN/STDOUT/STDERR, é necessário acrescentar:
+
+ use open ':std';
+
+E, por fim, temos a clássica situação em que precisamos mexer com um código-macarronada herdado de um sistema arcaico. Para ajudar, o Perl tem o argumento C<-C> que controla o emprego dos layers. Por exemplo: C<perl -CSDA script_das_trevas.pl --buscar=açaí> vai forçar STD(IN|OUT|ERR) e todos os demais filehandles a serem C<utf8>, além de interpretar C<@ARGV> como C<utf8>. Ver L<perlrun> para maiores detalhes, mas lembre-se: isso é uma B<gambiarra>.
+
+=head2 Usando Encode
+
+Já que nem sempre é possível empregar PerlIO (por exemplo, o clássico erro I<Parsing of undecoded UTF-8 will give garbage when decoding entities at ...> se deve ao fato do L<LWP::UserAgent> pegar HTML como I<octets>, mas L<HTML::Parser> esperar como entrada Unicode), pode-se usar o L<Encode> para fazer a conversão diretamente em memória, I<"ad hoc">.
+Sabendo a codificação de uma string "crua", ela primeiro deve ser "Unicodificada":
+
+ $string = decode('iso-8859-1', $octets);
+
+No caso, C<$octets> é o que veio B<de fora> e C<$string> será uma cópia com qual o Perl pode trabalhar normalmente, fazendo match com C</\w+/>, ou C<ucfirst($string)>, ou I<whatever>.
+O processo inverso seria:
+
+ $octets = encode('iso-8859-1', $string);
+
+E eis que surge um problema bastante comum e chato: digamos que você baixou uma página HTML pelo protocolo HTTP. Se o servidor remoto teve a bondade de especificar a codificação na tag "Content-type", seja nos headers, seja nos C<<META>> ótimo.
+Caso contrário, forma-se o caso do ovo e da galinha: para processar o dado, precisa saber a codificação, e, para saber a codificação, precisa processar o dado.
+Muitos citam o L<Encode::Guess> nessa hora, entretanto, ele é bastante incompatível com a realidade dos falantes do idioma português. Isso por que uma string em C<utf8> é considerada pelo autor do módulo como ambígua: pode ser tanto C<utf8> quanto C<latin1>. De um modo geral, faz sentido: "Â®" B<pode ser> tanto a letra Â seguida de símbolo de marca registrada, quanto apenas marca registrada. Mas, convenhamos, é pouco provável o emprego de "Â®" em um texto B<human-readable>. Por outro lado, "çã" está definitivamente fora do padrão C<utf8>.
+Então, segue aqui o script que exemplifica a heurística da diferenciação entre C<latin1> e C<utf8>. Neste caso particular, é um típico "html2text.pl":
+
+ #!/usr/bin/perl
+ use strict;
+
+ # Para ter certeza absoluta de que nenhum warning de 'Wide character' escapou
+ use warnings 'all';
+
+ # Somente indica que este arquivo .pl está na codificação UTF-8!!!
+ use utf8;
+
+ # Ignora codificação de entrada
+ use open IN => ':raw';
+ # Usa a codificação de saída padrão do sistema
+ use open OUT => ':locale';
+
+ use Encode;
+ use HTML::Entities;
+ use Regexp::Common qw(balanced comment);
+
+ # Lê arquivo inteiro de uma vez, ao invés de ler linha por linha
+ local $/ = undef;
+ while (my $buf = <>) {
+     # Se não for UTF-8 válido, assume ISO-8859-1
+     my $encoding = detect_utf8(\$buf) ? 'utf8' : 'iso-8859-1';
+     # Processa a codificação
+     $buf = decode($encoding, $buf);
+
+     # Trata tags HTML
+     $buf =~ s%$RE{comment}{HTML}%%gos;
+     $buf =~ s%<(script|style)\b[^>]*?>.*?</\1>% %gis;
+     $buf =~ s%$RE{balanced}{-parens=>'<>'}% %gios;
+     $buf = decode_entities($buf);
+
+     # Extrai somente as palavras, normaliza e imprime
+     print "\L$1 " while $buf =~ m%([\w\-]+)%g;
+ }
+ print "\n";
+
+
+ # detect_utf8(\$string)
+ # Recebe referência para escalar com string a ser analisada e retorna:
+ # 0 - $string tem caracteres de 8 bits, não valida como UTF-8;
+ # 1 - $string tem somente caracteres de 7 bits;
+ # 2 - $string tem caracteres de 8 bits, valida como UTF-8.
+ # Algoritmo original em PHP: http://www.php.net/manual/en/function.utf8-encode.php#85293
+ # Fórmula da conversão: http://home.tiscali.nl/t876506/utf8tbl.html#algo
+ sub detect_utf8 {
+     use bytes;
+
+     my $str = shift;
+     my $d = 0;
+     my $c = 0;
+     my $b = 0;
+     my $bits = 0;
+     my $len = length ${$str};
+
+     for (my $i = 0; $i < $len; $i++) {
+         $c = ord(substr(${$str}, $i, 1));
+         if ($c >= 128) {
+             $d++;
+
+             if ($c >= 254) {
+                 return 0;
+             } elsif ($c >= 252) {
+                 $bits = 6;
+             } elsif ($c >= 248) {
+                 $bits = 5;
+             } elsif ($c >= 240) {
+                 $bits = 4;
+             } elsif ($c >= 224) {
+                 $bits = 3;
+             } elsif ($c >= 192) {
+                 $bits = 2;
+             } else {
+                 return 0;
+             }
+
+             if (($i + $bits) > $len) {
+                 return 0;
+             }
+
+             while ($bits > 1) {
+                 $i++;
+                 $b = ord(substr(${$str}, $i, 1));
+                 if (($b < 128) || ($b > 191)) {
+                     return 0;
+                 }
+                 $bits--;
+             }
+         }
+     }
+
+     return $d ? 2 : 1;
+ }
+
+A função C<detect_utf8()>, que "emprestei" dos comentários da página de documentação online do PHP, faz uma verificação B<aproximada> se o "protocolo" de C<utf8> de guardar 31 bits por caractere é respeitado. Se não é, das duas uma: os I<octets> são C<ascii>, se nenhum exceder 7 bits por byte; ou a codificação é "qualquer outra coisa". Se estamos trabalhando com textos em português, a chance da "outra coisa" ser C<latin1> é de 99.9%. Se não for suficiente, é possível combinar o poder do L<Encode::Guess> com esta muleta; ou mesmo elaborar uma heurística que leve em consideração a frequência da ocorrência das letras em um texto. Esse último caso é realmente B<o último caso>: além da complexidade, a quantidade de falsos-positivos chega a ser irritante. Quem mais se lembra como era navegar na Web lá em 1996? Ao menos para mim, apareciam letrinhas árabes no lugar dos acentos C<:P>
+
+=head2 Gotchas
+
+=over
+
+=item *
+
+O I<entity> C<&nbsp;>, também conhecido como I<non-breaking space>, B<NÃO É A MESMA COISA QUE UM ESPAÇO>!!! Ou seja: não dá I<match> com C</\s/>. Então, infelizmente, tem que tratá-lo como C<\xa0>.
+
+=item *
+
+L<DBD::mysql> possui um mecanismo próprio para "conversar" em C<utf8>:
+
+ use DBI;
+
+ my $dbh = DBI->connect("DBI:mysql:${database}:${hostname}", $username, $password) 
+    or die "Erro de conexão: $DBI::errstr";
+
+ $dbh->{'mysql_enable_utf8'} = 1;
+
+ $dbh->do('SET NAMES utf8');
+
+=item *
+
+A documentação em POD é codificada como C<latin1> por padrão. Se o seu código-fonte está em C<utf8>, precisa explicitar essa codificação também para seções POD:
+
+ =encoding utf8
+
+Entretanto, é comum L<perldoc> ter problemas com documentação não-ASCII (por causa do L<ngroff> que tende a gerar aproximação ASCII dos caracteres).
+Se for o caso, C<perldoc -t> ajuda, apesar de perder "frescuras" da formatação.
+
+=item *
+
+Para saber os nomes das codificações que o seu Perl suporta:
+
+ perl -MEncode -le 'print for Encode->encodings(":all")'
+
+Repare que C<latin1> não está aí, apesar do C<iso-8859-1> estar. Isto por que é um I<alias>; assim como C<utf-8> é I<alias> para C<utf8>.
+
+=item *
+
+Nunca é demais testar o seu script com I<locales> diferentes:
+
+ LANG=pt_BR.ISO-8859-1 perl extractor.pl
+ LANG=en_US.UTF-8 perl extractor.pl
+
+Mas, curiosamente, no meu Ubuntu, que instalei e uso somente em inglês, primeira linha dá erro. C<locale -a> revelou que só tenho en_US. Aí que entra L<locale-gen>, citando a página manual do mesmo:
+
+ Compiled locale files take about 50MB of disk space, and most users only need few locales.  In order to save disk space, compiled locale files are not distributed in the locales package, but selected locales are automatically generated when this package is installed by running the locale-gen program.
+
+Então é só uma questão de rodar:
+
+ sudo locale-gen pt_BR.ISO-8859-1
+
+=item *
+
+Mesmo que o Perl tenha suporte a múltiplas codificações, tem hora em que a filosofia de UN*X se aplica bem e é vantajoso pré-processar os dados B<antes> de enviar para o Perl.
+Para o caso genérico, temos o L<iconv>:
+
+ cat enc-iso8859-1.txt | iconv -f l1 -t utf8 | perl ...
+
+Neste caso, o input é convertido de C<latin1> para C<utf8> (C<l1> é abreviação para C<latin1>).
+
+Já para HTML e XML, o L<tidy> resolve o problema da codificação, junto com virtualmente qualquer outro problema C<;)>
+
+ curl http://www.uol.com.br | tidy --input-encoding latin1 --output-encoding utf8 | perl ...
+
+Sendo que no momento da escrita deste artigo UOL empregava C<latin1> na sua home, essa linha "normalizou" para C<utf8>. E, se o HTML for particularmente chato, C<--output-encoding ascii> converterá os caracteres em I<numeric entities>, os quais I<parsers> do Perl tratam particularmente bem.
+
+B<AVISO>: L<tidy> processa o documento inteiro na RAM; enquanto isso não afeta em nada HTML, XML de 2GB será um problema sério.
+
+=item *
+
+Um cuidado especial deve ser tomado com módulos que empregam L<XS|perlxs>; se são interfaces para bibliotecas não-Unicode, existe uma boa chance de que retornem I<octets>.
+
+=back
+
+=head1 RESUMO
+
+=over
+
+=item *
+
+O script I<aparentar> não produzir erros relativos à codificação ainda não significa que está tratando todos os dados coerentemente, ou seja, em Unicode.
+
+=item *
+
+É fortemente recomendado processar todos os dados em C<utf8>, mesmo que entradas/saídas sejam qualquer outra coisa. Motivo: B<qualquer coisa> converte para C<utf8>; já a recíproca não é válida.
+
+=item *
+
+I<Locale> do sistema existe para ser respeitado. Então, nada mais justo do que começar os scripts com:
+
+ #!/usr/bin/perl
+ use strict;
+ use utf8;
+ use warnings 'all';
+ use open IO => ':locale';
+
+E, é claro, salvar o arquivo em C<utf8>.
+
+=item *
+
+Mesmo salvando o script em C<utf8>, é melhor evitar copiar & colar a torto e a direito, B<especialmente> para dentro das expressões regulares! Pois veja só:
+
+ s/[\---__-]/-/g;
+
+Dependendo da fonte, são 6 caracteres B<parecidos>, enquanto na realidade são distintos:
+
+=over
+
+=item *
+
+C<U+002D> HYPHEN-MINUS
+
+=item *
+
+C<U+2010> HYPHEN
+
+=item *
+
+C<U+2011> NON-BREAKING HYPHEN
+
+=item *
+
+C<U+2012> FIGURE DASH
+
+=item *
+
+C<U+2013> EN DASH
+
+=item *
+
+C<U+2212> MINUS SIGN
+
+=back
+
+Então, escrever B<por extenso> pode lhe poupar longas horas de I<debugging>, futuramente:
+
+ s/[\x2d\x{2010}-\x{2013}\x{2212}]/-/g;
+
+=item *
+
+Citei aqui apenas um apunhalado de técnicas as quais desenvolvi empiricamente. Traduzindo: bati a cabeça até que deu certo, B<para mim> C<:P>
+
+Então não citei codificações obscuras (como o C<EBCDIC> que tive oportunidade de usar), e propositalmente omiti as coisas que, na prática, atrapalharam mais do que ajudaram (como C<Encode::_utf8_on()>).
+
+=back
+
+=head1 REFERÊNCIAS
+
+=over
+
+=item *
+
+L<perlunicode>, L<perluniintro>, L<perlunitut> e L<perlunifaq>
+
+=item *
+
+L<PerlIO|perlio>
+
+=item *
+
+L<Encode>
+
+=item *
+
+L<Support Unicode|http://xpoint.ru/know-how/Perl/PodderzhkaUnicode>
+
+=item *
+
+L<is_utf8 function, to detect valid UTF-8 text|http://www.php.net/manual/en/function.utf8-encode.php#85293>
+
+=item *
+
+L<Unicode UTF-8 encoding|http://home.tiscali.nl/t876506/utf8tbl.html>
+
+=item *
+
+L<UTF8, MySQL, Perl and PHP (Phil Gyford's website)|http://www.gyford.com/phil/writing/2008/04/25/utf8_mysql_perl.php>
+
+=item *
+
+L<The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)|http://www.joelonsoftware.com/articles/Unicode.html>
+
+=back
+
+=head1 AUTOR
+
+Stanislaw Pusep L<stas@sysd.org|mailto:stas@sysd.org>
+
+=cut

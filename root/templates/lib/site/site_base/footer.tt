@@ -1,6 +1,5 @@
 <div id="inner_footer">
 	<ul>
-		<li><a href="[% c.uri_for('/vaquinha') %]">Vaquinha</a></li>
 		<li><a href="[% c.uri_for('/treinamento') %]">Treinamento</a></li>
 		<li><a href="[% c.uri_for('/equinocio','2011') %]">Meses do Equin&oacute;cio</a></li>
 		<li><a href="[% c.uri_for('/empresas') %]">Empresas</a></li>

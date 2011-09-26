@@ -1,0 +1,71 @@
+=encoding UTF-8
+
+=head1 Eu não quero mais usar "perl -MModule\ 999"
+
+Este módulo eu escrevi com a intenção de não precisar mais utilizar a linha "perl -MModule\ 999" para obter o número da versão do módulo instalado, e o principal objetivo dele é oferecer informações relacionado ao módulo via linha de comando, utilizando já módulos existentes como L<Module::Metadata>, L<Module::CoreList>, L<Module::Build>, L<Parse::CPAN::Meta> e L<ExtUtils::Installed>.
+
+Então com ele você pode obter por exemplo informações relativas ao módulo Moose, por exemplo:
+
+	$ pmodinfo --full Moose
+	Moose version is 2.0007.
+      		cpan page  : http://search.cpan.org/dist/Moose
+	        filename   : /Users/thiago/perl5/perlbrew/perls/perl-5.14.0/lib/site_perl/5.14.0/darwin-2level/Moose.pm
+		ctime    : 2011-05-30 09:51:47
+		POD content: yes
+		Last cpan version: 2.0010
+
+Veja que você tem nesta saída, o site do módulo no CPAN, o local onde esta módulo esta instalado localmente, a data que ele foi criado, se contém conteúdo POD e qual a última versão no CPAN.
+
+Você pode buscar por exemplo, por um namespace, digitando o "::" no final do nome do módulo, por exemplo:
+
+	$ pmodinfo Config::
+	Config::Any version is 0.21.
+	Config::General version is 2.50.
+	Config::INI version is 0.017.
+	Config::JSON version is 1.5100.
+	Config::MVP version is 2.200001.
+	Config::MVP::Reader::INI version is 2.101461.
+	Config::Tiny version is 2.14.
+
+Além de visualizar a versão do módulo, podemos atualizar eles via cpan ou cpanm, como por exemplo:
+
+	$ pmodinfo -u Config::
+    	Config::Any local version: 0.21, last version in cpan: 0.23
+        Config::INI local version: 0.017, last version in cpan: 0.018
+	Do you need to update this modules now ? (y/n) [n]
+
+Caso queira atualizar todos os módulos instaslados.
+
+	$ pmodinfo -u
+	Algorithm::Diff local version: 1.1902, last version in cpan: 1.15
+	Any::Moose local version: 0.14, last version in cpan: 0.15
+	(...)
+	Do you need to update this modules now ? (y/n) [n]
+
+
+E caso você queira obter via "hash" a versão dos módulos instalados para te ajudar na criação de um Makefile.PL, há a opção --hash.
+
+	$ pmodinfo --hash Catalyst::Runtime DBIx::Class Data::Printer
+    	{
+		'Catalyst::Runtime' => 5.80032,
+		'DBIx::Class' => 0.08192,
+    		'Data::Printer' => 0.21,
+	};
+
+=head1 INSTALAÇÃO
+
+Para instalar, basta instalar via cpan ou cpanm o pacote L<App::pmodinfo>
+
+	cpanm App:::pmodinfo
+
+Veja mais: L<http://search.cpan.org/dist/App-pmodinfo/>
+
+=head1 DESENVOLVIMENTO
+
+L<http://www.github.com/maluco/App-pmodinfo>
+
+=head1 AUTOR
+
+Thiago Rondon, thiago@aware.com.br, L<http://www.aware.com.br>
+
+=cut

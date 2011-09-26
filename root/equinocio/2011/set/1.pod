@@ -1,0 +1,41 @@
+=pod
+
+=encoding utf-8
+
+=head1 Boas Vindas
+
+É com muita alegria que a Comunidade Perl do Brasil dá as boas vindas ao Equinócio de Primavera 2011.
+
+Como de costume, vamos publicar um artigo por dia, até o próximo dia 20 de setembro, que é quando ocorre o Equinócio de Primavera deste ano.
+
+=head2 Agradecimentos
+
+Aproveitamos este espaço para agradecer a todas as pessoas que fizeram e fazem acontecer este evento, autores, revisores, divulgadores, testadores, madrugadores e principalmente queremos agradecer aos atores principais do Equnócio, vocês leitores, que são nossa grande motivação.
+
+=head2 Um pequeno balanço
+
+Desde a sua primeira edição já tivemos 64 artigos de 28 diferentes autores, batendo nosso record de visitações no equinócio passado, deixando claro que muito mais que quantidade estamos disponibilizando cada vez mais artigos de qualidade.
+
+=head2 Cultus Cameli
+
+Durante as preparações para o último Equinócio, nosso colega Solli resolveu dar um incentivo aos autores, que sempre precisam espremer o seu tempo, que não é muito, para produzir os artigos. Ele ofereceu um livro para o autor do post mais acessado e para o autor do post mais votado por uma Comissão de Notáveis.
+
+E como missão dada é missão cumprida, tenho a honra de anunciar os vencedores do B<1º Prêmio 'Cultus Cameli' de Literatura>!
+
+=head3 Post mais acessado
+
+Na primeira categoria, a de Post mais acessado. Nesta a disputa foi pageview a pageview, com três posts batendo todos os records de visualização.
+
+Mas no topo das paradas de sucesso, e detendo B<O> record de audiência: Thiago Rondom com o post L<Publicidade de dados governamentais|http://sao-paulo.pm.org/equinocio/2011/mar/1>. Post tema do Equinócio e que abriu o evento. Parabéns!!!
+
+=head3 Melhor Post
+
+Na segunda e última categoria da noite, tivemos também uma disputa acirrada, que fez com que nossa Comissão de Notáveis levasse nada menos que seis meses para decidir.
+
+Tivemos pelo menos cinco posts que mereceram o título, mas vencendo por somente um voto de diferença, o post que virou referência no assunto na língua portuguesa, é com muita alegria que anunciamos que o vencedor da categoria Melhor Post do Equinócio de Outono do ano de 2011 vai para Stanislaw Pusep com o post L<Perl e Unicode|http://sao-paulo.pm.org/equinocio/2011/mar/4>. Parabéns!!!
+
+=head2 Nova Premiação
+
+E neste Equinócio de Primavera eu, Blabos, vou patrocinar o B<2º Prêmio 'Cultus Cameli' de Literatura>, seguindo as mesmas regras que o email original do Solli (25/02/2011) na lista da São Paulo Perl Monges.
+
+Escrevam e divirtam-se.

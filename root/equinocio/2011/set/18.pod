@@ -1,0 +1,60 @@
+=head1 Emma - Simples discador para efetuar chamadas via um proxy sip com um arquivo
+de audio.
+
+=head1 Introdução
+
+Este aplicativo eu escrevi há cerca de um ano atrás, quando precisava de uma
+solução para um discador com uma mensagem pré-gravada, e fui buscar uma
+solução livre para isto e não encontrei.
+
+Então resolvi escrever este simples aplicativo, que basicamente você pode
+repassar o endereço SIP de destino, e o arquivo que deseja enviar via audio.
+
+Atenção: Este projeto não esta sendo mantido, mas ele é considerado um projeto
+estável, pois utilizo ele há mais de um ano, e não tenho problemas, porém
+seria muito interessante se alguém tiver interesse em manter ele.
+
+=head1 Instalação
+
+Este aplicativo, ainda esta apenas no github, e em breve devo passar ele para
+o CPAN, portanto para instalar ele via github, basta efetuar a cópia do 
+repositório L<https://github.com/maluco/App-Emma-Voip>, e então executar:
+
+    perl Makefile.PL
+    make install
+
+Ele irá te oferecer o aplicativo "emma".
+
+=head1 Enviando uma ligação
+
+Para enviar uma aplicação, basta executar por exemplo o comando:
+
+     emma --filename record.data --to sip:12320493@domain.com \
+        --from sip:thiago@gw.domain.com
+
+Este arquivo "record.data" é um arquivo audio no formato "raw", e para
+transformar um arquivo .ogg por exemplo para este formato, você pode
+utilizar a ferramenta sox, como por exemplo:
+
+    sox -r 44100 -c 2 record.ogg -r 8000 -c 1 -t raw -U record.raw
+
+Existem outras opções para autorização, tais elas como:
+
+    emma --filename record.data --to sip:12320493@domain.com \
+            --from sip:thiago@gw.domain.com \
+            --username thiago \
+            --password alice \
+            --registrar server.registrar.domain.com \
+
+Para mais opções digite: "emma -h".
+
+=head1 Origem do nome
+
+O nome do aplicativo é uma homenagem a Emma Mills Nutt, que foi  primeira
+mulher a operar um telefone em 1 de setembro de 1978, onde ela começou a 
+trabalhar para Edwin Holmes Dispatch (ou Boston Telephone Dispatch Company) em 
+Boston, Massachusetts.
+
+=head1 Autor
+
+Thiago Rondon, <thiago@aware.com.br>, http://www.aware.com.br/

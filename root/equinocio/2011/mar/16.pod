@@ -1,0 +1,580 @@
+=encoding utf8
+
+=head1 Oh no!! It's Dist::Zilla!!
+
+=head2 O que nós fizemos para merecer isso?
+
+A manutenção de um módulo Perl é cheia de tarefas repetitivas: configurar
+o C<Makefile.PL>, atualizar documentação, atualizar versão de dependências,
+copiar as mais diversas suítes de testes para a árvore, formatar o código,
+"I<commitar>" o código do controle de versão - eventualmente aplicar I<tags>
+nesse controle de versão e, por fim, fazer o I<upload> do módulo para o
+L<PAUSE|http://pause.perl.org/>[1], e de lá para o
+L<CPAN|http://www.cpan.org>[2].
+
+Especificamente do ponto de vista de documentação, há a chata tarefa de
+atualizar a versão do módulo em todos os arquivos que fazem parte dele - 
+se forem muitos, a chateação também será muita. 
+Adicionar seções com informações "repetidas", como B<AUTHOR>, B<LICENSE>,
+B<SUPPORT>, entre outras, é também algo repetitivo e sujeito a erros bobos
+se feito manualmente. Alguns módulos fornecem um arquivo C<README> que é a
+renderização em texto do POD do arquivo principal do módulo - também é uma
+tarefa que poderia ser facilmente automatizada.
+
+Por fim, quando estamos trabalhando em equipe, precisamos ter um maior cuidado
+com o sistema de controle de versões, criando I<branches> específicos para 
+times e/ou tarefas específicas, e realizando o I<merge> dos mesmos depois.
+O sistema de controle de versão que, se ainda não é, está se tornando o mais
+popular na comunidade Perl (e de outras linguagens também) é o 
+L<git|http://git-scm.com>[3], I<software> originalmente escrito pelo próprio 
+L<Linus Torvalds|http://en.wikipedia.org/wiki/Linus_Torvalds>[4].
+
+As principais vantagens do B<git> são:
+
+=over
+
+=item *
+Sistema distribuído: não é necessário realizar todas as operações contra um
+repositório central (ainda que ter um repositório central seja algo bom,
+em algum ponto do processo, e o B<git> não impede isso).
+
+=item *
+Facilidade para fazer I<branch>es e I<merge>s: o B<git> permite criar branches
+novos de desenvolvimento e realizar o merge dos mesmos com rapidez e segurança.
+
+=item *
+O modelo de funcionamento do B<git> viabilizou serviços como o
+L<github|http://github.com>[5], um serviço público de
+hospedagem de repositórios B<git>, oferecido gratuitamente.
+
+=item *
+Software Livre e Aberto: o B<git> é B<Free Software>, B<Open Source>. Os fontes
+do B<git> estão L<disponíveis publicamente|https://github.com/git/git>[6].
+
+=back
+
+=head2 E agora, quem irá nos defender?
+
+Em 
+L<Maio de 2008(?)|https://github.com/rjbs/dist-zilla/commit/f3854f7c675a11c6b3832dc111f72e6d705c09fa>[7],
+Ricardo Signes, (RJBS), desenvolvedor norte-americano, membro atuante da comunidade
+Perl, contribuidor do B<CPAN>,
+com L<dezenas de módulos|http://search.cpan.org/~rjbs/>[8] publicados,
+começou um projeto ambicioso, o L<Dist::Zilla>[9]. O Dist::Zilla, como descrito em
+L<seu site|http://dzil.org/>[10], é um
+I<"programa para facilitar a escrita, o empacotamento, o gerenciamento e a publicação de software livre">. Para nós
+programadores e batalhadores cotidianos, isso significa: menos
+tempo gasto com códigos, arquivos e configurações I<boilerplate>, e mais tempo
+disponível para dedicar-se à codificação propriamente dita. Naturalmente, aqui,
+estamos falando de Perl - iremos usar o Dist::Zilla para escrever
+módulos e/ou aplicativos em Perl.
+
+Este artigo não pretende ser um guia completo sobre o Dist::Zilla. Para uma
+documentação mais abrangente, sugerimos ler 
+L<os tutoriais do Dist::Zilla|http://dzil.org/tutorial/start.html>[11]. Vamos
+mostrar aqui o básico, e um pouco além.
+
+=head3 O que faz?
+
+O Dist::Zilla permite várias ações. Para executar essas ações, usamos a
+aplicação de linha de comando que vem com o Dist::Zilla, que é o comando
+C<dzil>. Alguns dos usos mais freqüentes:
+
+Para executar toda a suíte de testes do módulo:
+
+	$ dzil test
+	[DZ] building test distribution under .build/nQGOr0w7RL
+	...
+
+Para gerar um I<build> (I<tar-ball>) do módulo:
+
+	$ dzil build
+	...
+
+Para fazer um I<release>: I<build>, (opcionalmente) rodar todos os testes e,
+(idem) fazer o I<upload> do módulo para o CPAN:
+
+	$ dzil release
+	...
+
+=head3 Como começar?
+
+O Dist::Zilla é controlado pelas configurações em arquivos ".ini", tanto
+para configurações do usuário quanto para configurações do projeto.
+
+Para poder ter o Dist::Zilla funcionando, você deve, antes de mais nada,
+instalá-lo:
+
+	$ cpan Dist::Zilla
+
+Uma vez que o C<cpan> termine a instalação, você terá disponível o comando
+C<dzil> no seu I<shell>. É preciso então fazer um I<setup> do Dist::Zilla:
+
+	dzil setup
+
+Esse comando irá gerar um arquivo C<< ~/.dzil/config.ini >>, contendo as
+informações solicitadas. Por exemplo:
+
+	[%User]
+	name  = Alexei Znamensky
+	email = russoz@cpan.org
+	
+	[%Rights]
+	license_class    = Perl_5
+	copyright_holder = Alexei Znamensky
+
+Note que o C<dzil setup> perguntará sobre usuário e senha do CPAN. Caso você
+escolha por colocar essa informação no Dist::Zilla, ela estará presente no
+C<config.ini>. Opcionalmente você pode colocar essa informação separadamente
+no arquivo C<< ~/.pause >>:
+
+	user russoz
+	password p0t@toe5
+
+Você não é obrigado a ter essa informação em nenhum desses arquivos, isso é 
+estritamente opcional, mas, naturalmente, não será possível fazer o upload
+automático do módulo para o CPAN sem esses dados.
+
+Com isso você já está pronto para usar o Dist::Zilla no seu módulo.
+
+=head3 Convertendo um módulo
+
+Vamos exemplificar o uso do Dist::Zilla com a conversão de um módulo, pois fica
+mais fácil de visualizar o que substitui o quê. Esta seção é adaptada do
+tutorial escrito pelo próprio RJBS sobre
+L<conversão de um módulo|http://dzil.org/tutorial/convert-dist.html>[12].
+
+No começo deste ano este autor que aqui escreve se tornou co-mantenedor do módulo
+L<Queue::Base>[13]. Além de alguns ajustes no código do módulo, o Queue::Base foi
+utilizado como cobaia para a conversão para Dist::Zilla.
+
+Para começarmos a utilizar o Dist::Zilla, precisamos criar, no diretório raiz
+da distribuição/módulo/aplicação, um arquivo C<dist.ini>.
+
+Basicamente os passos para conversão foram:
+
+=head4 Eliminando o Makefile.PL
+
+O C<Makefile.PL> continha o seguinte código:
+
+	use inc::Module::Install;
+	
+	name     'Queue-Base';
+	all_from 'lib/Queue/Base.pm';
+	author   q{Alexei Znamensky <russoz@cpan.org>};
+	license  'perl';
+	
+	requires 'version' => 0.77;
+	
+	build_requires 'Test::More';
+	
+	auto_install;
+	
+	WriteAll;
+
+Esse arquivo pode ser removido. Não será mais necessário.
+Ao invés dele, teremos um C<dist.init>:
+
+	name    = Queue-Base
+	version = 2.0_2
+	author  = Farkas Arpad <arpadf@cpan.org>
+	author  = Alexei Znamensky <russoz@cpan.org>
+	license = Perl_5
+	copyright_holder = Alexei Znamensky
+
+	[GatherDir]
+	[MetaYAML]
+	[ModuleInstall]        <<<<<<<<< AQUI
+	[Manifest]
+	...
+
+Um C<dist.ini> irá conter I<tags> de seções e definições, como
+informações sobre o módulo e o autor.
+
+Notem nesse trecho anotado do 
+L<< primeiro C<dist.ini> do Queue::Base | https://github.com/russoz/Queue-Base/blob/3702c381595c0dfa6e7644bd945987b95af2e20c/dist.ini >>[14],
+que colocamos uma I<tag> de seção na qual especificamos o uso do
+L<Module::Install>[15].
+
+Todas essas I<tags> de seções (com exceção aos que começarem com "@" e outros
+que contém uma barra "/"), correspondem a classes no I<namespace>
+C<Dist::Zilla::Plugin::>, isto é, no trecho acima estamos referenciando as
+classes:
+
+=over
+
+=item *
+L<Dist::Zilla::Plugin::GatherDir>
+
+=item *
+L<Dist::Zilla::Plugin::MetaYAML>
+
+=item *
+L<Dist::Zilla::Plugin::ModuleInstall>
+
+=item *
+L<Dist::Zilla::Plugin::Manifest>
+
+=back
+
+Dessas quatro classes[16][17][18][19], Dist::Zilla::Plugin::ModuleInstall
+não faz parte do próprio Dist::Zilla, ela foi desenvolvida por
+L<Kent Fredric|http://search.cpan.org/~kentnl/>[20].
+
+=head4 Eliminando outros arquivos
+
+Existem vários I<plugins> prontos, para realizar uma
+L<< infinidade de diferentes tarefas | http://search.cpan.org/search?query=Dist::Zilla::Plugin&mode=all >>[21].
+Destacamos aqui alguns dos mais importantes (na opinião desde autor):
+
+	[GatherDir]     - lista os arquivos
+	[Manifest]      - gera arquivo MANIFEST
+	[Readme]        - gera arquivo README
+	[License]       - gera arquivo LICENSE
+	[MakeMaker]     - gera um Makefile.PL (ExtUtils::MakeMaker)
+	[ModuleInstall] - idem (Module::Install)
+	[ModuleBuild]   - gera um Build.PL (Module::Build)
+	[PreReqs]       - permite especificar dependências
+	[AutoPrereqs]   - detecta dependências automaticamente
+	[PodVersion]	- acrescenta VERSION a cada arquivo .pm
+	[OurPodVersion] - idem, usando our $VERSION
+
+A lista completa seria finita, mas enorme. Para facilitar um pouco a nossa
+vida, existem os I<bundles>, que agrupam vários I<plugins> em uma única
+seção. O mais imediato é o C<Basic>, que é fornecido pelo próprio Dist::Zilla.
+Para usá-lo, basta colocar no C<dist.ini>:
+
+	[@Basic]
+
+Esse I<bundle> é definido na classe L<Dist::Zilla::PluginBundle::Basic>[22], e
+corresponde aos I<plugins>: C<[GatherDir]>, C<[PruneCruft]>, C<[ManifestSkip]>,
+C<[MetaYAML]>, C<[License]>, C<[Readme]>, C<[ExtraTests]>, C<[ExecDir]>,
+C<[ShareDir]>, C<[MakeMaker]>, C<[Manifest]>, C<[TestRelease]>,
+C<[ConfirmRelease]>, C<[UploadToCPAN]>.
+
+Utilizando o C<[@Basic]> podemos (devemos!) remover os arquivos: 
+C<README>, C<LICENSE>, C<MANIFEST> e, se estivermos usando o
+C<[ModuleInstall]>, podemos também remover o diretório C<inc/> - ele será
+gerado automaticamente durante o I<build> com os arquivos necessários.
+
+=head4 Caçando Plugins
+
+Alguns dos I<plugins> utilizados podem não estar instalados. Para saber quais
+I<plugins> você precisa instalar, basta rodar:
+
+	dzil authordeps
+
+É possível criar novos I<bundles>, e é uma prática comum que os autores criem
+I<bundles> com seus grupos de I<plugins> prediletos.
+
+Existem I<plugins> que realizam a mesma tarefa que algum I<plugin> que já faz 
+parte de um I<bundle> que esteja em uso. Nesse caso, o I<plugin> declarado no
+I<bundle> será ignorado e o I<plugin> declarado no C<dist.ini> será utilizado.
+
+A escolha do conjunto de I<plugins> a utilizar depende de muitas coisas,
+mas o fator decisivo é a preferência do desenvolvedor.
+
+=head3 Exemplo Comentado
+
+Vamos colar aqui o C<dist.ini> atual do projeto Queue::Base e comentar
+cada trecho.
+
+=head4 Informações básicas do projeto
+
+	name    = Queue-Base
+	version = 2.200
+	author  = Alexei Znamensky <russoz@cpan.org>
+	license = Perl_5
+	copyright_holder = Farkas Arpad
+
+Várias informações específicas do projeto: nome, autor, tipo de licença, etc..
+Particularmente, o número da versão poderia ser automatizado, e será
+algum dia para o Queue::Base - mas enquanto isso não ocorre, ele continua
+sendo declarado aqui. Essas informações podem depois ser utilizadas para gerar
+documentação POD automaticamente.
+
+=head4 Meta-recursos
+
+	[MetaResources]
+	bugtracker.web  = http://github.com/russoz/Queue-Base/issues
+	repository.web  = http://github.com/russoz/Queue-Base
+	repository.url  = git://github.com/russoz/Queue-Base.git
+	repository.type = git
+
+Meta-informações sobre o probjeto, como por exemplo o endereço da I<homepage>,
+onde reportar erros, o repositório de controle de versões.
+
+=head4 Itens "Básicos"
+
+	[@Basic]
+	[MetaJSON]
+	[ReadmeFromPod]
+	[InstallGuide]
+	[GitFmtChanges]
+	max_age    = 365
+	tag_regexp = ^.*$
+	file_name  = Changes
+	log_format = short
+
+Usando a I<tag> C<[@Basic]> incluímos todos aqueles I<plugins>
+listados acima, mas também:
+
+=over
+
+=item * C<[MetaJSON]>
+
+Escolhemos gerar B<também> um arquivo C<META.json> com as meta-informações do
+pacote para indexação no CPAN;
+
+=item * C<[ReadmeFromPod]>
+
+Geramos o arquivo C<README> automaticamente a partir do POD do arquivo
+principal do módulo (no caso do Queue::Base, seria o arquivo
+C<lib/Queue/Base.pm>);
+
+=item * C<[InstallGuide]>
+
+Geramos um arquivo C<INSTALL> com instruções de instalação (de acordo com o
+I<builder> utilizado: MakeMaker, Module::Install ou Module::Build);
+
+=item * C<[GitFmtChanges]>
+
+Geramos o arquivo C<Changes> com a listagem das modificações realizadas no
+projeto, a partir dos logs do B<git>.
+
+=back
+
+=head4 Versão
+
+	[OurPkgVersion]
+
+Optamos por utilizar a I<tag> C<[OurPkgVersion]> para inserir o número
+de versão nos arquivos, tanto em código (C<< our $VERSION = x.yz >>) quanto em
+POD (C<< =head1 VERSION >>).
+
+=head4 Documentação
+
+	[PodWeaver]
+
+Ao utilizar o C<[PodWeaver]> no Dist::Zilla, estamos na verdade
+utilizando o L<Pod::Weaver>[23] para gerar trechos da documentação em formato POD.
+Este artigo pretendia, em sua incepção explanar mais sobre o Pod::Weaver, mas
+decidimos nos manter somente com o Dist::Zilla para não virar um livro. Entre
+outras coisas, podem ser atualizadas automaticamente no POD dos arquivos as
+seções: C<NAME> (com descrição, em formato padrão), C<VERSION>, C<AUTHOR>,
+C<COPYRIGHT & LICENSE>, C<SUPPORT> (com informação sobre Perldoc, I<websites>),
+C<AVAILABILITY>, C<DISCLAIMER OF WARRANTY>. O Pod::Weaver possui um arquivo
+de configuração específico, o C<weaver.ini>. Veja o
+C<< L<weaver.ini|https://github.com/russoz/Queue-Base/blob/master/weaver.ini> >>[24]
+utilizado no Queue::Base, para exemplo.
+
+=head4 Dependências
+
+	[AutoPrereqs]
+
+O jeito mais simple é utilizar o C<[AutoPrereqs]>, que irá
+percorrer os seus arquivos levantando as dependências. Naturalmente pode haver
+pequenas divergências, ou podemos querer forçar uma versão mínima específica
+de algum módulo. Para esses e outros casos, podemos usar a I<tag> C<[Prereqs]>,
+declarando explicitamente as versões necessárias.
+
+=head4 Formatação
+
+	[PerlTidy]
+
+Incluindo a I<tag> C<[PerlTidy]> no seu C<dist.ini>, você terá a
+garantia de que o código do seu módulo será formatado de uma maneira
+consistente ANTES do empacotamento. Você pode usar as definições padrão do
+L<Perl::Tidy>[25] ou pode fornecer o seu próprio C<perltidyrc>.
+
+=head4 Controle de Versões
+
+	[@Git]
+
+O I<bundle> C<[@Git]>, criado por
+L<Jerome Quelin|http://search.cpan.org/~jquelin/>[26], engloba os I<plugins>:
+C<[Git::Check]>, C<[Git::Commit]>, C<[Git::CommitBuild]>, C<[Git::Init]>,
+C<[Git::NextVersion]>, C<[Git::Push]>, C<[Git::Tag]>. Obviamente, com ele
+podemos automatizar várias atividade relacionadas ao B<git>, das quais 
+destacam-se a "checagem" (se houver arquivos não I<"commitados"> no B<git>,
+ele irá interromper o I<release>), a aplicação de I<tag> com o número da
+versão, e o I<push> automático para o repositório remoto. Similarmente,
+existem I<plugins> para o L<Subversion|http://subversion.apache.org/>[27] e
+o L<Mercurial|http://mercurial.selenic.com/>[28].
+
+=head4 Testes
+
+	[ReportVersions]
+	[CompileTests]
+	[EOLTests]
+	[PodCoverageTests]
+	[UnusedVarsTests]
+	[CriticTests]
+	[HasVersionTests]
+	[KwaliteeTests]
+	[MetaTests]
+	[PodSyntaxTests]
+
+Podemos incluir testes padronizados de código, compilação, documentação e 
+estilo, adicionando I<tags> no C<dist.ini>, como pode ser visto acima. Duas
+das principais vantagens são: não termos de copiar arquivos de teste
+manualmente e não termos de mantê-los atualizados (sempre que fazemos o
+I<release> são utilizadas as versões atuais (presumindo que mantemos nossa
+instalação atualizada) dos módulos.
+
+=head2 Conclusão
+
+Ainda existe espaço para várias melhorias, e para vários I<plugins>, o 
+Dist::Zilla é um projeto em andamento. Mas é uma ferramenta indispensável
+para um desenvolvedor em Perl Moderno, que não pode ou não tem mais tempo
+para ficar repetindo as mesmas tarefas "burocráticas" a cada novo módulo.
+
+O Dist::Zilla é uma fantástica ferramenta de apoio. Ela facilita o processo
+de desenvolvimento, testes, I<release>, e até mesmo o de documentar seu
+código. E o melhor é que você não precisa jogar fora B<tudo> o que tem
+pronto para começar a usá-lo: a conversão pode ser feita de forma gradual.
+
+=head2 Referências
+
+B<[1]>
+PAUSE - The [Perl programming] Authors Upload Server - L<http://pause.perl.org/>
+
+B<[2]>
+CPAN - Comprehensive Perl Archive Network - L<http://www.cpan.org>
+
+B<[3]>
+GIT - The fast version control system - L<http://git-scm.com>
+
+B<[4]>
+Linus Torvalds - Artigo na Wikipedia - L<http://en.wikipedia.org/wiki/Linus_Torvalds>
+
+B<[5]>
+github - social coding - L<http://github.com>
+
+B<[6]>
+git/git - repositório do git - L<https://github.com/git/git>
+
+B<[7]>
+Dist::Zilla - primeiro commit? - L<https://github.com/rjbs/dist-zilla/commit/f3854f7c675a11c6b3832dc111f72e6d705c09fa>
+
+B<[8]>
+Ricardo Signes - Módulos no CPAN - L<http://search.cpan.org/~rjbs/>
+
+B<[9]>
+Dist::Zilla - "distribution builder; installer not included!" - L<http://search.cpan.org/perldoc?Dist::Zilla>
+
+B<[10]>
+Dist::Zilla - Home Page - L<http://dzil.org/>
+
+B<[11]>
+Dist::Zilla - Tutorials - L<http://dzil.org/tutorial/start.html>
+
+B<[12]>
+Dist::Zilla - "Converting a Dist to Dist::Zilla" - L<http://dzil.org/tutorial/convert-dist.html>
+
+B<[13]>
+Queue::Base - "Simple OO style queue implementation" - L<http://search.cpan.org/perldoc?Queue::Base>
+
+B<[14]>
+Queue::Base/dist.ini - primeira versão do C<dist.ini> no Queue::Base - L<https://github.com/russoz/Queue-Base/blob/3702c381595c0dfa6e7644bd945987b95af2e20c/dist.ini>
+
+B<[15]>
+Module::Install - "Standalone, extensible Perl module installer" - L<http://search.cpan.org/perldoc?Module::Install>
+
+B<[16]>
+Dist::Zilla::Plugin::GatherDir - "gather all the files in a directory" - L<http://search.cpan.org/perldoc?Dist::Zilla::Plugin::GatherDir>
+
+B<[17]>
+Dist::Zilla::Plugin::MetaYAML - "produce a META.yml" - L<http://search.cpan.org/perldoc?Dist::Zilla::Plugin::MetaYAML>
+
+B<[18]>
+Dist::Zilla::Plugin::ModuleInstall - "Build Module::Install based Distributions with Dist::Zilla" - L<http://search.cpan.org/perldoc?Dist::Zilla::Plugin::ModuleInstall>
+
+B<[19]>
+Dist::Zilla::Plugin::Manifest - "build a MANIFEST file" - L<http://search.cpan.org/perldoc?Dist::Zilla::Plugin::Manifest>
+
+B<[20]>
+Kent Frederic - Módulos no CPAN - L<http://search.cpan.org/~kentnl/>
+
+B<[21]>
+CPAN - Search "Dist::Zilla::Plugin" - L<< http://search.cpan.org/search?query=Dist::Zilla::Plugin&mode=all >>
+
+B<[22]>
+Dist::Zilla::PluginBundle::Basic - "the basic plugins to maintain and release CPAN dists" - L<http://search.cpan.org/perldoc?Dist::Zilla::PluginBundle::Basic>
+
+B<[23]>
+Pod::Weaver - "weave together a Pod document from an outline" - L<http://search.cpan.org/perldoc?Pod::Weaver>
+
+B<[24]>
+Queue::Base/weaver.ini - exemplo de arquivo C<weaver.ini> - L<https://github.com/russoz/Queue-Base/blob/master/weaver.ini>
+
+B<[25]>
+Perl::Tidy - "Parses and beautifies perl source" - L<http://search.cpan.org/perldoc?Perl::Tidy>
+
+B<[26]>
+Jerome Quelin - Módulos no CPAN - L<http://search.cpan.org/~jquelin/>
+
+B<[27]>
+Subversion - "Enterprise-class centralized version control for the masses" - L<http://subversion.apache.org/>
+
+B<[28]>
+Mercurial - "Mercurial is a free, distributed source control management tool. It efficiently handles projects of any size and offers an easy and intuitive interface" - L<http://mercurial.selenic.com/>
+
+=head2 Agradecimentos
+
+=over
+
+=item Ricardo Signes (RJBS)
+
+Pelo Dist::Zilla e pela sua prestatividade.
+
+=item Comunidade São Paulo Perl Mongers
+
+Pelo companheirismo, pelas infinitas risadas, pela dedicação com que todos zelam
+pela nossa linguagem de programação predileta.
+
+=item Blabos de Blebe
+
+Obrigado pelo olho clínico, revisando este artigo.
+
+=back
+
+=head2 Autor
+
+B<< Alexei "Russo" Znamensky E<lt> russoz no cpan org E<gt> >>
+
+=over
+
+=item *
+Twitter: L<russoz|http://twitter.com/#!/russoz>
+
+=item *
+Blog: L<http://russoz.wordpress.com/>
+
+=item *
+LinkedIn:
+L<http://www.linkedin.com/profile?viewProfile=&key=754668&trk=tab_pro>
+
+=back
+
+=head2 Fonte
+
+O fonte deste artigo encontra-se disponível em:
+
+L<https://github.com/russoz/artigos/tree/master/2011/03-sppm-equinocio/distzilla>
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
+
+=cut
+

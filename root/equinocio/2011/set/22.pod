@@ -1,0 +1,186 @@
+=pod
+
+=encoding utf8
+
+=head1 Catalyst: dicas e truques
+
+Caso esteja iniciando no L<Catalyst>, sugiro fortemente que vá primeiro à seção
+L<Leia mais|#Leia_mais> no fim deste artigo onde encontrará links úteis com bons
+artigos introdutórios (ao menos os dois primeiros).
+
+Do contrário, vamos lá...
+
+=head2 Capture os C<warnings> e lance à lua
+
+Pode-se apenas usar o L<Catalyst::Plugin::LogWarnings>, porém ele só permite o
+logging dos C<warnings> usando o objeto Catalyst log e só captura os que veem do
+seu código deixando de fora qualquer possível C<warning> que venha do código do
+L<Catalyst>. Supondo que queira-se mais do que isto, podemos extender o método do
+L<Catalyst> chamado C<handle_request> através de uma C<role> para sua classe da
+aplicação (meio recomendado) ou diretamente nesta classe.
+
+    around handle_request => sub {
+      my ( $orig, $self ) = ( shift, shift );
+      return do {
+        local $SIG{__WARN__} = sub {
+          chomp(my $warn_msg = shift);
+          # ...
+        };
+        $self->$orig(@_);
+      };
+    };
+
+Então, você pode logar a C<$warn_msg> usando o objeto Catalyst log
+(C<< $self->log->warn($warn_msg) >>), enviar por email usando um C<model>,
+tweetar, blogar, ou seja, fazer o que você quiser.
+
+=head2 Adicionando métodos úteis ao C<Catalyst::Response>
+
+Digamos que gostariamos de extender o nosso objeto de resposta com por exemplo
+métodos de checagem como os que temos em L<HTTP::Status>...
+
+    package MyApp::TraitFor::Response::HTTPStatus;
+
+    use Moose::Role;
+    use namespace::autoclean;
+    use HTTP::Exception;
+
+    has _status_as_exception => (
+      is => 'ro', lazy => 1, builder => '_build_status_as_exception',
+      handles => [qw(is_info is_success is_redirect is_error is_server_error
+        is_client_error)],
+    );
+
+    sub _build_status_as_exception { return HTTP::Exception->new(shift->status) }
+
+    1;
+
+Depois, usa-se o L<CatalystX::RoleApplicator> para aplicar esta nova C<role> para a
+classe de resposta:
+
+    __PACKAGE__->apply_response_class_roles('MyApp::TraitFor::Response::HTTPStatus');
+
+Desta forma, podemos fazer em nossa aplicação...
+
+    if ( $c->response->is_error ) {
+        # ...
+    }
+
+=head2 Gere uma página customizada para os erros fatais
+
+O L<Catalyst> tem uma página padrão (diga-se de passagem "feinha") para quando
+encontra-se um error nas aplicações, mas podemos extendê-lo de forma a produzir
+uma página que obdeça o nosso layout com uma implementação customizada para o
+método C<finalize_error>.
+
+    use Try::Tiny;
+
+    sub finalize_error {
+      my $self = shift;
+      my $res = $self->response;
+      unless ( $res->is_server_error ) {
+        $res->status(500);
+      }
+
+      my $body = try {
+        $self->view('TT')->render($self, 'error/500.tt')
+      } catch { 'Desculpe, volte novamente mais tarde.' };
+      $res->body($body);
+    }
+
+Ou pode-se usar o L<Catalyst::Plugin::ErrorCatcher> e extender mais ainda o
+o processo de captura e manipulação de erros.
+
+=head2 Ative informações de C<debug>...
+
+apenas quando realmente precisa-se delas através de um valor verdadeiro para a
+variável de ambiente C<CATALYST_DEBUG> ou C<< <MYAPP>_DEBUG >>, assim você não
+precisa mais do flag C<-Debug> na instrução C<use Catalyst>.
+
+=head3 No caso apenas das estatísticas...
+
+defina um valor verdadeiro para a variável de ambiente C<CATALYST_STATS> ou
+C<< <MYAPP>_STATS >>, assim você não precisa mais do flag C<-Stats>.
+
+=head2 Obtenha informações sobre o browser dos seus usuários
+
+Pode-se usar o L<Catalyst::TraitFor::Request::BrowserDetect> para realizar
+a detecção automática dos browsers retornando um objeto L<HTTP::BrowserDetect>
+o qual nos fornece métodos úteis sobre o agente dos usuários.
+
+=head2 Gostaria de usar o L<Test::WWW::Mechanize::Catalyst>...
+
+porém este não fornece um objeto contexto da aplicação como o L<Catalyst::Test>
+em C<ctx_request()>? Podemos resolver isto desta forma:
+
+      use Test::More;
+      use Test::WWW::Mechanize::Catalyst 'MyApp';
+
+      my $ctx;
+      my $myapp_meta = MyApp->meta;
+      my %immutable_options = $myapp_meta->immutable_options;
+      $myapp_meta->make_mutable;      $myapp_meta->add_after_method_modifier(
+        'dispatch' => sub { $ctx = shift }
+      );
+      $myapp_meta->make_immutable(%immutable_options);
+
+      my $mech = Test::WWW::Mechanize::Catalyst->new;
+      {
+        $mech->get_ok('/');
+        my $browser = $ctx->request->browser;
+        diag($browser->version);
+      }
+
+      # ...
+
+=head2 Como posso controlar o log na execução de testes?
+
+Algumas vezes faz-se necessário que seja desativado alguns níveis do log, pois
+é sabido, ou seja, é esperado que nestes momentos as requisições gerem erros.
+
+      my $myapp_meta = MyApp->meta;
+      my %immutable_options = $myapp_meta->immutable_options;
+      $myapp_meta->make_mutable;
+      $myapp_meta->add_before_method_modifier(
+        'handle_request' => sub {
+          my $log = shift->log;
+          $log->disable('error', 'fatal');
+        }
+      );
+      $myapp_meta->make_immutable(%immutable_options);
+
+      # ...
+
+=head1 Leia mais
+
+=over
+
+=item L<Introdução|http://sao-paulo.pm.org/artigo/2010/ConceitosAntesCatalyst>
+
+=item L<Plugins|http://sao-paulo.pm.org/artigo/2010/PluginsCatalyst>
+
+=item L<Autenticação|http://sao-paulo.pm.org/artigo/2010/AutenticacaoCatalyst>
+
+=item L<Captcha|http://sao-paulo.pm.org/artigo/2010/CaptchaCatalyst>
+
+=item L<Catalyst::ScriptRunner|http://sao-paulo.pm.org/artigo/2010/CatalystScriptRunner>
+
+=item L<Gráficos|http://sao-paulo.pm.org/artigo/2010/GraficosAppCatalyst>
+
+=item L<Com local::lib|http://sao-paulo.pm.org/artigo/2010/CatalystLocalLib>
+
+=item L<Com Padre|http://sao-paulo.pm.org/artigo/2010/DesenvolvimentoCatalystPadre>
+
+=item L<Com Time-lapse|http://sao-paulo.pm.org/artigo/2010/TimeLapseCatalyst>
+
+=item L<WebLog|http://sao-paulo.pm.org/artigo/2007/CriandoWebLogCatalyst>
+
+=item L<Catalyst::Manual::Cookbook>
+
+=back
+
+=head1 Autor
+
+Wallace Reis <http://about.me/wallacereis>
+
+=cut

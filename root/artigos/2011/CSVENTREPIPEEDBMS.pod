@@ -1,0 +1,336 @@
+=pod
+
+=encoding utf8
+
+=head1 CSV: ENTRE PIPE E DBMS
+
+=head2 INTRODUÇÃO
+
+O formato CSV (I<Comma-Separated Values>) é o verdadeiro "idioma inglês" para a transferência de dados: quase todo aplicativo de planilha (I<spreadsheet>) ou DBMS (I<Database Management System>) oferece CSV como o formato de importação ou exportação.
+
+Único "formato" que pode ser considerado mais simples do que CSV é o TSV (I<Tab-Separated Values>), que nada mais é do que um caso particular de CSV. O formato TSV está de certa forma I<hard-coded> em scripts de I<shell>, por exemplo, C<xinput -list | cut -f 2> retorna os identificadores dos dispositivos de entrada do X11. O próprio Perl já lida muito bem com os dados delimitados, via I<inline>:
+
+    # extrai o PID e a linha de comando dos processos operantes
+    ps auwx | perl -anE '$,="\t"; say @F[1,10]'
+
+Do ponto de vista da eficiência, separar pelo delimitador é muito melhor, entretanto, alguns dados são suficientemente elaborados a ponto de empregarem o próprio delimitador como parte dos dados. Por outro lado, colunas separadas por caractere invisível definitivamente não são uma forma I<human-readable> de representar os dados, especialmente quando existem muitas colunas e/ou colunas de valor indefinido.
+
+É aí que entra o CSV. Apesar de não existir uma padronização rígida do que seja um CSV válido, o formato é suficientemente intuitivo e a definição em L<RFC 4180|http://tools.ietf.org/html/rfc4180> já ajuda bastante.
+
+Claro que é possível implementar um I<parser> de CSV I<from scratch>, é só uma questão de tratar do I<escaping> dos delimitadores; mas, felizmente, CPAN já tem soluções robustas para todo gosto!
+
+=head2 MÓDULOS DE CPAN PARA TRATAR CSV
+
+Uma busca por "CSV" no CPAN retorna muitas variações sobre o tema.
+Sem o intuito de desmerecer as outras soluções, focarei apenas em L<Text::CSV>, L<Tie::Handle::CSV> e L<DBD::CSV>, por serem abordagens bastante ortogonais.
+
+=head3 Text::CSV
+
+L<Text::CSV> é a opção mais flexível, grava e lê tanto arquivos como I<strings>, e serve como base para muitos outros módulos (inclusive os outros dois que explicarei adiante).
+
+Quando C<column_names> são definidos (através de um I<ArrayRef>), podemos usar C<getline_hr>, que retorna I<HashRef> para cada linha processada.
+Já C<getline> retorna I<ArrayRef> diretamente. Dica: a primeira linha do CSV frequentemente traz os nomes das colunas.
+Leia estes com C<getline> e passe para C<column_names>. O resto do arquivo pode ser lido com C<getline_hr>.
+
+Para gerar CSV, pode ser usado C<print>, que grava diretamente num I<FileHandle>, ou combinação de C<combine> e C<string> para gerar I<buffer>.
+
+Mas vamos botando a mão na massa. Temos o seguinte CSV, e precisamos filtrar ele, deixando apenas código identificador, nome da cidade e UF:
+
+    estado,cidade,longitude,latitude,link
+    MG,Santa Maria do Salto,-40.14935,-16.24953,http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=3158102
+    ES,Marilândia,-40.54236,-19.41355,http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=3203353
+    GO,Estrela do Norte,-49.07341,-13.86851,http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=5207501
+    ...
+
+Segue o I<script> que emprega o L<Text::CSV> para isso:
+
+    #!/usr/bin/perl
+    use strict;
+    use utf8;
+    use warnings 'all';
+
+    use open ':locale';
+
+    use Data::Dumper;
+    use Text::CSV;
+
+    # Não é necessário definir EOL quando só vamos *ler* o CSV,
+    # pois o valor de $/ será usado automaticamente.
+    # Já para gravação, precisa definir (não sei se é bug).
+    my $csv = new Text::CSV({ eol => "\n" })
+    or die "Erro com Text::CSV: " . Text::CSV->error_diag;
+
+    # Assume que a codificação do arquivo é UTF-8.
+    open my $fh, '<:utf8', '7marco2011.csv';
+
+    # Pega a primeira linha do CSV e extrai os nomes das colunas.
+    $csv->column_names($csv->getline($fh));
+
+    # Pega todas as outras linhas e retorna para cada um HashRef
+    # aonde as chaves são os nomes das colunas.
+    while (my $row = $csv->getline_hr($fh)) {
+        ($row->{codigo}) = ($row->{link} =~ m{\bcodmun=([0-9]+)\b}i);
+        print STDERR Dumper $row;
+        $csv->print(\*STDOUT, [ map { $row->{$_} // '' } qw(codigo cidade estado) ]);
+    }
+    $csv->eof or $csv->error_diag;
+    close $fh;
+
+O I<output> será:
+
+    ...
+    $VAR1 = {
+              'link' => 'http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=4109609',
+              'cidade' => 'Guaratuba',
+              'longitude' => '-48.57544',
+              'latitude' => '-25.88355',
+              'codigo' => '4109609',
+              'estado' => 'PA'
+            };
+    4109609,Guaratuba,PA
+    $VAR1 = {
+              'link' => 'http://www.sidra.ibge.gov.br/bda/territorio/infomun.asp?codmun=3541109',
+              'cidade' => 'Presidente Alves',
+              'longitude' => '-49.43844',
+              'latitude' => '-22.10054',
+              'codigo' => '3541109',
+              'estado' => 'SP'
+            };
+    3541109,"Presidente Alves",SP
+    ...
+
+Outras coisas que valem a pena serem estudadas são C<bind_columns>, que associa os campos do CSV às variáveis diretamente, e atributos do método C<new>.
+A configuração padrão é:
+
+    $csv = new Text::CSV({
+        quote_char          => '"',
+        escape_char         => '"',
+        sep_char            => ',',
+        eol                 => $\,
+        always_quote        => 0,
+        quote_space         => 1,
+        quote_null          => 1,
+        binary              => 0,
+        keep_meta_info      => 0,
+        allow_loose_quotes  => 0,
+        allow_loose_escapes => 0,
+        allow_whitespace    => 0,
+        blank_is_undef      => 0,
+        empty_is_undef      => 0,
+        verbatim            => 0,
+        auto_diag           => 0,
+    });
+
+É fácil ajustá-la para processar arquivos TSV (cujas colunas são separadas por I<tabs>):
+
+    $csv = new Text::CSV({
+        quote_char          => undef,
+        escape_char         => undef,
+        sep_char            => "\t",
+        eol                 => "\n",
+        quote_space         => 0,
+        quote_null          => 0,
+    });
+
+=head3 Tie::Handle::CSV
+
+L<Tie::Handle::CSV> é a versão I<easy> do L<Text::CSV> C<:)>
+
+Combina muito melhor com um código orientado a objetos, fazendo um bom uso de I<overloading> e normalizando os I<headers> para caixa alta/baixa.
+
+Não é tão suscetível a I<tuning> quanto o módulo que encapsula, mas em 99% dos casos, é exatamente isso que queremos.
+Segue um exemplo com funcionalidade similar ao anterior:
+
+    #!/usr/bin/perl
+    use strict;
+    use utf8;
+    use warnings 'all';
+   
+    use open ':locale';
+   
+    use Data::Dumper;
+    use Tie::Handle::CSV;
+   
+    my $csv = new Tie::Handle::CSV(
+        file        => '7marco2011.csv',
+        header      => 1,
+        key_case    => 'lower',
+        open_mode   => '<:utf8',
+    );
+   
+    while (my $row = <$csv>) {
+        $row->{link} =~ s/^.*=//;
+        print STDERR Dumper $row;
+        print $row . "\n";
+    }
+   
+    close $csv;
+
+Vantagem evidente: dispensa comentários. Considerar ambos os sentidos da frase C<;)>
+
+=head3 DBD::CSV
+
+Muitas vezes, quando um projeto está na fase de prototipagem, não compensa I<"matar passarinho com bazooka"> criando I<schemas> em um RDBMS.
+Outros projetos simplesmente não atingem o I<threshold> mínimo para envolver o L<SQLite|DBD::SQLite> na história, sendo muito mais prático manter as tabelas com apenas um editor de texto.
+Para unir o melhor dos dois mundos, existe o L<DBD::CSV>, um I<driver> para L<DBI> que trabalha diretamente com arquivos CSV, usando o L<Text::CSV> como I<backend>.
+A grande vantagem é que o código pode ser facilmente escalado, trocando o I<driver> por qualquer outro e importando as tabelas.
+Quanto ao subconjunto de SQL implementado, posso dizer que é B<suficientemente> completo.
+
+Vamos ao exemplo, com o mesmo conjunto de dados do exemplo anterior.
+Dessa vez, expandimos a sigla de UF para o nome do estado (através de um C<JOIN>), e mostramos somente os municípios que fazem parte da Grande São Paulo:
+
+    #!/usr/bin/perl
+    use strict;
+    use utf8;
+    use warnings 'all';
+   
+    use open ':locale';
+   
+    use DBI;
+   
+    my $dbh = DBI->connect('dbi:CSV:', undef, undef, {
+        f_encoding  => 'utf8',
+        csv_tables  => {
+            llcb    => { file => '7marco2011.csv' },
+            estados => { file => 'estados.csv' },
+        },
+        RaiseError  => 1,
+        PrintError  => 1,
+    }) or die "Erro com DBI/DBD::CSV: " . $DBI::errstr;
+   
+    my $sth = $dbh->prepare(<<SQL_QUERY);
+        SELECT cidade, estados.estado AS cidade_uf
+        FROM llcb
+        JOIN estados
+            ON llcb.estado = estados.uf
+        WHERE
+            llcb.estado = 'SP'
+            AND (latitude   > -23.80)
+            AND (latitude   < -23.20)
+            AND (longitude  > -47.10)
+            AND (longitude  < -46.10)
+        ORDER BY cidade
+    SQL_QUERY
+   
+    $sth->execute;
+    while (my $row = $sth->fetchrow_arrayref) {
+        printf("%s, %s\n", @{$row});
+    }
+    $sth->finish;
+    $dbh->disconnect;
+
+Além de C<SELECT> (com C<JOIN> e C<ORDER>!), C<INSERT>, C<DELETE> e C<UPDATE> também são implementados.
+A documentação completa está em L<SQL::Statement::Syntax>.
+
+=head2 APÊNDICES
+
+=head3 Acelerando com o Text::CSV_XS
+
+Quando o módulo L<Text::CSV_XS> está instalado, o L<Text::CSV> automaticamente faz o uso do mesmo, proporcionando performance consideravelmente maior:
+
+                 s/iter Text::CSV_PP Text::CSV_XS
+    Text::CSV_PP   23.6           --         -90%
+    Text::CSV_XS   2.27         941%           --
+
+=head3 Retornando CSV via HTTP
+
+Em várias ocasiões, gostaríamos que os usuários pudessem exportar os dados dos sistemas online diretamente para os seus desktops. É só uma questão de configurar os I<headers> corretos para que o sistema do usuário encaminhe a planilha diretamente para o aplicativo especializado (Excel, LibreOffice), ao invés de exibir o conteúdo do CSV na tela do navegador. 
+
+Tomando o L<Catalyst> como exemplo:
+
+    $c->res->headers->content_type('application/vnd.ms-excel; charset: iso-8859-1');
+    $c->res->header('Content-Disposition' => 'attachment;filename=' . $filename);
+
+Previsivelmente, temos um I<caveat> relativo à codificação: Excel espera que o CSV esteja em ISO-8859-1 (ou, possivelmente, Windows-1252), então um I<downgrade> para C<latin1> faz-se necessário.
+
+=head3 Google Fusion Tables
+
+Uma vez que temos uma quantidade razoável de dados em formato CSV, fazer um L<overview> de uma forma rápida e intuitiva pode ser um problema.
+Principalmente quando é necessário mostrar os dados para leigos (que não tem obrigação de saber SQL).
+Neste caso L<Fusion Tables|http://tables.googlelabs.com/>, um experimento do L<Google Labs|http://www.googlelabs.com/>, é de grande ajuda.
+
+Segundo a descrição do próprio Google:
+
+     Fusion Tables é um serviço para gerenciar grandes coleções de dados
+     tabulares na nuvem. Você pode enviar tabelas de até 100 MB e
+     compartilhá-las com colaboradores, ou torná-las públicas. Você pode
+     aplicar filtros e agregação aos seus dados, visualizá-los em mapas
+     e em outros gráficos, mesclar os dados de diversas tabelas e
+     exportá-los para a web ou para arquivos csv. Você também pode
+     conduzir discussões sobre os dados em diversos níveis de granularidade,
+     como linhas, colunas e células individuais.
+
+Comentário do autor: nada mais é do que um I<Excel on steroids>, além dos filtros é possível fazer I<joins> e criar I<views>.
+Para demonstração, o arquivo que usei como exemplo no decorrer desse artigo,
+o I<dump> do banco de dados do projeto L<Latitudes e Longitudes das Cidades Brasileiras|http://sao-paulo.pm.org/equinocio/2011/mar/11> do L<Thiago Rondon|https://github.com/maluco>,
+encontra-se aqui: L<http://j.mp/hyoYqi>
+
+=head3 mysqldump/mysqlimport
+
+MySQL oferece importação/exportação otimizada para arquivos CSV localizados no mesmo I<host> aonde o servidor (L<mysqld>) está rodando.
+Trocando em miúdos, tendo certos privilégios, podemos "passar por cima" do sistema de queries:
+
+    mysqldump \
+        --fields-terminated-by="," \
+        --fields-optionally-enclosed-by="\"" \
+        --lines-terminated-by="\n" \
+        -u $USERNAME -p -t -T/caminho/para/diretorio $DATABASE
+
+Este comando grava todas as tabelas de C<$DATABASE> em arquivos CSV individuais em diretório C</caminho/para/diretorio>.
+É necessário que esse diretório tenha permissão para gravação aberta para o usuário que executa o I<daemon>, pois os arquivos CSV são gerados diretamente pelo mesmo, e não pelo C<mysqldump>!
+
+A importação é feita da seguinte maneira:
+
+    mysqlimport \
+        --fields-terminated-by="," \
+        --fields-optionally-enclosed-by="\"" \
+        --lines-terminated-by="\n" \
+        -u $USERNAME -p $DATABASE table.csv
+
+O nome da tabela onde será feita a importação é deduzido do nome do arquivo CSV (C<table>, nesse caso).
+
+Para mais detalhes, ver:
+
+=over
+
+=item *
+
+L<mysqldump — A Database Backup Program|http://dev.mysql.com/doc/refman/5.1/en/mysqldump.html>
+
+=item *
+
+L<mysqlimport — A Data Import Program|http://dev.mysql.com/doc/refman/5.1/en/mysqlimport.html>
+
+=item *
+
+L<LOAD DATA INFILE Syntax|http://dev.mysql.com/doc/refman/5.1/en/load-data.html>
+
+=back
+
+=head2 REFERÊNCIAS
+
+=over
+
+=item *
+
+L<Parsing CSV|http://perlmeme.org/tutorials/parsing_csv.html>
+
+=item *
+
+L<Text::CSV>, L<Text::CSV_XS>
+
+=item *
+
+L<Tie::Handle::CSV>
+
+=item *
+
+L<DBD::CSV>
+
+=back
+
+=head1 AUTOR
+
+Stanislaw Pusep L<stas@sysd.org|mailto:stas@sysd.org>
+
+=cut

@@ -1,0 +1,342 @@
+=pod
+=encoding utf8
+
+=head1 PostGIS
+
+=head2 Introdução
+
+O L<PostGIS|http://postgis.refractions.net/> é uma extensão do
+L<PostgreSQL|http://www.postgresql.org/> que adiciona suporte a dados
+geográficos tornando possível operações envolvendo pontos, linhas, áreas e
+volumes localizados no espaço geográfico. Esse artigo apresentará uma breve
+(e não menos enriquecedora) introdução ao PostGIS, mostrando seus principais
+conceitos, funcionalidades e possíveis aplicações.
+
+
+=head2 O que é o PostGIS?
+
+Desenvolvido e distribuído livremente pela
+L<Refractions Research|http://www.refractions.net/>
+o PostGIS adiciona suporte espacial ao L<PostgreSQL|http://www.postgresql.org/>
+permitindo a manipulação e análise de atributos numéricos e textuais em
+interação com o espaço geográfico. O PostGIS pode ser usado para obter
+informações sobre uma determinada localidade, como por exemplo, distância até 
+outra localidade, a densidade da malha viária ou taxa de criminalidade.
+
+Para realizar tais tarefas o PostGIS dispõe de tipos de dados, funções e
+índices especiais para lidar com esse tipo de informação.
+
+O PostGIS dispõe de duas classes de dados: "geometry" e "geography". "geometry"
+é o formato padrão para dados geográficos e possui uma vasta lista funções para
+manipulação e conversão de dados. Com ele é possível realizar muito mais
+operações, contudo, para tirar maior proveito das capacidade do PostGIS é
+necesário um maior conhecimento de sistemas de referência espacial e como
+realizar transformações entre eles. A base para o tipo "geometry" é um plano
+e, portanto, a menor distância entre de um ponto a outro é sempre uma reta,
+mas como a Terra é um esferóide e nem tudo é tão plano como parece ser,
+isso pode trazer grandes problemas na precisão quando os valores ou o resultado
+de operações extrapolam a grandes distâncias territoriais.
+
+"geography" é um tipo dado mais recente e foi incorporado not PostGIS a partir
+da versão 1.5 e tem como base uma esfera, e numa esfera a menor distância entre
+dois pontos é um arco. Isso significa que cálculos e operações envolvendo dados
+geográficos tem que levar em consideração curvatura da terra, tornando os
+resultados das operações muito mais exatos mas proporcionalmente mais custosos,
+algoritmicamente falando.
+
+Comparativamente existem muito menos funções definidas para o tipo "geography"
+por causa da complexidade matemática que fundamenta as operações geográficas,
+mas isso está sendo solucionado com o passar do tempo à medida que novos
+algoritmos vão sendo adicionados.
+
+Um dos padrões utilizados para representar objetos espaciais é a forma
+Well-Known Text (WKT) que inclui informações sobre o tipo de objeto e as
+coordenadas os quais determinam os valores utilizados nas colunas das tabelas.
+
+Os principais tipos de objetos são listados a seguir junto com sua
+representação na forma WKT:
+
+
+=over
+
+=item Point
+
+POINT( -20.1929 -44.11221 )
+
+=begin html
+
+  <img src="point.png">
+
+=end html
+
+=item Linestring
+
+LINESTRING(0 0,1 1,1 2)
+
+
+=begin html
+
+  <img src="linestring.png">
+
+=end html
+
+
+=item Polygon
+
+POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
+
+
+=begin html
+
+  <img src="polygon.png">
+
+=end html
+
+
+=item Multipoint
+
+MULTIPOINT(0 0,1 2)
+
+
+=begin html
+
+  <img src="multipoint.png">
+
+=end html
+
+
+=item Multilinestring
+
+MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))
+
+
+=begin html
+
+  <img src="multilinestring.png">
+
+=end html
+
+=item  Multipolygon
+
+MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))
+
+
+=begin html
+
+  <img src="multipolygon.png">
+
+=end html
+
+
+=item Geometrycollection
+
+GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))
+
+=begin html
+
+  <img src="geometrycollection.png">
+
+=end html
+
+
+=back
+
+
+=head2 Principais funções
+
+O PostGIS possui várias funções espaciais que equivalem às operações
+de agregação e junção num banco de dados relacional. Elas são baseadas em
+relacionamentos espaciais como: determinação de topologia entre dois
+objetos, aritmética de polígonos, cálculo de área, etc.
+
+Algumas das principais funções de análises espaciais no PostGIS são:
+
+=over
+
+=item ST_Disjoint(obj1, obj2)
+
+Analisa se dois objetos possuem pontos em comum e retorna verdadeiro em 
+caso positivo.
+
+=item ST_Intersects(obj1, obj2)
+
+Analisa se 2 objetos possuem alguma intersecção e retorna verdadeiro caso haja.
+
+=item ST_Within(obj1, obj2)
+
+Analisa se um obj1 está completamente dentro de obj2.
+
+=item ST_Crosses(obj1, obj2)
+
+Analisa se dois objetos se cruzam e retorna verdadeiro caso ocorra.
+
+=back
+
+
+A consulta a seguir, por exemplo, possui uma medição espacial e calcula a área
+baseando-se numa coluna contendo um objeto geográfico.
+
+
+
+  SELECT name, ST_Area(the_geom)/10000 AS hectares
+  FROM bc_municipality
+  ORDER BY hectares DESC
+  LIMIT 1;
+
+  name           | hectares
+  ---------------+-----------------
+  TUMBLER RIDGE  | 155020.02556131
+  (1 row)
+
+
+=head2 Exemplo: Antenas de telefonia celular no estado de São Paulo
+
+Vamos utilizar os dados geográficos das microregiões do estado de São Paulo
+disponibilizados pelo L<IBGE|http://www.ibge.gov.br/> [L<1|/"IBGE">] como mapa
+base para o nosso exemplo com dados reais. Cruzaremos esses mapas com os dados
+obtidos do projeto L<OpenCellID|http://http://www.opencellid.org/>
+[L<2|/"OpenCellID">], que é um projeto open source que cataloga informações
+sobre antenas de celulares no mundo todo.
+
+
+=head2 Criando banco dados com suporte ao PostGIS
+
+Em nome da brevidade, omitiremos os passos que envolvem a instalação e
+configuração do PostGIS. Essas informações estão disponíveis no site oficial
+do projeto[L<3|"PostGIS - Site Oficial">].
+
+Os comandos a seguir habilitam o suporte ao PostGIS no PostgreSQL:
+
+  $ createdb exemplo
+  $ psql -d exemplo -f postgis.sql
+  $ psql -d exemplo -f spatial_ref_sys.sql
+
+
+=head2 Populando o banco com dados
+
+Vamos agora carregar os dados obtidos no banco. Dentre os arquivos
+disponibilizados pelo IBGE [L<1|/"IBGE">] existe um arquivo com formato
+shapefile (.shp) que precisa ser convertido em SQL antes de ser inserido no
+banco, para isso utilizamos a ferramenta shp2pgsql, disponível após a
+instalação do PostGIS:
+
+  $ shp2pgsql -c -W LATIN1 -I 35mu2500gsd.shp mapa_sp > mapa_sp.sql
+  $ psql -d exemplo -f mapa_sp.sql
+
+
+Os dados das antenas são disponibilizados pelo OpenCellID no formato CSV com a seguinte configuração:
+
+  id,lat,lon,mcc,mnc,lac,cellid,range,nbSamples,created_at,updated_at
+
+O arquivo é imenso e possui informações de antenas de telefonia móvel do mundo
+inteiro. A nós, interessa somente as colunas "lat" e "lon" das linhas que
+possuam o "mcc" igual a 724, que são as antenas localizadas no Brasil e serão
+inseridas na tabela cel(id,position) (onde "position" é do tipo geometry)
+usando a notação WKT "POINT( longitude latitude )". Notem que nessa notação a
+ordem das coordenadas geográficas é diferente da que estamos acostumados:
+
+  $ perl -F',' -anE 'print if $F[4] == 724' cells.txt > br_cells.txt
+  $ perl -F',' -anE 'say qq/INSERT INTO cell(position) VALUES("POINT( $F[2]  $F[1] )"::geometry);/' br_cells.txt > cell.sql
+  $ psql -d exemplo -f cell.sql
+
+A tabela "cell" agora possui posições de toda as antenas do Brasil, ainda
+podemos fazer outra filtragem, desta vez utilizando as condições de junção
+disponíveis no PostGIS, para filtrar somente as antenas do estado de São
+Paulo. Vamos criar uma tabela contendo somente as antenas presentes em SP:
+
+  exemplo=# CREATE TABLE sp_cell AS 
+  exemplo-# SELECT cell.* FROM cell
+  exemplo-# JOIN mapa_sp on ST_Within(cell.position,mapa_sp.the_geom);
+
+=head2 Consultas interessantes
+
+Agora que já temos nossos dados prontos, vamos realizar algumas consultas.
+
+=over
+
+=item Quantas antenas existem em cada microregião do Estado de São Paulo?
+
+  SELECT nome_micro, COUNT (module.id) AS count 
+  FROM saopaulo, module 
+  WHERE ST_Within(module.position, saopaulo.the_geom) 
+  GROUP BY nome_micro
+  ORDER BY count desc;
+
+  Saída:
+ 
+    nome_micro | count 
+   ------------+-------
+    São Paulo  |  6895
+    Campinas   |   801
+    Santos     |   455
+    Sorocaba   |   436
+    Osasco     |   426
+    ...        |   ...
+
+
+=item Quantas antenas existem num raio de 1000 metros do ponto POINT(-48.5186233520508 -27.6062755584717)?
+
+
+  SELECT count(sp_cell.id)
+  FROM sp_cell
+  WHERE ST_distance_sphere(sp_cell.position, 'POINT(-48.5186233520508 -27.6062755584717)') < 1000.0;
+
+  Saída:
+    count 
+   -------
+       18
+
+=back
+
+
+=head2 Visualizando dados geográficos
+
+Como pudemos ver, são grandes as possibilidades de consultas e informações
+obtidas, e abrem um horizonte para diversas combinações de diferentes tipos
+de dados que podem ser cruzados e relacionados espacialmente. Mas o acesso e
+visualização somente em modo texto não tem muita graça. E pra isso foram
+desenvolvidas ferramentas que possibilitam a plotagem de dados e rasterização
+de mapas. Muitos desses projetos oferecem suporte ao PostGIS como fonte de
+dados e dividem-se em aplicações baseadas em web ou desktop.
+
+Clique nos links e conheça esses projetos, com destaque para o TerraView,
+desenvolvido aqui mesmo no Brasil, pelo INPE:
+
+=over
+
+=item L<TerraView|http://www.dpi.inpe.br/terraview/index.php/>
+
+=item L<MapServer|http://http://www.mapserver.org/>
+
+=item L<GeoServer|http://geoserver.org/display/GEOS/Welcome/>
+
+=item L<uDig|http://udig.refractions.net/>
+
+=item L<QGIS|http://qgis.org/>
+
+=back
+
+
+=head1 Referências
+
+=over
+
+=item IBGE
+
+L<ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2007/Malha_Municipal_Digital_2007_2500/Disseminacao_2007/Proj_Geografica/SAD_69/ArcView_Shp/2007/E2500/UF/SP/>
+
+=item OpenCellID
+
+L<http://myapp.fr/cellsIdData/>
+
+=item PostGIS - Site Oficial
+
+L<http://postgis.org/>
+
+=back
+
+=head1 AUTOR
+
+Gabriel Andrade <gabriel[@]aware.com.br>
+
+=cut

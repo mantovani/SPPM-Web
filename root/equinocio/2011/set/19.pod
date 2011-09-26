@@ -1,0 +1,307 @@
+=encoding UTF-8
+
+=head1 NAME
+
+Statim, uma idéia para um servidor de série temporal determinística e estocástica.
+
+=cut
+
+=head1 INTRODUÇÃO
+
+=begin pod:xhtml
+
+<center><img src="/static/images/equinocio/2011/set/statim-example1.png"></center>
+
+=end pod:xhtml
+
+
+Este é um projeto que inicie há 3 semanas, e na realidade eu tenho no trabalho alguns cenários que preciso de um servidor para armazenar informações para obter elas posteriormente baseada em uma série temporal, onde os clientes podem estar descentralizados, ou seja em nós distintos para enviar a informação. Outra motivação, é que em aplicações web há a necessidade de gerar informações baseada em tempo para relatórios de estatísticas, gráficos em séries temporais que pretendo não utilizar o banco de dados para efetuar estas pesquisas a todo momento.
+
+Pensando nisto, comecei a procurar soluções, e a maioria delas existentes eu teria que escrever algo "próprio" para encapsular, e pensando desta forma resolvi começar o projeto para suprir esta minha necessidade pessoal, e no qual em pouco tempo, já estou utiilzando em 3 cenários distintos com sucesso.
+
+=head1 ABSTRAÇÃO
+
+Uma série temporal é uma coleção de informações feitas sequencialmente ao longo do tempo, e é utilizado em diversas áreas como em finanças, ciências econômicas, seguros, demografia, ciências sociais, meteorologia, epidmiologia, e etc.
+
+Talvez sejam dois os pontos principais para armazenar as informações desta
+maneira, o primeiro ponto é oferecer um modelo de analise para compreender o
+que foi realizado, por exemplo extrair estatísticas. Outro ponto seria para
+efetuar previsões baseado na tendência da analise das informações já inseridas.
+
+Há duas maneiras de classificar uma série temporal, determinística quando os
+valores da série podem ser escritos através de uma função "y = f(tempo)", onde
+há apenas o tempo como argumento, ou estocástica, quando a série envolve além
+do tempo, termos aleatórios, "y = f(tempo, ...)".
+
+A idéia principal é poder oferecer um design para promover a portabilidade e
+reduzir o esforço na criação de aplicações em geral com o objetivo de gerenciar 
+estatísticas de seus dados. Evitando em alguns casos por exemplo, o acesso 
+direto a sua base de dados para realizar buscas por estatítiscas.
+
+E é justamente nestes casos, onde o estilo do statim se comunicar pode auxiliar e facilitar o uso de um servidor para armazenar este tipo de informação, onde os objetivos do desenvolvimento pretende:
+
+=over 4
+
+=item * Oferecer uma sintaxe simples para adicionar, remover, atualizar e buscar os dados
+
+=item * Modular, para criação de interfaces TCP, REST e etc, para facilitar o uso centralizado e descentralizado de envio de dados.
+
+=item * Utilizar termos aleatórios para facilitar o cruzamento de informações.
+
+=item * Obter séries, e aplicar funções nas séries temporais para criar novas séries temporais aleatórias.
+
+=back
+
+=head1 CONCEITOS
+
+=head2 Coleção de dados
+
+É o nome do grupo de dados, ou da coleção, onde você irá identificar as informações
+que você deseja, e eles sempre deverão conter:
+
+=over 4
+
+=item * Período para agrupação dos dados
+
+Este é o tempo em segundos, no qual os dados serão agrupados em conjunto.
+
+=item * Tipo de agregação
+
+Como será o tipo de agregação, hoje há apenas dois métodos disponíveis. O primeiro é o uniq, no qual a informação para cada periodo de dados pode ser inserido apenas uma vez, e o outro é o sum, no qual a cada requisição de inserção, ele incrementa o valor do periodo.
+
+=item * Campos aleatórios.
+
+O nomes dos campos para identificar as possibilidade de filtros dentro da coleção de dados, e há dois tipos de parâmetros, um deles é o "enum" que você pode ter até 255 campos com este nome, e o outro é do tipo "count" que por enquanto é suportado apenas um tipo (e é obrigatório declarar) por coleção de dados. Para chegar neste conceito talvez podemos ter outro artigo sobre.
+
+Mas, a questão principal aqui, é que com os campos do tipo "enum", você pode gerar uma diversidade de informações em uma mesma coleção de dados, e também pode manipular eles da melhor forma, imagine o cenário onde você quer registrar em intervalos de tempo dados sobre o arquivo de log da sua aplicação, e vamos supor que você queira especificar dois campos além do número de entradas de log que há, quer adicionar informações sobre o login do usuário, o ip, e qual módulo do aplicativo esta sendo utilizado, então podemos ter:
+
+	historico => [				# o nome da coleção de dados
+		period => 300,			# o periodo para agrupar as informações
+		aggregate => sum,		# como estas informações serão recebidas
+		fields => {
+			login => enum,		# é um campo aleatório do tipo enum.
+			ip => enum,		    # o ip do usuário
+			modulo => enum,		# o módulo que o usuário esta utilizando no aplicativo
+			count => count		# o número de vezes
+		}
+	]
+
+Com estas informações, eu posso efetuar uma consulta na coleção de dados para saber quantas entradas tivemos em um periodo, ou eu posso selecionar quantas entradas tiveram neste periodo com um usuário especifico, ou com um ip especifico, ou em um módulo do aplicativo especifico, ou mesmo juntar uma combinação entre eles. Veja que desta maneira, eu ganho uma facilidade de busca de informações muito mais eficiente e simples.
+
+=begin pod:xhtml
+
+<center><img src="/static/images/equinocio/2011/set/statim-historico-med.png"></center>
+
+=end pod:xhtml
+
+Uma representação simples em gráfico para o que acontece, onde a coleção de
+dados "histórico", terá grupos agregados baseado no tempo (ts) e eles terão
+os campos, que irão representar sub-conjuntos.
+
+Com esta representação, depois você pode buscar os "sub-conjuntos" dentro de
+um "ts" (periodo) e aplicar filtros que você desejar, assim como você pode
+seleciona vários periodos de uma coleção e criar uma nova série temporal.
+
+=back
+
+=head1 PROTOCOLO
+
+Para que o Statim fosse razoavelmente simples de ser utilizado, foi criado um protocolo para ser um guia no desenvolvimento de interfaces para o armazenamento de dados, no qual os comandos são baseados em linha.
+
+=head1 SINTAXE
+
+A sintaxe definida para enviar os comandos, é definida:
+
+	(comando) [coleção de dados] [parametro:valor] [parametro:valor] [...]
+
+=head1 COMANDOS
+
+Há três tipos de comandos em linha disponível dentro do Statim, que podem ser dividos em:
+
+=head2 Enviar/Armazenar dados.
+
+Para enviar um dado para o servidor, há disponível por enquanto um método no qual
+você informa o nome do "collection", e os parâmetros.
+
+	add collection ts:1234567890 foo:1 bar:jaz
+	OK
+
+O parametro "ts" diz qual o "tempo" do dado informado, e ele sempre é referenciado
+pelo nome "ts" (timeseries) e o valor é baseado no "epoch time", se este parametro
+não for passado, ele assume que o o "tempo" é o do momento que o comando é enviado.
+
+=head2 Restaurar dados
+
+Para recuperar um dado, basta informar a coleção e o "tempo" que deseja recuperar
+o dado, por exemplo:
+
+	 get collection bar:jaz ts:123456780-1234567890 foo
+	 OK 1
+
+O único parametro que não vem com valor, é o "foo", por é justamente o valor dele
+que estamos buscando (contador).
+
+O campos ts, pode ser representado por um único "epoch time", ou um intervalo entre
+dois "tempos", para obter o total deles.
+
+    # procurar por "*" em bar.
+    get collection bar:* foo
+    OK 1
+    
+    # não declarar o sub-grupo, é o mesmo que passar o parametro "*"
+    get collection foo
+    OK 1
+    
+    # buscar por "j*z".
+    get collection bar:j*z foo
+    OK 1
+
+Veja que no exemplo acima, é possível utilizar a expressão "*" para busca.
+
+    # somar todos os grupos de periodos
+    get collection ts:123456780-1234567890 foo:sum
+    OK 1
+
+    # buscar a média
+    get collection ts:123456780-1234567890 foo:avg
+    OK 1
+
+    # valor mínimo
+    get collection ts:123456780-1234567890 foo:min
+    OK 1
+
+    # valor máximo
+    get collection ts:123456780-1234567890 foo:max
+    OK 1
+
+Veja que no campo "count", eu posso passar a função para ser executada nas
+séries que irão "casar" com os filtros.
+
+=head2 Outros comandos
+
+=head3 version
+	
+Mostrar a versão do servidor.
+
+=head3 quit
+
+Assim que o servidor receber este comando, ele irá fechar a conexão. Porém não é necessário enviar este comando para fechar a conexão, pois ela é fechada pelo servidor assim que o cliente desconecta.
+
+=head2 Erros
+
+Há três tipos de erros de resposta, que são:
+
+=over 4
+
+=item * ERROR 
+
+Comando não existente
+
+=item * CLIENT_ERROR <error> 
+
+Erro do cliente da leitura do comando enviado pelo cliente.
+
+=item * SERVER_ERROR <error>
+
+Algum erro relativo ao funcionamento do servidor.
+
+=back
+
+Todos os "<error>" é uma mensagem legível para interpretação do que ocorreu.
+
+=head3 Configuração
+
+Abaixo, um exemplo de configuração do servidor, com a definição de uma coleção de dados, 
+no qual vamos usar como exemplo no restante deste artigo, o arquivo de configuração hoje
+esta utilizando o formato JSON.
+
+	{
+        	"collection" : {
+			"period" : "84600",
+			"aggregate" : "sum",
+			"fields" : {
+				"foo" : "count",
+				"bar" : "enum",
+				"jaz" : "enum"
+			},
+		}
+	}
+
+=head2 Storage
+
+A versão inicial há um storage disponível para o Redis, porém basta escrever um módulo para armazenar em qualquer outro local que você queira.
+
+=head1 APLICATIVOS
+
+Há dois aplicativos para facilitar a inicialização do uso do statim.
+
+=head2 statim-server
+
+É um aplicativo para facilitar a execução do servidor statim, para executar ele é necessário indicar um servidor redis para utilizar como storage.
+
+	./statim-server -h
+	Usage: ./statim-server [options] ...
+
+	Options:
+	-h,--help     show this help
+        --host        set statim server host
+    	--port        set statim server port
+	-c,--config   set statim config file path
+
+	Examples:
+		                 
+		./statim-server --host 127.0.0.1 --port 12345 -c ~/my-statim/config.json
+
+
+=head2 statim-client
+
+É um aplicativo para enviar dados para o servidor do statim.
+
+	$ ./statim-client -h
+	Usage: ./statim-client [options] ...
+
+	Options:
+	-h,--help     show this help
+	--host        set statim server host
+	--port        set statim server port
+
+	Examples:
+         
+    		./statim-client add collection foo:bar count:1
+
+
+=head1 CLASSE PARA O CLIENTE
+
+Há disponível no pacote uma classe para você utilizar com o servidor do statim, que basicamente é o que o aplicativo statim-client se utiliza, que basicamente é:
+
+	use Statim::Client;
+
+	my $client = Statim::Client->new({
+		host => '127.0.0.1',
+		port => '12345'
+	});
+
+	$client->add('collection' => 'foo:bar', 'count:1');
+	
+	$client->get('collection' => 'foo:bar', 'count');
+
+Acredito pelo o que já abordado aqui, o código é auto explicado. :-)
+
+=head1 DESENVOLVIMENTO
+
+O desenvolvimento esta ainda em fase de construção de idéias, e por isto se você se interessou, peço para que você baixe ele, teste e envie suas críticas e sugestões para lista da São Paulo Perl Mongers.
+
+O repositório do projeto é L<http://github.com/maluco/Statim>.
+
+=head2 DBIx::Class com o Statim
+
+Enquanto escrevia este artigo, comecei a escrever um módulo para facilitar o uso dele com o DBIx::Class, ou seja, todos os dados inseridos em um schema que esteja carregando o componente do Statim, enviara os dados para o statim, facilitando assim a implementação em alguns cenários.
+
+Veja mais L<https://github.com/maluco/DBIx-Class-Statim>.
+
+=head1 AUTOR
+
+Thiago Rondon, <thiago@aware.com.br>, http://www.aware.com.br/
+
+=cut
+

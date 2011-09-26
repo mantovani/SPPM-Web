@@ -1,0 +1,350 @@
+=encoding utf8
+
+=head1 Truques com Dist::Zilla
+
+No
+L<artigo do equinócio passado|http://sao-paulo.pm.org/equinocio/2011/mar/16>,
+falamos sobre como o L<Dist::Zilla> pode facilitar a sua vida de desenvolvedor
+Perl. Mostramos como migrar de um módulo "tradicional", para um módulo usando
+C<Dist::Zilla>.
+
+Para fim de evitar confusões, repetimos que o L<Dist::Zilla>
+B<< não é um instalador >>, ele B<não> substitui instaladores como
+L<ExtUtils::MakeMaker>, L<Module::Install> ou L<Module::Build>. O que o
+C<Dist::Zilla> faz é B<ajudar a gerar o pacote de instalação da distribuição>,
+que irá utilizar um (ou mais) desses sistemas para ser instalado em seus
+destinos finais.
+
+Neste artigo, vamos mostrar como levar a sua experiência com o C<Dist::Zilla>
+para o próximo nível.
+
+=head2 Depois de algum tempo de uso...
+
+O seu arquivo C<dist.ini> pode acabar se parecendo com algo assim:
+
+  name    = DataFlow
+  author  = Alexei Znamensky <russoz@cpan.org>
+  license = Perl_5
+  copyright_holder = Alexei Znamensky
+
+  [AutoVersion]
+  [MetaResources]
+  bugtracker.web  = http://github.com/russoz/DataFlow/issues
+  repository.web  = http://github.com/russoz/DataFlow
+  repository.url  = git://github.com/russoz/DataFlow.git
+  repository.type = git
+
+  [@Basic]
+  [MetaJSON]
+  [ReadmeFromPod]
+  [InstallGuide]
+  [GitFmtChanges]
+  max_age    = 365
+  tag_regexp = ^.*$
+  file_name  = Changes
+  log_format = short
+
+  [OurPkgVersion]
+  [PodWeaver]
+  [AutoPrereqs]
+  [Prereqs]
+  perl = 5.008
+  LWP::Curl = 0.08
+
+  [Prereqs / TestRequires]
+  aliased                  = 0
+  Test::UseAllModules      = 0
+
+  [ReportVersions::Tiny]
+  [CompileTests]
+  [EOLTests]
+  [PodCoverageTests]
+  [UnusedVarsTests]
+  [CriticTests]
+  [HasVersionTests]
+  [KwaliteeTests]
+  [MetaTests]
+  [PodSyntaxTests]
+
+  [@Git]
+  [Twitter]
+  tweet_url = http://search.cpan.org/~{{$AUTHOR_LC}}/{{$DIST}}
+  hash_tags = #perl #cpan #opendata #dataflow
+  url_shortener = TinyURL
+
+Este exemplo, na verdade, é como estava de fato o arquivo C<dist.init> da
+distribuição L<DataFlow> no dia até o começo de Maio de 2011, como podemos
+ver no seu
+L<repositório|https://github.com/russoz/DataFlow/blob/22f75adf696c31c72405862e7ea30b8c32764375/dist.ini>.
+
+Enquanto era apenas um arquivo, em um projeto, não há nenhuma grande
+dificuldade. Quando precisamos de mais um plugin, acrescentamos ele ao
+C<dist.ini>, quando não queremos o removemos, e modificações estão a um
+I<:wq> de distância.
+
+O problema acontece, no entanto, quando começamos a cuidade de vários módulos
+diferentes, porque o nosso conjunto "preferido" de plugins para o
+C<Dist::Zilla> precisa ser (ou gostaríamos que fosse) o mesmo para todos os
+projetos. A partir daí começa um o pesadelo da sincronização de C<dist.ini>.
+
+Mas existe um jeito mais fácil.
+
+=head2 Use o Bundle dos Outros
+
+O C<Dist::Zilla> possui um
+L<role|http://search.cpan.org/perldoc?Moose::Role> que define um
+I<PluginBundle>, mais especificamente L<Dist::Zilla::Role::PluginBundle>.
+
+Um I<bundle> nada mais é que uma coleção de I<plugins> e/ou outros I<bundles>
+(sim, podemos "aninhar" I<bundles>). Eles ficam tipicamente no I<namespace>
+C<Dist::Zilla::PluginBundle::>, mas isso não obrigatório.
+
+No exemplo de C<dist.ini> acima, estamos usando I<bundles>. As linhas:
+
+  [@Basic]
+  ...
+
+  [@Git]
+
+Denotam a utilização, respectivamente do I<bundle>
+L<Dist::Zilla::PluginBundle::Basic> e L<Dist::Zilla::PluginBundle::Git>.
+
+Os I<plugins> favoritos de cada autor também podem ser vistos como coleções, e
+por conseguinte cada um pode criar um I<bundle> com essa coleção. De fato,
+L<vários autores fazem isso|http://search.cpan.org/search?query=Dist%3A%3AZilla%3A%3APluginBundle%3A%3A&mode=dist>.
+
+=head2 Criando o seu Bundle
+
+Para fazer o seu próprio I<bundle>, a melhor forma é usar o I<role>
+L<Dist::Zilla::Role::PluginBundle::Easy>, que já vem com o próprio
+L<Dist::Zilla>. O C<dist.init> acima pode ser (e
+L<foi|https://github.com/russoz/Dist-Zilla-PluginBundle-Author-RUSSOZ/blob/6f843e375a284bb6cc0760faa51a75814ceb1c4a/lib/Dist/Zilla/PluginBundle/Author/RUSSOZ.pm>) parcialmente convertido no seguinte código:
+
+  package Dist::Zilla::PluginBundle::Author::RUSSOZ;
+
+  use Moose 0.99;
+  use namespace::autoclean 0.09;
+
+  use Dist::Zilla 4.102341;    # dzil authordeps
+  with 'Dist::Zilla::Role::PluginBundle::Easy';
+
+  sub configure {
+    my $self = shift;
+
+    $self->add_bundle('Basic');
+
+    $self->add_plugins(
+      'MetaJSON',
+      'ReadmeFromPod',
+      'InstallGuide',
+      [
+        'GitFmtChanges' => {
+          max_age    => 365,
+          tag_regexp => q{^.*$},
+          file_name  => q{Changes},
+          log_format => q{short},
+        }
+      ],
+
+      'OurPkgVersion',
+      'AutoPrereqs',
+    
+      'ReportVersions::Tiny',
+      'CompileTests',
+      'EOLTests',
+      'PodCoverageTests',
+      'UnusedVarsTests',
+      'CriticTests',
+      'HasVersionTests',
+      'KwaliteeTests',
+      'MetaTests',
+      'PodSyntaxTests',
+      'NoTabsTests',
+    );
+  }
+
+Para utilizar esse bundle posteriormente, basta acrescentar ao C<dist.ini> a
+linha:
+
+  [@Author::RUSSOZ]
+
+Todos esses plugins, mais o I<bundle>
+L<Basic|Dist::Zilla::PluginBundle::Basic> são automaticamente incluídos na sua
+configuração, devemos removê-los do C<dist.ini>.
+
+O I<bundle> é uma classe Perl, que utiliza o L<Moose>. Dessa forma, podemos
+também customizar o I<bundle> programaticamente. Por exemplo, numa versão
+mais recente do L<Dist::Zilla::PluginBundle::Author::RUSSOZ> temos:
+
+  has signature => (
+    is      => 'ro',
+    isa     => 'Bool',
+    lazy    => 1,
+    default => sub {
+        ( defined $_[0]->payload->{signature}
+              and $_[0]->payload->{signature} == 1 ) ? 1 : 0;
+    },
+  );
+
+  sub configure {
+    ...
+	$self->add_plugins('Signature') if $self->signature;
+  }
+
+Na hora de usar, dentro do C<dist.ini>, podemos usar a opção C<signature>:
+
+  [@Author::RUSSOZ]
+  signature = 0
+
+E o C<Dist::Zilla> incluirá o plugin L<Dist::Zilla::Plugin::Signature>
+somente se o valor de C<signature> for igual a 1.
+
+A versão mais recente de C<Author::RUSSOZ> está
+disponível em
+L<http://github.com/russoz/Dist-Zilla-PluginBundle-Author-RUSSOZ/>.
+
+=head2 Números de Versão
+
+O C<Dist::Zilla>, por si só, já provê a propagação do número de versão do
+módulo para os diversos arquivos que compõe a distribuição.
+
+No entanto, se você quiser ir além disso, você pode também automatizar a
+configuração (e propagação para os diversos arquivos) do número de versão do
+módulo. Os principais plugins que fornecem essa funcionalidade são o
+L<Dist::Zilla::Plugin::Git::NextVersion> e o
+L<Dist::Zilla::Plugin::AutoVersion>.
+
+No C<@Author::RUSSOZ> colocamos uma opção C<version> B<dentro> do I<bundle>,
+que pode ter, entre outros, os valores C<gitnext> e C<auto>, respectivamente.
+
+=head2 Bundle de Teste
+
+Ao invés de listar todos esses plugins de teste, existe um I<bundle> que
+já faz quase todo o serviço para você:
+L<Dist::Zilla::PluginBundle::TestingMania>.
+
+=head2 Git Bundle
+
+Usando o bundle L<Dist::Zilla::PluginBundle::Git>, você pode automaticamente
+fazer com que o seu repositório git seja atualizado a cada release.
+
+=head2 Meta no Bundle
+
+Se você usa git e mantém os seus repositórios no github, então o plugin
+L<Dist::Zilla::Plugin::GithubMeta> irá preencher automagicamente as
+meta-informações da sua distribuição.
+
+=head2 Twittando do seu Bundle
+
+Use o plugin L<Dist::Zilla::Plugin::Twitter> para anunciar no
+L<http://twitter.com/> o release das novas versões da sua distribuição.
+
+=head2 POD no Bundle?
+
+O plugin L<Dist::Zilla::Plugin::PodWeaver> permite que vários pedaços do
+seu POD sejam gerados automagicamente, em conformidade com as boas práticas
+de documentação de Perl.
+
+=head2 Espiando o Dist::Zilla
+
+Se quiser "espiar" o que o C<Dist::Zilla> está fazendo, um plugin muito legal
+é o L<Dist::Zilla::Plugin::ReportPhase>, que mostra cada fase de execução do
+C<Dist::Zilla>.
+
+=head2 Resultado Final
+
+Hoje o C<dist.ini> do projeto C<DataFlow> está assim:
+
+  name    = DataFlow
+  author  = Alexei Znamensky <russoz@cpan.org>
+  license = Perl_5
+  copyright_holder = Alexei Znamensky
+
+  [@Author::RUSSOZ]
+  version = auto
+  twitter_tags = #opendata #dataflow
+
+  [Prereqs]
+  perl = 5.008
+
+E um outro projeto qualquer? Como por exemplo o L<Queue::Base>, deste mesmo
+autor:
+
+  name    = Queue-Base
+  author  = Alexei Znamensky <russoz@cpan.org>
+  license = Perl_5
+  copyright_holder = Farkas Arpad, Alexei Znamensky
+  copyright_year   = 2011
+
+  [@Author::RUSSOZ]
+  version = gitnext
+  twitter_tags = #queue-base
+
+Todo e qualquer projeto agora poderá se beneficiar desse I<bundle> de plugins
+chamado C<Author::RUSSOZ>.
+
+=head2 Agradecimentos
+
+=over
+
+=item Ricardo Signes (RJBS)
+
+Pelo Dist::Zilla e pela sua prestatividade.
+
+=item Fayland Lam (FAYLAND)
+
+Pelo novo release do L<Dist::Zilla::Plugin::PerlTidy> com a correção que
+forneci, permitindo que ele conviva em paz com
+L<Dist::Zilla::Plugin::ReportVersions::Tiny>.
+
+=item Comunidade São Paulo Perl Mongers
+
+Pelo companheirismo, pelas infinitas risadas, pela dedicação com que todos zelam
+pela nossa linguagem de programação predileta.
+
+=item Revisão: blabos
+
+Obrigado pelo olho clínico, revisando este artigo.
+
+B<Nota do revisor>: Nem adianta vir querendo botar no meu bundle, ok? O mérito é todo seu.
+
+=back
+
+=head2 Autor
+
+B< Alexei "Russo" Znamensky E<lt> russoz no cpan org E<gt> >
+
+=over
+
+=item *
+Twitter: L<russoz|http://twitter.com/#!/russoz>
+
+=item *
+Blog: L<http://russoz.org/>
+
+=item *
+LinkedIn:
+L<http://www.linkedin.com/profile?viewProfile=&key=754668&trk=tab_pro>
+
+=back
+
+=head2 Fonte
+
+O fonte deste artigo encontra-se disponível em:
+
+L<https://github.com/russoz/artigos/blob/master/2011/09-sppm-equinocio/p2-distzilla/distzilla.pod>
+
+=head2 Licença
+
+Este texto está licenciado sob os termos da Creative Commons by-sa,
+L<http://creativecommons.org/licenses/by-sa/3.0/br/>
+
+=begin pod:xhtml
+
+<center>
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/br/">Creative Commons Attribution-ShareAlike License</a>.
+</center>
+
+=end pod:xhtml
+
+=cut

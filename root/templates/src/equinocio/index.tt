@@ -1,0 +1,40 @@
+[% META title = 'Equin&oacute;cio' %]
+
+<h1>Equinócio de Primavera 2011</h1>
+<p>O Equinócio é o momento exato em que o eixo de rotação da Terra se alinha perfeitamente ao seu eixo de 
+                         translação ao redor do Sol, ou seja, é o momento em que ambos os hemisférios norte e sul são iluminados igualmente pelo Sol.</p>
+ <p>A palavra Equinócio tem sua origem no Latim <i>aequus</i> (igual) e <i>nox</i> (noite), porque durante o 
+                         evento tanto dia quanto noite tem aproximadamente a mesma duração.</p>
+<p>Por isso, celebrando essa época de igualdade, duas vezes por ano a comunidade Perl do Brasil ( e em especial a 
+                         de São Paulo ) se reúne e convida todos os seres humanos a compartilhar, trocar experiências e aprender, lembrando sempre que 
+                         apesar de diferentes, somos todos humanos, todos<i>aeuus</i>.</p>
+<p>Como de costume, a partir de hoje publicaremos um post por dia até o dia do Equinócio, dia 20 de Setembro. 
+                         =D</p>
+<p>Bem vindos ao Equinócio de Primavera 2011!</p>
+
+
+<ul class="decimal">
+ <li><a href="/equinocio/2011/set/1">Boas Vindas (por: Blabos de Blebe)</a></li>
+ <li><a href="/equinocio/2011/set/2">Truques com Dist::Zilla (por: Alexei "Russo" Znamensky)</a></li>
+ <li><a href="/equinocio/2011/set/3">Perlbrew - Instale quantas versões do Perl quiser, sem precisar de root! (por: Breno Oliveira)</a></li>
+ <li><a href="/equinocio/2011/set/4">Como montar um servidor Web com, Perl, Catalyst, Varnish, Nginx, MySQL e Postgres no Ubuntu (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/5">Scheme Para Programadores Perl (por: Nelson Ferraz)</a></li>
+ <li><a href="/equinocio/2011/set/6">CONSTRUINDO UMA APLICAÇÃO DESKTOP USANDO OS MÓDULOS TK E MOOSE (por: Daniel Vinciguerra)</a></li>
+ <li><a href="/equinocio/2011/set/7">INSTALAÇÃO DE APLICAÇÕES PERL CATALYST (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/8">BOAS PRÁTICAS PARA AGENTES DO NAGIOS (por: Solli M. Honório )</a></li>
+ <li><a href="/equinocio/2011/set/9">ELASTICSEARCH COM CATALYST (por: Renato CRON)</a></li>
+ <li><a href="/equinocio/2011/set/10">DATA::PRINTER - O PRETTY-PRINTER DO PERL (por: Breno Oliveira)</a></li>
+ <li><a href="/equinocio/2011/set/11">PLACK - SUPER-COLA PARA A WEB (por: Eden Cardim)</a></li>
+ <li><a href="/equinocio/2011/set/12">EFETUANDO TESTES COM O TEST::TCP (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/13">PERL ASSÍNCRONO (por: Stanislaw Pusep)</a></li>
+ <li><a href="/equinocio/2011/set/14">GRID COM DHTMLX, CATALYST E DBIX::CLASS (por: Lucas Tiago de Moraes)</a></li>
+ <li><a href="/equinocio/2011/set/15">Redis::Dump (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/16">COMO CRIAR E PUBLICAR MÓDULOS PARA O CPAN (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/17">DEPLOY / INSTALAÇÃO DE APLICAÇÕES PERL CATALYST (por: Hernan Lopes)</a></li>
+ <li><a href="/equinocio/2011/set/18">EMMA - SIMPLES DISCADOR PARA EFETUAR CHAMADAS VIA UM PROXY SIP COM UM ARQUIVO DE AUDIO (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/19">Statim (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/20">ENCRIPTAÇÃO DE SENHAS - UMA ABORDAGEM COM BCRYPT (por: Blabos de Blebe)</a></li>
+ <li><a href="/equinocio/2011/set/21">EU NÃO QUERO MAIS USAR "PERL -MMODULE\ 999" (por: Thiago Rondon)</a></li>
+ <li><a href="/equinocio/2011/set/22">CATALYST: DICAS E TRUQUES (por: Wallace Reis)</a></li>
+ <li><a href="/equinocio/2011/set/23">PERL, ARDUINO E SDL (por: Daniel Mantovani)</a></li>
+</ul>

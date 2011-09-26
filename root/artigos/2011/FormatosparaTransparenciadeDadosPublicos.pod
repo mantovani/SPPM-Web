@@ -1,0 +1,240 @@
+=head1 Formatos para Transparência de Dados Públicos
+
+Um dos maiores problemas enfrentados pelo
+L<projeto OpenData|http://sao-paulo.pm.org/equinocio/2011/mar/1> está no
+formato em que a informação é disponibilizada pelo poder público.
+A lei diz que as informações devem ser expostas à população, mas
+não especifica B<como>. Por essa razão, muitas vezes os esforços de
+transparência, tão valorizados pela Administração Pública
+moderna de nosso país, acabam sem a repercursão ou resultados esperados.
+
+=head2 Como não fazer
+
+Infelizmente, boa parte das informações são disponibilizadas em
+formatos ótimos para impressão individual ou leitura manual, mas de
+difícil análise e manuseio, e por vezes até em padrões
+proprietários. Um relatório em PDF pode ser muito elegante impresso,
+mas obriga o analista a aceitar a informação como está, ou perder
+horas - dias? - para fazer referências cruzadas, análises comparativas
+e estatísticas, o que efetivamente desperdiça e invalida todos os
+esforços de democratização e cidadania.
+
+Embora existam técnicas de parsing e extração automática de
+informações em formatos de arquivos deste tipo - muitos dos quais
+discutidos nos demais artigos deste Equinócio - o ideal é que as
+informações sejam expostas pela Administração Pública da forma mais
+direta e bem estruturada possível.
+
+Para um exemplo simples, considere o excelente site do
+L<Insituto de Segurança Pública (ISP)|http://www.isp.rj.gov.br>
+do Estado do Rio de Janeiro, que tornou públicas as
+L<informações acerca de incidências criminais no Estado|http://www.isp.rj.gov.br/Conteudo.asp?ident=150>.
+A iniciativa é fantástica, e com isso a Secretaria de Estado de Segurança espera
+"I<< assegurar o máximo de transparência e o amplo acesso às informações relativas a notificações criminais >>".
+
+Ao carregarmos a página com os dados oficiais, vemos que é possível
+baixar os dados de cada mês. O arquivo está em formato XLS, proprietário,
+mas ao menos soluções livres como o OpenOffice nos permitem acessar seu
+conteúdo. Abrimos a planilha de janeiro/2010, e nos deparamos com uma
+coleção completa de dados, com 44(!) abas detalhando as informações de cada
+AISP (Área Integrada de Segurança Pública). Os autores são cuidadosos o
+suficiente para incluir abas de resumo, com o índice estadual de ocorrências
+e dados condensados por RISP (Região Integrada de Segurança Pública), o
+que é ótimo.
+
+No entanto, se quisermos saber, por exemplo, qual Área possui
+a maior incidência de homicídios culposos, precisamos olhar cada uma
+das 40 abas de AISP, procurar o índice em questão e anotar o maior
+manualmente. A automatização é até possível, mas depende que a informação
+esteja sempre disponível nas mesmas linhas/colunas em todos os documentos
+- ou com o mesmo rótulo.
+
+Pode até ser simples fazer isso manualmente uma vez, mas se você quiser
+esse tipo de informação todo mês, ou fazer uma análise estatística de
+crescimento ou redução da criminalidade no estado ou região, estaria
+disposto a perder seu tempo com uma análise manual desse tipo todo
+mês? Nem eu.
+
+A grande maioria dos portais de transparência sofre deste problema, de
+sites municipais ao governo federal. Portanto, se você é responsável
+pela transparência de dados do poder público, evite dispor seus dados em:
+
+=over 4
+
+=item * PDF
+
+=item * XLS
+
+=item * DOC
+
+=item * HTML
+
+=back
+
+Ou melhor, não disponha a informação B<apenas> nestes formatos. Arquivos
+para baixar ainda são ótimos para quem quer um dado pontual, resumo, ou
+apenas uma listagem simples. O verdadeiro poder da cidadania, no entanto,
+está na facilidade de extração e análise da informação exposta, o que não é
+possível nesses formatos com a qualidade e agilidade necessárias, características
+no processo.
+
+=head2 Web Services
+
+Uma alternativa mais interessante para a disposição de dados públicos é
+através dos chamados I<Web Services>. Trata-se de um método simples e efetivo
+de comunicação e interação entre dispositivos via rede. Quando aplicado à portais
+de transparência, os web services permitem acesso imediato às informações
+disponibilizadas na forma de estruturas de dados bem-definidas, o que facilita
+enormemente a automatização dos processos de coleta e análise pela população.
+
+Existem diversos estilos de Web Services, o mais popular hoje em dia
+chamado REST. Há
+L<excelente material disponível sobre REST|http://sao-paulo.pm.org/artigo/2010/RESTful>
+e outros estilos, da estrutura à implementação, então vamos nos concentrar
+em mostrar como pode ser simples a exibição de dados e estruturas complexas
+nos principais formatos para API's web.
+
+=head3 Um cenário
+
+Suponha que o Instituto de Segurança Pública do Rio deseje implementar um
+Web Service para facilitar ainda mais o acesso às informações de incidências
+criminais em seu site. Os responsáveis criam um serviço REST simples na
+forma da URI:
+
+     http://isp.rj.gov.br/api/ANO/MES/AISP/TIPO
+
+De modo que, se quiséssemos a lista de registros de crimes violentos na
+região AISP7 em maio de 2009, bastaria acessar
+
+     http://isp.rj.gov.br/api/2009/05/AISP7/crimes-violentos
+
+e importar o resultado para nosso software de análise.
+
+Em L<Mojolicious|http://sao-paulo.pm.org/artigo/2010/Mojolicious>,
+criar esse tipo de rota é tão fácil quanto escrever:
+
+   use Mojolicious::Lite;
+
+   get '/:ano/:mes/:aisp/:tipo' => sub {
+       ...
+   };
+
+   app->start;
+
+e colocar o aplicativo respondendo em C<http://isp.rj.gov.br/api>. Mas
+o foco deste artigo são os formatos em que os dados podem ser exibidos,
+então vamos lá. Para os exemplos a seguir, suponha que os dados tenham
+sido obtidos de um banco de dados qualquer e estejam em uma estrutura
+de dados Perl como essa:
+
+   my $crimes_violentos = {
+        'Roubo de aparelho celular' => 30,
+        'Furto de veiculos'         => 72,
+        'Extorsao'                  => 6,
+        'Estelionato'               => 62,
+   };
+
+=head3 JSON
+
+O formato L<JSON|http://json.org> é extremamente leve e simples - a
+especificação cabe em apenas uma página! Sua estrutura é de fácil
+entendimento e usa convenções comuns em muitas linguagens de programação,
+o que facilita ainda mais sua integração.
+
+Passar a estrutura de dados acima para JSON é muito simples:
+
+   use JSON;
+
+   my $json = to_json( $crimes_violentos );
+
+Agora é só renderizar a variável C<$json>, lembrando de definir o
+I<Content-Type> da página para "C<application/json>".
+
+O resultado será algo como:
+
+   {"Extorsao":6,"Estelionato":62,"Furto de veiculos":72,"Roubo de aparelho celular":30}
+
+
+=head3 YAML
+
+O formato L<YAML|http://yaml.org> é uma tentativa de simplificar o XML,
+ofererendo um padrão de serialização de dados fácil de ser interpretado
+tanto por humanos quanto por programas.
+
+Podemos passar a estrutura de dados anterior para YAML fazendo:
+
+   use YAML::XS;
+
+   my $yaml = Dump( $crimes_violentos );
+
+Lembrando de definir o I<Content-Type> da página gerada para "C<text/yaml>"
+ou derivado.
+
+O resultado será algo como:
+
+   ---
+   Estelionato: 62
+   Extorsao: 6
+   Furto de veiculos: 72
+   Roubo de aparelho celular: 30
+
+
+=head3 XML
+
+L<XML|http://www.w3.org/TR/REC-xml/> foi um dos formatos padronizados
+mais populares para serialização de dados via rede. Hoje em dia, muitos
+desenvolvedores o evitam em Web Services REST, optando por alternativas
+mais simples como as acima. Ainda assim, o XML é um forte candidato,
+especialmente nos casos em que queremos validar o dado em questão, usando
+os chamados I<Schemas>.
+
+Supondo que o arquivo contendo o Schema de nosso XML está em "C<dados.xsd>",
+podemos gerar um xml da seguinte forma:
+
+    use XML::Compile::Schema;
+    use XML::LibXML;
+
+    my $doc = XML::LibXML->createDocument('1.0', 'UTF-8');
+    my $schema = XML::Compile::Schema->new( 'dados.xsd' );
+
+    my $xml = $schema->compile( WRITER => '{http://isp.rj.gov.br/api}dados' )
+                     ->($crimes_violentos, $hash)
+                     ->toString;
+
+
+Há pouca vantagem em usar XML sem validação, mas isso também pode ser
+obtido com relativa facilidade.
+
+Não esqueça de definir o I<Content-Type> da página gerada para "C<text/xml>"
+
+
+=head3 A escolha é do freguês
+
+A transformação de estruturas de dados nos formatos acima é tão simples
+que muitos frameworks web como L<Catalyst|http://www.catalystframework.org>,
+L<Mojolicious|http://mojolicio.us> e L<Dancer|http://perldancer.org> permitem que
+você especifique o formato através de um parâmetro de extensão na URI, como se
+fosse a extensão de um arquivo. Assim, podemos oferecer o mesmo serviço
+em diferentes formatos, conforme a preferência do sistema usuário.
+
+No exemplo que estamos usando, a URI
+
+   http://isp.rj.gov.br/api/2009/05/AISP7/crimes-violentos.json
+
+poderia renderizar a saída em formato JSON. Já a URI
+
+   http://isp.rj.gov.br/api/2009/05/AISP7/crimes-violentos.yaml
+
+renderizaria essa mesma informação em YAML, e assim por diante.
+
+
+=head2 Conclusão
+
+A democratização e transparência dos dados da administração pública
+é sem dúvida louvável, e os órgãos responsáveis vêm fazendo um trabalho
+cada vez melhor na disponibilização de dados completos para análise
+da população. No entanto, a escolha de formatos apropriados para
+coleta de dados via web é fundamental para que esse processo possa
+ocorrer com a agilidade e eficiência necessárias.
+
+

@@ -1,0 +1,279 @@
+=pod
+
+=head1 Infografia em Dados Governamentais
+
+Em Ciências da Computação o termo "I<design> de informação" é associado algumas vezes como sinônimo para arquitetura de informação, ou I<design> de sistemas de informação, banco de dados ou estrutura de informação, mas na área de I<design> gráfico, que lida detalhadamente com o projeto da informação visual, o objetivo principal é que o leitor adquira informação em sistemas de comunicação visuais.
+
+Este artigo na realidade é uma discussão que irei fazer em "voz alta", sobre os primeiros passos dos meus estudos relacionados a infografia, e este é um assunto muito importante quando se fala de dados governamentais pois, às vezes, apenas mostrar um montante de dados não faz com que os leitores entendam bem o que eles representam.
+
+Basicamente a representação visual de informações são definidos como infografia, ou como conhecemos através de alguns portais brasileiros de notícia como infográficos que são usados para descrever o que aconteceu em uma determinada situação.
+
+Oferecer ao usuário uma experiência nova pode parecer muito óbvio, mas para que tenhamos um projeto para desenvolver experiências relacionadas a infográfica, precisamos de profissionais em várias áreas, e não apenas do setor de tecnologia. O nosso papel como desenvolvedores é conseguir prover informações que eles sejam processadas de uma forma trivial, e por isto vamos discutir algumas estratégias neste documento.
+
+Uma breve história sobre o assunto, podemos começar pela simiologia da gráfica que é uma teoria do I<design> de informação apresentada por Jacques Bertin, que considera I<"um quadro para a análise e representação de dados em papel. Fundada na experiência prática de Bertin como geógrafo e cartógrafo, ao invés de pesquisa empírica">.
+
+Outro grande nome deste ramo, é Edward Tufle que disse que este trabalho de Jacques I<"prevê um estudo aprofundado de diferentes técnicas gráficas (forma, orientação, cor, textura, volume, tamanho) para localizar e sinalizar variações quantitativas, geralmente sobre o espaço geográfico ou ao longo do tempo. Existe também a análise de gráficos e tabelas de classificação de dados">.
+
+Um fato relevante da história, é o caso do Leonardo da Vinci que tentou entender os fenômenos, descrevendo-os em detalhes extremos e não enfatizando experiências ou explicações teóricas, tanto que ele planejou uma enciclopédia baseada em desenhos detalhados em tudo, pois não dominava o latim e o matemático e foi ignorado pelos estudiosos contemporâneos por conta disto.
+
+Realizou autópsias e elaborou desenhamos anatômicos extremamente detalhados, tendo planejado um trabalho, inclusive sobre o corpo humano, de anotomia comparativa e, entre 1510 e 1513, estudou fetos, de que resultaram obras que podem ser consideradas como infografias de grande complexidade.
+
+Mas o assunto principal aqui é abordar a questão da infografia para os desenvolvedores: como nós podemos oferecer dados para que bons designers ou belas ferramentas já existentes possam processar os dados ? Então iremos abordar inicialmente alguns conceitos técnicos relacionado a matemática e computação e depois discutir sobre como utilizar estes dados em um infográfico.
+
+=head1 Fluxo dos dados
+
+Para entendermos melhor como construir um infográfico, é interessante discutirmos alguns pontos como os dados e as informações presentes nos infográficos são obtidos e compilados.
+
+As estratégias para que isto funcione no seu sistema, basicamente devem seguir como os dados são concebidos na abstração do infográfico, ou seja a ideia é a reflexão desde da coleta dos dados até a produção visual.
+
+=head2 Coleta
+
+A coleta de dados pode ser efetuada de muitas maneiras, mas a questão é que para que estes dados estejam de uma maneira que computadores consigam interpretar da maneira mais ágil.
+
+Você pode ter todos estes dados impressos em livros, o teu trabalho será de coler eles de forma manual. Com tecnologia, se estes dados estiverem em formatos abertos para que computadores possam ler de forma semântica, o trabalho será muito mais trivial.
+
+=head2 Armazenar
+
+O segundo passo é armazenar estes dados de uma maneira, com qual você consiga trabalhar com eles posteriormente, porém existem processos de coleta de dados com tecnologia que já excluem este passo.
+
+=head2 Processar
+
+Neste ponto é que efetuamos o resumo dos dados, ou seja nos processamos eles e podemos cruzar com outras informações, gerar estatisticas, criar métricas e etc.
+
+=head2 Visualizar
+
+Com os dados preparados, agora está no momento de definir como estes dados serão visualizados, escolher a melhor maneira visual que o público alvo irá conseguir interpretar os dados processados com o mínimo de esforço em relação a conhecimento.
+
+=head1 Coleção de dados e a experiência do usuário
+
+A coleção de dados na infográfia esta orientado não apenas aos dados que estão disponíveis, mas também para o público alvo em relação a experiência que será criada para que estes dados sejam demonstrados.
+
+Nosso objetivo é esclarecer que o fluxo para entregar a informação altera em relação aos dados, normalmente a produção do conteúdo é baseada nos dados e na tecnologia ao redor para criação da visualização, e isto gera uma motivação por parte dos usuários.
+
+O trabalho com infográficos é a criação do visual e os dados, o produto também dependa das motivações do usuário, isto significa que em um formato comum o processo é:
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/infograficos/colecao1.png">
+</center>
+
+=end pod:xhtml
+
+Para elaboração de infográficos, o fluxo normalmente é :
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/infograficos/colecao2.png">
+</center>
+
+=end pod:xhtml
+
+=head2 ICONOLOGIA e ICONOGRAFIA
+
+Erwin Panafsky escreveu em seu livro "Estudos da Iconologia" que a iconografia é o estudo do tema e a iconologia é o estudo do significado do objetivo analisado. Ele exemplifica o ato de um homem levantar o chapéu. Num primeiro momento (ICONOGRAFIA) é um homem que retira da cabeça um chapéu, num segundo momento, (ICONOLOGIA) menciona que ao levantar o chapéu educadamente, esse gesto é "resquício do cavalherismo medieval: os homens armados costumavam retirar os elmos para deixarem claras suas intenções pacíficas". Enfatizando a importância dos costumes cotidianos para se compreender as representações simbólicas.
+
+A importancia destas definições esta diretamente ligada ao público que você deseja alcançar, e a experiência que você quer oferecer.
+
+=head2 Crowdsourcing
+
+Este é uma forma de produção e disseminação de informação de uma maneira coletiva, no qual com os infográficos podemos incentivar este tipo de modelo pelo simples motivo que iremos compilar informações para usuários especificos.
+
+Isto significa em alguns casos, interpretar dados complexos e tornar eles simples, para que mais pessoas consigam aproveitar das informações e agregar com conhecimento especifico.
+
+Hoje este tipo de movimento esta cada vez mais sendo adotado por comunidades da sociedade interessadas em conhecimento e dados, por isto que a utilização de infográficos pode ser um ótimo incentivador.
+
+=head1 Visualiazões dos dados
+
+Iremos tratar aqui da maneira de visualizar os dados, e discutir e refletir sobre alguns tipos de dados que normalmente encontramos a necessidade de simplificar.
+
+=head2 Hashmap
+
+É uma tabela hash que é utilizada para organizar os dados em uma tabela hash, e desta forma você não tem controle algum sobre a ordenação dos dados, este mapa de dados pode ser demonstrado em um mapa de dados.
+
+=head2 Treemapping
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/infograficos/treemap_example.jpg">
+</center>
+
+=end pod:xhtml
+
+
+É um método para mostrar informações baseado em hierarquia que utiliza uma ordenação de árvore, e é utilizado quadrados para demonstrar grupos de dados e que possuam funções especificas.
+
+A hierarquia lhe dá a oportunidade de criar ramificações de dados, e assim criar nós baseado da maneira que você desejar, e assim você pode parametrizar a maneira que você queira visualizar os dados em relação as cores e dimensão, ou seja um grupo de dados que possuem mais informações pode ter um tamanho maior, assim como uma cor diferente.
+
+Alguns algoritmos conhecidos que são utilizados para auxiliar na organização destes dados são "Arvores binárias", "Slice And Dice" e "Squarified".
+
+=head2 Diagramas de Voronoi.
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/infograficos/diagramme_de_Voronoi.png">
+</center>
+
+=end pod:xhtml
+
+
+O matemático Georgy Voronoy criou este tipo de diagrama para demonstrar o espaço métrico em regiões da imagem de acordo com a distância a determinados pontos, e o interessante que ele lhe dá um caminho seguro, gera uma rota equidistante dos objetos e uma ótima visualização em casos que são utilizados mapas, há um exemplo ótimo na L<Wikipedia|http://www.wikipedia.org> que diz:
+
+=over
+
+I<Imagine o seguinte problema: você recebe o mapa de uma metrópole. Neste mapa estão marcados os locais onde existem os vários postos de saúde espalhados pela metrópole. Sabe-se que há edifícios por toda a parte da metrópole. Deve-se determinar qual a área de cobertura de cada um dos postos de saúde, ou qual o conjunto de edifícios que será atendido por cada posto de saúde da metrópole. Naturalmente, bastaria descobrir os conjuntos de edifícios que estão mais próximos de cada posto de saúde que obteríamos uma solução para o problema.>
+
+=back
+
+Essa solução corresponde ao Diagrama de Voronoi.
+
+Existem alguns algoritmos que tornam esta tarefa mais simples, tais como a "Bowyer–Watson" e "Fortune's".
+
+=head2 Triangulações de Delaunay
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/infograficos/Delaunay_circumcircles.png">
+</center>
+
+=end pod:xhtml
+
+
+Um algoritmo muito interessante para criar visualizações em mapas, baseado em trinagulação, que organizando a distância dos pontos em triângulos, você também obtem um círculo-circundante vazio, para que você consiga retirar propriedades de terrenos por exemplo.
+
+Este algoritmo normalmente é utilizado para determinar a densidade e a intensidade dos pontos analisados, e pode ser utilizado para demonstrar ocorrências de determinas ações onde não há uma informação precisa.
+
+=head2 Mapa de sinergia
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/infograficos/synergies-on-synergy-map.gif">
+</center>
+
+=end pod:xhtml
+
+O interessante deste mapa é a possibilidade de dividir as perspectivas em quatro partes baseado em prioridades e o cronograma, e então interligar eles visualmente para melhora compreensão do momento.
+
+Referencias: L<http://http://www.agileweboperations.com/synergy-map-how-to-map-out-your-current-strategy-part-1-of-2>
+
+=head2 Geográficos
+
+Dados geograficos normalmente estão associados a dados de onde os dados pertecem, e você possue informações tais como latitude e longitude.
+
+Existem bancos de dados especificos para trabalhar com a geração de dados baseados em posicionamento e podem auxiliar na geração de gráficos na hora, um deles é a extensão postgis para o postgresql.
+
+=head2 DNA
+
+=begin pod:xhtml
+
+<center>
+<img src="/static/images/equinocio/2011/mar/infograficos/658px-Parallel_telomere_quadruple.png">
+</center>
+
+=end pod:xhtml
+
+
+Gráficos baseado na estrutura cromossoma que é uma longa sequencia de DNA, que contém vários genes, e outras sequencias com funções especificas, o interessante é que podemos utilizar esta estrutura para demonstrar dados organizados por metadados, onde conseguimos representar a evolução das informações.
+
+Você pode criar cenários para descrever a evolução com "câncer", baseada em replicação e várias outras maneiras, e isto pode ser facilmente compreensível em um gráfico para descrever o processo destas informações.
+
+=head1 Exemplos dos assuntos
+
+Os assuntos dos dados, podem ser vários e impossível de descrever todos eles, mas irei comentar alguns casos relativos a dados de interesse da sociedade em relação a organização de si própria.
+
+=head2 Dados urbanos
+
+São métricas ou informações processadas relacionado as cidades, tais elas como indices de crimalidade, transito e desastres naturais.
+
+=head2 Políticos
+
+São geralmente informações para serem analisadas em relação a perfomance politica que esta sendo executada, geralmente acompanhada com dados para comparação histórica.
+
+
+=head1 Disposição dos dados para encontrar os dados e processar.
+
+Ter estes dados disponível via uma API, uma lingaugem de representação de dados como RDF, ou ter eles armazenardos como já foi dito em fluxo dos dados, é interessante para gerar infográficos no exato momento.
+
+O conhecimento sobre estas disposições podem facilitar o trabalho de quem for criar as visualizações de dados.
+
+=head1 Estatísticas
+
+O uso de estatisticas utiliza-se das teorias de probabilidade e neste caso incialmente é muito interessante para ser usado para detectar a frequencia da ocorrência de um determinado evento, para que facilite os estudos observacionais e etc.
+
+Este processo geralmente esta associado à coleta, análise e interpretação dos dados. 
+
+Com a computação a pratica de modelos estasticas não-lineares esta se tornando mais frequente, pois com o aumento da capacidade de processamento estamos obtendo habilidades para criar cálculos baseados em reamostragem, como testes de permutação e bootstrap.
+
+=head1 Métricas
+
+Métrica é um sistema de mensuração que quantifica uma tendência, uma dinâmica ou uma característica. Nós já estamos acostumados a  visualizar métricas em vários estudos, onde o uso dela é feito para explicar fenômenos, diagnosticar causas, compartilhar descobertas e projetar resultados de eventos futuros.
+
+Podemos dizer que no mundo dos negócios e do governo, as métricas estimulam o rigor e a objetividade, elas tornam possível comparar observações entre regiões e períodos de tempo, facilitando a compreensão e a colaboração.
+
+Norlmalmente com dados governamentais iremos discutir sobre metricas relacionado a a perfomance.
+
+=head2 Escolhendo os números certos
+
+O imperativo numérico representa um desafio, pois há uma dificuldade tremenda em selecionar quais formulas para se utilizar para representar um montante de dados, principalmente na administração pública ou na economia, pois muitos dados podem estar incompletos e temos que trabalhar com informações aproximadas.
+
+Por isto em muitos casos é interessante utilizar uma metodologia de que você irá oferecer inicialmente várias métricas, para que você possa 'tringular' elas e criar estratégias e até métricas novas.
+
+O interessante da triangulação de métricas é que podemos usar umas para verificar o resultado das outras também, e com o tempo criar projeções mais inteligentes baseado em dados - métricas - aproximadas.
+
+Por isto escolher os números certos, pode ser possivel apenas com um determinado tempo, para você consiga provar os fenômenos praticos com os números escolhidos.
+
+=head2 Padronizando as referências.
+
+Efetuar uma medição é algo muito complexo, por uma questão de chegar em um ponto em comum em vários casos, como reduzir informações de forma satisfatorias e tirar conclusões de assuntos as vezes tão complexos ?
+
+Para isto é interessante que exista uma padronização relacionado ao tipo da métrica que queremos utilizar para que haja uma fácil compreensão e também para que futuramente uma métrica nova seja criada de forma sensata, por exemplo:
+
+=over
+
+=back $ (Cifrão): Valor monetário
+
+=back % (Porcentagem): 
+
+=back N (Quantidade): Medidas unitárias
+
+=back C (Classificação) : 
+
+=back I (Índice) :
+
+=back
+
+=head1 Algoritmos
+
+Não há como citar algoritmos em especificos, pois existe a necessidade inicialmente de coletar os dados que você tem disponível, verificar se estes dados representam algum conceito ou algo da forma mais absoluta possivel - ou aproximada -. 
+O segundo passo é organizar estes dados para que eles sejam compilados e processados em formas reduzidas.
+
+Dependendo da quantidade de dados envolvendo, há a necessidade de "transformar" estes dados em outro formato para que a manipulação seja mais rápida.
+
+=head1 Conclusão
+
+Este artigo tem como oferecer um levantamento em relação as idéias relacionadas a infografia, e quais os passos para conseguir enviar dados de forma dinâmica ou não relacionado a uma quantidade de dados.
+
+O trabalho não é só em ter os dados, mas organizar eles de forma que fique simples o trabalho do design de informação, além de que como foi abordado existe um interesse grande para que os dados sejam compartilhados, reutilizados e principalmente para que exista um ecosistema para formação de novas ideias baseado em um processo colaborativo.
+
+	Se você tem uma maçã e eu tenho uma maçã 
+	e nós trocamos essas maçãs, 
+	então eu e você ainda teremos uma maçã cada. 
+
+	Mas se você tiver uma idéia e eu tiver uma idéia 
+	e nós trocamos idéias, 
+	então cada um de nós terá duas idéias."
+	
+	-- George Bernard Shaw (1856-1950)
+
+=head1 Autor
+
+Thiago Rondon, <thiago.rondon no e-mail gratuito do google>
+
+=cut
+
+

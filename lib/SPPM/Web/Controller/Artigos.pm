@@ -24,12 +24,20 @@ sub root : Chained('base') : PathPart('artigo') : Args(2) {
     };
 
     $c->stash( templates => 'local/error.tt' ) and return if $@;
+    my $md5;
+    eval { $md5 = md5_hex($artigo->content); };
+    if ($@) {
+        eval { $md5 = md5_hex($artigo->title); };
+        if ($@) {
+        $md5 = join('-', 'artigo', $article, $year);
+        }
+    }
 
     $c->stash(
         pod      => $artigo->content,
         template => 'local/artigo_pod.tt',
         eqtitle  => $artigo->title,
-        md5      => md5_hex($artigo->content),
+        md5      => $md5,
     );
 
 }

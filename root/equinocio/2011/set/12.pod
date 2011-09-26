@@ -1,0 +1,166 @@
+=encoding UTF-8
+
+=head1 Efetuando testes com o Test::TCP
+
+=head2 Introdução
+
+Para trabalhar com testes de fumaça (eu sempre fico perdido com estas traduções), 
+no qual você precisa verificar se o teu aplicativo esta trabalhando corretamente, ou 
+para testes de integração para por exemplo verificar
+parametros de configuração, performance, e etc. Enfim, este módulo pode ser bem utilizado
+para estes casos, vamos primeiramente falar sobre o funcionamento geral e logo depois, colocar alguns 
+exemplos de uso.
+
+Existem muitos casos onde é muito interessante adicionar testes para verificar o 
+cenário no qual há uma conexão via tcp entre cliente e servidor, e é onde este módulo
+se encaixa, ele oferece uma simples interface para facilitar o desenvolvimento de
+testes entre clientes e servidores que se comunicam via TCP.
+
+=head2 Métodos disponíveis
+
+Há três métodos disponíveis neste módulo.
+
+=over 4
+
+=item empty_port
+
+	my $port = empty_port();
+
+Oferece o recurso para você obter uma porta "livre", ou seja, é muito útil quando você
+deseja executar um servidor e ter certeza de que a porta que você vai utilizar esta
+livre para ser utilizada no teste.
+
+=item wait_port
+
+	wait_port(8080);
+
+Aguarda a porta especifica a ficar livre, use esta função apenas se tiver muita certeza
+do que esta fazendo no teu teste.
+
+=item test_tcp
+
+Esta é a interface funcional para o módulo, no qual você adquiri uma maneira simples
+de executar os seus testes, por exemplo:
+
+	use Test::TCP;
+
+	test_tcp (
+		client => sub {
+			my ($port, $server_pid) = @_;
+			# ...
+		},
+		server => sub {
+			my $port = shift;
+		}
+	);
+
+Você também pode se utilizar a interface orientada objetos:
+
+	use Test::TCP;
+
+	my $server1 = Test::TCP->new( 
+		code => sub {
+			my $port1 = shift;
+			#...
+		}
+	);
+
+	# código para o cliente
+
+=back
+
+=head2 Cenários 
+
+Ambos os exemplos, você pode copiar e colar em um arquivo "teste-foo.t", no qual é
+extensão utilizada para os arquivos de teste na linguagem, e depois executar no
+prompt "prove teste-foo.t".
+
+=head3 Cliente e Servidor Perl
+
+No exemplo abaixo, estamos utilizando o módulo IO::Socket::INET para criar um
+servidor e um cliente em Perl para efetuar um teste, no qual basicamente iremos
+enviar uma string e receber ela devolta (echo server). O objetivo é ilustrar o uso
+de uma simples implementação na linguagem para realizar as tarefas dos dois lados.
+
+	use Test::More;
+	use Test::TCP;
+	use IO::Socket::INET;
+
+	my $host = '127.0.0.1';
+
+	test_tcp(
+    		server => sub {
+		        my $port = shift;
+
+		        my $server = IO::Socket::INET->new(
+		            Proto     => 'tcp',
+		            LocalPort => $port,
+		            Listen    => SOMAXCONN,
+		            Reuse     => 1
+		        ) or "can't setup server";
+
+		        while ( $client = $server->accept() ) {
+		            $client->autoflush(1);
+		            while (<$client>) {
+		                last if (/quit/i);
+				print $client "$_";
+			}
+	    		close $client;
+      		  }
+
+    		},
+    		client => sub {
+        		my $port = shift;
+		        my $sock = IO::Socket::INET->new(
+	    			PeerPort => $port,
+       				PeerAddr => $host,
+		   		Proto    => 'tcp'
+        		) or die "Cannot open client socket: $!";
+
+        		print $sock "alice\r\n";
+        		my $res = <$sock>;
+        		is $res, "alice\r\n";
+    		},
+	);
+
+	done_testing();
+
+=head3 Cliente ou Servidor externo
+
+Este é um teste simples com o memcached, no qual estamos utilizando o estilo baseado em OO 
+para escrever o teste. Veja que primeiramente eu estou executando o servidor, com a porta
+que o Test::TCP esta me passando para utilizar, eu execute o memecached com o parametro
+para escolher a porta desejada e então logo depois invoco o módulo de cliente para setar
+uma chave e buscar ela.
+
+Este caso ilustra, o uso de do teste com um aplicativo externo.
+
+	use Test::More;
+	use Test::TCP;
+	use Cache::Memcached;
+
+	my $bin = '/opt/local/bin/memcached';
+
+	my $memcached = Test::TCP->new(
+		code => sub {
+			my $port = shift;
+			exec $bin, '-p' => $port;
+			die "Cannot execute $bin: $!";
+		},
+	);
+
+	my $memd = Cache::Memcached->new({ servers => ['127.0.0.1:' . $$memcached->port]});
+
+	$memd->set( foo => 'bar' );
+	is $memd->get('foo'), 'bar';
+
+	done_testing;
+
+
+=head1 AUTOR
+
+Thiago Rondon, thiago@aware.com.br, http://www.aware.com.br
+
+=cut
+
+

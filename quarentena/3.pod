@@ -1,0 +1,384 @@
+=pod
+
+=encoding utf-8
+
+=head1 Perlbrew - Instale quantas versões do Perl 5 quiser, sem precisar de root!
+
+Praticamente toda distribuição Linux vem com "perl", o que é ótimo.
+Mas a versão instalada em seu sistema não é necessariamente a mais
+recente. Mais ainda, você provavelmente não quer misturar módulos
+instalados via CPAN com módulos instalados pelo gerenciador de
+pacotes do seu sistema operacional.
+
+Soluções muito bacanas para a
+L<< instalação de módulos sem precisar de root|http://blog.blabos.org/2011/01/perl-cada-vez-mais-facil/ >>
+já existem a algum tempo, mas agora você pode também se
+beneficiar de ter versões do "perl" instaladas e personalizadas
+sem precisar de root, com o L<perlbrew|http://www.perlbrew.pl>!
+
+O perlbrew é uma ferramenta para gerenciar múltiplas instalações
+do perl em seu $HOME. Com ela, você cria universos completamente
+isolados para cada instalação, incluindo módulos e opções de
+compilação. Isso traz as seguintes vantagens:
+
+=over 4;
+
+=item * Não é necessário ser root para instalar módulos do CPAN
+
+=item * Experimente perls mais recentes sem qualquer mudança ao sistema
+
+=item * Aprenda e use as features mais recentes da linguagem
+
+=item * Teste seu código em diferentes versões do perl
+
+=item * Conheça as internas do perl e experimente diferente opções de compilação
+
+=item * Fique na moda ;)
+
+=back
+
+O "perl" que vem com seu sistema serve um propósito específico e convém
+deixá-lo em paz. Além de possuir patches específicos para sua distro,
+alguns programas essenciais para o bom funcionamento do seu sistema podem
+contar com essas personalizações, e atualizar o perl sem levar isso em
+conta vai na melhor das hipóteses confundir seu gerenciador de pacotes. Além
+disso, há sistemas que usam versões do perl tão antigas que não há mais
+suporte a elas, e outros que
+L<< introduzem seus próprios bugs|http://perlnews.org/2011/04/dealing-with-xcode-4-and-cpan-breakage/ >>,
+L<< mais de uma vez|http://www.theregister.co.uk/2009/02/16/apple_update_perl_breakage/ >>!
+
+=head2 perlbrew x local::lib
+
+Enquanto o L<local::lib|http://metacpan.org/module/local::lib> é uma
+ótima solução para instalação de módulos localmente, seu objetivo
+limita-se a isso, e ele não espera que você utilize os módulos
+instalados em outras versões do perl. Isso é particularmente
+importante se você tem módulos em XS no seu local::lib, compilados em relação
+ao perl do sistema. Tais módulos vão apresentar erros bizarros ou parar
+de funcionar completamente se utilizados com um binário diferente do perl.
+
+O perlbrew sabe disso, e usa a mesma abordagem do local::lib para manter
+um diretório local de módulos I<para cada perl instalado> por ele. Por esse
+motivo, é recomendado desativar completamente seu local::lib antes de
+usar o perlbrew. Para isso, basta retirar a chamada ao local::lib do
+seu C<~/.bashrc> e/ou mover o diretório C<~/perl5> para outro nome ou local.
+
+
+=head2 Instalação
+
+Instalar o perlbrew não poderia ser mais simples. Tudo que você precisa é
+de um sistema UNIX-like como Linux, BSD ou Mac OS X, e da shell "bash"
+(que já vem com a maioria dos sistemas).
+
+Apenas copie e cole essa linha em seu terminal:
+
+   $ curl -L http://xrl.us/perlbrewinstall | bash
+
+Depois, adicione o script de inicialização ao seu arquivo C<.bashrc>:
+
+   $ echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bashrc
+
+E o execute novamente, seja simplesmente abrindo um novo terminal ou
+digitando o seguinte comando na shell atual:
+
+   $ . ~/.bashrc
+
+
+Pronto!*
+
+=head2 Usando o Perlbrew
+
+A primeira coisa que podemos fazer é listar os diferentes perls
+instalados. Para isso, basta digitar:
+
+   $ perlbrew list
+
+Você verá algo como:
+
+   * /usr/bin/perl (5.10.1)
+
+Isso indica que o único perl disponível é o do sistema (no meu caso, o
+5.10.1). Vamos instalar uma versão mais moderna!
+
+   $ perlbrew install perl-5.14.1
+
+Note que alguns módulos/programas (como o L<Padre|http://padre.perlide.org>)
+precisam que o perl seja instalado com suporte a threads, e
+nesse caso você precisa passar essa opção na instalação:
+
+   $ perlbrew install perl-5.14.1 -D usethreads
+
+Agora é só ir tomar um café enquanto o perlbrew baixa e compila seu
+novo perl. A tarefa pode demorar de 5 a 20 minutos, então relaxe =)
+
+Se quiser ver o que está sendo feito, abra um outro terminal e digite:
+
+   $ tail -f ~/perl5/perlbrew/build.log
+
+Quando a instalação acabar, o comando C<perlbrew list> deverá mostrar
+seu novo perl disponível para uso:
+
+   $ perlbrew list
+      perl-5.14.1
+    * /usr/bin/perl (5.10.1)
+
+
+O asterisco (C<*>) indica o perl ativo na shell atual. Para usar o novo
+perl, basta digitar:
+
+   $ perlbrew switch perl-5.14.1
+
+A partir de agora, seu usuário usará o perl 5.14.1, mesmo em outros terminais
+que você abrir. Experimente, digitando:
+
+   $ perl -v
+   This is perl 5, version 14, subversion 1 (v5.14.1) built for x86_64-linux
+
+Note que, feita a modificação, você poderá executar o comando C<cpan>
+(ou C<cpanp>, C<cpanm>, o que preferir) como seu próprio usuário, e os
+módulos serão instalados para aquela versão do perl, sem complicações nem
+conflitos! Não é o máximo?
+
+Quer voltar a usar o perl do seu sistema? Sem problemas!
+
+   $ perlbrew off
+
+Para voltar a usar seu perl local, basta usar o C<perlbrew switch> novamente.
+
+=head3 Outros comandos do perlbrew
+
+Além de C<list>, C<install>, C<switch> e C<off>, o perlbrew tem vários outros
+comandos úteis:
+
+=over 4
+
+=item * C<perlbrew available> - lista as diferentes versões do perl disponíveis
+para instalação (com um C<i> do lado das que já foram instaladas).
+
+   $ perlbrew available
+     perl-5.15.2
+   i perl-5.14.1
+     perl-5.12.4
+     perl-5.10.1
+     perl-5.8.9
+     perl-5.6.2
+     perl5.005_04
+     perl5.004_05
+     perl5.003_07
+
+As versões listadas não são as únicas disponíveis, mas as últimas de cada tipo.
+Por exemplo, da série 12 do perl 5 (perl-5.12) apenas a 5.12.4 é exibida, mas
+você pode instalar também a 5.12.3 ou mesmo a 5.12.0. Lembre-se que, no perl,
+números pares indicam versões estáveis (5.10, 5.12, 5.14) e números ímpares
+indicam versões de desenvolvimento (5.11, 5.13, 5.15).
+
+Participa ou quer participar do desenvolvimento de ponta do próprio Perl 5?
+Basta digitar:
+
+   $ perlbrew install blead-perl
+
+Para instalar o snapshot diário de desenvolvimento.
+
+=item * C<perlbrew self-upgrade> - atualiza seu perlbrew com a última versão disponível
+
+=item * C<perlbrew use> - ativa temporariamente um perl (apenas para a shell atual).
+
+   $ perlbrew use perl-5.14.1
+
+=item * C<perlbrew uninstall> - remove um perl instalado localmente.
+
+   $ perlbrew uninstall perl-5.14.1
+
+=item * C<perlbrew install-cpanm> - instala o "cpanminus" com apenas um comando.
+
+=back
+
+Para ver toda a lista de comandos, basta digitar C<perlbrew help> ou C<perlbrew -h>.
+Você pode até mesmo dar nomes às diferentes instalações, como "trabalho", "desenv"
+ou "chocolate" (que foi? Estou com fome!).
+
+=head2 Compartilhando o mesmo perlbrew entre vários usuários
+
+A idéia original do perlbrew é permitir que cada usuário tenha suas próprias versões
+do perl instaladas. É possivel, no entanto, que você queira oferecer uma ou mais
+compilações específicas para serem compartilhadas entre usuários. Para isso, basta
+definir a variável de ambiente C<PERLBREW_ROOT> para o diretório desejado antes
+de rodar o instalador:
+
+   $ export PERLBREW_ROOT=/opt/perlbrew
+   $ curl -L http://xrl.us/perlbrewinstall | bash
+
+Os comandos acima instalarão o perlbrew em C</opt/perlbrew> - assumindo, claro, que
+seu usuário tem permissão para escrever nesse diretório. Depois disso, basta que
+os usuários que desejam usar seu perlbrew façam:
+
+   $ echo "source /opt/perlbrew/perl5/perlbrew/etc/bashrc" >> ~/.bashrc
+
+Pronto, a partir daí qualquer um poderá escolher seu perl, mas apenas os que tiverem permissão
+de escrita no diretório definido em C<PERLBREW_ROOT> poderão instalar novas versões do perl.
+
+=head2 Reinstalando todos os seus módulos em um novo perl
+
+Em alguns casos, ao instalar uma nova versão do perl com o perlbrew, você pode querer
+instalar todos os módulos que estava usando em uma outra versão. Uma das formas mais
+simples de se fazer isso é através da função C<autobundle> do CPAN:
+
+   perl -MCPAN -e autobundle
+
+O comando pode demorar um pouco, mas no final vai retornar uma mensagem com algo como:
+
+   Wrote bundle file
+       /home/usuario/.cpan/Bundle/Snapshot_2011_09_01_00.pm
+
+Agora é só fazer um C<perlbrew switch> para a nova versão e instalar seu "bundle" de uma vez só:
+
+   perl -MCPAN -e 'install Bundle::Snapshot_2011_09_01_00'
+
+=head2 Conclusão
+
+O perlbrew é uma excelente adição ao ferramental de qualquer desenvolvedor Perl,
+permitindo o uso de diferentes versões do perl facilmente independente do sistema ou
+de privilégios. Testar módulos e aplicações em vários ambientes nunca foi tão fácil
+ou instantâneo, e agora não há mais desculpa para ficar preso ao perl do seu sistema
+operacional.
+
+Divirta-se!
+
+=head2 Apêndice I: Ih, deu erro!
+
+Para 99.99% dos casos, os comandos de instalação descritos acima vão funcionar
+perfeitamente e vc será feliz com seu novo perlbrew, mas para os outros 0.01%
+também há solução.
+
+Em alguns servidores, em especial, com SE Linux, a instalação padrão pode
+falhar, reclamando de não ter permissão para acessar o C</usr/bin/env>:
+
+    [failserver]$ curl -L http://xrl.us/perlbrewinstall | bash
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                     Dload  Upload   Total   Spent    Left  Speed
+    100   648  100   648    0     0    725      0 --:--:-- --:--:-- --:--:--     0
+    
+    ## Download the latest perlbrew
+    ## Download the packed patchperl
+    
+    ## Installing perlbrew
+    bash: ./perlbrew: /usr/bin/env: bad interpreter: Permission denied
+    ## Installing patchperl
+    
+    ## Done.
+    [failserver]$
+
+Neste caso, Pode parecer meio confuso, mas basta executar a instalação passo
+a passo, ao invés de usar o instalador do perlbrew conforme mostraremos
+abaixo:
+
+=head3 Passo #1: curl -kLO http://xrl.us/perlbrew
+
+    [failserver]$ curl -kLO http://xrl.us/perlbrew
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                     Dload  Upload   Total   Spent    Left  Speed
+    100 55530  100 55530    0     0  55700      0 --:--:-- --:--:-- --:--:-- 55700
+
+=head3 Passo #2: perl perlbrew install
+
+    [failserver]$ perl perlbrew install
+    The perlbrew is installed as:
+    
+        ~/perl5/perlbrew/bin/perlbrew
+    
+    You may trash the downloaded /home/happyuser/perlbrew from now on.
+    
+    sh: perlbrew: command not found
+    Perlbrew environment initiated, required directories are created under
+    
+        ~/perl5/perlbrew
+    
+    Paste the following line(s) to the end of your ~/.bashrc and start a
+    new shell, perlbrew should be up and fully functional from there:
+    
+        source ~/perl5/perlbrew/etc/bashrc
+    
+    For further instructions, simply run `perlbrew` to see the help message.
+    
+    Enjoy perlbrew at $HOME!!
+
+=head3 Passo #3: ~/perl5/perlbrew/bin/perlbrew init
+
+    [failserver]$ ~/perl5/perlbrew/bin/perlbrew init
+    Perlbrew environment initiated, required directories are created under
+    
+        ~/perl5/perlbrew
+    
+    Paste the following line(s) to the end of your ~/.bashrc and start a
+    new shell, perlbrew should be up and fully functional from there:
+    
+        source ~/perl5/perlbrew/etc/bashrc
+    
+    For further instructions, simply run `perlbrew` to see the help message.
+    
+    Enjoy perlbrew at $HOME!!
+
+Note que embora as mensagens exibidas pelos comandos nos passos 2 e 3 sejam
+quase as mesmas, o passo 3 B<***PRECISA***> ser executado, caso contrário o
+perlbrew não será inicializado corretamente.
+
+=head3 Passo #4: source ~/perl5/perlbrew/etc/bashrc
+
+    [failserver]$ source ~/perl5/perlbrew/etc/bashrc
+
+=head3 Passo #5: echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bashrc
+
+    [failserver]$ echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bashrc
+
+Em alguns SOs ao invés de C<~/.bashrc> pode ser C<~/.bash_profile> ou ainda
+C<~/.profile>.
+
+=head3 Passo #6: rm perlbrew
+
+    [failserver]$ rm perlbrew
+
+O último passo simplesmente remove o perlbrew que foi baixado durante a
+instalação no Passo 1 e utilizado no Passo 2. É isso mesmo, vc utilizou o
+perlbrew pra instalar o perlbrew! Curioso, não?
+
+Pronto agora sim, você é o felizardo 0.01% (da população que usa perlbrew)
+que o instalou o perlbrew na munheca. Parabéns!
+
+=head2 Apêndice II: O Dreamhost não me deixa instalar. Camofaz?
+
+O Dreamhost possui restrições sérias quanto ao uso de CPU e memória que suas
+aplicações podem usar. Se ela ultrapassar esse limite, um robozinho vai
+matá-la sem dó.
+
+E para sua sorte (mesmo) durante a sua instalação o Perl executa uma enorme
+suite de testes pra garantir que tudo vai funcionar. O problema é que essa
+suite ultrapassa o consumo de recursos que o Dreamhost permite. Assim, quando
+o robozinho mata o processo que está executando os testes, a instalação não
+é concluída com sucesso. Você vai experimentar seu terminal travado...
+
+Mas se você realmente tem certeza real e absoluta que está indubitavelmente
+sabendo o que faz, é só chamar o perlbrew com a opção C<--notest>. Com isso
+toda a suite de testes do Perl é pulada durante a instalação, ou seja, você
+instala, mas qualquer problema bizarro que acontecer depois fica por sua conta
+e risco.
+
+
+    [failserver]$ perlbrew --notest install perl-5.14.1
+    Fetching perl-5.14.1 as /home/poste42/perl5/perlbrew/dists/perl-5.14.1.tar.gz
+    Installing /home/poste42/perl5/perlbrew/build/perl-5.14.1 into ~/perl5/perlbrew/perls/perl-5.14.1
+    
+    This could take a while. You can run the following command on another shell to track the status:
+    
+      tail -f ~/perl5/perlbrew/build.log
+    
+    Installed /home/happyuser/perl5/perlbrew/build/perl-5.14.1 as
+    perl-5.14.1 successfully. Run the following command to switch to it.
+      perlbrew switch perl-5.14.1
+
+=head2 Autor
+
+B< Breno G. Oliveira E<lt> garu no cpan org E<gt> >
+
+=head2 Revisão e Apêndices
+
+B< Blabos de Blebe E<lt> blabos no cpan org E<gt> >

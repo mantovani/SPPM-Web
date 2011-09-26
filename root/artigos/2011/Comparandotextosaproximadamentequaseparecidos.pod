@@ -1,0 +1,238 @@
+=encoding utf8
+
+=head1 Comparando textos aproximadamente quase parecidos
+
+=head2 Introdução
+
+Quando lidamos com grandes quantidades de informação, e principalmente com grandes quantidades de texto, obter esses dados é apenas o primeiro passo, pois extrair significado desse amontoado de strings é muito mais complicado do que parece.
+
+Algumas vezes obtemos acesso a informações que estão incompletas, incorretas ou ainda adulteradas. Um exemplo clássico é quando precisamos analisar cadastros de pessoas, empresas ou ainda endereços, cujos dados foram inseridos através de sistemas distintos, ou ainda manualmente, seja por digitação ou scanner.
+
+Um caso real é o meu nome (o de verdade! Ok, a minha identidade internética também não ajuda...), que vem grafado de várias formas dependendo da empresa que envia a fatura. Mas este nem é o pior caso, meu nome no Cadastro de Pessoa Física está registrado com uma grafia diferente da que está no Cadastro de Eleitores. Já tive vários problemas com a Receita Federal por causa de apóstrofos e espaços que existem no meu sobrenome (longa história...). Certa vez em um cadastro online meu nome ativou um SQL Injection e eu nem me chamo I<Bobby Tables>[1]! Daí eu mesmo resolvi adotar uma grafia simplificada, mas isso é outro papo...
+
+Ainda falando de documentos, se apenas de Certidão de Nascimento para RG e em seguida para Título de Eleitor já houve um erro. Imagine em cadastros digitados em contextos que exigem menos rigor ou ainda aqueles feitos por telefone! É uma confusão sem limites.
+
+Outro caso curioso que recentemente acertou a minha cabeça foi o de um artigo no site de determinada universidade sobre determinado assunto. Além dele não ser muito preciso, nem mesmo possuía uma lista decente de referências o que me levou a olhar com mais cuidado. Ao pesquisar o único artigo citado na referência encontrei outro artigo que apontava para a mesma referência. Então quando comecei a ler o I<abstract> desse outro artigo fiquei com aquela sensação de I<dejavu> "... já vi isso em algum lugar...". E vi mesmo. O primeiro artigo era plágio do segundo. Bastou colocar ambos os I<abstracts> lado a lado para perceber que haviam pequenas inserções, deleções e alterações pontuais, que se propagavam pelo restante do trabalho. Descoberto o artigo original o texto passou a fazer sentido.
+
+=head2 Quase certo é igual a diferente?
+
+Um dos grandes problemas ao se analisar textos computacionalmente é que a natureza binária da computação nos leva a perguntas e respostas exatas. E para piorar, computadores (pelo menos os deste lado da Matrix) não possuem I<dejavu>.
+
+Veja nossas identificações em documentos, como RG, CPF, matrícula, etc. São sempre números especiais. Esses números existem porque uma identificação oficial não deve, pelo menos em teoria, falhar nunca. Então eles implementam controles, que são os dígitos de verificação. Eles servem para detectar erros de digitação ou combinações inválidas, entre outras coisas.
+
+Com uma certa licença poética, podemos dizer que um sistema é robusto conforme ele suporta as intempéries do ambiente a sua volta, e arrisco-me a dizer (pagando o preço das exceções) que, quanto mais robusto, mais complexo.
+
+O sistema de dígitos verificadores por exemplo, oferece um certo grau de robustez no sentido que detecta erros de digitação. Mas quando processamos texto, estamos lidando com símbolos que carregam muito mais informação para ser computada do que números. Um número pode ocupar apenas uma célula da memória da máquina, mas uma palavra em geral não; ela ainda possui uma sintaxe, uma série de sinônimos e várias interpretações dependendo do contexto.
+
+Nossos textos são traduções em caracteres das coisas que percebemos e da forma como nos comunicamos. Muitas vezes essas percepções e traduções são imprecisas, o que por um lado é bom, mas por outro nem tanto (ui!).
+
+Enquanto que os cérebros humanos são capazes de se adaptar a novos códigos de comunicação, aprender outros idiomas e adquirir sotaques (assim como Perl), os processadores atuais ainda são dispositivos primitivos capazes de compreender somente o seu específico código de máquina.
+
+Vejam do que os primatas são capazes[2]:
+
+    3ST3 P3QU3N0 T3XT0 53RV3 4P3N45 P4R4 M05TR4R C0M0 4
+    N0554 C4B3Ç4 C0N53GU3 F4Z3R C0I545 IMPR355I0N4NT35! 
+    R3P4R3 NI550! N0 C0M3Ç0 35T4V4 M3I0 C0MPLIC4DO, M4S
+    4G0R4 N35T4 LINH4 5U4 M3NT3 V4I D3CIFR4ND0 0 C0DIGO
+    QU4S3 QU3 AUT0M4TIC4M3NT3 S3M PR3CI54R P3NS4R MUIT0
+    C3RT0? P0D3 FIC4R 83M 0RGULH05O DI550!
+    5U4 C4P4CID4D3 M3R3Ç3!
+
+... ou ainda ...
+
+    De aorcdo com uma pqsieusa de uma uinrvesriddae ignlsea,
+    não ipomtra em qaul odrem as lrteas de uma plravaa etãso,
+    a úncia csioa iprotmatne é que a piremria e útmlia lrteas
+    etejasm no lgaur crteo. O rseto pdoe ser uma ttaol bçguana
+    que vcoê cnocseguee anida ler sem pobrlmea. Itso é poqrue
+    nós não lmeos cdaa ltrea szoinha, mas a plravaa cmoo um tdoo.
+    Lgeal, não é msemo?
+
+Como humanos são bichos bem confusos e textos são representações de idéias, (in)felizmente elas não precisam estar necessariamente completas para que sejam ao menos parcialmente entendidas, e por consequência também os textos que as codificam. Por essas e outras, os computadores tem certa dificuldade em lidar conosco e as comparações caractere a caractere falham miseravelmente. Entra em cena a comparação parcial.
+
+Numa comparação parcial estamos interessados em saber o quão idênticas ou quão diferentes são duas strings e não somente se elas são completamente iguais ou diferentes.
+
+Essa é uma área onde são estudados diversos métodos matemáticos e variações que buscam otimizá-los, pois a comparação parcial é normalmente muito custosa para os coitadinhos dos 'silicas'.
+
+=head2 Alguns algoritmos de comparação parcial
+
+Dentre os vários métodos de comparação parcial podemos destacar o Largest Common Subsequence (LCS), as várias distâncias de edição (Edit Distances) e o método dos n-gramas.
+
+O LCS busca a similaridade entre strings procurando a maior substring em comum entre ambas. Quanto maior a similaridade entre elas, maior a LCS.
+
+Por exemplo as strings 'abacate' e 'abacaxi' possuem 'abaca' (5 caracteres) como maior substring em comum. Já as strings 'porta' e 'janela' possuem como maior substring em comum apenas o 'a' (1 caractere). Portanto 'abacaxi' é mais parecido com 'abacate' do que 'porta' é parecida com 'janela'.
+
+A título de curiosidade, uma variação do LCS é utilizada no comando Unix C<diff>, utilizado para comparar dois arquivos e dedurar as linhas que são diferentes.
+
+Por outro lado os algoritmos de distância de edição buscam a similaridade entre as strings contando quantas operações de inserção, deleção e alteração são necessárias para que a partir de uma string encontremos a outra. Quanto menor a distância, mais parecidas são as strings. Exemplos:
+
+Partindo de 'abacate', alterando o 't' para 'x' e em seguida o 'e' para 'i' obtemos 'abacaxi', portanto uma distância de edição igual a 2.
+
+Começando com 'porta', trocando o 'p' por 'j', o 'o' por 'a', o 'r' por 'n', o 't' por 'e' e finalmente inserindo um 'l', chegamos em 'janela', o que dá uma distância de 5 operações.
+
+Por último, o algoritmo dos n-gramas quebra as strings em tokens de comprimento n e conta quantos tokens em comum elas possuem. Vamos a dois exemplos com n = 3:
+
+    'abacate' => 'aba', 'bac', 'aca', 'cat', 'ate';
+    'abacaxi' => 'aba', 'bac', 'aca', 'cax', 'axi';
+    
+    Total:      7   => 'aba', 'bac', 'aca', 'cat', 'ate', 'cax', 'axi';
+    Comuns:     3   => 'aba', 'bac', 'aca';
+    Semelhança: 3/7 => 42,86%;
+    
+    'porta'   => 'por', 'ort', 'rta';
+    'janela'  => 'jan', 'ane', 'nel', 'ela';
+    
+    Total:      7
+    Comuns:     0
+    Semelhança: 0/7 => 0%
+
+Note que cada algoritmo mede a semelhança ou a diferença de formas bastante distintas, o que leva muitas vezes a resultados bem diferentes. Em todos os casos, 'abacate' é mais parecido com 'abacaxi' do que 'porta' é parecida com 'janela', mas a intensidade com que isso é determinado varia bastante.
+
+=head2 Implementações no CPAN
+
+No CPAN[3] encontramos módulos que trabalham com cada um desses algoritmos aplicando um ou outra otimização e fornecendo variados conjuntos de APIs. Está além do escopo deste texto esgotar o assunto sobre suas APIs, portanto vamos a um breve overview:
+
+Do módulos que utilizam LCS podemos citar o L<Algorithm::LCS>[4] e o L<Algorithm::Diff>[5], entre outros. A idéia básica aqui é calcular o tamanho da maior substring em comum e comparar com as strings completas.
+
+    #!/usr/bin/env perl
+
+    use Modern::Perl;
+    use Algorithm::LCS;
+
+    my @word1 = split //, "abacate";
+    my @word2 = split //, "abacaxi";
+    my @word3 = split //, "porta";
+    my @word4 = split //, "janela";
+
+    my $alg = Algorithm::LCS->new;
+
+    my (@res, $substr);
+
+    @res = $alg->LCS(\@word1, \@word2);
+    $substr = join "", map {$word1[$_->[0]]} @res;
+    say 'LCS between ', @word1, ' and ', @word2, ': ', $substr;
+
+    @res = $alg->LCS(\@word3, \@word4);
+    $substr = join "", map {$word3[$_->[0]]} @res;
+    say 'LCS between ', @word3, ' and ', @word4, ': ', $substr;
+
+Aplicando o algoritmo de distância de edição temos o L<Text::Levenshtein>[6], L<String::Similarity>[7], o L<String::Approx>[8], entre outros. De modo semelhante, basta comparar a distância entre as strings com as próprias strings. O destaque fica com o String::Similarity que calcula a semelhança entre as strings em uma escala de 0 (totalmente diferentes) a 1 (totalmente iguais).
+
+    #!/usr/bin/env perl
+
+    use Modern::Perl;
+    use String::Similarity qw(similarity);
+    use Text::Levenshtein qw(distance);
+
+    my ($word1, $word2, $sim, $dist);
+
+    ($word1, $word2) = qw(abacate abacaxi);
+    $sim  = similarity($word1, $word2);
+    $dist = distance($word1, $word2);
+    say "Similarity between '$word1' and '$word2': ", $sim;
+    say "Distance   between '$word1' and '$word2': ", $dist;
+
+    ($word1, $word2) = qw(porta janela);
+    $sim  = similarity($word1, $word2);
+    $dist = distance($word1, $word2);
+    say "Similarity between '$word1' and '$word2': ", $sim;
+    say "Distance   between '$word1' and '$word2': ", $dist;
+
+Utilizando o método dos n-gramas temos o L<String::Trigram>[9], o L<Algorithm::Ngrams>[10], o L<Text::Ngram>[11].
+
+Em especial o String::Trigram permite a comparação entre uma determinada string contra um dicionário. Com o auxílio de um cache interno, os n-grams do dicionário são calculados somente uma vez o que acelera as buscas. Veja um exemplo típico:
+
+    #!/usr/bin/env perl
+    
+    use Modern::Perl;
+    use String::Trigram;
+    
+    my @dict = qw(
+     rato boi tigre
+     coelho dragao serpente
+     cavalo carneiro macaco
+     galo cao porco
+    );
+    
+    my @words = qw(ratos drogao cavalo caval carneir camelo galinha);
+    
+    my $min_sim = 0.20;
+    
+    my $trig = String::Trigram->new(
+       "cmpBase"        => \@dict,
+       "minSim"         => $min_sim,
+       "warp"           => 2,
+       "ignoreCase"     => 1,
+       "keepOnlyAlNums" => 1,
+       "ngram"          => 3,
+       "debug"          => 0,
+     );
+    
+    foreach my $animal (@words) {
+       my ( @best_matches, $sim );
+    
+       $sim = $trig->getBestMatch( $animal, \@best_matches );
+    
+       $sim = int( 0.5 + 100 * $sim );
+       say "Similaridade entre $animal e $best_matches[0]: $sim%"
+         if $sim >= $min_sim;
+    }
+
+=head2 Conclusões
+
+Note que cada um desses módulos é especializado em um determinado tipo de busca. Enquanto que uns são otimizados para buscas em strings, outros são melhores para textos longos, enquanto que alguns podem ser utilizados para buscas em arrays.
+
+No CPAN há vários outros módulos que tratam do assunto e podem ser até melhores que os citados dependendo da situação.
+
+A busca utilizado comparações parciais é uma área bem extensa, com estudos, algoritmos e artigos sendo sendo desenvolvidos e aplicações nas mais diversas áreas, desde correção ortográfica até engenharia genética. Ainda não existe uma solução universal que responda bem para todos os casos. Alguns algoritmos comportam-se melhores com certos tipos de dados do que com outros, portanto teste mais de um até encontrar um que atenda bem às suas necessidades.
+
+Este texto provavelmente possui muitos erros de digitação que pasarão (ou noã) despercebidos, mas os erros de concordância ou os de regência é mais fácil de pegar porque isso afeta a forma como a gente percebemos a idéia. Pense nisso!
+
+=head2 Apêndice I - BioPerl
+
+Técnicas de similaridade de strings podem ser aplicadas na detecção de padrões ou alterações em sequências gênicas, entretanto existe um framework em Perl especializado no assunto, chamado BioPerl.
+
+Com ele é possível fazer alinhamentos, interagir com o BLAST[12] e muito mais.
+
+Dê uma conferida no site do projeto[13] onde você pode encontrar uma extensa documentação.
+
+=head2 Apêndice II - Soundex
+
+O algoritmo do I<Soundex> codifica as palavras de acordo a sua pronúncia em inglês. Entretanto ele não garante que palavras códigos I<Soundex> parecidos sejam sempre semelhantes.
+
+Dê uma olhada na documentação do módulo L<Text::Soundex>[14] para maiores detalhes.
+
+=head2 Referências
+
+[1] xkcd L<"Exploits of a Mom"|http://xkcd.com/327/> - http://xkcd.com/327/
+
+[2] L<MRC Cognition and Brain Sciences Unit, University of Cambridge|http://www.mrc-cbu.cam.ac.uk/people/matt.davis/cmabridge/> - http://www.mrc-cbu.cam.ac.uk/people/matt.davis/cmabridge/
+
+[3] L<CPAN|http://www.cpan.org> - http://www.cpan.org
+
+[4] L<Algorithm::LCS> - http://search.cpan.org/perldoc?Algorithm::LCS
+
+[5] L<Algorithm::Diff> - http://search.cpan.org/perldoc?Algorithm::Diff
+
+[6] L<Text::Levenshtein> - http://search.cpan.org/perldoc?Text::Levenshtein
+
+[7] L<String::Similarity> - http://search.cpan.org/perldoc?String::Similarity
+
+[8] L<String::Approx> - http://search.cpan.org/perldoc?String::Approx
+
+[9] L<String::Trigram> - http://search.cpan.org/perldoc?String::Trigram
+
+[10] L<Algorithm::Ngrams> - http://search.cpan.org/perldoc?Algorithm::Ngrams
+
+[11] L<Text::Ngram> - http://search.cpan.org/perldoc?Text::Ngram
+
+[12] L<BLAST|http://www.bioperl.org/wiki/BLAST> - http://www.bioperl.org/wiki/BLAST
+
+[13] L<BioPerl|http://www.bioperl.org/wiki/Main_Page> - http://www.bioperl.org/wiki/Main_Page
+
+[14] L<Text::Soundex> - http://search.cpan.org/perldoc?Text::Soundex
+
+=head2 Autor
+
+Blabos de Blebe - L<http://blabos.org>
+
