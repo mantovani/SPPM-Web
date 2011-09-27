@@ -1,0 +1,12 @@
+[% META title="Canal IRC #sao-paulo.pm" current_page="irc" %]
+
+<div style="text-align:center">
+	<iframe width="980px" height="450px" src="http://widget.mibbit.com/?settings=afd410512f71e3caa123896c43275766&server=irc.perl.org&channel=%23sao-paulo.pm"></iframe>
+</div>
+<div class="whois">
+<p>Você pode acessar também pelo seu cliente de IRC favorito!</p>
+<dl>
+	<dt>Rede</dt><dd>irc.perl.org</dd>
+	<dt>Canal</dt> <dd>#sao-paulo.pm</dd>
+</dl>
+</div>
