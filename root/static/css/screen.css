@@ -176,3 +176,5 @@ a img {
         border: 0 !important;
     }
 }
+
+#disqus_thread li { list-style: none!important; }
