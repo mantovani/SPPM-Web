@@ -23,6 +23,7 @@
 		<li class="treinamento[% IF template.current_page == 'treinamento' %] current[% END %]"><a href="[% c.uri_for('/treinamento') %]"  >Treinamento </a></li>
 		<li class="pipe"></li>
 		<li class="lista[% IF template.current_page == 'lista' %] current[% END %]"><a href="[% c.uri_for('/lista') %]"  >Lista </a></li>
-		
+		<li class="pipe"></li>
+		<li class="lista[% IF template.current_page == 'irc' %] current[% END %]"><a href="[% c.uri_for('/irc') %]"  >IRC </a></li>
 	</ul>
 </div>
