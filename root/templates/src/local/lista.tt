@@ -1,6 +1,8 @@
 
 [% META title=" Lista " current_page="lista" %]
-
+<style>
+    #content-table{border:solid 1px #eaeaea;}
+</style>
 <div id="container_top">
 	<div id="container_bottom">
 		<div class="top">
@@ -10,40 +12,37 @@
 					A lista de email dos S&atilde;o Paulo Perl Mongers est&aacute; ativa desde 2004, e depois de todo esse tempo, o grupo tem algumas dicas de como se dar bem e aproveitar o m&aacute;ximo possivel das pessoas e do site da S&atilde;o Paulo Perl Mongers! Quando entrar na lista responda ao email de boas vindas se apresentando, conte-nos um pouco da sua experi&ecirc;ncia e suas expectativas. Voc&ecirc; pode se inscrever ou desinscrever da lista e acessar o hist&oacute;rico de mensagens nos links abaixo:
 				</p>
 				<p>
-                    <table border="0" width="80%" class="withShadowBox listaCodigoTable">
-                        <tr>
-                            <td align="right">my $list =</td>
-                            <td><a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm">http://mail.pm.org/mailman/listinfo/saopaulo-pm</a>-&gt;subscribe();</td>
-                        </tr>
-                        <tr>
-                            <td align="right">our @hist&oacute;rico =</td>
-                            <td><a href="http://mail.pm.org/pipermail/saopaulo-pm/">http://mail.pm.org/pipermail/saopaulo-pm/</a></td>
-                        </tr>
-                        <tr>
-                            <td align="right">-&gt;search(</td>
-                            <td>
-                                <!-- Taken from: http://www.askdavetaylor.com/how_can_i_add_a_google_search_box_to_my_web_site.html -->
-                                <form method="get" action="http://www.google.com/search">
-                                    <input type="text"   name="q" size="31" maxlength="255" value="" />
-                                    <input type="submit" value="Google Search" /> );
-                                    <input type="hidden" name="sitesearch"  value="mail.pm.org/pipermail/saopaulo-pm/" />
-                               </form>
-                            </td>
-                        </tr>
-                        <tr><td></td><td>&nbsp;</td></tr>
-                        <tr>
-                            <td align="right">my $gmane = { lista =&gt; </td>
-                            <td><a href="http://dir.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">http://dir.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo</a>, </td>
-                        </tr>
-                        <tr>
-                            <td align="right">nntp =&gt; </td>
-                            <td><a href="nntp://news.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">nntp://news.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo</a>, </td>
-                        </tr>
-                        <tr>
-                            <td align="right">blog =&gt; </td>
-                            <td><a href="http://blog.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">http://blog.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo</a>, };</td>
-                        </tr>
-                    </table>
+                <table border="0" width="80%" class="withShadowBox listaCodigoTable">
+                    <tr>
+                        <td colspan="5"><strong>Pesquisar na Lista:</strong>
+                            <!-- Taken from: http://www.askdavetaylor.com/how_can_i_add_a_google_search_box_to_my_web_site.html -->
+                            <form method="get" action="http://www.google.com/search">
+                                <input type="text"   name="q" size="31" maxlength="255" value="" />
+                                <input type="submit" value="Google Search" /> 
+                                <input type="hidden" name="sitesearch"  value="mail.pm.org/pipermail/saopaulo-pm/" />
+                           </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="20%" valign="top"><a href="http://mail.pm.org/mailman/listinfo/saopaulo-pm" target="_blank">Lista de Email</a><br>
+                        <small>Participe!</small></td>
+                        <td width="20%" valign="top"><a href="http://mail.pm.org/pipermail/saopaulo-pm/">Hist&oacute;rico</a><br>
+                        <small>Hist&oacute;rico de mensagens</small></td>
+                        <td width="20%" valign="top"><a href="http://dir.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">Gmane Lista</a><br>
+                        <small>Mais sobre a lista!</small></td>
+                        <td width="20%" valign="top"><a href="nntp://news.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">NNTP</a><br>
+                        <small>Network News Transfer Protocol</small></td>
+                        <td width="20%" valign="top"><a href="http://blog.gmane.org/gmane.comp.lang.perl.perl-mongers.saopaulo">Blog</a><br>
+                        <small>Blog da lista</small></td>
+                    </tr>
+                </table>
 				</p>
 				<p>
 					O ambiente da lista &eacute; descontra&iacute;do e de alto n&iacute;vel t&eacute;cnico. Nela &eacute; esperado que se use um bom Portugu&ecirc;s, respeito e educa&ccedil;&atilde;o para que a comunica&ccedil;&atilde;o aconte&ccedil;a da melhor forma poss&iacute;vel. Por favor n&atilde;o use "migux&ecirc;s" ou algo parecido. Quase todos os clientes de email, inclusive web, t&ecirc;m corretores ortogr&aacute;ficos.
