@@ -2,227 +2,1085 @@
 
 =encoding utf8
 
-=head1 Instalação de Aplicações Perl Catalyst
+=head1 TUTORIAL PERL CATALYST - COMO CRIAR UM BLOG/CRUD BASICO
 
-=head2 Introdução
+=head2 RESUMO
 
-Este artigo tem por objetivo mostrar de uma forma bem prática como é simples a instalação de uma aplicação web em Perl.
+Neste tutorial você vai aprender como criar uma aplicação em perl catalyst.
 
-Para exemplificar, utilizarei uma aplicação em 'catalyst' imaginária.
+Vou demonstrar como criar um "blog/crud" simples com catalyst.
 
-=head2 Objetivo do Instalador
+=head2 INICIALIZAÇÃO DO PROJETO 
 
-O objetivo do instalador é nos auxiliar na configuração inicial do software. 
+Antes de iniciar, instale o catalyst e alguns módulos que utilzaremos através do cpanm Task::Catalyst HTML::FormHandler::Model::DBIC 
 
-Em perl utiliza-se o arquivo Makefile.PL. Este arquivo contem uma série de informações que servirão de base para a instalação do software em questão. Para melhor visualizar o Makefile.PL, vou demonstrar este arquivo em 2 etapas.
+Para iniciar nosso projeto, digite:
 
-=head2 Makefile.PL - Etapa 1/2 - Resolvendo dependências
+    $ catalyst.pl Blog::Tutorial
+    $ cd Blog-Tutorial
 
-O Makefile.PL deve listar as dependências do seu software para que ele seja instalado corretamente. Ou seja, quando você executar um: C<make install>, o instalador vai verificar se as dependências estão instaladas e instalá-las caso necessário.
+Ok, agora temos nosso esqueleto de aplicação 
 
-Exemplo de dependências no Makefile.PL:
+Agora é o seguinte, vamos deixar 2 terminais abertos para trabalhar neste tutorial... um deles é onde vamos trabalhar com o código fonte e o outro vamos deixar rodando o servidor web com nossa aplicação. Então abra outro terminal e digite:
 
-    name 'MyApp';
-    all_from 'lib/MyApp.pm';
-    requires 'Catalyst::Runtime' => '5.80033';
-    requires 'Catalyst::Plugin::ConfigLoader';
-    requires 'Catalyst::Plugin::Static::Simple';
-    requires 'Catalyst::Action::RenderView';
-    requires 'Moose';
-    .....
+    $ cd Blog-Tutorial
+    $ script/blog_tutorial_server.pl -r -d -p 3005
 
+isto vai inicializar o servidor web na porta 3005, para acessar e ver se está correto, abra seu firefox e aponte para http://localhost:3005
 
-=head2 Makefile.PL - Etapa 2/2 - Opções extras para deploy e instalação
+O parâmetro -r recarrega automaticamente seu servidor web-dev toda vez que um controller for alterado. O param -d ativa a exibição de log de debug. O parâmetro -p inicia o servidor web na porta 3005.
 
-Ainda dentro do Makefile.PL, é possível colocar um detector de parâmetros que pode permitir executar passos extras de acordo com o parâmetro passado ao executar o Makefile.PL, ou seja, ao instalar uma aplicação Perl, podemos executar o tradicional: 'perl Makefile.PL && make install' ou, podemos criar uma opção de parâmetro extra
+Então vamos começar alterando o controller Root para tirar aquela tela de boas vindas.
 
-Por exemplo:
+    $ vim lib/Blog/Tutorial/Controller/Root.pm
 
-    perl Makefile.PL --deploy && make install'
+altere o método index para:
 
-Perceba o parâmetro adicional --deploy junto com o Makefile.PL
-
-Este parâmetro adicional junto ao Makefile.PL pode permitir à sua aplicação executar alguns passos extras, como criar um arquivo de configuração inicial, ou criar as tabelas do seu banco de dados, ou ainda solicitar login e senha, etc...
-
-Mas como fazemos para incluir uma nova opção de parâmetro no arquivo Makefile.PL? Ahaa, é bastante simples... Veja o exemplo a seguir de um trecho de Makefile.PL com o parâmetro --deploy:
-
-    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
-    use Cwd;
-    my $cwd;
-    BEGIN {
-      warn '**** DEPLOYING YOUR APP ****';
-      $cwd = Cwd::cwd();
-      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
-        # ****** Trecho que será executado ao utilizar: 'perl Makefile.PL --deploy'
-        # aqui você pode criar as tabelas do seu banco de dados, 
-        # adicionar usuarios iniciais, e configurações iniciais
-        # pedir para a pessoa digitar o usuario e senha a serem criados
-        # etc...
-        use lib "./lib";
-        use MyApp;
-        my $umb = MyApp->new;
-        $umb->model('DB')->schema->deploy; # deploy de banco de dados utilizando DBIx::Class::Schema
-      }
+    sub index :Path :Args(0) {
+        my ( $self, $c ) = @_;
+        $c->response->body( 'Hello World!' );
     }
-    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
 
-O trecho acima será executado sempre que fizer: "perl Makefile.PL --deploy" ( Você pode criar quantos parâmetros quiser e com quaisquer nomes; foi utilizado --deploy para este exemplo. )
+e acesse a página index novamente: http://localhost:3005
 
-A grande vantagem ao utilizar esta técnica é que o trecho mencionado será executado apenas quando existir o parâmetro --deploy. Ou seja, se a pessoa executar 'perl Makefile.PL' sem --deploy, esse trecho não será executado.
+Agora vamos criar os templates para poder apresentar nossa página em html:
 
+    $ cd Blog-Tutorial
+    $ mkdir -p root/src/template/standard
 
-=head2 Deploy de tabelas utilizando DBIx::Class::Schema
+e vamos criar um wrapper, o wrapper será o arquivo central de nosso template 'standard'. É atraves do wrapper que o conteúdo de seu site será apresentado.
 
-Se você utiliza banco de dados no seu app, você provavelmente vai querer que suas tabelas sejam criadas durante a instalação do seu aplicativo.
+    $ vim root/src/template/standard/wrapper.tt2
 
-Esta tarefa pode ser automatizada facilmente de maneira eficiente utilizando a opção deploy do DBIx::Class::Schema . A opção de deploy permite que você crie as tabelas facilmente para qualquer banco de dados.
+e insira o conteúdo
 
-A grande vantagem ao utilizar esta opção, é dar liberdade ao seu usuário para que este possa gerar as tabelas independente do banco de dados que ele utilize.. ou seja, você pode estar trabalhando com postgres/sqlite para desenvolvimento, e seu cliente  optou por ter um oracle em produção... isto não altera em nada o código da sua aplicação já que o DBIx::Class suporta todos estes bancos de dados e cria as tabelas em todos eles.
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml11.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+        </head>
+        <body>
+            <div class="conteudo">
+            [% content %]
+            </div>
+        </body>
+    </html>
 
-Veja como é simples criar as tabelas com o deploy do DBIx::Class:
+Isto quer dizer que o conteúdo da sua página irá aparecer em content. Ou seja, os templates de suas páginas aparecerão em 'content'.
 
-    $c->model('DB')->schema->deploy; #vai ler as configurações do banco de dados escolhido e criar as tabelas para você.
+Vamos prosseguir para exemplificar...
 
-* é necessário que você crie o banco de dados antes e garanta a permissão para criação de tabelas ao usuário em questão.
+Primeiro precisamos criar uma View chamada 'Standard' para poder implementar templates.. então vamos criar o arquivo para nossa view:
 
-=head2 Colocando a mão na massa no instalador, vamos criar uma aplicação catalyst de teste com deploy
+    $ vim lib/Blog/Tutorial/View/Standard.pm
 
-Vamos criar uma aplicação de teste em catalyst:
+e inserir o seguinte conteúdo:
 
-    catalyst.pl Tutorial::Deploy::Catalyst::App
-
-    cd Tutorial-Deploy-Catalyst-App
-    vim Makefile.PL
-
-Antes da linha: 'name 'Tutorial-Deploy-Catalyst-App';', vamos incluir nosso script --deploy
-
-    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
-    use Cwd;
-    my $cwd;
-    BEGIN {
-      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
-        warn '**** DEPLOYING ****';
-        use lib "./lib";
-        use Tutorial::Deploy::Catalyst::App;
-        my $app = Tutorial::Deploy::Catalyst::App->new;                                                                                                                                                                                            
-        $cwd = Cwd::cwd();
-        $app->model('DB')->schema->deploy;
-      }
-    }
-    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
-
-Ok, agora vamos criar umas tabelas para exemplificar melhor.... Vou criar um banco de dados chamado: tutorial_deploy e vou utilizar postgres. Você pode utilizar o banco de sua preferência.
-
-    postgres=# create database tutorial_deploy;
-    postgres=# grant all privileges on database tutorial_deploy to webdev;
-
-E vou criar 2 tabelas 
-
-    CREATE TABLE tabela_foo
-    (
-      age integer
-    );
-
-    CREATE TABLE tabela_bar
-    (
-      "name" text
-    );
-
-Agora vou executar o dbix schema loader para gerar os models de nossa aplicação 
-  
-    #se você usou postgres:
-    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:Pg:dbname=tutorial_deploy webdev passssworrrdd
-    
-    #se você usou mysql:
-    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:mysql:db=tutorial_deploy webdev passssworrrdd
-    
-    #se você usou sqlite:
-    script/tutorial_deploy_catalyst_app_create.pl model DB DBIC::Schema Tutorial::Deploy::Catalyst::App::DB create=static dbi:SQLite:dbname=tutorial_deploy webdev passssworrrdd
-
-Certo, agora que geramos os models, vamos deletar nossas tabelas (apenas as tabelas... deixe o banco lá) e vamos executar o deploy de nossa aplicação e ver se deu certo. 
-
-Até agora tudo ok!, aqui as tabelas foram criadas conforme o esperado.
-
-Agora vamos inserir alguns itens na tabela, que podem ser necessários na instalação inicial... para tal, vamos alterar o script de --deploy no Makefile.PL , subistitua por:
-
-    ##### DEPLOYER BEGIN  ( use: perl Makefile.PL --deploy ) #####
-    use Cwd;
-    my $cwd;
-    BEGIN {
-      if (my ($x) = grep { /^--deploy(?:=.*)?$/ } @ARGV) {
-        warn '**** DEPLOYING ****';
-        use lib "./lib";
-        use Tutorial::Deploy::Catalyst::App;
-        my $app = Tutorial::Deploy::Catalyst::App->new;                                                                                                                                                                                            
-        $cwd = Cwd::cwd();
-        $app->model('DB')->schema->deploy;
-        my $item ;
-        $item = $app->model('DB')->resultset( 'TabelaFoo' )->new_result( {
-          age => 18
-        } );
-        $item->insert;
-        $item = $app->model('DB')->resultset( 'TabelaFoo' )->new_result( {
-          age => 19
-        } );
-        $item->insert;
-        $item = $app->model('DB')->resultset( 'TabelaBar' )->new_result( {
-          name => 'Maria'
-        } );
-        $item->insert;
-      }
-    }
-    ##### DEPLOYER END  ( use: perl Makefile.PL --deploy ) #####
-
-E execute novamente 'perl Makefile.PL --deploy' e faça um 'select' no conteúdo das tabelas... desta vez você vai notar que existem alguns registros inseridos nas mesmas.
-
-
-=head2 Mova as credenciais do db de seu controller para seu arquivo de configuração
-
-Edite o arquivo lib/Tutorial/Deploy/Catalyst/App/Model/DB.pm , e retire o trecho a seguir do arquivo
-
+    package Blog::Tutorial::View::Standard;
+    use strict; 
+    use base 'Catalyst::View::TT';
     __PACKAGE__->config(
-        schema_class => 'Tutorial::Deploy::Catalyst::App::DB',
-        connect_info => {
-            dsn => 'dbi:Pg:dbname=tutorial_deploy',
-            user => 'webdev',
-            password => 'passssworrrdd',
+        TEMPLATE_EXTENSION => '.tt2',
+        INCLUDE_PATH => [
+                #esta será o diretório onde vamos colocar os templates para a view Standard, 
+                # ->path_to pega o diretório relativo onde sua app está localizada automaticamente
+                Blog::Tutorial->path_to( 'root', 'src', 'template', 'standard', ), 
+            ],
+        TIMER   => 0,
+        WRAPPER => 'wrapper.tt2', #aqui especificamos nosso arquivo wrapper
+    );
+    1;
+
+agora  vamos criar o template inicial para nossa página index:
+
+    $ vim root/src/template/standard/index.tt2
+
+e insira o conteúdo:
+
+    BEM VINDO AO '[% titulo_blog %]'
+    <br><br>
+    Aqui poderá encontrar como criar suas páginas com este framework
+    <br>  
+
+agora, altere e indique qual template o método index no controller Root deverá utilizar... 
+
+    $ vim lib/Blog/Tutorial/Controller/Root.pm
+
+e altere o método index
+
+    sub index :Path :Args(0) {
+        my ( $self, $c ) = @_;
+        $c->stash(
+            template => 'index.tt2',
+            current_view => 'Standard',
+            titulo_blog => 'Tutorial perl catalyst',
+        );
+    }
+
+Salve e abra sua app http://localhost:3005
+
+ok, você pode notar que especificou no método index qual 'view' deve ser utilizada através do 'current_view', e passou alguns valores para o template, no caso 'titulo_blog'.
+
+agora, vamos criar um controller chamado ControlPanel::Post que vai permitir a criação de posts para nosso blog.
+
+    $ cd Blog-Tutorial
+    $ script/blog_tutorial_create.pl controller ControlPanel::Post #o catalyst irá criar o esqueleto do controller para nos
+    $ vim lib/Blog/Tutorial/Controller/ControlPanel/Post.pm
+
+=head2 CRIANDO FORMULÁRIO COM FORMHANDLER
+
+agora altere o método index do controller Post para:
+
+    sub index : Path( '/post' ) : CaptureArgs(1) {
+        my ( $self, $c, $page ) = @_;
+        $c->stash(
+            current_view => 'Standard',
+            template     => 'post_index.tt2',
+            page_title   => 'Página de POSTS',
+        );
+        my $form = HTML::FormHandler->new(
+            field_list => [
+                nome => {
+                    type             => 'Text',
+                    label            => 'Nome',
+                    required         => 1,
+                    required_message => 'Campo obrigatório',
+                    css_class        => 'classes-css borda fina borda grossa',
+                },
+                email => {
+                    type             => 'Text',
+                    label            => 'Email *',
+                    required         => 1,
+                    required_message => 'Campo Obrigatório',
+                    css_class        => 'prepend-1 clear span-10',
+                    apply            => [
+                        {   
+                            transform => sub { lc( $_[0] ) }
+                        },
+                        {   
+                            check => sub {
+                                return 1
+                                  if $_[0] =~
+    m/[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}/;
+                                return 0;
+                            },
+                            message => [
+                                'Digite um e-mail válido ex: [_1]',
+                                'voce@example.com.br'
+                            ]
+                        }
+                    ],
+                },
+                mensagem => {
+                    type             => 'TextArea',
+                    label            => 'Digite seu post',
+                    required         => 1,
+                    required_message => 'Campo obrigatório',
+                    css_class        => 'classes-css borda fina borda grossa',
+                },
+                submit => {
+                    type  => 'Submit',
+                    value => 'Salvar',
+                },
+            ]
+        );
+
+        if ( $c->req->method eq 'POST' ) {
+            $form->process( params => $c->req->params );
         }
+        $c->stash( form => $form );
+        return unless $form->validated;
+        $c->stash(
+            form_valido  => 1,
+            form_valores => $form->fif,
+         );
+    }
+
+*** No início do controller post (lib/Blog/Tutorial/Controller/ControlPanel/Post.pm), especifique que você vai utilizar o HTML::FormHandler:
+
+    package Blog::Tutorial::Controller::ControlPanel::Post;
+    use Moose;
+    use namespace::autoclean;
+    use HTML::FormHandler;
+
+e crie o template post_index.tt2 para esta página
+
+    $ vim root/src/template/standard/post_index.tt2
+
+com o seguinte conteúdo:
+
+    [% page_title %]
+    <br><br>
+    [% form.render %]
+    <br><br>
+
+    [% IF form_valido == 1 %]
+        Nome: [% form_valores.nome %]
+        <br>
+        Email: [% form_valores.email %]
+        <br>
+        Mensagem: [% form_valores.mensagem %]
+        <br>
+    [% END %]
+
+agora acesse sua página: http://localhost:3005/post  e faça alguns testes para ver se o validador de email está funcionando, e se os campos obrigatórios estão funcionando.. etc.. e veja o que acontece.
+
+Ao mesmo tempo, analise a saída no terminal do seu servidor web de desenvolvimento catalyst... veja como ele recebe os valores do POST request que você está fazendo.. observe a saída do log, deve ser algo do tipo:
+
+    [info] *** Request 4 (0.001/s) [1481] [Wed Aug 31 06:05:15 2011] ***
+    [debug] "POST" request for "post" from "127.0.0.1"
+    [debug] Body Parameters are:
+    .-------------------------------------+--------------------------------------.
+    | Parameter                           | Value                                |
+    +-------------------------------------+--------------------------------------+
+    | email                               | sa@x.com                             |
+    | mensagem                            | sasas                                |
+    | nome                                | a                                    |
+    | submit                              | Salvar                               |
+    '-------------------------------------+--------------------------------------'
+
+muito bacana este debug do catalyst, ele mostra claramente as variáveis e valores do request executado
+
+Se você quiser simular o GET request e ver a saída do log, você tambem pode fazer... acesse por exemplo, a url: http://localhost:3005/post?var1=foo&var2=bar&var3=bazzzz
+
+Veja o que ele mostrou no log de saída:
+
+    [info] *** Request 5 (0.001/s) [1481] [Wed Aug 31 06:10:07 2011] ***
+    [debug] "GET" request for "post" from "127.0.0.1"
+    [debug] Query Parameters are:
+    .-------------------------------------+--------------------------------------.
+    | Parameter                           | Value                                |
+    +-------------------------------------+--------------------------------------+
+    | var1                                | foo                                  |
+    | var2                                | bar                                  |
+    | var3                                | bazzzz                               |
+    '-------------------------------------+--------------------------------------'
+
+ok, entendi, mas e como eu acesso o valor dessas variáveis no controller? 
+
+todas as variáveis de um request são acessíveis através do $c->req->params (veja mais em http://search.cpan.org/~bobtfish/Catalyst-Runtime-5.90002/lib/Catalyst/Request.pm#$req-%3Eparams )
+Então nós podemos alterar nosso método 'index' do controller 'post' para entender um pouco melhor isso... então, altere seu controller e insira umas linhas de debug para ver o que acontece conforme:
+
+    $ vim lib/Blog/Tutorial/Controller/ControlPanel/Post.pm
+
+e modifique o método index
+
+    sub index : Path( '/post' ) : CaptureArgs(1) {
+        my ( $self, $c, $page ) = @_;
+        $c->log->debug(' *** $c->log->debug("...")  imprime no log de debug do catalyst ');
+        $c->log->debug( 'não validou var1: ' . $c->req->params->{ var1 }   );
+        $c->log->debug( 'não validou var2: ' . $c->req->params->{ var2 }   );
+        $c->log->debug( 'não validou var3: ' . $c->req->params->{ var3 }   );
+        $c->log->debug( 'os valores acima não foram validados ainda.. então serão impressos' );
+        $c->stash(
+            current_view => 'Standard',
+            template     => 'post_index.tt2',
+            page_title   => 'Página de POSTS',
+        );
+
+e acesse a página através de um GET request.. http://localhost:3005/post?var1=foo&var2=bar&var3=bazzzz
+
+veja o que é impresso na saída do seu terminal web dev do catalyst:
+
+    [info] *** Request 1 (0.000/s) [1597] [Wed Aug 31 06:16:55 2011] ***
+    [debug] "GET" request for "post" from "127.0.0.1"
+    [debug] Query Parameters are:
+    .-------------------------------------+--------------------------------------.
+    | Parameter                           | Value                                |
+    +-------------------------------------+--------------------------------------+
+    | var1                                | foo                                  |
+    | var2                                | bar                                  |
+    | var3                                | bazzzz                               |
+    '-------------------------------------+--------------------------------------'
+    [debug] Path is "post"
+    [debug]  *** $c->log->debug("...")  imprime no log de debug do catalyst 
+    [debug] var1: foo
+    [debug] var2: bar
+    [debug] var3: bazzzz
+    [debug] Rendering template "post_index.tt2"
+    [debug] Response Code: 200; Content-Type: text/html; charset=utf-8; Content-Length: 1141
+    [info] Request took 0.222906s (4.486/s)
+
+
+perceba os valores:
+
+    [debug] var1: foo
+    [debug] var2: bar
+    [debug] var3: bazzzz
+
+ok, mas e ai? agora, vamos mudar de posição os $c->log->debug, e colocar eles após a linha "return unless $form->validated;" que está no controller ControlPanel::Post, método 'index'
+
+    $c->stash( form => $form );
+    return unless $form->validated;
+    $c->log->debug( 'Agora sim, os valores só são impressos se o form for válido e passar pela verificação...' );
+    $c->log->debug( 'validou var1: ' . $c->req->params->{ var1 }   );
+    $c->log->debug( 'validou var2: ' . $c->req->params->{ var2 }   );
+    $c->log->debug( 'validou var3: ' . $c->req->params->{ var3 }   );
+    $c->log->debug( 'A seguir, algumas linhas de debug imprimindo os valores entrados no form: ' );
+    $c->log->debug( '--> EMAIL: ' . $c->req->params->{ email }   );
+    $c->log->debug( '--> NOME: ' . $c->req->params->{ nome }   );
+    $c->log->debug( '--> MENSAGEM: ' . $c->req->params->{ mensagem }   );
+
+e acesse  http://localhost:3005/post?var1=foo&var2=bar&var3=bazzzz     e veja o que acontece... vai imprimir a parte que não validou e não vai imprimir o resto no debug pq seu form não validou...
+
+    [info] *** Request 1 (0.000/s) [1677] [Wed Aug 31 06:25:24 2011] ***
+    [debug] "GET" request for "post" from "127.0.0.1"
+    [debug] Query Parameters are:
+    .-------------------------------------+--------------------------------------.
+    | Parameter                           | Value                                |
+    +-------------------------------------+--------------------------------------+
+    | var1                                | foo                                  |
+    | var2                                | bar                                  |
+    | var3                                | bazzzz                               |
+    '-------------------------------------+--------------------------------------'
+
+Agora, preencha o form e clique salvar e veja a saída no terminal:
+
+    [debug] "POST" request for "post" from "127.0.0.1"
+    [debug] Query Parameters are:
+    .-------------------------------------+--------------------------------------.
+    | Parameter                           | Value                                |
+    +-------------------------------------+--------------------------------------+
+    | var1                                | foo                                  |
+    | var2                                | bar                                  |
+    | var3                                | bazzzz                               |
+    '-------------------------------------+--------------------------------------'
+    [debug] Body Parameters are:
+    .-------------------------------------+--------------------------------------.
+    | Parameter                           | Value                                |
+    +-------------------------------------+--------------------------------------+
+    | email                               | email@example.com                    |
+    | mensagem                            | teste mensagem ..                    |
+    | nome                                | meu nome...                          |
+    | submit                              | Salvar                               |
+    '-------------------------------------+--------------------------------------'
+    [debug] Path is "post"
+    [debug]  *** $c->log->debug("...")  imprime no log de debug do catalyst 
+    [debug] não validou var1: foo
+    [debug] não validou var2: bar
+    [debug] não validou var3: bazzzz
+    [debug] os valores acima não foram validados ainda.. então serão impressos
+    [debug] Agora sim, os valores só são impressos se o form for válido e passar pela verificação...
+    [debug] validou var1: foo
+    [debug] validou var2: bar
+    [debug] validou var3: bazzzz
+    [debug] A seguir, algumas linhas de debug imprimindo os valores entrados no form: 
+    [debug] --> EMAIL: email@example.com
+    [debug] --> NOME: meu nome...
+    [debug] --> MENSAGEM: teste mensagem ..
+    [debug] Rendering template "post_index.tt2"
+    [debug] Response Code: 200; Content-Type: text/html; charset=utf-8; Content-Length: 1298
+    [info] Request took 0.034535s (28.956/s)
+
+observe que o catalyst apresentou os "Query parameters" que estão na url, e apresentou os "Body parameters" que estão no corpo do seu POST form.
+
+ok, agora você aprendeu um pouco sobre como criar formulários utilizando formhandler e como o form é validado e como acessar os valores do request, e tambem como acessar os valores do form através do ->fif .. o ->fif é um hash do FormHandler com os valores do seu form... utilizamos ele na variável 'form_valores'
+
+Você tambem aprendeu a fazer IF no seu template... para saber mais sobre o template toolkit, acesse a documentação completa em http://template-toolkit.org/
+
+Agora, vamos colocar um 'header'(cabeçalho) para nossa app
+
+    $ vim root/src/template/standard/header.tt2
+
+e colocar o conteúdo:
+
+    <img src="/static/images/catalyst_logo.png"  style="height:50px;"> - Blog::Tutorial em perl catalyst<br><br>
+    [% IF c.user %] 
+        <span style="color: #FF0000;">loged in as: [% c.user.email %] | <a href="[% c.uri_for( c.controller( 'Authenticate' ).action_for( 'logout' ) ) %]">LOGOUT</a></span><br><br>
+    [% END %]
+    [% IF c.flash.message != '' %]
+        <span style="#00FF00">[% c.flash.message %]</span>
+    [% END %]
+
+e vamos inserir este header em nosso wrapper para que ele seja processado e inserido em todas as páginas:
+
+    $ vim root/src/template/standard/wrapper.tt2
+
+e inserir uma linha antes do [% content %], obtendo:
+
+    <div class="conteudo">
+        [% PROCESS 'header.tt2' %] 
+        [% content %]
+    </div>
+
+agora acesse sua página inicial em http://localhost:3005/ e veja o cabeçalho da página ali... observe que suas imagens, js, ou páginas static podem ficar dentro do diretório /static/images... 
+
+agora altere o conteúdo completo da sua página index, para criar um link que vai até a página de posts:
+
+    $ vim root/src/template/standard/index.tt2
+
+substitua o conteúdo por:
+
+    BEM VINDO AO '[% titulo_blog %]'
+    <br><br>
+    Aqui poderá encontrar como criar suas páginas com este framework
+    <br>
+    <a href="/post">POSTS (v1) </a>
+    <br>
+    <a href="[% c.uri_for( c.controller( 'ControlPanel::Post' ).action_for( 'index' ) ) %]">POSTS...(v2)</a>                                    
+    <br>
+
+no exemplo acima demonstrei como você pode acessar a url para a página de posts de duas maneiras... a segunda é melhor, pois o caminho da página ('localhost:3005/post') não fica hardcoded.
+
+Acesse sua página index e veja como ela está..
+
+ok, legal... mas e como fazemos para salvar estes posts como se fosse uma aplicação real utilizando banco de dados ?
+
+vamos criar então algumas tabelas em qualquer banco de dados... vou demonstrar utilizando postgres ( a vantagem ao utilizar postgres com catalyst é que ele já detecta os relacionamentos):
+
+=head2 ACESSO A BANCO DE DADOS COM PERL CATALYST E DBIX CLASS
+
+O nome do banco de dados será: 'blog_tutorial'
+
+    CREATE TABLE users
+    (
+      id serial NOT NULL,
+      email character varying(255),
+      username text,
+      "password" text,
+      CONSTRAINT users_pkey PRIMARY KEY (id)
     );
 
-e, para facilitar a confgiguração, vamos mover as credenciais para o arquivo tutorial_deploy_catalyst_app.conf .
+    CREATE TABLE roles
+    (
+      id integer NOT NULL,
+      "role" text,
+      CONSTRAINT role_pkey PRIMARY KEY (id)
+    );
 
-Edite tutorial_deploy_catalyst_app.conf e adicione o conteúdo:
+    CREATE TABLE users_to_roles
+    (
+      user_id integer NOT NULL,
+      role_id integer NOT NULL,
+      CONSTRAINT users_to_roles_pkey PRIMARY KEY (user_id, role_id),
+      CONSTRAINT users_to_roles_role_id_fkey FOREIGN KEY (role_id)
+          REFERENCES roles (id) MATCH SIMPLE
+          ON UPDATE NO ACTION ON DELETE NO ACTION,
+      CONSTRAINT users_to_roles_user_id_fkey FOREIGN KEY (user_id)
+          REFERENCES users (id) MATCH SIMPLE
+          ON UPDATE NO ACTION ON DELETE NO ACTION
+    );
 
-    <Model::DB>
-      schema_class = Tutorial::Deploy::Catalyst::App::DB
-      <connect_info>
-        dsn = dbi:Pg:dbname=tutorial_deploy
-        user = webdev
-        password = passssworrrdd
-      </connect_info>
-    </Model::DB>
+    CREATE TABLE post
+    (
+      id serial NOT NULL,
+      titulo text,
+      mensagem text,
+      user_id integer NOT NULL,
+      CONSTRAINT post_pkey PRIMARY KEY (id),
+      CONSTRAINT post_user_id_fkey FOREIGN KEY (user_id)
+          REFERENCES users (id) MATCH SIMPLE
+          ON UPDATE NO ACTION ON DELETE NO ACTION
+    );
 
-** altere seu dsn de acordo com o banco de dados escolhido...
+e vamos criar alguns usuários
 
-Vamos testar para ver se deu tudo certo, delete as tabelas e execute perl Makefile.PL --deploy novamente 
+    INSERT INTO roles (id, role)  VALUES ( 1, 'admin' );
+    INSERT INTO roles (id, role)  VALUES ( 2, 'user' );
 
-E voilá!
+    INSERT INTO users ( id, email, username, "password" ) VALUES ( 1, 'joe@example.com', 'joe', 'joe123' );
+    INSERT INTO users ( id, email, username, "password" ) VALUES ( 2, 'mary@example.com', 'mary', 'mary123' );
+    INSERT INTO users ( id, email, username, "password" ) VALUES ( 3, 'jane@example.com', 'jane', 'jane123' );
 
-Dica: Agora, você pode solicitar que a pessoa digite o nome do db, selecione o banco de dados(pg,mysql,etc), digite usuário e senha para que seja criado um arquivo .conf durante --deploy
+    INSERT INTO users_to_roles ( user_id, role_id ) VALUES ( 1, 2 );
+    INSERT INTO users_to_roles ( user_id, role_id ) VALUES ( 2, 2 );
+    INSERT INTO users_to_roles ( user_id, role_id ) VALUES ( 3, 1 );
 
-=head2 Conclusão
 
-O deploy das aplicações em perl moderno é bastante prático e agiliza muito seu ciclo de desenvolvimento. 
+e agora vamos criar nossos models para nossa app.. vamos utilizar o dbic dump ( mais info DBIx::Class::Schema::Loader )
 
-Saber utilizar o arquivo Makefile.PL facilita na automatização da instalação de dependências e configuração inicial do software. 
+    $ cd Blog-Tutorial
 
-O DBIx::Class::Schema deploy é uma maravilha na questão de bancos de dados, já que tem suporte a todos os bancos de dados conhecidos e ainda permite que você crie todas as tabelas de forma automágica.
+se você usa postgres com usuario MEU_USER.. substitua pelo seu username
 
-Esta facilidade é um diferencial positivo na sua aplicação.
+    $ script/blog_tutorial_create.pl model DB DBIC::Schema Blog::Tutorial::DB create=static dbi:Pg:dbname=blog_tutorial MEU_USER passworrrddzz
 
-Espero ter acrescentado conhecimento extra a vocês.
+se você usa mysql com usuario MEU_USER.. substitua pelo seu username
 
-Agradecimentos em ordem alfabetica: Edenc, Lorn, maluco, Russoz e toda a Trupe Perl do Brasil. 
+    $ script/blog_tutorial_create.pl model DB DBIC::Schema Blog::Tutorial::DB create=static dbi:mysql:db=blog_tutorial MEU_USER passworrrddzz
+  
+e agora vamos fixar os relacionamentos.... edite seus models e altere conforme:
+
+    $ vim lib/Blog/Tutorial/DB/Result/User.pm 
+
+e altere as ultimas linhas para ficar:
+
+    # You can replace this text with custom code or comments, and it will be preserved on regeneration
+    __PACKAGE__->many_to_many('roles', 'users_to_roles' => 'role');
+
+    __PACKAGE__->has_many(
+      "posts",
+      "Blog::Tutorial::DB::Result::Post",
+      { "foreign.user_id" => "self.id" },
+      { cascade_copy => 0, cascade_delete => 0 },
+    );
+
+    __PACKAGE__->has_many(
+      "users_to_roles",
+      "Blog::Tutorial::DB::Result::UsersToRole",
+      { "foreign.user_id" => "self.id" },
+      { cascade_copy => 0, cascade_delete => 0 },
+    );
+                                                                                                                                                                                                                                                   
+
+    __PACKAGE__->meta->make_immutable;
+    1;
+
+agora edite o model Roles:
+
+    $ vim lib/Blog/Tutorial/DB/Result/Role.pm
+
+e altere as últimas linhas para obter:
+
+    # You can replace this text with custom code or comments, and it will be preserved on regeneration
+    __PACKAGE__->many_to_many('users', 'users_to_roles' => 'usr');
+
+    __PACKAGE__->has_many(
+      "users_to_roles",
+      "Blog::Tutorial::DB::Result::UsersToRole",
+      { "foreign.role_id" => "self.id" },
+      { cascade_copy => 0, cascade_delete => 0 },                                                                                                                                                                                                  
+    );
+
+    __PACKAGE__->meta->make_immutable;
+    1;
+
+e edite o model UsersToRole
+
+    $ vim lib/Blog/Tutorial/DB/Result/UsersToRole.pm
+
+e altere as últimas linhas para obter:
+
+    # You can replace this text with custom code or comments, and it will be preserved on regeneration
+
+    __PACKAGE__->belongs_to(
+      "role",
+      "Blog::Tutorial::DB::Result::Role",
+      { id => "role_id" },
+      { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    );
+
+    __PACKAGE__->belongs_to(
+      "user",
+      "Blog::Tutorial::DB::Result::User",
+      { id => "user_id" },
+      { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    );
+                                                                                                                                                                                                                                                   
+    __PACKAGE__->meta->make_immutable;
+    1;
+
+e da mesma maneira inclúa o relacionamento no model posts.. caso ele não exista...
+
+    # You can replace this text with custom code or comments, and it will be preserved on regeneration
+
+    __PACKAGE__->belongs_to(
+      "user",
+      "Blog::Tutorial::DB::Result::User",
+      { id => "user_id" },
+      { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    );
+
+    __PACKAGE__->meta->make_immutable;
+    1;
+
+
+bom, agora já especificamos os relacionamentos de nossos models... quando vc utiliza postgres ele detecta os relacionamentos automaticamente.. exceto os many to many porque na verdade many-to-many não é relacionamento.
+
+=head2 AUTENTICANDO O USUÁRIO 
+
+Agora o próximo passo é criar umas telas/templates para login e os controllers respectivos que auxiliarão no login e logout
+
+então vamos lá, crie um template para a tela de login:
+
+    $ vim root/src/template/standard/login.tt2
+
+e adicione o conteúdo:
+
+    faça login para acessar áreas restritas em nosso site:
+    <br><br>
+    [% form.render %]
+
+agora crie o controller para autenticação
+
+    $ script/blog_tutorial_create.pl controller Authenticate
+
+e edite o controller 
+
+    $ vim lib/Blog/Tutorial/Controller/Authenticate.pm
+
+Altere o conteúdo desse controller pelo conteúdo abaixo... na verdade apenas removi o método index e adicione dois novos métodos: 'login' e 'logout'... ficando com um arquivo assim:
+
+*** Importante: remova os espaços em branco no começo de cada linha... especialmente na linha que começa com DIV
+
+    package Blog::Tutorial::Controller::Authenticate;
+    use Moose;
+    use HTML::FormHandler;
+    use namespace::autoclean;
+
+    BEGIN { extends 'Catalyst::Controller'; }
+
+    =head1 NAME
+
+    Blog::Tutorial::Controller::Authenticate - Catalyst Controller
+
+    =head1 DESCRIPTION
+
+    Catalyst Controller.
+
+    =head1 METHODS
+
+    =cut
+
+    sub logout : Path('/logout') : Args(0) {
+        my ( $self, $c ) = @_;
+        $c->logout;
+        $c->response->redirect( $c->uri_for('/') );
+    }
+
+    sub login : Path('/login') : Args(0) {
+        my ( $self, $c ) = @_;
+        my $form = HTML::FormHandler->new(
+            field_list => [
+                display3 => {
+                    type => 'Display',
+                    html => <<DIV
+    <div class="prepend-1 clear span-17 busca-step-title">
+      <h3 class="prepend-1 span-17">Login</h3>
+    </div>
+    <br><br>
+    DIV
+                    ,
+                },
+                username => {
+                    type             => 'Text',
+                    label            => 'Login',
+                    required         => 1,
+                    required_message => 'Campo obrigatório',
+                    css_class        => 'prepend-1 clear span-10',
+                },
+                password => {
+                    type             => 'Password',
+                    label            => 'Password',
+                    required         => 1,
+                    required_message => 'Campo obrigatório',
+                    css_class        => 'prepend-1 clear span-10',
+                },
+                submit => {
+                    type      => 'Submit',
+                    value     => 'Login',
+                    css_class => 'prepend-1 span-17',
+                },
+            ]
+        );  
+                
+        $c->stash(
+            form         => $form,
+            template     => 'login.tt2',
+            current_view => 'Standard',
+        );
+        if ( $c->req->method eq 'POST' ) {
+            $form->process( params => $c->req->params );
+        }
+        return
+          unless $form->validated
+
+              and (
+                  $c->authenticate(
+                      {
+                          username => $form->field('username')->value,
+                          password => $form->field('password')->value,
+                      }
+                  )
+              );
+
+        if (   $c->check_user_roles('user')
+            or $c->check_user_roles('admin') )
+        {
+            $c->response->redirect( 
+              $c->uri_for( $c->controller('ControlPanel::Post')->action_for('index') ) );
+
+        }
+        else {
+            $c->response->redirect('/');
+        }
+
+    }
+
+    =head1 AUTHOR
+
+    A clever guy
+
+    =head1 LICENSE
+
+    This library is free software. You can redistribute it and/or modify
+    it under the same terms as Perl itself.
+
+    =cut
+
+    __PACKAGE__->meta->make_immutable;
+
+    1;
+
+
+e acesse http://localhost:3005/login para ver se já aparece a tela de login... mas ela ainda não vai estar autenticando... antes precisamos alterar alguns arquivos na configuração do arquivo central de nossa app catalyst.. para tal edite o lib/Blog/Tutorial.pm
+
+    $ vim lib/Blog/Tutorial.pm
+
+e modifique seu 'use Catalyst qw/.../' obtendo:
+
+    use Catalyst qw/
+        ConfigLoader
+        Static::Simple
+        Authentication
+        Authorization::Roles
+        Session
+        Session::Store::FastMmap
+        Session::State::Cookie
+    /;                                                                                                                                                                                                                                             
+    extends 'Catalyst';
+
+e tambem coloque nesse mesmo arquivo a configuração do plugin de autenticação.. ele vai nos ajudar a validar os logins/logouts... coloque a configuração a seguir logo antes da linha "__PACKAGE__->setup();", ficando com:
+
+    __PACKAGE__->config->{'Plugin::Authentication'} = {
+        default => {
+            class                     => 'SimpleDB',
+            user_model                => 'DB::User',
+            password_type             => 'clear',
+            user_role_user_field      => 'user_id',
+            user_role_role_field      => 'role_id',
+            use_userdata_from_session => 0,
+        },
+    };
+
+    # Start the application
+    __PACKAGE__->setup();
+
+e agora altere o método auto do seu Root controller... o método auto é executado sempre antes dos métodos do controller.. então, vamos colocar a validação da autenticação dentro desse método
+
+    $ vim lib/Blog/Tutorial/Controller/Root.pm
+
+e insira o método 'auto' que provavelmente não estará lá por padrão (insira logo antes do método index):
+
+    sub auto : Private {
+        my ( $self, $c ) = @_;
+        return 1
+          if (
+            $c->controller eq
+            $c->controller('Authenticate')    #libera acesso p/ login e logout
+            or ( $c->controller =~ m/^Blog::Tutorial::Controller::Root/ )
+          )
+          ; #retorna 1 e libera o acesso se user acessar página index no controller Root
+        if ( $c->controller =~ m/^Blog::Tutorial::Controller::ControlPanel/ )
+        {    #ControlPanel pedirá senha
+            $c->response->header( 'Cache-Control' => 'no-cache' );
+            if (    !$c->check_user_roles('user')
+                and !$c->check_user_roles('admin') )
+            {   
+                $c->flash( message => 'Faça login', );
+                $c->res->redirect(
+                    $c->uri_for(
+                        $c->controller('Authenticate')->action_for('login')
+                    )
+                );
+                return 0;
+            }
+            else {
+                return 1;    #autenticado, libera o acesso
+            }
+        }
+        return 1;
+    }
+
+
+Bom, a verificação auto acima indica que sempre que tentarmos acessar páginas dentro do controller 'ControlPanel', será exigido autenticação por parte do usuário... 
+
+então vamos testar aquela nossa página de post... acesse http://localhost:3005/post e desta vez você será barrado e redirecionado para a tela de login. Pois tudo que está abaixo do ControlPanel exigirá senha...
+
+Agora antes de prosseguir, vamos alterar nossa página index para que ela tenha um link para a página de login... edite o template da página index:
+
+    $ vim root/src/template/standard/index.tt2
+
+e substitua o conteúdo com :
+
+    BEM VINDO AO '[% titulo_blog %]'
+    <br><br>
+    Aqui poderá encontrar como criar suas páginas com este framework
+    <br>
+    <a href="[% c.uri_for( c.controller( 'Authenticate' ).action_for( 'login' ) ) %]">login</a>                                    
+    <br>
+    <a href="/post">POSTS (v1) </a> 
+    <br>
+
+Então, vamos digitar uma senha dos usuários que criamos... se você já não estiver na página de login , acesse http://localhost:3005/login  e entre com as credenciais:
+
+    login: joe
+    password: joe123
+
+crie um novo arquivo para a paginacao genérica
+
+    $ vim root/src/template/standard/pagination.tt2
+
+e insira o conteúdo
+
+    [% IF pagination != '' %]
+    <div class="pagination-space">
+        <div class="span-6 height35 paddingTop5 paddingBottom5">
+        Página:
+            [% IF pagination.previous != '' %]
+                <a href="[% pagination.previous.href %]">[% pagination.previous.label %]</a>
+            [% END %] 
+        
+            [% IF pagination.current != '' %]
+                <a class="current">
+                  [% pagination.current.label %]
+                </a>
+            [% END %]
+
+            [% IF pagination.next != '' %]
+                <a href="[% pagination.next.href %]">[% pagination.next.label %]</a>
+            [% END %]
+        </div>
+        <div class="span-6 last height35 paddingTop5 paddingBottom5 quiet">
+          Total <strong class="loud">[% pagination.last_page %]</strong> páginas, <strong class="loud">[% pagination.total_entries %]</strong> itens.
+        </div>
+    </div>
+
+    [% END %]
+
+
+e antes de criar um post, vamos alterar o template post_index.tt2
+
+    $ vim root/src/template/standard/post_index.tt2 
+
+e substitua todo o conteúdo com:
+
+    [% page_title %]
+    <br>                                                                                                                                                                                                                                           
+    <a href="[% c.uri_for( c.controller( 'ControlPanel::Post' ).action_for( 'edit' ) ) %]">NOVO</a><br><br>
+
+    [% PROCESS 'pagination.tt2' %]
+    <br>
+
+    [% WHILE ( item = results.next ) %]
+        id: [% item.id %], 
+            <a href="[% c.uri_for(c.controller( 'ControlPanel::Post' ).action_for( 'remove' ), item.id ) %]">
+              remover</a> | 
+            <a href="[% c.uri_for(c.controller( 'ControlPanel::Post' ).action_for( 'edit' ), item.id ) %]">
+              alterar</a> 
+        <br>
+        Titulo: [% item.titulo %] <br>
+        Mensagem: [% item.mensagem %] <br>
+        Por: [% item.user.email %] <br>
+    <br>-----------<br>
+    [% END %]
+
+    [% PROCESS 'pagination.tt2' %]
+
+
+agora crie o template post_edit.tt2 para criar nossos posts..
+
+    $ vim root/src/template/standard/post_edit.tt2
+    
+e insira o conteúdo:
+
+    POSTS<br>                                                                                                                                                                                                                                      
+    [% form.render %]
+
+
+
+e vamos alterar o controller ControlPanel::Post para que ele utilize os dados do usuário que estamos logados e salve no banco, então edite o controller ControlPanel::Post
+
+    $ vim lib/Blog/Tutorial/Controller/ControlPanel/Post.pm
+
+e substitua todo o conteúdo por:
+*** ATENÇÃO, retire os espaços no começo de cada linha... em especial a linha que começa com HTMLCONFIRM
+
+    package Blog::Tutorial::Controller::ControlPanel::Post;                                                                                                                                                                                        
+    use Moose;
+    use HTML::FormHandler::Model::DBIC;
+    use namespace::autoclean;
+
+    BEGIN { extends 'Catalyst::Controller'; }
+
+    =head1 NAME
+
+    Blog::Tutorial::Controller::ControlPanel::Post - Catalyst Controller
+
+    =head1 DESCRIPTION
+
+    Catalyst Controller.
+
+    =head1 METHODS
+
+    =cut
+
+    __PACKAGE__->config( schema_model => 'DB::Post', );
+
+    =head2 index
+
+    =cut
+
+    sub index : Path( '/post' ) : CaptureArgs(1) {
+        my ( $self, $c, $page ) = @_;
+
+        my $results = $c->model( __PACKAGE__->config->{schema_model} )->search(
+            {
+    #todos 
+            },
+            {  
+                rows     => 2,
+                page     => $c->req->params->{page} || 1,
+                order_by => { -asc => [qw/id/] }
+            }
+        );
+
+        my $pager      = $results->pager;
+        my $pagination = {
+            ( defined $pager->previous_page )
+            ? (
+                previous => {
+                    href => $c->req->uri_with( { page => $pager->previous_page } ),
+                    label => $pager->previous_page,
+                }
+              )
+            : (),
+            current => { label => $pager->current_page, },
+            ( defined $pager->next_page )
+            ? (
+                next => {
+                    href  => $c->req->uri_with( { page => $pager->next_page } ),
+                    label => $pager->next_page,
+                }
+              )
+            : (),
+            last_page     => $pager->last_page,
+            total_entries => $pager->total_entries,
+        };
+        $c->stash(                                                                                                                                                                                                                                 
+            template   => 'post_index.tt2',
+            results    => $results,
+            pagination => $pagination,
+        );
+    }
+
+    sub edit : Path( '/post/edit' ) : CaptureArgs(1) {
+        my ( $self, $c, $id ) = @_;
+        $c->stash(
+            current_view => 'Standard',
+            template     => 'post_edit.tt2',
+            page_title   => 'Página de POSTS',
+        );
+
+        my $obj;
+        if ( defined $id ) {
+
+            #carrega o post que está sendo alterado
+            $obj =
+              $c->model( __PACKAGE__->config->{schema_model} )
+              ->find( { id => $id, } );
+        }
+        else {
+
+            #cria um novo post
+            $obj =
+              $c->model( __PACKAGE__->config->{schema_model} )
+              ->new( { user_id => $c->user->id, } );
+        }
+
+        my $form = HTML::FormHandler::Model::DBIC->new(
+            item       => $obj,
+            field_list => [
+                titulo => {
+                    type             => 'Text',
+                    label            => 'Título',
+                    required         => 1,
+                    required_message => 'Campo obrigatório',
+                    css_class        => 'classes-css borda fina borda grossa',
+                },
+                mensagem => {
+                    type             => 'TextArea',
+                    label            => 'Digite seu post',
+                    required         => 1,
+                    required_message => 'Campo obrigatório',
+                    css_class        => 'classes-css borda fina borda grossa',
+                },
+                submit => {
+                    type  => 'Submit',
+                    value => 'Salvar',
+                },
+            ]
+        );
+
+        if ( $c->req->method eq 'POST' ) {
+            $form->process( params => $c->req->params );
+        }
+
+        $c->stash( form => $form );
+        return unless $form->validated;
+        $c->flash( message => 'Post criado com sucesso', );
+        $c->res->redirect(
+            $c->uri_for(
+                $c->controller('ControlPanel::Post')->action_for('index')
+            )
+        );
+    }
+
+    sub remove : Path( '/post/remove' ) : CaptureArgs(2) {
+        my ( $self, $c, $id, $confirm ) = @_;
+        my $item =
+          $c->model( __PACKAGE__->config->{schema_model} )->find( { id => $id, } );
+        $c->stash( current_view => 'Standard', );
+        if ( !$item ) {
+            $c->stash( template => \'Não foi possível remover', );
+        }
+        else {
+
+            if ( !$confirm ) {
+                my $url_confirm =
+                  $c->uri_for(
+                    $c->controller('ControlPanel::Post')->action_for('remove'),
+                    $id, 'confirma' );
+                $c->stash(
+                    template => \<<HTMLCONFIRM
+    Certeza que deseja remover ?
+    <a href="$url_confirm">CONFIRMAR</a>
+    HTMLCONFIRM
+                );
+            }
+            else {
+                $item->delete;
+                my $msg_removido =
+                  'Removido. <a href="'
+                  . $c->uri_for(
+                    $c->controller('ControlPanel::Post')->action_for('index') )
+                  . '">VOLTAR</a>';
+                $c->stash( template => \$msg_removido );
+            }
+        }
+    }
+
+    =head1 AUTHOR
+
+    A clever guy
+
+    =head1 LICENSE
+
+    This library is free software. You can redistribute it and/or modify
+    it under the same terms as Perl itself.
+
+    =cut
+
+    __PACKAGE__->meta->make_immutable;
+
+    1;
+
+
+Agora acesse a página de posts novamente http://localhost:3005/post  , e crie, altere e remova alguns posts... crie alguns posts para ver a paginação como ficou...
+
+=head2 CONCLUSÃO
+
+Bom pessoal, o basicão do catalyst é isso.. sugiro ir mais a fundo sobre :Chained, Catalyst::Dispatcher (forward, detach, etc) e leiam o tutorial oficial do catalyst.. é a melhor fonte de informação.. está em inglês mas quem sabe o google translator não traduza bem as partes que não são código..
 
 =head2 Autor
 
@@ -238,4 +1096,10 @@ Repasse este conhecimento e ajude a fortalecer linguagem perl no brasil.
 
 Veja também: 
 
-http://babyl.dyndns.org/techblog/entry/dbix-class-deploymenthandler-rocks
+http://search.cpan.org/~bobtfish/Catalyst-Manual-5.9000/lib/Catalyst/Manual/Tutorial/01_Intro.pod
+
+http://search.cpan.org/~abraxxa/DBIx-Class-0.08195/lib/DBIx/Class.pm
+
+http://template-toolkit.org/
+
+http://search.cpan.org/dist/HTML-FormHandler/lib/HTML/FormHandler.pm
