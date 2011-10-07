@@ -12,7 +12,6 @@
                 <table width="100%" align="center" cellspacing="0" style="">
                     <tr>
                         <td width="30%" valign="top">
-                            <p><input type="text" name="search" value="Buscar por..." style="border:solid 1px #666;background-color:#eaeaea;"/></p>
                             <p><strong>Lista de Projetos</strong></p>
                             <ul id="project-list"></ul>
                         </td>
