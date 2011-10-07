@@ -11,6 +11,8 @@
 
 	<meta name="keywords" content="linguagem, computacao, computacional, perl, comunidade, softwarelivre, sao paulo" />
 
+    <script src="/static/js/jquery.min.js" type="text/javascript"></script>
+
 	<link rel="stylesheet" href="/static/styles.css" type="text/css" />
 	<link rel="stylesheet" href="/static/css/calendar.css" type="text/css" />
 	<link rel="stylesheet" href="/static/print.css" type="text/css" media="print"  />
