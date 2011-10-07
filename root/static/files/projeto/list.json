@@ -1,0 +1,23 @@
+{ "projetos":[
+    {
+        "name":"Equin&oacute;cio",
+        "description":"Evento virtual realizado em todos os meses do equin&#243;cio, com o objetivo de gerar conte&#250;do na lingua portuguesa sobre a linguagem Perl. Em 2 anos foram produzidos quase 100 artigos, e para que ele se desenvolva e tenha uma maior publicidade, &eacute; interessante que a plataforma onde &eacute; disponibilizada os artigos, seja cada vez melhor.",
+        "maintainer":"Colaboradores Sao Paulo Perl Mongers",
+        "url":"http://sao-paulo.pm.org"
+    },{
+        "name":"Site da São Paulo Perl Mongers",
+        "description":"&#201; o nosso site e &eacute; necess&#225;ria uma atualiza&ccedil;&#227;o constante, e tamb&eacute;m de manuten&ccedil;&#227;o dele.",
+        "maintainer":"Daniel Mantovani",
+        "url":"http://github.com/mantovani/SPPM-Web"
+    },{
+        "name":"Para onde foi o meu dinheiro ?",
+        "description":"Site com o objetivo de visualizar as informações sobre orçamento público, que são disponibilizadas pelo próprio governo em infografia.",
+        "maintainer":"Thiago Rondon",
+        "url":"http://github.com/maluco/CMD"
+    },{
+        "name":"Perl, Perguntas e Respostas ?",
+        "description":"Documento que tem como objetivo oferecer perguntas e respostas frequentes para programadores e curiosos na linguagem Perl.",
+        "maintainer":"Thiago Rondon",
+        "url":"http://github.com/maluco"
+    }
+]}
