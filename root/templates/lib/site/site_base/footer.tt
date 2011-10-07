@@ -3,6 +3,7 @@
 		<li><a href="[% c.uri_for('/treinamento') %]">Treinamento</a></li>
 		<li><a href="[% c.uri_for('/equinocio','2011') %]">Meses do Equin&oacute;cio</a></li>
 		<li><a href="[% c.uri_for('/empresas') %]">Empresas</a></li>
+		<li><a href="[% c.uri_for('/projetos') %]">Projetos</a></li>
 	</ul>
 	<div class="copyright">
 		<p>Copyleft S&atilde;o Paulo Perl Mongers.</p>

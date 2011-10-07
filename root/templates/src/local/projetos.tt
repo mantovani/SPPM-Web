@@ -1,0 +1,63 @@
+[% META title=" Projetos " %]
+
+
+<div id="container_top">
+	<div id="container_bottom">
+		<div class="top">
+			<h2>Projetos</h2>
+			<div class="whois">
+				<p>
+					Segue abaixo a rela&ccedil;&atilde;o de projetos escritos em perl e mantidos/apoiados pela comunidade S&atilde;o Paulo Perl Mongers.
+				</p>
+                <table width="100%" align="center" cellspacing="0" style="">
+                    <tr>
+                        <td width="30%" valign="top">
+                            <p><input type="text" name="search" value="Buscar por..." style="border:solid 1px #666;background-color:#eaeaea;"/></p>
+                            <p><strong>Lista de Projetos</strong></p>
+                            <ul id="project-list"></ul>
+                        </td>
+                        <td width="70%" valign="top">
+                            <div id="projects">
+                            </div>
+                        <td>
+                    </tr>
+                </table>
+				<p style="border:dashed 1px #900;padding:15px;background-color:#eaeaea;">
+                    Você participa ou criou algum projeto bacana em Perl? 
+                    Acha que seria legal compartilhar com a comunidade?
+                    Entre em <a href="/contato">contato</a> conosco e mande-nos mais informações sobre seu projeto!
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $.ajax({
+            method:'GET',
+            url:'/static/files/projeto/list.json',
+            contentType:'application/json',
+            success: function(json) {
+                $.each(json.projetos, function(index){
+                    $('#project-list').append('<li><a class="project-item" href="#">' + this.name + '</a></li>');
+                    $('#projects').append('<div style="font-size:12px;border:solid 1px #ccc;padding:10px;background-color:#eaeaea;"><h4><strong>'+this.name+'</strong></h4><p>'+this.description+'</p>Mantido por:&nbsp;'+this.maintainer+'<br>Endere&ccedil;o:&nbsp;<a href="'+this.url+'">'+this.url+'</a></div><br>');
+                });
+            }
+        });
+
+        /**
+        * Getting project informations action
+        */
+        $('.project-item').click(function(){
+            alert('teste');
+        });
+
+    });
+</script>
+
+<style type="text/css">
+
+    #projects ul { color:#333333;list-style:none; }
+    ul { color:#333;}
+
+</style>
