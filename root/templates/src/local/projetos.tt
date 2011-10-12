@@ -37,10 +37,11 @@
             url:'/static/files/projeto/list.json',
             contentType:'application/json',
             success: function(json) {
-                $.each(json.projetos, function(index){
-                    $('#project-list').append('<li><a class="project-item" href="#">' + this.name + '</a></li>');
-                    $('#projects').append('<div style="font-size:12px;border:solid 1px #ccc;padding:10px;background-color:#eaeaea;"><h4><strong>'+this.name+'</strong></h4><p>'+this.description+'</p>Mantido por:&nbsp;'+this.maintainer+'<br>Endere&ccedil;o:&nbsp;<a href="'+this.url+'">'+this.url+'</a></div><br>');
-                });
+                var list = json.projetos;
+                for(var item in list) {
+                    $('#project-list').append('<li><a class="project-item" href="#">' + list[item].name + '</a></li>');
+                    $('#projects').append('<div style="font-size:12px;border:solid 1px #ccc;padding:10px;background-color:#eaeaea;"><h4><strong>'+list[item].name+'</strong></h4><p>'+list[item].description+'</p>Mantido por:&nbsp;'+list[item].maintainer+'<br>Endere&ccedil;o:&nbsp;<a href="'+list[item].url+'">'+list[item].url+'</a></div><br>');
+                }
             }
         });
 
