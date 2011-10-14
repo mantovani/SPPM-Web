@@ -1,14 +1,3 @@
-
-Textos para escrever:
-- Quem somos
-- Encontro social
-- Encontro tecnico
-- Treinamento
-- Lista
-- Contato
-- Podcast
-- Calendario
-
 CSS:
 
 - Escrever CSS para <ul><li>.
@@ -20,12 +9,21 @@ JQUERY:
 
 OUTROS:
 
-- Definir pagina inicial.
-- Elaborar /internal_error.html para a Dreamhost, com uma mensagem amigavel.
+- Atualizar os Encontros Sociais só está até 2010
+http://sao-paulo.pm.org/encontrosocial
+- Escrever esquema de feed para os artigos que vão saindo do
+equinócio http://sao-paulo.pm.org/principal
+- Empresas que usam Per, fazer um levantamento das milhões de
+empresas que usam Perl o site está bem "fraco" nessa parte,
+http://sao-paulo.pm.org/empresas
+- Criar um path para eventos no site, /Eventos que por agora nós
+vamos postar fotos e escrever sobre os eventos antigos. /eventos
+- Alguém que participou dos eventos para escrever uma matéria sobre.
+- Fazer sistema de busca para os artigos
+- Transferir os artigos do equinócio para /artigos
 
 EQUINOCIO:
 
-- Opcao para postar comentarios.
 
 ENCONTRO TECNICO
 - Deixar a mensagem amigavel quando os encontros forem encerrados(ativo = 0), só enquanto a data do encontro não chegou ainda.
