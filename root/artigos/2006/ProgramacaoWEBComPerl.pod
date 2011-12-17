@@ -53,11 +53,11 @@ comeE<ccedil>arE<aacute> perceber por que ela E<eacute> mais vantagosa.
 
    #!/usr/bin/perl
    use strict;
- 
+
    $titulo = 'Minha Home Page';
    $autor = 'Jose Maria';
    $data = scalar localtime;
- 
+
    print "Content-Type: text/html;\n\n";
    print <<EOF;
        <html>
@@ -66,17 +66,17 @@ comeE<ccedil>arE<aacute> perceber por que ela E<eacute> mais vantagosa.
           $titulo
       </title>
            </head>
- 
+
            <body>
       <h2>
           $titulo
       </h2>
- 
+
       <b>$autor</b> (#) $data
            </body>
        </html>
    EOF
- 
+
    exit 0;
 
 =over
@@ -97,12 +97,12 @@ Embperl)
                [+ $titulo +]
            </title>
        </head>
- 
+
        <body>
            <h2>
                [+ $titulo +]
            </h2>
- 
+
            <b>[+ $autor +]</b> (#) [+ $data +]
        </body>
    </html>
@@ -117,13 +117,13 @@ Embperl)
    #!/usr/bin/perl
    use strict;
    use HTML::Template;
- 
+
    my $t = HTML::Template->new(filename=>'teste.tmpl');
- 
+
    $t->param(titulo=>'Minha Home Page');
    $t->param(autor=>'Jose Maria');
    $t->param(data=>scalar localtime);
- 
+
    print "Content-Type: text/html;\n\n";
    print $t->output;
 
@@ -139,12 +139,12 @@ Embperl)
                <TMPL_VAR titulo>
            </title>
        </head>
- 
+
        <body>
            <h2>
                <TMPL_VAR titulo>
            </h2>
- 
+
            <b><TMPL_VAR autor></b> (#) <TMPL_VAR data>
        </body>
    </html>
@@ -229,13 +229,13 @@ hipertexto e a primeira vista, podem atE<eacute> se confundir com
 estes. Abaixo relaciono todos eles:
 
    <TMPL_VAR NAME="param">
- 
+
    <TMPL_IF NAME="param"> [ <TMPL_ELSE> ] </TMPL_IF>
- 
+
    <TMPL_UNLESS NAME="param"> [ <TMPL_ELSE> ] </TMPL_UNLESS>
- 
+
    <TMPL_LOOP NAME="param"></TMPL_LOOP>
- 
+
    <TMPL_INCLUDE NAME="file">
 
 OBS: O termo 'NAME=' dos marcadores acima E<eacute> opcional, tendo
@@ -261,12 +261,12 @@ marcadores:
    #---------------------------------------------------------------#
    ## Exemplo de um programa utilizando HTML::Template             #
    #---------------------------------------------------------------#
- 
+
    use strict;
    use HTML::Template
- 
+
    my $t = HTML::Template->new(filename=>'exemplo.tmpl');
- 
+
    $t->param(nome => 'Revista Eletronica');
    $t->param(edicao => '1');
    $t->param(artigos => [
@@ -286,26 +286,26 @@ marcadores:
            nivel => 2,
         }]
    );
- 
+
    print "Content-Type: text/html;\n\n";
    print $t->output;
- 
- 
- 
+
+
+
     <!-- exemplo.tmpl -->
- 
+
     <html>
         <head>
             <title>
                 <TMPL_VAR nome>
             </title>
         </head>
- 
+
         <body>
             <h2>
                 <TMPL_VAR nome>, edicao <TMPL_VAR edicao>
             </h2>
- 
+
            <table>
                <TMPL_LOOP artigos>
                <tr>
@@ -348,12 +348,12 @@ bE<aacute>sica de como ele funciona.
    #---------------------------------------------------------------#
    ## calc.pl                                                      #
    #---------------------------------------------------------------#
- 
+
    use strict;
    use EL::cgi;
- 
+
    my $cgi = EL::cgi->new;
- 
+
    my %h = (
        op1 => {
            dsc => 'Operator 1',
@@ -371,20 +371,20 @@ bE<aacute>sica de como ele funciona.
            msg => 'Type any number',
        }
    );
- 
+
    if ($cgi->valid(\%h)) {
        my $r = eval '$r = ' $cgi->get('op1') .
                             $cgi->get('ope') .
                             $cgi->get('op2');
        $cgi->set('result',$r);
    }
- 
+
    $cgi->out('calc.tmpl');
- 
- 
- 
+
+
+
    <-- calc.tmpl -->
- 
+
    <form action="calc.pl" method="post">
        <input type="text" name="op1" value="<TMPL_VAR op1>">
        <select name="ope">
@@ -396,7 +396,7 @@ bE<aacute>sica de como ele funciona.
        <input type="text" name="op2" value="<TMPL_VAR op2>">
        =
        <b><TMPL_VAR result></b>
- 
+
        <TMPL_IF error_msg>
        <br>
        <b><TMPL_VAR error_msg></b>

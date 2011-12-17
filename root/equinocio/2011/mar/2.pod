@@ -36,7 +36,7 @@ geral, flexível e poderosa, que permite programação orientada
 a objetos, funcional, procedural, ou orientada a eventos. Ao
 adotarmos Perl não ficamos presos a um ou outro paradigma, e
 colaboradores tem liberdade para escolher a forma que mais se
-adeque ao problema em questão e à sua forma de pensar. 
+adeque ao problema em questão e à sua forma de pensar.
 
 Ao mesmo tempo, a forte preocupação do Perl com retro-compatibilidade
 é muito importante, e permite que projetos como o OpenData utilizem
@@ -139,7 +139,7 @@ específicas de determinados bancos.
 Com mais de 22.000 distribuições e 90.000 módulos, e uma média acima
 de L<200 uploads por mês|http://search.cpan.org/recent>, encontramos
 no L<CPAN|http://search.cpan.org> todos os componentes
-necessários para reduzir dramaticamente os ciclos de desenvolvimento 
+necessários para reduzir dramaticamente os ciclos de desenvolvimento
 e nos concentrarmos praticamente apenas na lógica do software em si,
 tornando o desenvolvimento do OpenData e seus subprojetos algo rápido,
 gratificante e prazeroso.
@@ -187,7 +187,7 @@ de qualidade para ampliar seu conhecimento e diminuir ainda mais a
 barreira de entrada no projeto OpenData.
 
 Esse tipo de apoio da comunidade é fundamental para a longevidade de
-projetos como o OpenData, movidos pela própria comunidade. 
+projetos como o OpenData, movidos pela própria comunidade.
 
 =head1 Conclusão
 

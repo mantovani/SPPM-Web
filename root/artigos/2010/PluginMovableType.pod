@@ -22,7 +22,7 @@ Ainda é necessario um Readme que se chama TumblrFeed-README.txt e a licença, q
 
 Por ultimo ainda temos que o plugin utiliza a mesma forma padrão do perl para construir-se, utilizando o ExtUtils::MakeMaker, assim temos um arquivo para preparar (Makefile.PL) e mais dois para configuração do pacote (MANIFEST e MANIFEST.skip).
 
-O arquivo MANIFEST.SKIP contém as diretivas de empacotamento. No arquivo Makefile.PL, temos as informações do plugin necessárias para a preparação do plugin, com seu nome, diretório e versão. Esse formato é comum a todos modulos "formais" da linguagem, e para mais detalhes deve se consultar a documentação do ExtUtils::MakeMaker. 
+O arquivo MANIFEST.SKIP contém as diretivas de empacotamento. No arquivo Makefile.PL, temos as informações do plugin necessárias para a preparação do plugin, com seu nome, diretório e versão. Esse formato é comum a todos modulos "formais" da linguagem, e para mais detalhes deve se consultar a documentação do ExtUtils::MakeMaker.
 
 =head2 Arquivo de Configuração
 
@@ -59,7 +59,7 @@ O movable type chama o plugin com alguns parâmetros especiais, que vem na vari�
 sub retrieve_last_ten_posts {
 
 	my ($ctx, $args) = @_;
-	...	
+	...
 
 }
 
@@ -77,13 +77,13 @@ O modulo WWW::Tumblr retorna o XML da api do Tumblr, que eu processei usando o m
 
 =head2 Instalando
 
-Apenas copie o plugin para o diretório plugins do movable type. Eventualmente quando seus plugins ficarem mais complexos, pode ser necessario colocar arquivos em outros locais, como mt-static (onde ficam arquivos estáticos, figuras ou css por exemplo). Existe um guia mais detalhado em http://tinyurl.com/easy-plugin-install, que cobre a instalação de plugins mais complexos. 
+Apenas copie o plugin para o diretório plugins do movable type. Eventualmente quando seus plugins ficarem mais complexos, pode ser necessario colocar arquivos em outros locais, como mt-static (onde ficam arquivos estáticos, figuras ou css por exemplo). Existe um guia mais detalhado em http://tinyurl.com/easy-plugin-install, que cobre a instalação de plugins mais complexos.
 
-Eventualmente voce pode estar em um host compartilhado, e não tem controle total sobre os modulos instalados ou só tem acesso via ftp. Nestes casos voce pode colocar as dependencias de modulos em extlib/*. Isso funciona bem para modulos perl puros que voce não tem e não pode instalar no servidor. 
+Eventualmente voce pode estar em um host compartilhado, e não tem controle total sobre os modulos instalados ou só tem acesso via ftp. Nestes casos voce pode colocar as dependencias de modulos em extlib/*. Isso funciona bem para modulos perl puros que voce não tem e não pode instalar no servidor.
 
 =head2 Usando
 
-O ultimo passo é usar o modulo, para isso basta que voce edite o template de seu blog/site no movable type e insira a tag <MTTumblrLast>, para que voce tenha o dump dos últimos 10 posts do Tumblr que está na configuração do plugin. Toda vez que seu blog for publicado, ou se a pagina for dinamica, ele vai preencher a tag com os dados vindo do plugin. 
+O ultimo passo é usar o modulo, para isso basta que voce edite o template de seu blog/site no movable type e insira a tag <MTTumblrLast>, para que voce tenha o dump dos últimos 10 posts do Tumblr que está na configuração do plugin. Toda vez que seu blog for publicado, ou se a pagina for dinamica, ele vai preencher a tag com os dados vindo do plugin.
 
 =head2 A vida, o universo e tudo mais
 
@@ -92,7 +92,7 @@ Esse plugin está rodando no meu blog, com os dados do meu Tumblr em http://fred
 http://github.com/byrnereese/mt-plugin-imagecropper
 http://github.com/sixapart/mt-plugin-facebook-connect-commenters
 
-A dica é procurar por mt-plugin. Eu nao coloquei mt-plugin no meu plugin porque ele é mais didático que útil per si. 
+A dica é procurar por mt-plugin. Eu nao coloquei mt-plugin no meu plugin porque ele é mais didático que útil per si.
 
 Voce pode ainda procurar ajuda na lista dos São Paulo Perl monks, que tem o link em algum lugar dessa pagina :), la na barra de links em cima de todo esse texto :).
 
@@ -100,6 +100,6 @@ Voce pode ainda procurar ajuda na lista dos São Paulo Perl monks, que tem o lin
 
 Frederico Recsky <frederico em gmail . com>
 
-=cut 
+=cut
 
 

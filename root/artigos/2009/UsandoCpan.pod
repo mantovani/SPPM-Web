@@ -23,13 +23,13 @@ um "get" simples em um website, ao invE<eacute>s de escrever um monte
 de cE<oacute>digo, vocE<ecirc> usa um mE<oacute>dulo Perl:
 
  #!/usr/bin/perl
- 
+
  use strict;
  use warnings;
- use LWP::Simple; 
- 
+ use LWP::Simple;
+
  my $html = get('http://www.perl.org.br');
- 
+
  print $html;
 
 FE<aacute>cil e simples, mas como instalar o tal mE<oacute>dulo ?
@@ -42,7 +42,7 @@ Pronto agora vocE<ecirc> estE<aacute> na shell do CPAN, digite "h" para
 ajuda:
 
  cpan[1]> h
- 
+
  Display Information                                                (ver 1.9402)
   command  argument          description
   a,b,d,m  WORD or /REGEXP/  about authors, bundles, distributions, modules
@@ -50,21 +50,21 @@ ajuda:
   ls       AUTHOR or GLOB    about files in the author's directory
      (with WORD being a module, bundle or author name or a distribution
      name of the form AUTHOR/DISTRIBUTION)
- 
+
  Download, Test, Make, Install...
   get      download                     clean    make clean
   make     make (implies get)           look     open subshell in dist directory
   test     make test (implies make)     readme   display these README files
   install  make install (implies test)  perldoc  display POD documentation
- 
+
  Upgrade
   r        WORDs or /REGEXP/ or NONE    report updates for some/matching/all modules
   upgrade  WORDs or /REGEXP/ or NONE    upgrade some/matching/all modules
- 
+
  Pragmas
   force  CMD    try hard to do command  fforce CMD    try harder
   notest CMD    skip testing
- 
+
  Other
   h,?           display this menu       ! perl-code   eval a perl command
   o conf [opt]  set and query options   q             quit the cpan shell
@@ -121,14 +121,14 @@ E<eacute> sE<oacute> configurar uma variE<aacute>vel chamada:
 "prerequisites_policy". Vamos ver as opE<ccedil>E<otilde>es que esta
 variE<aacute>vel oferece:
 
- cpan[1]> o conf init prerequisites_policy 
+ cpan[1]> o conf init prerequisites_policy
  The CPAN module can detect when a module which you are trying to build
  depends on prerequisites. If this happens, it can build the
  prerequisites for you automatically ('follow'), ask you for
  confirmation ('ask'), or just ignore them ('ignore'). Please set your
  policy to one of the three values.
- 
-  
+
+
  Policy on building prerequisites (follow, ask or ignore)? [ask]
 
 Escolha a opE<ccedil>E<atilde>o follow:
@@ -150,9 +150,9 @@ da variE<aacute>vel, vocE<ecirc> pode usar regexp, E<eacute> isso mesmo
 regexp:
 
  cpan[1]> o conf /po/
- 
+
  $CPAN::Config options from '/etc/perl/CPAN/Config.pm':
- 
+
      build_requires_install_policy [follow/yes]
      prerequisites_policy [follow]
      test_report        [0]

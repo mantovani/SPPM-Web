@@ -18,7 +18,7 @@
                             <!-- Taken from: http://www.askdavetaylor.com/how_can_i_add_a_google_search_box_to_my_web_site.html -->
                             <form method="get" action="http://www.google.com/search">
                                 <input type="text"   name="q" size="31" maxlength="255" value="" />
-                                <input type="submit" value="Google Search" /> 
+                                <input type="submit" value="Google Search" />
                                 <input type="hidden" name="sitesearch"  value="mail.pm.org/pipermail/saopaulo-pm/" />
                            </form>
                         </td>

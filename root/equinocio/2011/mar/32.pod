@@ -7,8 +7,8 @@
 Tudo comeE<#231>ou com um e-mail na L<lista da SP-PM|http://sao-paulo.pm.org/lista>,
 no qual se falou de "hackear" dados pE<#250>blicos. Logo isso evoluiu para a idE<#233>ia
 de produzir um framework para buscar e analisar dados pE<#250>blicos. Sem demora, o
-L<Thiago Rondon|http://www.maluco.com.br/blog/> montou um 
-L<repositE<#243>rio no GitHub|https://github.com/maluco/OpenData-BR> e comeE<#231>ou a 
+L<Thiago Rondon|http://www.maluco.com.br/blog/> montou um
+L<repositE<#243>rio no GitHub|https://github.com/maluco/OpenData-BR> e comeE<#231>ou a
 rabiscar umas idE<#233>ias de cE<#243>digo. Em seguida nasceu o site do
 L<OpenData-BR|http://www.opendatabr.org/>.
 
@@ -61,7 +61,7 @@ comportamento: recebem algo na entrada, fazem alguma coisa com esses dados, e
 Assim surgiu a idE<#233>ia de fazer um sub-projeto de fluxo de dados.
 
 Em meados de Dezembro de 2010, a primeira idE<#233>ia foi codificada em termos de
-"caixas", que teriam um entrada e uma saE<#237>da - de uma forma bem genE<#233>rica: 
+"caixas", que teriam um entrada e uma saE<#237>da - de uma forma bem genE<#233>rica:
 "entra porquinho, sai salsicha".
 
 =begin pod:xhtml
@@ -260,10 +260,10 @@ sancionadas por algum E<#243>rgE<#227>o do governo:
 	            first_page => -1,
 	            produce_last_page => sub {
 	                my $url = shift;
-	
+
 	                my $get  = DataFlow::Node::URLRetriever::Get->new;
 	                my $html = $get->get($url);
-	
+
 	                my $texto =
 	                  HTML::TreeBuilder::XPath->new_from_content($html)
 	                  ->findvalue('//p[@class="paginaAtual"]');
@@ -273,7 +273,7 @@ sancionadas por algum E<#243>rgE<#227>o do governo:
 	            },
 	            make_page_url => sub {
 	                my ( $self, $url, $page ) = @_;
-	
+
 	                my $u = URI->new($url);
 	                $u->query_form( $u->query_form, Pagina => $page );
 	                return $u->as_string;
@@ -511,7 +511,7 @@ Estas e outras idE<#233>ias de melhorias estE<#227>o no arquivo de
 L<TODO|https://github.com/russoz/DataFlow/blob/master/TODO> no repositE<#243>rio
 do projeto.
 
-B<VocE<#234> pode ajudar!> De vE<#225>rias formas: escrevendo cE<#243>digo, tanto para os mE<#243>dulos 
+B<VocE<#234> pode ajudar!> De vE<#225>rias formas: escrevendo cE<#243>digo, tanto para os mE<#243>dulos
 quanto testes. Executando testes e enviando I<reports> - neste momento hE<#225>, por
 exemplo, alguns reports de erro em FreeBSD que nE<#227>o estE<#227>o ocorrendo no sistema
 dos mantenedores (Linux).

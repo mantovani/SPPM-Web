@@ -85,8 +85,8 @@ prE<aacute>tico:
  $over_utime=31; $over_stime=15; $over_rtime=48;
  $over_tests=10000;
  $rrun_utime=641; $rrun_stime=375; $rrun_rtime=8218;
- $total_marks=12819                                                                                                                                                                        
- 
+ $total_marks=12819
+
  PART2
  @ 15 0 16
  & 2 main BEGIN
@@ -100,7 +100,7 @@ nE<atilde>o E<eacute> lE<aacute> uma forma muito agradE<aacute>vel de
 entender os resultados. Para esse fim existe o programa C<dprofpp>:
 
  C:\> dprofpp
- 
+
  Total Elapsed Time = 8.157477 Seconds
    User+System Time = 0.955477 Seconds
  Exclusive Times
@@ -154,10 +154,10 @@ constantes do MS Excel:
     my $last_row = $sheet->UsedRange->Find(
         {
             What => "*",
- 
+
             # same as xlPrevious from Excel constants
             SearchDirection => 2,
- 
+
             # same as xlByRows from Excel constants
             SearchOrder => 1
         }
@@ -183,7 +183,7 @@ alteraE<ccedil>E<otilde>es:
 
  C:\> perl -d:DProf pending.pl
  C:\> dprofpp
- 
+
  Total Elapsed Time = 4.137462 Seconds
    User+System Time = 0.637462 Seconds
  Exclusive Times
@@ -231,53 +231,53 @@ verificar que o programa instancia objetos C<DateTime> mais vezes do
 que seria realmente necessE<aacute>rio:
 
  # trecho do cÃ³digo da subrotina send_warns
- 
+
              if ( $status eq 'AÃ§Ã£o Avisada' ) {
- 
+
                  my $prazo =
                    $sheet->Cells( $row, $columns{PRAZO}->[0] )->{'Value'};
- 
+
                  # not assuming that the column have only date values
                  if (    ( $prazo ne '' )
                      and ( ref($prazo) eq 'Win32::OLE::Variant' ) )
                  {
- 
+
                      if ( $prazo->Type == VT_DATE ) {
- 
+
                          my $variant = Variant( VT_DATE, $prazo );
- 
+
                          my $date = DateTime->new(
                              year  => $variant->Date('yyyy'),
                              month => $variant->Date('M'),
                              day   => $variant->Date('dd')
                          );
- 
+
  # the $date variable will have 0 in the values below, so it necessary to force 0 onto $now too
  # to be able to compare both correctly
                          my $now = DateTime->now();
                          $now->set_hour(0);
                          $now->set_minute(0);
                          $now->set_second(0);
- 
+
                          my $result = DateTime->compare( $date, $now );
 
 Mais tarde, em outra subrotina:
 
  sub queue_row {
- 
+
      my $sheet      = shift;
      my $row        = shift;
      my $fields_ref = shift;
      my $message    = shift;
      my $item;
- 
+
      my $today = DateTime->now();
      $today->set_time_zone('local');
- 
+
      my $greetings;
- 
+
      $item = '<html><body>';
- 
+
      ( $today->hour() < 12 )
        ? ( $greetings = 'Bom dia, ' )
        : ( $greetings = 'Boa tarde, ' );
@@ -297,29 +297,29 @@ Alterando o trecho correspondente da subrotina C<send_warns> novamente:
                             year  => $variant->Date('yyyy'),
                             month => $variant->Date('M'),
                             day   => $variant->Date('dd'),
- 
+
                    # forcing the same time to be able to compare dates correctly
                             hour   => $now->hour(),
                             minute => $now->minute(),
                             second => $now->second()
                         );
- 
+
                         my $result = DateTime->compare( $date, $now );
 
 E tambE<eacute>m da subrotina C<queue_row>:
 
  sub queue_row {
- 
+
  # html code is based on the code generated when the email is created mannually in Outlook
- 
+
      my $sheet      = shift;
      my $row        = shift;
      my $fields_ref = shift;
      my $message    = shift;
- 
+
      my $item = '<html><body>';
      my $greetings;
- 
+
      ( $now->hour() < 12 )
        ? ( $greetings = 'Bom dia, ' )
        : ( $greetings = 'Boa tarde, ' );
@@ -358,11 +358,11 @@ de um novo objeto que represente o MS Excel a cada vez que a subrotina
 C<create_email> seja executada, como E<eacute> mostrado abaixo:
 
  sub create_email {
- 
+
      my $body     = shift;
      my $addresse = shift;
      my $subject  = shift;
- 
+
      my $Outlook = Win32::OLE->GetActiveObject('Outlook.Application')
        || Win32::OLE->new('Outlook.Application');
 
@@ -406,16 +406,16 @@ Nesse caso, pode ser tentado algo bem mais simples:
 JE<aacute> dentro de C<create_email>:
 
  sub create_email {
- 
+
      my $body     = shift;
      my $addresse = shift;
      my $subject  = shift;
- 
+
      unless ( defined($Outlook) ) {
- 
+
          $Outlook = Win32::OLE->GetActiveObject('Outlook.Application')
            || Win32::OLE->new('Outlook.Application');
- 
+
      }
 
 Mais um teste:

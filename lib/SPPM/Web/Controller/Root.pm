@@ -30,8 +30,8 @@ SPPM::Controller::Root - Root Controller for SPPM
 
 sub base : Chained('/') : PathPart('') : CaptureArgs(0) {
     my ( $self, $c ) = @_;
-    $c->stash( 
-        md5 => md5_hex($c->req->uri->path), 
+    $c->stash(
+        md5 => md5_hex($c->req->uri->path),
         path => $c->req->uri->path
     );
 }

@@ -137,13 +137,13 @@ expressE<atilde>o '[^0123456789]' ou '[^0-9]'.
 
        ^  ->  caracter que o segue inicia o elemento
        $  ->  caracter que o antecede finaliza o elemento
- 
+
        .   ->  caracter ÃÂÃÂÃÂÃÂ© um sÃÂÃÂÃÂÃÂ­mbolo qualquer (exceto nova linha)
- 
+
        |   ->  enumerador de alternativas
       ()   ->  agrupador
       []   ->  especificificador de classes
-                
+
        *   ->  caracter ocorre 0 ou mais vezes
        +   ->  caracter ocorre 1 ou mais vezes
        ?   ->  caracter ocorre 1 ou 0 vezes
@@ -172,7 +172,7 @@ tabulaE<ccedil>E<atilde>o.
    \S  ->  [^ ]
    \d  ->  [0-9], [0123456789] ou (0|1|2|3|4|5|6|7|8|9)
    \D  ->  [^0-9]
- 
+
    \t   ->  tabulaÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ£o
    \n  ->  (LF ou NL) nova linha
    \r   ->  (CR) retorno
@@ -231,7 +231,7 @@ descreve cada uma delas de acordo com o prefixo identificador do
 serviE<ccedil>o:
 
   my $url;
- 
+
   foreach $url (@ARGV) {
      if ($url =~ /^http:/) {
         print "EndereÃÂÃÂÃÂÃÂ§o de um serviÃÂÃÂÃÂÃÂ§o WEB\n";
@@ -259,7 +259,7 @@ E<eacute> criado uma referE<ecirc>ncia E<agrave>s partes do elemento (a
 funcionalidade:
 
    my $url;
- 
+
    foreach $url (@ARGV) {
       if ($url =~ /^(.+):\/\/(.*)$/)
          print "-- $2: ";
@@ -275,7 +275,7 @@ funcionalidade:
          else {
             print "endereÃÂÃÂÃÂÃÂ§o de um serviÃÂÃÂÃÂÃÂ§o desconhecido\n";
          }
-      }    
+      }
       else {
          print "Url invÃÂÃÂÃÂÃÂ¡lida\n";
       }
@@ -305,7 +305,7 @@ regular e uma "string". Veja abaixo a composiE<ccedil>E<atilde>o
 sintE<aacute>tica desse operando:
 
    Sintaxe:
- 
+
       s/REX/STRING/imsxg
 
 onde,
@@ -325,26 +325,26 @@ regulares usando o metacaracter "()" e as variE<aacute>veis reservadas
 manipulaE<ccedil>E<atilde>o com "strings". Experimente!
 
    my $elemento;
- 
+
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elmento =~ s/a/+/;
    print "$elemento\n";            # ResultarÃÂÃÂÃÂÃÂ¡ em: -+-A-a-A-a-A-a-A-a-A
- 
+
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elemento =~ s/a/+/g;
    print "$elemento\n";            # ResultarÃÂÃÂÃÂÃÂ¡ em: -+-A-+-A-+-A-+-A-+-A
- 
+
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elemento =~ s/a/+/gi;
    print "$elemento\n";            # ResultarÃÂÃÂÃÂÃÂ¡ em: -+-+-+-+-+-+-+-+-+-+
- 
+
    #
    # Esse exemplo, ÃÂÃÂÃÂÃÂ© uma alternativa ao anterior
    #
    $elemento = '-a-A-a-A-a-A-a-A-a-A';
    $elemento =~ s/[aA]/+/g;
    print "$elemento\n";            # ResultarÃÂÃÂÃÂÃÂ¡ em: -+-+-+-+-+-+-+-+-+-+
- 
+
    #
    # Aplicando o metacaracter "()"
    #
@@ -370,10 +370,10 @@ regular.
    #
    my $frase = 'Quantas palavras existem nesse frase?';
    my @palavras = split /\s+/;
- 
+
    print "Total: ",scalar @palavras,"\n";
- 
- 
+
+
    #
    # Usando "grep" com uma expressÃÂÃÂÃÂÃÂ£o regular
    #

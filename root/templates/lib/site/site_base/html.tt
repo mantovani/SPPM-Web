@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="author" content="Sao Paulo Perl Mongers" />
-	
+
 	[% IF template.current_page == 'home' %]
 	<meta name="description" content="Grupo de programadores Perl do estado de São Paulo." />
 	[% END %]
@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href="/static/print.css" type="text/css" media="print"  />
 
     <title>S&atilde;o Paulo Perl Mongers :: [% template.title %]</title>
-    <meta name="google-site-verification" content="B6Qa53hLtW0qem5IuI8QHE6IhruXMMrRnL2iwnMIdHE" /> 
+    <meta name="google-site-verification" content="B6Qa53hLtW0qem5IuI8QHE6IhruXMMrRnL2iwnMIdHE" />
  </head>
  <body>
 

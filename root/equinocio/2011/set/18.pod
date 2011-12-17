@@ -17,7 +17,7 @@ seria muito interessante se alguém tiver interesse em manter ele.
 =head1 Instalação
 
 Este aplicativo, ainda esta apenas no github, e em breve devo passar ele para
-o CPAN, portanto para instalar ele via github, basta efetuar a cópia do 
+o CPAN, portanto para instalar ele via github, basta efetuar a cópia do
 repositório L<https://github.com/maluco/App-Emma-Voip>, e então executar:
 
     perl Makefile.PL
@@ -51,8 +51,8 @@ Para mais opções digite: "emma -h".
 =head1 Origem do nome
 
 O nome do aplicativo é uma homenagem a Emma Mills Nutt, que foi  primeira
-mulher a operar um telefone em 1 de setembro de 1978, onde ela começou a 
-trabalhar para Edwin Holmes Dispatch (ou Boston Telephone Dispatch Company) em 
+mulher a operar um telefone em 1 de setembro de 1978, onde ela começou a
+trabalhar para Edwin Holmes Dispatch (ou Boston Telephone Dispatch Company) em
 Boston, Massachusetts.
 
 =head1 Autor

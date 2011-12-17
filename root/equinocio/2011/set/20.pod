@@ -45,7 +45,7 @@ quebrar uma única senha para comprometer todas.
     +------+               +--------+
                    |
                    V
-    Volta:               
+    Volta:
     +--------+   Chave       +------+
     | #$%DxF | ------------> | dado |
     +--------+               +------+
@@ -57,7 +57,7 @@ forma irreversível de se embaralhar os dados, ou seja, uma vez embaralhados,
 é impossível obter os dados originais.
 
 Assim para validar um login, basta calcular o hash da senha fornecida pelo
-usuário e comparar com o hash no banco. 
+usuário e comparar com o hash no banco.
 
 Dessa forma, mesmo que se obtenha acesso aos dados B<E> e se obtenha uma
 das senhas, as outras continuarão (em teoria) seguras. Um atacante precisaria
@@ -97,18 +97,18 @@ Veja no trecho de código abaixo, como é simples não fazer cocô na cabeça do
 seus usuários:
 
     #!/usr/bin/env perl
-    
+
     # foo.pl
     # Testando o bcrypt
-    
+
     use Digest::MD5 qw( md5_base64 );
     use Crypt::Eksblowfish::Bcrypt qw( bcrypt_hash en_base64 );
-    
+
     print encrypt(q{foo@bar.com}, q{foobar},  $ARGV[0] || 1), $/;
-    
+
     sub encrypt {
         my ( $email, $pass, $cost ) = @_;
-    
+
         return en_base64(
             bcrypt_hash(
                 {
@@ -125,28 +125,28 @@ Agora veja a diferença com diferentes valores para C<cost>:
 
     user@host$ time ./foo.pl 5
     qQiJ3485Fi7LXb6mjsv63OfLdlQiG7i
-    
+
     real    0m0.047s
     user    0m0.032s
     sys     0m0.010s
-    
+
     user@host$ time ./foo.pl 10
     OSOvi.5ETTGn6JMKWE4R1NSMsL5nmsm
-    
+
     real    0m0.190s
     user    0m0.177s
     sys     0m0.010s
-    
+
     user@host$ time ./foo.pl 15
     3x3iblh1CO84S1djE55Sg26EBr7d.Cq
-    
+
     real    0m4.834s
     user    0m4.793s
     sys     0m0.018s
-    
+
     user@host$ time ./foo.pl 20
     55kwG1cbfceJTYYku6qq8ZE0Ce..5vq
-    
+
     real    2m36.004s
     user    2m32.576s
     sys     0m0.332s
@@ -160,7 +160,7 @@ usuários nem derrube seu servidor (o que num hardware médio de 2011 significa
 algo entre 10 e 15).
 
 De tempos em tempos, refaça as contas e expire as senhas se necessário,
-mudando apenas um parâmetro de configuração de sua aplicação. 
+mudando apenas um parâmetro de configuração de sua aplicação.
 
 Lembre-se que até os dinossauros foram extintos!
 

@@ -58,17 +58,17 @@ funE<ccedil>E<atilde>o qw//.
      [] - Ã uma referÃªncia aos escalares.
    qw// - Vai "quebrar" entre os espaÃ§os.
      .. - Ã uma seqÃ¼Ãªncia de valores.
- 
- 
- 
+
+
+
    # Unidimensional.
    my       @uni = ("Primeiro", "Segundo", "Terceiro", "Quarto");
    my @intervalo = ( 1 .. 50 );
    my    @quoted = qw(Primeiro Segundo Terceiro Quarto);
    my     @misto = (50, 5.1252351, "Numero");
- 
- 
- 
+
+
+
    # Bidimensional.
    my        @bi = (
                     ["Primeiro", "Segundo", "Terceiro", "Quarto"],
@@ -76,9 +76,9 @@ funE<ccedil>E<atilde>o qw//.
                     [ qw(Primeiro Segundo Terceiro Quarto) ],
                     [50, 5.1252351, "Numero"],
                    );
- 
- 
- 
+
+
+
    # Tridimensional.
    my       @tri = (
                     [
@@ -107,34 +107,34 @@ O acesso a valores do array E<eacute> feito por um nE<uacute>mero
 inteiro podendo ser positivo ou negativo.
 
    $# - Retorna o total de elementos que pertence ao array.
- 
- 
+
+
    # Unidimensional.
    $uni[0];  # Acessando um elemento.
    $uni[-1]; # Acessando o ultimo elemento.
- 
+
    for my $x (0..$#uni) { # Imprimindo todos os elementos.
     print "\$uni[$x] == \"$uni[$x]\"\n";
    }
- 
- 
- 
+
+
+
    # Bidimensional.
    $bi[0][0];   # Acessando um elemento.
    $bi[-1][-1]; # Acessando o Ãºltimo elemento.
- 
+
    for my $x (0..$#bi) { # Imprimindo todos os elementos.
     for my $y (0..$#{$bi[$x]}) {
      print "\$bi[$x][$y] == \"$bi[$x][$y]\"\n";
     }
    }
- 
- 
- 
+
+
+
    # Tridimensional.
    $tri[0][0][0];    # Acessando um elemento.
    $tri[-1][-1][-1]; # Acessando o Ãºltimo elemento.
- 
+
    for my $x (0..$#tri) { # Imprimindo todos os elementos.
     for my $y (0..$#{$tri[$x]}) {
      for my $z (0..$#{$tri[$x][$y]}) {
@@ -154,9 +154,9 @@ nos disponibiliza, entre elas:
       push() - Adiciona no final.
        pop() - Remove e retorna o elemento removido do final.
     splice() - Exclui um ou mais elementos.
- 
- 
- 
+
+
+
    # Unidimensional.
    unshift(@uni, "ComeÃ§o");
    unshift(@uni, "PrÃ³ximo", "Seguinte");
@@ -165,9 +165,9 @@ nos disponibiliza, entre elas:
    my $primeiro = shift(@uni);
    my $ultimo   = pop(@uni);
    splice(@uni, 3, 1); # Onde 3 Ã© o offset e 1 Ã© o tamanho.
- 
- 
- 
+
+
+
    # Bidimensional.
    unshift(@bi, ["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]);
    unshift(@{$bi[0]}, "ComeÃ§o", "PrÃ³ximo", "Seguinte");
@@ -176,9 +176,9 @@ nos disponibiliza, entre elas:
    my $primeiro = shift(@{$bi[0]});
    my $ultimo   = pop(@{$bi[0]});
    splice(@{$bi[0]}, 3, 1);
- 
- 
- 
+
+
+
    # Tridimensional.
    unshift(@tri, [["Primeiro", "Segundo", "Terceiro", "Quarto", "Quinto"]]);
    unshift(@{$tri[0]}, ["Primeiro", "Segundo", "Terceiro", "Quarto"]);
@@ -197,17 +197,17 @@ operador "..".
 
    # Unidimensional.
    my @fatia_uni = @uni[0..3];
- 
- 
- 
+
+
+
    # Bidimensional.
    my @fatias_bi;
    for my $x (0..$#bi) {
     push(@fatias_bi, [ @{$bi[$x]}[0..3] ]);
    }
- 
- 
- 
+
+
+
    # Tridimensional.
    my @fatias_tri;
    for my $x (0..$#tri) {
@@ -243,9 +243,9 @@ trabalhar.
                    Peru   => "cluck",
                    Porco  => "oink"
                    );
- 
- 
- 
+
+
+
    # Bidimensional.
    my %bi_sons = (
                       E => {
@@ -273,9 +273,9 @@ trabalhar.
                             porco  => "oink",
                            },
                  );
- 
- 
- 
+
+
+
    # Tridimensional.
    my %tri_sons = (
                    Entao => {
@@ -293,60 +293,60 @@ string podendo utilizar aspas (") ou nE<atilde>o.
      keys - Retorna uma lista contendo todas as chaves.
      sort - Classifica e retorna a lista.
    values - Retorna uma lista contendo todos os valores.
- 
- 
- 
+
+
+
    # Unidimensional.
    $uni_numeros{Primeiro};
    $uni_sons{vaca};
- 
+
    for my $indice (keys %uni_sons) { # Elementos desordenados.
     print "$indice faz $uni_sons{$indice}.\n";
    }
- 
+
    for my $indice (sort keys %uni_sons) { # Elementos ordenados.
     print "$indice faz $uni_sons{$indice}.\n";
    }
- 
+
    my @indice = keys %uni_sons;    # Pegando o Ã­ndice.
    my @valores = values %uni_sons; # Pegando os valores.
- 
+
    while (my ($indice, $valor) = each %uni_sons) { # Ãndice e valor.
     print "$indice faz $valor.\n";
    }
- 
- 
- 
+
+
+
    # Bidimensional.
    $bi_sons{Tres}{vaca};
- 
+
    for my $i (keys %bi_sons) { # Elementos desordenados.
     for my $j (keys %{$bi_sons{$i}}) {
      print "$i $j faz $bi_sons{$i}{$j}.\n";
     }
    }
- 
+
    for my $i (sort keys %bi_sons) { # Elementos ordenados.
     for my $j (sort keys %{$bi_sons{$i}}) {
      print "$i $j faz $bi_sons{$i}{$j}.\n";
     }
    }
- 
+
    my @indice = keys %bi_sons;       # Pegando o Ã­ndice.
    my @subindice = keys %{$bi_sons{E}};
    my @valores = values %{$bi_sons{E}}; # Pegando os valores.
- 
+
    for my $i (keys %bi_sons) { # Ãndice e valor.
     while (my ($indice, $valor) = each %{$bi_sons{$i}}) {
      print "$i $indice faz $valor.\n";
     }
    }
- 
- 
- 
+
+
+
    # Tridimensional.
    $tri_dons{Entao}{a}{vaca};
- 
+
    for my $i (keys %tri_sons) { # Elementos desordenados.
     for my $j (keys %{$tri_sons{$i}}) {
      for my $k (keys %{$tri_sons{$i}{$j}}) {
@@ -354,7 +354,7 @@ string podendo utilizar aspas (") ou nE<atilde>o.
      }
     }
    }
- 
+
    for my $i (sort keys %tri_sons) { # Elementos ordenados.
     for my $j (sort keys %{$tri_sons{$i}}) {
      for my $k (sort keys %{$tri_sons{$i}{$j}}) {
@@ -362,10 +362,10 @@ string podendo utilizar aspas (") ou nE<atilde>o.
      }
     }
    }
- 
+
    my @indice = keys %{$tri_sons{Entao}{a}};    # Pegando o Ã­ndice.
    my @valores = values %{$tri_sons{Entao}{a}}; # Pegando os valores.
- 
+
    for my $i (keys %tri_sons) { # Ãndice e valor.
     for my $j (keys %{$tri_sons{$i}}) {
      while (my ($indice, $valor) = each %{$tri_sons{$i}{$j}}) {
@@ -381,9 +381,9 @@ Veja como E<eacute> flexE<iacute>vel esta estrutura.
    # Unidimensional.
    $uni_sons{Trem} = "piui";  # Adicionando.
    delete($uni_sons{Ovelha}); # Removendo
- 
- 
- 
+
+
+
    # Bidimensional.
    $bi_sons{Um}{trem} = "piui"; # Adicionando.
    $bi_sons{Sete} = {
@@ -396,9 +396,9 @@ Veja como E<eacute> flexE<iacute>vel esta estrutura.
                     };
    delete($bi_sons{Sete}{porco}); # Removendo
    delete($bi_sons{Sete});
- 
- 
- 
+
+
+
    # Tridimensional.
    $tri_sons{Entao}{o}{trem} = "piui"; # Adicionando.
    delete($tri_sons{Entao}{o}{pato});  # Removendo.
@@ -410,14 +410,14 @@ possE<iacute>vel listando os elementos desejados dentro das {}.
 
    # Unidimensional.
    my @uni_fatia = @sons{"Vaca", "Porco", "Cavalo", "Trem"};
- 
- 
- 
+
+
+
    # Bidimensional.
    my @bi_fatia = @{$sons{E}}{"vaca", "porco", "cavalo"};
- 
- 
- 
+
+
+
    # Tridimensional.
    my @tri_fatia = @{$sons{Entao}{a}}{"vaca", "ovelha"};
 
@@ -442,17 +442,17 @@ Este E<eacute> E<uacute>til quando se tem uma lista de chaves e valores
               pass => "freakpass",
              },
             );
- 
+
    # Acessando.
    $array[0]{user};
- 
+
    # Adicionando.
    unshift(@array, { user => "lary", pass => "larypass" });
    push(@array, { user => "monger", pass => "mongerpass" });
- 
+
    # Removendo.
    delete($array[0]);
- 
+
    # Imprimindo.
    for my $i (0..$#array) {
     for my $j (keys %{$array[$i]}) {
@@ -470,18 +470,18 @@ a uma chave.
                lab01 => [ "maria", "joao", "jose" ],
                lab02 => [ "ana", "cleusa", "elza" ],
               };
- 
+
    # Acessando.
    $hash{lab01}[0];
- 
+
    # Adicionando.
    unshift(@{$hash{lab01}}, "sonia");
    push(@{$hash{lab01}}, "fernanda");
- 
+
    # Removendo.
    my $primeiro = shift(@{$hash{lab01}});
    my $ultimo = pop(@{$hash{lab01}});
- 
+
    # Imprimindo.
    for my $i (keys %hash) {
     for my $j (0..$#{$hash{$i}}) {

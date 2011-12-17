@@ -10,16 +10,16 @@ Neste tutorial você vai aprender como criar uma aplicação em perl catalyst.
 
 Vou demonstrar como criar um "blog/crud" simples com catalyst.
 
-=head2 INICIALIZAÇÃO DO PROJETO 
+=head2 INICIALIZAÇÃO DO PROJETO
 
-Antes de iniciar, instale o catalyst e alguns módulos que utilzaremos através do cpanm Task::Catalyst HTML::FormHandler::Model::DBIC 
+Antes de iniciar, instale o catalyst e alguns módulos que utilzaremos através do cpanm Task::Catalyst HTML::FormHandler::Model::DBIC
 
 Para iniciar nosso projeto, digite:
 
     $ catalyst.pl Blog::Tutorial
     $ cd Blog-Tutorial
 
-Ok, agora temos nosso esqueleto de aplicação 
+Ok, agora temos nosso esqueleto de aplicação
 
 Agora é o seguinte, vamos deixar 2 terminais abertos para trabalhar neste tutorial... um deles é onde vamos trabalhar com o código fonte e o outro vamos deixar rodando o servidor web com nossa aplicação. Então abra outro terminal e digite:
 
@@ -77,14 +77,14 @@ Primeiro precisamos criar uma View chamada 'Standard' para poder implementar tem
 e inserir o seguinte conteúdo:
 
     package Blog::Tutorial::View::Standard;
-    use strict; 
+    use strict;
     use base 'Catalyst::View::TT';
     __PACKAGE__->config(
         TEMPLATE_EXTENSION => '.tt2',
         INCLUDE_PATH => [
-                #esta será o diretório onde vamos colocar os templates para a view Standard, 
+                #esta será o diretório onde vamos colocar os templates para a view Standard,
                 # ->path_to pega o diretório relativo onde sua app está localizada automaticamente
-                Blog::Tutorial->path_to( 'root', 'src', 'template', 'standard', ), 
+                Blog::Tutorial->path_to( 'root', 'src', 'template', 'standard', ),
             ],
         TIMER   => 0,
         WRAPPER => 'wrapper.tt2', #aqui especificamos nosso arquivo wrapper
@@ -100,9 +100,9 @@ e insira o conteúdo:
     BEM VINDO AO '[% titulo_blog %]'
     <br><br>
     Aqui poderá encontrar como criar suas páginas com este framework
-    <br>  
+    <br>
 
-agora, altere e indique qual template o método index no controller Root deverá utilizar... 
+agora, altere e indique qual template o método index no controller Root deverá utilizar...
 
     $ vim lib/Blog/Tutorial/Controller/Root.pm
 
@@ -154,10 +154,10 @@ agora altere o método index do controller Post para:
                     required_message => 'Campo Obrigatório',
                     css_class        => 'prepend-1 clear span-10',
                     apply            => [
-                        {   
+                        {
                             transform => sub { lc( $_[0] ) }
                         },
-                        {   
+                        {
                             check => sub {
                                 return 1
                                   if $_[0] =~
@@ -256,7 +256,7 @@ Veja o que ele mostrou no log de saída:
     | var3                                | bazzzz                               |
     '-------------------------------------+--------------------------------------'
 
-ok, entendi, mas e como eu acesso o valor dessas variáveis no controller? 
+ok, entendi, mas e como eu acesso o valor dessas variáveis no controller?
 
 todas as variáveis de um request são acessíveis através do $c->req->params (veja mais em http://search.cpan.org/~bobtfish/Catalyst-Runtime-5.90002/lib/Catalyst/Request.pm#$req-%3Eparams )
 Então nós podemos alterar nosso método 'index' do controller 'post' para entender um pouco melhor isso... então, altere seu controller e insira umas linhas de debug para ver o que acontece conforme:
@@ -293,7 +293,7 @@ veja o que é impresso na saída do seu terminal web dev do catalyst:
     | var3                                | bazzzz                               |
     '-------------------------------------+--------------------------------------'
     [debug] Path is "post"
-    [debug]  *** $c->log->debug("...")  imprime no log de debug do catalyst 
+    [debug]  *** $c->log->debug("...")  imprime no log de debug do catalyst
     [debug] var1: foo
     [debug] var2: bar
     [debug] var3: bazzzz
@@ -355,7 +355,7 @@ Agora, preencha o form e clique salvar e veja a saída no terminal:
     | submit                              | Salvar                               |
     '-------------------------------------+--------------------------------------'
     [debug] Path is "post"
-    [debug]  *** $c->log->debug("...")  imprime no log de debug do catalyst 
+    [debug]  *** $c->log->debug("...")  imprime no log de debug do catalyst
     [debug] não validou var1: foo
     [debug] não validou var2: bar
     [debug] não validou var3: bazzzz
@@ -364,7 +364,7 @@ Agora, preencha o form e clique salvar e veja a saída no terminal:
     [debug] validou var1: foo
     [debug] validou var2: bar
     [debug] validou var3: bazzzz
-    [debug] A seguir, algumas linhas de debug imprimindo os valores entrados no form: 
+    [debug] A seguir, algumas linhas de debug imprimindo os valores entrados no form:
     [debug] --> EMAIL: email@example.com
     [debug] --> NOME: meu nome...
     [debug] --> MENSAGEM: teste mensagem ..
@@ -385,7 +385,7 @@ Agora, vamos colocar um 'header'(cabeçalho) para nossa app
 e colocar o conteúdo:
 
     <img src="/static/images/catalyst_logo.png"  style="height:50px;"> - Blog::Tutorial em perl catalyst<br><br>
-    [% IF c.user %] 
+    [% IF c.user %]
         <span style="color: #FF0000;">loged in as: [% c.user.email %] | <a href="[% c.uri_for( c.controller( 'Authenticate' ).action_for( 'logout' ) ) %]">LOGOUT</a></span><br><br>
     [% END %]
     [% IF c.flash.message != '' %]
@@ -399,11 +399,11 @@ e vamos inserir este header em nosso wrapper para que ele seja processado e inse
 e inserir uma linha antes do [% content %], obtendo:
 
     <div class="conteudo">
-        [% PROCESS 'header.tt2' %] 
+        [% PROCESS 'header.tt2' %]
         [% content %]
     </div>
 
-agora acesse sua página inicial em http://localhost:3005/ e veja o cabeçalho da página ali... observe que suas imagens, js, ou páginas static podem ficar dentro do diretório /static/images... 
+agora acesse sua página inicial em http://localhost:3005/ e veja o cabeçalho da página ali... observe que suas imagens, js, ou páginas static podem ficar dentro do diretório /static/images...
 
 agora altere o conteúdo completo da sua página index, para criar um link que vai até a página de posts:
 
@@ -417,7 +417,7 @@ substitua o conteúdo por:
     <br>
     <a href="/post">POSTS (v1) </a>
     <br>
-    <a href="[% c.uri_for( c.controller( 'ControlPanel::Post' ).action_for( 'index' ) ) %]">POSTS...(v2)</a>                                    
+    <a href="[% c.uri_for( c.controller( 'ControlPanel::Post' ).action_for( 'index' ) ) %]">POSTS...(v2)</a>
     <br>
 
 no exemplo acima demonstrei como você pode acessar a url para a página de posts de duas maneiras... a segunda é melhor, pois o caminho da página ('localhost:3005/post') não fica hardcoded.
@@ -498,10 +498,10 @@ se você usa postgres com usuario MEU_USER.. substitua pelo seu username
 se você usa mysql com usuario MEU_USER.. substitua pelo seu username
 
     $ script/blog_tutorial_create.pl model DB DBIC::Schema Blog::Tutorial::DB create=static dbi:mysql:db=blog_tutorial MEU_USER passworrrddzz
-  
+
 e agora vamos fixar os relacionamentos.... edite seus models e altere conforme:
 
-    $ vim lib/Blog/Tutorial/DB/Result/User.pm 
+    $ vim lib/Blog/Tutorial/DB/Result/User.pm
 
 e altere as ultimas linhas para ficar:
 
@@ -521,7 +521,7 @@ e altere as ultimas linhas para ficar:
       { "foreign.user_id" => "self.id" },
       { cascade_copy => 0, cascade_delete => 0 },
     );
-                                                                                                                                                                                                                                                   
+
 
     __PACKAGE__->meta->make_immutable;
     1;
@@ -539,7 +539,7 @@ e altere as últimas linhas para obter:
       "users_to_roles",
       "Blog::Tutorial::DB::Result::UsersToRole",
       { "foreign.role_id" => "self.id" },
-      { cascade_copy => 0, cascade_delete => 0 },                                                                                                                                                                                                  
+      { cascade_copy => 0, cascade_delete => 0 },
     );
 
     __PACKAGE__->meta->make_immutable;
@@ -566,7 +566,7 @@ e altere as últimas linhas para obter:
       { id => "user_id" },
       { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
     );
-                                                                                                                                                                                                                                                   
+
     __PACKAGE__->meta->make_immutable;
     1;
 
@@ -587,7 +587,7 @@ e da mesma maneira inclúa o relacionamento no model posts.. caso ele não exist
 
 bom, agora já especificamos os relacionamentos de nossos models... quando vc utiliza postgres ele detecta os relacionamentos automaticamente.. exceto os many to many porque na verdade many-to-many não é relacionamento.
 
-=head2 AUTENTICANDO O USUÁRIO 
+=head2 AUTENTICANDO O USUÁRIO
 
 Agora o próximo passo é criar umas telas/templates para login e os controllers respectivos que auxiliarão no login e logout
 
@@ -605,7 +605,7 @@ agora crie o controller para autenticação
 
     $ script/blog_tutorial_create.pl controller Authenticate
 
-e edite o controller 
+e edite o controller
 
     $ vim lib/Blog/Tutorial/Controller/Authenticate.pm
 
@@ -672,8 +672,8 @@ Altere o conteúdo desse controller pelo conteúdo abaixo... na verdade apenas r
                     css_class => 'prepend-1 span-17',
                 },
             ]
-        );  
-                
+        );
+
         $c->stash(
             form         => $form,
             template     => 'login.tt2',
@@ -697,7 +697,7 @@ Altere o conteúdo desse controller pelo conteúdo abaixo... na verdade apenas r
         if (   $c->check_user_roles('user')
             or $c->check_user_roles('admin') )
         {
-            $c->response->redirect( 
+            $c->response->redirect(
               $c->uri_for( $c->controller('ControlPanel::Post')->action_for('index') ) );
 
         }
@@ -737,7 +737,7 @@ e modifique seu 'use Catalyst qw/.../' obtendo:
         Session
         Session::Store::FastMmap
         Session::State::Cookie
-    /;                                                                                                                                                                                                                                             
+    /;
     extends 'Catalyst';
 
 e tambem coloque nesse mesmo arquivo a configuração do plugin de autenticação.. ele vai nos ajudar a validar os logins/logouts... coloque a configuração a seguir logo antes da linha "__PACKAGE__->setup();", ficando com:
@@ -776,7 +776,7 @@ e insira o método 'auto' que provavelmente não estará lá por padrão (insira
             $c->response->header( 'Cache-Control' => 'no-cache' );
             if (    !$c->check_user_roles('user')
                 and !$c->check_user_roles('admin') )
-            {   
+            {
                 $c->flash( message => 'Faça login', );
                 $c->res->redirect(
                     $c->uri_for(
@@ -793,7 +793,7 @@ e insira o método 'auto' que provavelmente não estará lá por padrão (insira
     }
 
 
-Bom, a verificação auto acima indica que sempre que tentarmos acessar páginas dentro do controller 'ControlPanel', será exigido autenticação por parte do usuário... 
+Bom, a verificação auto acima indica que sempre que tentarmos acessar páginas dentro do controller 'ControlPanel', será exigido autenticação por parte do usuário...
 
 então vamos testar aquela nossa página de post... acesse http://localhost:3005/post e desta vez você será barrado e redirecionado para a tela de login. Pois tudo que está abaixo do ControlPanel exigirá senha...
 
@@ -807,9 +807,9 @@ e substitua o conteúdo com :
     <br><br>
     Aqui poderá encontrar como criar suas páginas com este framework
     <br>
-    <a href="[% c.uri_for( c.controller( 'Authenticate' ).action_for( 'login' ) ) %]">login</a>                                    
+    <a href="[% c.uri_for( c.controller( 'Authenticate' ).action_for( 'login' ) ) %]">login</a>
     <br>
-    <a href="/post">POSTS (v1) </a> 
+    <a href="/post">POSTS (v1) </a>
     <br>
 
 Então, vamos digitar uma senha dos usuários que criamos... se você já não estiver na página de login , acesse http://localhost:3005/login  e entre com as credenciais:
@@ -829,8 +829,8 @@ e insira o conteúdo
         Página:
             [% IF pagination.previous != '' %]
                 <a href="[% pagination.previous.href %]">[% pagination.previous.label %]</a>
-            [% END %] 
-        
+            [% END %]
+
             [% IF pagination.current != '' %]
                 <a class="current">
                   [% pagination.current.label %]
@@ -851,23 +851,23 @@ e insira o conteúdo
 
 e antes de criar um post, vamos alterar o template post_index.tt2
 
-    $ vim root/src/template/standard/post_index.tt2 
+    $ vim root/src/template/standard/post_index.tt2
 
 e substitua todo o conteúdo com:
 
     [% page_title %]
-    <br>                                                                                                                                                                                                                                           
+    <br>
     <a href="[% c.uri_for( c.controller( 'ControlPanel::Post' ).action_for( 'edit' ) ) %]">NOVO</a><br><br>
 
     [% PROCESS 'pagination.tt2' %]
     <br>
 
     [% WHILE ( item = results.next ) %]
-        id: [% item.id %], 
+        id: [% item.id %],
             <a href="[% c.uri_for(c.controller( 'ControlPanel::Post' ).action_for( 'remove' ), item.id ) %]">
-              remover</a> | 
+              remover</a> |
             <a href="[% c.uri_for(c.controller( 'ControlPanel::Post' ).action_for( 'edit' ), item.id ) %]">
-              alterar</a> 
+              alterar</a>
         <br>
         Titulo: [% item.titulo %] <br>
         Mensagem: [% item.mensagem %] <br>
@@ -881,10 +881,10 @@ e substitua todo o conteúdo com:
 agora crie o template post_edit.tt2 para criar nossos posts..
 
     $ vim root/src/template/standard/post_edit.tt2
-    
+
 e insira o conteúdo:
 
-    POSTS<br>                                                                                                                                                                                                                                      
+    POSTS<br>
     [% form.render %]
 
 
@@ -896,7 +896,7 @@ e vamos alterar o controller ControlPanel::Post para que ele utilize os dados do
 e substitua todo o conteúdo por:
 *** ATENÇÃO, retire os espaços no começo de cada linha... em especial a linha que começa com HTMLCONFIRM
 
-    package Blog::Tutorial::Controller::ControlPanel::Post;                                                                                                                                                                                        
+    package Blog::Tutorial::Controller::ControlPanel::Post;
     use Moose;
     use HTML::FormHandler::Model::DBIC;
     use namespace::autoclean;
@@ -926,9 +926,9 @@ e substitua todo o conteúdo por:
 
         my $results = $c->model( __PACKAGE__->config->{schema_model} )->search(
             {
-    #todos 
+    #todos
             },
-            {  
+            {
                 rows     => 2,
                 page     => $c->req->params->{page} || 1,
                 order_by => { -asc => [qw/id/] }
@@ -957,7 +957,7 @@ e substitua todo o conteúdo por:
             last_page     => $pager->last_page,
             total_entries => $pager->total_entries,
         };
-        $c->stash(                                                                                                                                                                                                                                 
+        $c->stash(
             template   => 'post_index.tt2',
             results    => $results,
             pagination => $pagination,
@@ -1094,7 +1094,7 @@ Repasse este conhecimento e ajude a fortalecer linguagem perl no brasil.
 
 =head2 Apêndice
 
-Veja também: 
+Veja também:
 
 http://search.cpan.org/~bobtfish/Catalyst-Manual-5.9000/lib/Catalyst/Manual/Tutorial/01_Intro.pod
 

@@ -14,12 +14,12 @@ O Gearman aborda a seguinte estrutura,
 
 -Trabalhador
 
-O Trabalhador, pode chamar uma função de qualquer linguagem que tenha uma biblioteca que 
+O Trabalhador, pode chamar uma função de qualquer linguagem que tenha uma biblioteca que
 segue o procolo do Gearman. O Cliente apenas passa um parâmetro para o trabalhador. Eu não vou
 entrar em detalhes sobre a arquitetura agora, pois é o papel do tópico abaixo.
 
 Ele pode ser aplicado numa variedade de aplicações, você pode dividir o processamento de imagens do seu site
-por exemplo, um bom exemplo no site do Gearman, é como eles usam isso para processar 
+por exemplo, um bom exemplo no site do Gearman, é como eles usam isso para processar
 imagem L<http://gearman.org/index.php?id=getting_started>.
 
 Em outras palavras, o Gearman fornece um sistema nervoso distribuido para construir aplicações.
@@ -43,7 +43,7 @@ Uma boa maneira de ilustrar o funcionamento do framework,
 A computação distribuida consiste em multiplos computadores autonomos se comunicando através
 de uma conexão. Isso ajuda a resolver gargalos na sua aplicação por exemplo.
 
-Tanto o cliente como o trabalhor irão se conectar ao servidor, você pode ter 
+Tanto o cliente como o trabalhor irão se conectar ao servidor, você pode ter
 mil trabalhadores conectados no seu servidor, quando o seu cliente mandar uma lista
 de tarefas para serem realizadas o servidor irá dividir essas tarefas entre os trabalhadores
 disponíveis. Quando cada trabalhador terminar de processar o que foi pedido, ele devolve o retorno
@@ -53,7 +53,7 @@ para o servidor que envia a resposta para o cliente.
 =head2 Um Passso Para o Lado
 
 O Gearman, é um sistema muito simples de aprender. O que veremos aqui é um exemplo básico
-de como podemos usar essa bala de prata. Para um melhor entendimento, é recomendável 
+de como podemos usar essa bala de prata. Para um melhor entendimento, é recomendável
 que o leitor exerça os exemplos ao longo do artigo.
 
 =head2 Um Passo Para Frente
@@ -110,12 +110,12 @@ repositório do Ubuntu, por tanto veja o nome da biblioteca que ele falou que pr
 	sudo apt-get install nome-da-lib-dev
 
 Cheque se no /opt/sbin/ tem o gearmand, e execute-o,
-	
+
 	$./gearmand -vvv
 
 Se aparecer alguma mensagem de erro, é porque você precisa linkar algumas bibliotecas,
 
-	sudo ldconfig -v 
+	sudo ldconfig -v
 
 Se deu tudo certo, você terá uma saída como,
 
@@ -260,7 +260,7 @@ thread, L<http://mail.pm.org/pipermail/saopaulo-pm/2010/010393.html>
   my @alcohol_weight = 1 .. 10;
 
   my @pids;
- for (1 .. 20) 
+ for (1 .. 20)
  {
 	push(@pids,my $pid = fork);
 
@@ -314,7 +314,7 @@ Muito bom, temos cinco trabalhadores a nossa disposição, vamos executar nosso 
 
 	perl cliente.pl
 
-Agora fique navegando entre as cinco B<shells> abertas e o leitor perceberá como 
+Agora fique navegando entre as cinco B<shells> abertas e o leitor perceberá como
 os trabalhados estão sendo distribuidos.
 
 

@@ -15,7 +15,7 @@ parâmetros, a classe da aplicação e o segundo é o script que você quer:
 
     use strict;
     use warnings;
-    
+
     use Catalyst::ScriptRunner;
     Catalyst::ScriptRunner->run('MyAPP', 'Create');
 
@@ -61,7 +61,7 @@ Abaixo você poderá ver os exemplos do help:
  See also:
    perldoc Catalyst::Manual
    perldoc Catalyst::Manual::Intro
- 
+
 
 =head2 Testando
 
@@ -78,7 +78,7 @@ L<Catalyst::Engine::CGI>
 =head2 O Engine FastCGI
 
 Também é responsável por carregar só que no ambiente FastCGI
-L<Catalyst::Engine::FastCGI> 
+L<Catalyst::Engine::FastCGI>
 
 =head2 AUTOR
 

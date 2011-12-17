@@ -164,12 +164,12 @@ forma. Por exemplo:
 =back
 
         for my $i (1..10) {
-            
+
             my $resultado = funcao($i);
-            
+
             # termina o loop se o resultado for verdadeiro
             last if $resultado;
-            
+
             processa_inteiro($i);
         }
 
@@ -415,22 +415,22 @@ exemplos:
 
       # ex1
       chomp($answer = <TTY>);
- 
+
       # ex2
       ($a += $b) *= 2;
- 
+
       # ex3
       # strip to basename
       ($progname = $0)        =~ s!^.*/!!;
- 
+
       # ex4
       # Make All Words Title-Cased
       ($capword  = $word)     =~ s/(\w+)/\u\L$1/g;
- 
+
       # ex5
       # /usr/man/man3/foo.1 changes to /usr/man/cat3/foo.1
       ($catpage  = $manpage)  =~ s/man(?=\d)/cat/;
- 
+
       # ex6
       @bindirs = qw( /usr/bin /bin /usr/local/bin );
       for (@libdirs = @bindirs) { s/bin/lib/ }
@@ -488,7 +488,7 @@ dados. Por exemplo:
           Sorting  => \&get_sorting,
           Wizard   => \&wizards_only,
       );
- 
+
       foreach my $state (sort keys %State_Table) {
           my $function = $State_Table{$state};
           my $how      = ($action == $function)

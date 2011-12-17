@@ -112,21 +112,21 @@ Segue uma lista de navegadores que você pode "fingir" ser,
 	Linux Mozilla
 	Linux Konqueror
 
-=head2 Estados 
+=head2 Estados
 
 O I<Mechanize> também oferece alguns métodos para você checar o estado da sua requisição, você pode utilizá-los após utilizar o método "get" pelo menos uma vez.
 
   $mech->get(url)...
 
 =head3 Métodos de Estado
-   
+
     $mech->success()
 	Returna uma condição booleana dizendo se a última requisição foi um sucesso ou não.
 
         É equivalente ao método "$mech->res->is_success".
 
    $mech->uri()
-       Retorna um objeto URI, que contém a URI que você atualmente está.      
+       Retorna um objeto URI, que contém a URI que você atualmente está.
 
    $mech->response() / $mech->res()
        Retorna a atual resposta como um objeto HTTP::Response

@@ -81,10 +81,10 @@ voce escreva em japonE<ecirc>s).
  use strict;
  use warnings;
  use Gtk2 qw(-init -threads-init);
- 
+
  my $canvas_width = 0;
  my $canvas_height = 0;
- 
+
  my $mainwindow = Gtk2::Window->new("toplevel");
  my $draw = Gtk2::DrawingArea->new();
  $draw->signal_connect(expose_event => \&drawit);
@@ -92,15 +92,15 @@ voce escreva em japonE<ecirc>s).
  $mainwindow->add($draw);
  $mainwindow->show_all();
  Gtk2->main();
- 
- 
+
+
  sub configureit {
          my $draw = shift;
          my $event = shift;
          $canvas_width = $event->width;
          $canvas_height = $event->height;
  }
- 
+
  sub drawit {
          my $draw = shift;
          my $event = shift;
@@ -111,12 +111,12 @@ voce escreva em japonE<ecirc>s).
          $draw->window->clear_area($x, $y, $w, $h);
          # Vou mexer só na parte que precisa ser atualizada
          $gc->set_clip_rectangle(Gtk2::Gdk::Rectangle->new($x, $y, $w, $h));
- 
+
          # Pintar o fundo de branco.
          $gc->set_rgb_fg_color(Gtk2::Gdk::Color->new(255*257,255*257,255*257));
          $draw->window->draw_rectangle($gc,1,0,0,$canvas_width,$canvas_height);
          $gc->set_rgb_fg_color(Gtk2::Gdk::Color->new(0,0,0));
- 
+
          # obter o Pango Context
          my $pangoc = $draw->get_pango_context();
          # criar o Font Description
@@ -130,8 +130,8 @@ voce escreva em japonE<ecirc>s).
          # Desenhar...
          my $rect = Gtk2::Gdk::Rectangle->new(int($canvas_width/2)-75+2,int($canvas_height/2)-100+2,146,20);
          $draw->style->paint_layout($draw->window,$draw->state,1,$rect,undef,undef,$rect->x,$rect->y,$layout);
- 
- 
+
+
          # Desfazendo o clip
          $gc->set_clip_rectangle(undef);
  }

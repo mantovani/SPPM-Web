@@ -1,7 +1,7 @@
 /**
  * Flash (http://jquery.lukelutman.com/plugins/flash)
  * A jQuery plugin for embedding Flash movies.
- * 
+ *
  * Version 1.0
  * November 9th, 2006
  *
@@ -9,24 +9,24 @@
  * Dual licensed under the MIT and GPL licenses.
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.opensource.org/licenses/gpl-license.php
- * 
+ *
  * Inspired by:
  * SWFObject (http://blog.deconcept.com/swfobject/)
  * UFO (http://www.bobbyvandersluis.com/ufo/)
  * sIFR (http://www.mikeindustries.com/sifr/)
- * 
- * IMPORTANT: 
+ *
+ * IMPORTANT:
  * The packed version of jQuery breaks ActiveX control
  * activation in Internet Explorer. Use JSMin to minifiy
  * jQuery (see: http://jquery.lukelutman.com/plugins/flash#activex).
  *
- **/ 
+ **/
 ;(function(){
-	
+
 var $$;
 
 /**
- * 
+ *
  * @desc Replace matching elements with a flash movie.
  * @author Luke Lutman
  * @version 1.0.1
@@ -39,7 +39,7 @@ var $$;
  * @type jQuery
  *
  * @cat plugins/flash
- * 
+ *
  * @example $('#hello').flash({ src: 'hello.swf' });
  * @desc Embed a Flash movie.
  *
@@ -54,24 +54,24 @@ var $$;
  *
 **/
 $$ = jQuery.fn.flash = function(htmlOptions, pluginOptions, replace, update) {
-	
+
 	// Set the default block.
 	var block = replace || $$.replace;
-	
+
 	// Merge the default and passed plugin options.
 	pluginOptions = $$.copy($$.pluginOptions, pluginOptions);
-	
+
 	// Detect Flash.
 	if(!$$.hasFlash(pluginOptions.version)) {
 		// Use Express Install (if specified and Flash plugin 6,0,65 or higher is installed).
 		if(pluginOptions.expressInstall && $$.hasFlash(6,0,65)) {
 			// Add the necessary flashvars (merged later).
 			var expressInstallOptions = {
-				flashvars: {  	
+				flashvars: {
 					MMredirectURL: location,
 					MMplayerType: 'PlugIn',
-					MMdoctitle: jQuery('title').text() 
-				}					
+					MMdoctitle: jQuery('title').text()
+				}
 			};
 		// Ask the user to update (if specified).
 		} else if (pluginOptions.update) {
@@ -86,22 +86,22 @@ $$ = jQuery.fn.flash = function(htmlOptions, pluginOptions, replace, update) {
 			return this;
 		}
 	}
-	
+
 	// Merge the default, express install and passed html options.
 	htmlOptions = $$.copy($$.htmlOptions, expressInstallOptions, htmlOptions);
-	
+
 	// Invoke $block (with a copy of the merged html options) for each element.
 	return this.each(function(){
 		block.call(this, $$.copy(htmlOptions));
 	});
-	
+
 };
 /**
  *
  * @name flash.copy
  * @desc Copy an arbitrary number of objects into a new object.
  * @type Object
- * 
+ *
  * @example $$.copy({ foo: 1 }, { bar: 2 });
  * @result { foo: 1, bar: 2 };
  *
@@ -157,8 +157,8 @@ $$.hasFlash.playerVersion = function() {
 			// avoid fp6 minor version lookup issues
 			// see: http://blog.deconcept.com/2006/01/11/getvariable-setvariable-crash-internet-explorer-flash-6/
 			var axo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6');
-			try { axo.AllowScriptAccess = 'always';	} 
-			catch(e) { return '6,0,0'; }				
+			try { axo.AllowScriptAccess = 'always';	}
+			catch(e) { return '6,0,0'; }
 		} catch(e) {}
 		return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version').replace(/\D+/g, ',').match(/^,?(.+),?$/)[1];
 	// other browsers
@@ -167,7 +167,7 @@ $$.hasFlash.playerVersion = function() {
 			if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){
 				return (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]).description.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1];
 			}
-		} catch(e) {}		
+		} catch(e) {}
 	}
 	return '0,0,0';
 };
@@ -183,7 +183,7 @@ $$.htmlOptions = {
 	pluginspage: 'http://www.adobe.com/go/getflashplayer',
 	src: '#',
 	type: 'application/x-shockwave-flash',
-	width: 320		
+	width: 320
 };
 /**
  *
@@ -226,7 +226,7 @@ $$.update = function(htmlOptions) {
 };
 /**
  *
- * @desc Convert a hash of html options to a string of attributes, using Function.apply(). 
+ * @desc Convert a hash of html options to a string of attributes, using Function.apply().
  * @example toAttributeString.apply(htmlOptions)
  * @result foo="bar" foo="bar"
  *
@@ -236,11 +236,11 @@ function toAttributeString() {
 	for(var key in this)
 		if(typeof this[key] != 'function')
 			s += key+'="'+this[key]+'" ';
-	return s;		
+	return s;
 };
 /**
  *
- * @desc Convert a hash of flashvars to a url-encoded string, using Function.apply(). 
+ * @desc Convert a hash of flashvars to a url-encoded string, using Function.apply().
  * @example toFlashvarsString.apply(flashvarsObject)
  * @result foo=bar&foo=bar
  *
@@ -250,27 +250,27 @@ function toFlashvarsString() {
 	for(var key in this)
 		if(typeof this[key] != 'function')
 			s += key+'='+encodeURIComponent(this[key])+'&';
-	return s.replace(/&$/, '');		
+	return s.replace(/&$/, '');
 };
 /**
  *
  * @name flash.transform
  * @desc Transform a set of html options into an embed tag.
- * @type String 
+ * @type String
  *
  * @example $$.transform(htmlOptions)
  * @result <embed src="foo.swf" ... />
  *
- * Note: The embed tag is NOT standards-compliant, but it 
+ * Note: The embed tag is NOT standards-compliant, but it
  * works in all current browsers. flash.transform can be
- * overwritten with a custom function to generate more 
+ * overwritten with a custom function to generate more
  * standards-compliant markup.
  *
 **/
 $$.transform = function(htmlOptions) {
 	htmlOptions.toString = toAttributeString;
 	if(htmlOptions.flashvars) htmlOptions.flashvars.toString = toFlashvarsString;
-	return '<embed ' + String(htmlOptions) + '/>';		
+	return '<embed ' + String(htmlOptions) + '/>';
 };
 
 /**
@@ -284,5 +284,5 @@ if (window.attachEvent) {
 		__flash_savedUnloadHandler = function() {};
 	});
 }
-	
+
 })();

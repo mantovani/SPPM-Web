@@ -9,12 +9,12 @@ Na internet, serviços como o Google Docs utilizam o PDF para fazer a impressão
 pois garante uma boa qualidade e como é feito pelo lado do servidor por um driver conhecido,
 há uma certa certeza de como vai ser a saída independente do browser do cliente.
 
-Dentro de empresas de impressão, o formato PDF é um formato bem reconhecido pelas impressoras e pode 
+Dentro de empresas de impressão, o formato PDF é um formato bem reconhecido pelas impressoras e pode
 atingir níveis de qualidades altos, incluindo imagens, linhas, pontos, retângulos, textos, etc...
 
 Existem vários programas, pagos ou não, que geram PDF. No Windows, existem
 drivers de impressoras que fazem a impressão em arquivo PDF, então pode-se imprimir qualquer coisa para PDF.
-Entre esses programas, podemos citar o Adobe Photoshop, CorelDRAW, Adobe Illustrator (preservando os vetores), 
+Entre esses programas, podemos citar o Adobe Photoshop, CorelDRAW, Adobe Illustrator (preservando os vetores),
 no linux, podemos citar o Gimp, que importa os PDFs escolhendo DPI e transformando no formato interno XCF.
 
 
@@ -23,7 +23,7 @@ no linux, podemos citar o Gimp, que importa os PDFs escolhendo DPI e transforman
 Uma das característica presente em todas as bibliotecas de PDF é que as medidas
 (para desenhar ou posicionar) são em pontos (pt).
 
-Para alegria de muitos, pode-se utilizar a divisão de algumas constantes (para 72 DPI) 
+Para alegria de muitos, pode-se utilizar a divisão de algumas constantes (para 72 DPI)
 para indicar a unidade de medida (mm, pt, in).
 
 O código é o seguinte:
@@ -47,7 +47,7 @@ Uma coisa importante é saber que o padrão do PDF é 72 DPI, mas que ele pode c
 No CPAN existe uma enorme quantidade de módulos para manipulação de PDF.
 Uma simples pesquisa por PDF encontra 817 pacotes.
 
-Infelizmente, nem todos são rápidos, nem atende sua necessidade. Se a sua necessidade é alterar 
+Infelizmente, nem todos são rápidos, nem atende sua necessidade. Se a sua necessidade é alterar
 PDFs já existentes, uma ótima escolha é o C<PDF::Reuse>, com ele é possível editar arquivos grandes
 com imagens, e mais de 9,000 paginas com certa velocidade. Tem uma grande vantagem se for comparado ao
 C<PDF::Haru>, pois pode-se mesclar vários PDFs em um novo, fazendo rotação, escala, etc...
@@ -63,9 +63,9 @@ Agora que já temos uma noção sobre este pacote, vamos a alguns exemplos.
 
 
 
-	use PDF::Reuse;                       # Mandatory  
+	use PDF::Reuse;                       # Mandatory
 	prFile('saida.pdf');                    # Mandatory, with or without a file name
-	prText(250, 650, 'Hello World !');       
+	prText(250, 650, 'Hello World !');
 	prEnd();                              # Mandatory
 
 
@@ -93,11 +93,11 @@ Adicionar outros arquivo ao PDF é feito através do comando prForm:
 		tolerant => $tolerant,      # continue even with an invalid form
 		x        => $x,             # $x points from the left
 		y        => $y,             # $y points from the bottom
-		rotate   => $degree,        # rotate 
+		rotate   => $degree,        # rotate
 		size     => $size,          # multiply everything by $size
 		xsize    => $xsize,         # multiply horizontally by $xsize
 		ysize    => $ysize } )      # multiply vertically by $ysize
- 
+
 
 Arquivos salvos no photoshop por algum motivo não abrem, exceto se desmarcar todas as opções na hora de salvar (ex: compactar para WEB).
 Um ponto positivo do comando prForm é poder modificar (esticar, rotacionar, etc..) o arquivo, e também é posiciona-lo, pois este fragmento é colocado através de um XObject.
@@ -106,7 +106,7 @@ Um ponto positivo do comando prForm é poder modificar (esticar, rotacionar, etc
 O comando prSinglePage adiciona um pagina apenas, e não deve ser usado para incluir um PDF inteiro por loop, para isso, existe a função prDoc.
 
 Entretanto, descobri que se utilizar prDoc ou prSinglePage, torna-se "impossível" abrir o PDF novamente pelo próprio reuse, portanto, sugiro, que se for necessário remodular o PDF depois de pronto (por exemplo, trocar de A4 para um A3) utilizar o prForm, ou terá dor de cabeças!
- 
+
 A função prDoc, do mesmo jeito que a prSinglePage, não permite esticar ou posicionar o PDF, pois ela não inclui o PDF dentro de um objeto*
 
 
@@ -260,7 +260,7 @@ Criei um arquivo com alguns testes, nele criamos alguns textos em 1000 paginas.
 
 
 
-O código muito rápido, criou tudo em 0m2.461s (usando um núcleo do processador, 2.67GHz) 
+O código muito rápido, criou tudo em 0m2.461s (usando um núcleo do processador, 2.67GHz)
 
 Diferentemente do PDF::Reuse, podemos usar thread para criar o PDF usando os 8 núcleos, mas isso fica para outro dia!
 
@@ -318,12 +318,12 @@ Com base na idéia/código do L<http://rick.measham.id.au/pdf-api2/>, montei out
 		align => 'center',
 		max_width => 40/mm,
 		max_height => 150/mm,
-	
+
 		debug_rect => 1,
 		#all_text => 0
 	});
 
-O all_text  faz com que se o texto sair da area definida por max_widht/max_height, a fonte seja diminuída até caber. 
+O all_text  faz com que se o texto sair da area definida por max_widht/max_height, a fonte seja diminuída até caber.
 
 =head3 Barcodes
 

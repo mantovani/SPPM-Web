@@ -62,17 +62,17 @@ Estes são os arquivos de dados baseado em metadados, que podem ser utilizados p
 
 Onde [ARGUMENTO] é a sigla de dois caracteres do estado, para representar os dados de latitude e longitude são utilizados o vocabulário "geo wgs84_pos", e o retorno é semelhante a este:
 
-	<?xml version="1.0"?> 
+	<?xml version="1.0"?>
 	<rdf:RDF
 		xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
 		xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-	> 
+	>
 
-	<rdf:Description rdf:about="#entry399"> 
-	<geo:long>-55.1315</geo:long> 
-	<geo:lat>-29.55053</geo:lat> 
-	<rdf:cidade>S>RS</rdf:uf> 
-	</rdf:Description> 
+	<rdf:Description rdf:about="#entry399">
+	<geo:long>-55.1315</geo:long>
+	<geo:lat>-29.55053</geo:lat>
+	<rdf:cidade>S>RS</rdf:uf>
+	</rdf:Description>
 
 	(...)
 

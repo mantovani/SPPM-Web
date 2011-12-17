@@ -89,7 +89,7 @@ sub day : Chained('month') : PathPart('') : Args(1) {
     };
 
     $c->stash( templates => 'local/error.tt' ) and return if $@;
-    
+
     my $md5;
     eval { $md5 = md5_hex($artigo->content); };
     if ($@) {

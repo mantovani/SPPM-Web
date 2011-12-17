@@ -102,9 +102,9 @@ e a herança é se baseia na manipulação do array "@ISA", existe também o mé
 
 Uma implementação simples da classe I<Ar> e uma subclasse derivada dela,
 I<Furacao>:
-      
-     		
-    
+
+
+
     #==============================================================================
     # Declaracao do nome da Classe
     #==============================================================================

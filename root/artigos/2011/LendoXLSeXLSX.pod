@@ -5,12 +5,12 @@
 =head1 Lendo XLS e XLSX
 
 Neste artigo, irei apresentar como faço para extrair os dados de XLS e XLSX, um dos formatos
-mais adorados do seu cliente! 
+mais adorados do seu cliente!
 
-Geralmente, os clientes têm grande parte das suas informações 
+Geralmente, os clientes têm grande parte das suas informações
 em planilhas de Excel, e precisam que você as leia.
 
-Até 2000, a unica forma de ler XLS com perl, era usando o L<Win::OLE>, e no Linux... não era possível! 
+Até 2000, a unica forma de ler XLS com perl, era usando o L<Win::OLE>, e no Linux... não era possível!
 Mas em 2001, o Takanori Kawai e o John McNamara criaram o L<Spreadsheet::WriteExcel> e o L<Spreadsheet::ParseExcel>,
 que além de oferecer mais operações para manipulação dos dados, era mais rápido e funciona no Linux!
 
@@ -69,13 +69,13 @@ Veja um exemplo de código abaixo:
         }
     }
 
-Um grande problema em XLS é a quantidade de memória utilizada. Por isso, se você precisa apenas extrair 
+Um grande problema em XLS é a quantidade de memória utilizada. Por isso, se você precisa apenas extrair
 as informações básicas do XLS (como o valor da célula) você não precisa montar tudo na memória.
 
 No manual, diz que um arquivo de 10mb é um arquivo grande para uma máquina com 256MB de RAM, portanto, um de 60mb é
 um arquivo B<bem> grande para uma máquina com 1GB de RAM.
 
-A solução usada pelo modulo é chamar uma função a cada célula lida, passando como parâmetro, 
+A solução usada pelo modulo é chamar uma função a cada célula lida, passando como parâmetro,
 a workbook, o índex da planilha, a linha, a coluna e o objeto da célula.
 
 Exemplo:
@@ -112,7 +112,7 @@ Exemplo:
 
 =head3 Lendo arquivos com cabeçalhos variáveis
 
-Uma das piores coisas do mundo é quando o cliente envia a planilha numa ordem diferente, 
+Uma das piores coisas do mundo é quando o cliente envia a planilha numa ordem diferente,
 ou até mesmo completamente diferente, onde é necessário recriar o parsing.
 
 Se você não conseguir alinhar isso com o cliente, ainda há uma solução que costumo usar: procurar pelos cabeçalhos.
@@ -122,7 +122,7 @@ Para isto, vamos criar uma planilha conforme abaixo:
 	NOME   | IDADE | TWITTER
 	Renato | 19    | @renato_cron
 	Eden   |       | @edenc
-	Glupo  | 33    | 
+	Glupo  | 33    |
 
 Porém, crie você em qualquer lugar de qualquer planilha, você que escolhe, o twitter pode estar antes da idade, etc..
 
@@ -162,7 +162,7 @@ Porém, crie você em qualquer lugar de qualquer planilha, você que escolhe, o 
 				for my $col ( $col_min .. $col_max ) {
 					my $cell = $worksheet->get_cell( $row, $col );
 					next unless $cell;
-					
+
 					foreach my $header_name (keys %expected_header){
 						if ($cell->value() =~ $expected_header{$header_name}){
 							$header_found++;
@@ -179,7 +179,7 @@ Porém, crie você em qualquer lugar de qualquer planilha, você que escolhe, o 
 				# neste caso, achar apenas 1 cabeçalho já é o suficiente
 
 				my $registro = {};
-				
+
 				foreach my $header_name (keys %$header_map){
 					my $col = $header_map->{$header_name};
 
@@ -187,7 +187,7 @@ Porém, crie você em qualquer lugar de qualquer planilha, você que escolhe, o 
 					next unless $cell;
 
 					my $value = $cell->value();
-					
+
 					# aqui é uma regra que você escolhe, pois as vezes o valor da célula pode ser nulo
 					next unless $value;
 
@@ -209,19 +209,19 @@ Porém, crie você em qualquer lugar de qualquer planilha, você que escolhe, o 
 o resultado será alguma coisa como:
 
 	row 5, registro 1
-	nome = Renato 
+	nome = Renato
 	twitter =  @renato_cron
-	idade =  19    
+	idade =  19
 	------------------
 	row 6, registro 2
-	nome = Eden   
+	nome = Eden
 	twitter =  @edenc
-	idade =        
+	idade =
 	------------------
 	row 7, registro 3
-	nome = Glupo  
-	twitter =  
-	idade =  33    
+	nome = Glupo
+	twitter =
+	idade =  33
 	------------------
 
 Você deve alterar o código para ajudar a sua necessidade, pois cada caso é um caso.
@@ -235,11 +235,11 @@ Estas linhas são criadas (quase) que sozinhas pelo Excel.
 
 Vamos brincar um pouco com I<encoding>. Abra a planilha e troque o cabeçalho "nome" por "nome para validação". É apenas um teste.
 
-Se você rodar o programa, verá que continua funcionado, então teremos que trocar a regexpr: 
+Se você rodar o programa, verá que continua funcionado, então teremos que trocar a regexpr:
 
 	qr /\bnome para validação\b/io
 
-Lembre-se de salvar o arquivo em B<UTF-8>. Se você rodar novamente, você não irá conseguir encontrar o campo, 
+Lembre-se de salvar o arquivo em B<UTF-8>. Se você rodar novamente, você não irá conseguir encontrar o campo,
 pois ele é um texto em perl (portanto está em UTF8) e o perl considera como padrão o código sendo como Latin1.
 Para resolver este problema, você precisa adicionar no topo (junto com o C<use strict>) o C<use utf8>:
 
@@ -266,7 +266,7 @@ Até pouco tempo, apenas existia apenas o modulo L<SimpleXlsx>. Mas vamos falar 
 McNamara também criou o L<Spreadsheet::WriteExcel>, e com pequenas e
 rápidas modificações, você consegue ler arquivos XLSX usando algumas das classes do XLS!
 
-Uma das poucas desvantagens que temos no XLSX é que você não consegue utilizar o método para economizar memória, portanto, 
+Uma das poucas desvantagens que temos no XLSX é que você não consegue utilizar o método para economizar memória, portanto,
 se precisar ler um arquivo maior, se prepare para fazer telas de loading bonitas para seu cliente.
 
 Vou colocar o código modificado aqui e explicar cada modificação.
@@ -305,7 +305,7 @@ Vou colocar o código modificado aqui e explicar cada modificação.
 				for my $col ( $col_min .. $col_max ) {
 					my $cell = $worksheet->get_cell( $row, $col );
 					next unless $cell;
-					
+
 					foreach my $header_name (keys %expected_header){
 
 						if ($cell->value() =~ $expected_header{$header_name}){
@@ -320,7 +320,7 @@ Vou colocar o código modificado aqui e explicar cada modificação.
 				# neste caso, achar apenas 1 cabeçalho já é o suficiente
 
 				my $registro = {};
-				
+
 				foreach my $header_name (keys %$header_map){
 					my $col = $header_map->{$header_name};
 
@@ -328,7 +328,7 @@ Vou colocar o código modificado aqui e explicar cada modificação.
 					next unless $cell;
 
 					my $value = $cell->value();
-					
+
 					# aqui é uma regra que você escolhe, pois as vezes o valor da célula pode ser nulo
 					next unless $value;
 
@@ -346,7 +346,7 @@ Vou colocar o código modificado aqui e explicar cada modificação.
 		}
 	}
 
-	
+
 Pois bem, além do C<use utf8>, é recomendado utilizar o modulo L<Text::Iconv> para não ter problemas com encoding.
 
 	use Spreadsheet::XLSX;
@@ -358,16 +358,16 @@ Pois bem, além do C<use utf8>, é recomendado utilizar o modulo L<Text::Iconv> 
 
 Isso é meio bizarro, mas o único jeito que consegui fazer funciona foi trocando o windows-1251 por latin1 (iso-8859-1).
 
-O windows-1251 está na documentação do L<Spreadsheet::XLSX>, porém as regexpr não 
+O windows-1251 está na documentação do L<Spreadsheet::XLSX>, porém as regexpr não
 funcionavam nem com C<use utf8> nem sem. Mesmo removendo o iconv da jogada, o erro persistia.
 Também soltava um warning, e então resolvi trocar para latin1 e funcionou.
 Se você tiver algum problema, mande um e-mail para lista ou comente logo baixo!
 
 A outra alteração é que não existe mais a variável C<$parser>, e sim C<$excel>, que contem o Worksheet inteiro.
-	
+
 	for my $worksheet ( @{$excel -> {Worksheet}} ) {
 		...
-		
+
 
 Espero que você tenha aprendido um pouco sobre estes modulos.
 

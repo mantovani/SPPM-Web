@@ -1,5 +1,5 @@
 
-=head1 Scalar Util 
+=head1 Scalar Util
 
 A forma como se armazena dados em Perl é facil de entender mas pode se tornar em
 estruturas complexas facilmente. Especialmente quando o programador entende que
@@ -7,11 +7,11 @@ escalar é uma unidade e todo o resto são coleções de escalares. Temos um arr
 que é uma lista de escalares e um hash que é um dicionario de escalares.
 Eventualmente precisamos de estruturas mais complexas, e nesse casos podemos
 utilizar referencias, que faz com que um escalar guarde uma especie de link para
-outra estrutura. 
+outra estrutura.
 
 É assim inclusive que se armazena um objeto em perl, temos uma estrutura e sua
 classe salvos em um escalar. Pessoalmente eu uso muito hashs encadeados, como se
-fosse uma struct em C ou uma arvore de dados. 
+fosse uma struct em C ou uma arvore de dados.
 
 Normalmente um programa faz seguidas operações sobre um conjunto de dados, e as
 vezes é necessario se obter mais informações sobre aquele escalar armazenado
@@ -40,21 +40,21 @@ descobrir durante a a execução. Temos algumas opções para trazer algum conte
 	  looks_like_number( $scalar ), essa função informa se o interpretador
 					perl acha que o valor nesse escalar pode
 					ser um numero.
-					
+
 
 No exemplo acima, se executarmos esse loop para aquele array temos:
 
 	  for my $scalar ( @array ) {
-	  
-		  print looks_like_number( $scalar ) ? 
+
+		  print looks_like_number( $scalar ) ?
 			    "$scalar looks like a number\n" :
 			    "$scalar is not like a number\n";
-	  
+
 	  }
 
 Temos:
 
-	>perl Scalar.pl                 
+	>perl Scalar.pl
 	24 looks like a number
 	noooo is not like a number
 	42 looks like a number
@@ -73,7 +73,7 @@ vista como um numero pelo interpretador.
 
 Usando o mesmo loop acima, porém com a função blessed()
 
-	>perl Scalar.pl           
+	>perl Scalar.pl
 	24 is not blessed
 	noooo is not blessed
 	42 is not blessed
@@ -88,7 +88,7 @@ pacote que é a classe do objeto:
 
 Temos:
 
-	>perl Scalar.pl                                                                                                                                   
+	>perl Scalar.pl
 	Foo
 
 Particularmente util quando se monta uma estrutura com varios objetos, quando
@@ -104,9 +104,9 @@ Quando isso ocorre podemos utilizar a função dual var:
 	my $boo = dualvar 55, " 55 ";
 	print ">$boo<\n", $boo - 13 , "\n";
 
-Temos:	
-  
-	>>perl Scalar.pl              
+Temos:
+
+	>>perl Scalar.pl
 	> 55 <
 	42
 
@@ -116,9 +116,9 @@ Mesmo assim os valores ainda podem ser diferentes:
 	my $boo = dualvar 54, " 55 ";
 	$boo++;
 	print ">$boo<\n", $boo - 13 , "\n";
-	
-  
-	>>perl Scalar.pl                                                                 
+
+
+	>>perl Scalar.pl
 	> 55 <
 	42
 
@@ -131,7 +131,7 @@ Utilizando o mesmo loop que já mostrado acima, agora com a adição do valor:
 
 Nós temos a saida:
 
-	>perl Scalar.pl          
+	>perl Scalar.pl
 	24 is not version
 	noooo is not version
 	42 is not version
@@ -157,31 +157,31 @@ circulares isso nunca vai acontecer.
 Para isso podemos "enfraquecer" uma referencia, de modo que ela nao conte mais
 no contador de referencias. Para esse caso temos um exemplo novo, diferente:
 
-	  #!/usr/bin/perl 
-	  
+	  #!/usr/bin/perl
+
 	  use strict;
 	  use warnings;
 	  use Data::Dumper;
-	  
+
 	  use Scalar::Util qw/weaken isweak/;
-	  
+
 	  my $ref;
-	  
-	  { 
-	  
+
+	  {
+
 		  my @array = ( 1, 2, 3);
 		  $ref = \@array;
 		  #weaken( $ref );
-	  
+
 	  }
-	  
+
 	  print Dumper $ref;
 
 Note a linha comentada:  #weaken( $ref );
 
 Na primeira execução do programa temos:
 
-	>perl Weaken.pl       
+	>perl Weaken.pl
 	$VAR1 = [
           1,
           2,
@@ -193,8 +193,8 @@ Agora podemos descomentar a linha #weaken( $ref );
 	weaken( $ref );
 
 Temos:
- 
-	>perl Weaken.pl   
+
+	>perl Weaken.pl
 	$VAR1 = undef;
 
 O que acontece é que o array é declarado dentro de um bloco, entre chaves
@@ -215,7 +215,7 @@ Voltando ao classico desse artigo, será que a referencia é fraca?
 Colocando essa função no nosso loop padrão, nos veremos que não há nenhuma
 referencia fraca.
 
-	>perl Scalar.pl                           
+	>perl Scalar.pl
 	24 is not weak
 	noooo is not weak
 	42 is not weak
@@ -223,7 +223,7 @@ referencia fraca.
 	42 -2 is not weak
 	55 is not weak
 	 is not weak
- 
+
 Fica como lição de casa ao leitor colocar uma referencia fraca no loop para
 testar ;).
 
@@ -241,26 +241,26 @@ operações ou você recebeu o filehandle de "terceiros"?
 
 Novo exemplo:
 
-	  #!/usr/bin/perl 
-	  
+	  #!/usr/bin/perl
+
 	  use strict;
 	  use warnings;
-	  
+
 	  use Scalar::Util qw/openhandle readonly reftype/;
-	  
+
 	  open my $file, "<" , "idontexist";
-	  
+
 	  print "is \$file useful filehandle: ", openhandle $file ? "yes":"no" ," \n";
-	  
+
 	  open my $file2, ">" , "dumpitforme";
-	  
+
 	  print "is \$file2 useful filehandle: ", openhandle $file2 ? "yes":"no" ," \n";
-	  
+
 Partindo do principio que o arquivo de nome "idontexist" nao exista no seu hd :)
 
-	>perl open.pl        
-	is $file useful filehandle: no 
-	is $file2 useful filehandle: yes 
+	>perl open.pl
+	is $file useful filehandle: no
+	is $file2 useful filehandle: yes
 
 Basicamente eu verifico o estado do filehandle, caso ele nao seja usavel o
 retorno é undef. De novo, vencedores usam escalares para salvar o filehandle,
@@ -273,7 +273,7 @@ Então você tem uma função, bonita, que não sabe se recebeu um valor ou um
 escalar (ou qualquer coisa que possa ser modificada).
 
 	  readonly( value )
-	  
+
 	  print "\o/ Yes I can\n" if !readonly( $var );
 	  print "_ _! No, I can't\n" if readonly ( 0 );
 
@@ -281,11 +281,11 @@ Um tanto obvia, apenas o codigo fonte da para perceber que o contexto de somente
 leitura é para quase temos constantes, se voce recebe como parametros:
 
 	  foo ( 42 );
-	  
+
 E voce não tem certeza se é uma var ou um valor, pode utilizar readonly para o
 teste.
 
-	>perl readonly.pl                                                                   
+	>perl readonly.pl
 	Unrecognized escape \o passed through at open.pl line 10.
 	o/ Yes I can
 	_ _! No, I can't
@@ -310,25 +310,25 @@ refenciado, mesmo no caso de um objeto.
 
 Normalmente objetos são hashs, mas não necessariamente, veja o exemplo:
 
-	  #!/usr/bin/perl 
-	  
+	  #!/usr/bin/perl
+
 	  use strict;
 	  use warnings;
-	  
+
 	  use Scalar::Util qw/reftype refaddr blessed/;
-	  
+
 	  my $normal = bless ( { foo => "bar" } , 'Foo' );
 	  my $uncommon = bless ( [ 0 , 1, 3, 4 ] , 'Bar');
-	  
+
 	  print "normal:", blessed ($normal),"\n",
 		    "uncommon:", blessed ($uncommon), "\n";
-	  
+
 	  print "normal:", reftype ($normal),"\n",
           "uncommon:", reftype ($uncommon), "\n";
 
 Temos:
 
-	> perl5.13.3 reftype.pl 
+	> perl5.13.3 reftype.pl
 	normal:Foo
 	uncommon:Bar
 	normal:HASH
@@ -341,10 +341,10 @@ Por ultimo, um recurso que eu ainda nao usei e nao vi utilidade pratica mas pode
 ser util é se obter o endereço, seja la do que ele for da referencia:
 
 	  refaddr ( $ref );
-	  
+
 Trocando o blessed o exemplo acima por refaddr, temos a saida:
 
-	> perl5.13.3 reftype.pl 
+	> perl5.13.3 reftype.pl
 	normal:4303368376
 	uncommon:4303515456
 	normal:HASH

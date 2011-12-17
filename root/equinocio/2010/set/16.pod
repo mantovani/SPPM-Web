@@ -10,7 +10,7 @@ O tempo, é usado para quantificar a duração de eventos. Nesse artigo
 será mostrado truques de como calcular/usar o tempo para resolver problemas
 diários.
 
-No calendário datas são uma referência, a um dia em particular do calendário. 
+No calendário datas são uma referência, a um dia em particular do calendário.
 Será abordado, o calendário Gregorian que é o calendário internacional
 aceito pela civilização moderna, que será usado nesse artigo.
 
@@ -23,7 +23,7 @@ o tempo local, abaixo mostra como você pode obter os elementos:
 	#  0    1    2     3     4    5     6     7     8
 	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
 		localtime(time);
- 
+
 O ano retorna o número de anos desde 1900, ou seja se você obter, 110
 basta somar com 1900 e você terá o ano em quatro digitos:
 
@@ -63,7 +63,7 @@ executar o código terá uma saída parecida com essa,
    b 1559428/s   -- -62%
    a 4152037/s 166%   --
 
-Onde o código "b" é 62% mais lento que o "a", e o "a" é 166% mais rápido 
+Onde o código "b" é 62% mais lento que o "a", e o "a" é 166% mais rápido
 do que o "b".
 
 Pode-se também utilizar o "cmpthese" para fazer uma gráfico de compração,
@@ -98,7 +98,7 @@ Veremos alguns truques que resolvem problemas diários.
 
 =head3 Criando um objeto DateTime
 
-	my $dt1 = 
+	my $dt1 =
 		DateTime->new( year       => 2003,
                  month      => 1,
                  day        => 1,
@@ -156,7 +156,7 @@ ou
 	my $dt = DateTime->now;
 
 Obetendo, o ano, mês e o dia:
-	
+
 	print $dt->ymd;
 	# 2010-09-06
 

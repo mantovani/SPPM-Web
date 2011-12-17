@@ -29,7 +29,7 @@ Se você quiser saber um pouco mais a fundo sobre o funcionamento do módulo, re
 Na sua forma mais básica, podemos utilizar o módulo assim:
 
     use WWW::Correios::CEP;
-    
+
     my $cepper = new WWW::Correios::CEP();
     my $address = $cepper->find( $cep );
 
@@ -38,14 +38,14 @@ Vejamos o resultado para uma pesquisa pelo CEP 03661-000:
     use WWW::Correios::CEP;
     use Data::Dumper;
     use utf8;
-    
+
     my $cepper  = new WWW::Correios::CEP();
     my $address = $cepper->find( '04032-000' );
-    
+
     print Dumper $address;
-    
+
     ...
-    
+
     $VAR1 = {
           'uf' => 'SP',
           'location' => "S\x{e3}o Paulo",
@@ -72,27 +72,27 @@ Para isso, vou utilzar o módulo L<Cache::File>, e o L<Mordern::Perl> apenas por
 
     use utf8;
     use Modern::Perl;
-    
+
     use WWW::Correios::CEP;
     use Cache::File;
     use Data::Dumper;
-    
+
     my $cache   = Cache::File->new( cache_root => '/tmp/cache-correios' );
     my $cepper  = new WWW::Correios::CEP({require_tests => 0});
     my $address = get_address('04032-000');
-    
+
     print Dumper $address;
-    
+
     sub get_address {
         my ($cep) = @_;
-        
+
         my $obj = $cache->thaw( $cep );
-        
+
         unless ($obj) {
             $obj = $cepper->find( $cep  );
             $cache->freeze( $cep, $obj, '6 months' );
         }
-        
+
         return $obj;
     }
 
@@ -110,7 +110,7 @@ Agora vamos popular estes dados numa estrutura para que possamos pesquisar no co
         ['avenida francisco ferreira dos santos', 'centro'           , 'central'       , 'BA', '44940-000'],
         ['Rua Sargento João Lopes nº 85'        , 'Jardim Carioca'   , 'Rio de Janeiro', 'RJ', '21931-420']
     );
-    
+
 
 Portanto, $enderecos_testes[0][0] é a rua do primeiro endereço, e assim por diante.
 
@@ -174,11 +174,11 @@ Este módulo serve basicamente para trocar os acentos, porém, também troca coi
 
     foreach my $teste (@enderecos_testes){
         my ($rua, $bairro, $cidade, $uf, $cep) = @$teste;
-    
+
         my $end_correios = get_address($cep);
-        my $ruaA = limpa_endereco($rua);    
+        my $ruaA = limpa_endereco($rua);
         my $ruaB = limpa_endereco($end_correios->{street});
-    
+
         my $similarity = similarity $ruaA, $ruaB, 0.7;
         if ($similarity > 0.7){
             say "O endereço $rua é muito parecido com $end_correios->{street}",
@@ -196,21 +196,21 @@ Este módulo serve basicamente para trocar os acentos, porém, também troca coi
 
     sub get_address {
         my ($cep) = @_;
-    
+
         my $obj = $cache->thaw( $cep );
-    
+
         unless ($obj) {
             $obj = $cepper->find( $cep  );
             $cache->freeze( $cep, $obj, '6 months' );
         }
-    
+
         return $obj;
     }
 
     # funcao criada para remover acentos, caracteres especiais, etc..
     sub limpa_endereco {
         my $string = shift;
-    
+
         $string = uc(unidecode($string));
         $string =~ s/$_//g for (@tipo_logradouros);
         $string =~ s/\bNO\s*\d+//go;
@@ -222,8 +222,8 @@ Este módulo serve basicamente para trocar os acentos, porém, também troca coi
         $string =~ s/\s+/ /go;
         $string =~ s/^\s+//go;
         $string =~ s/\s+$//go;
-    
-        return $string;    
+
+        return $string;
     }
 
 Com este código, obtive como resultado:

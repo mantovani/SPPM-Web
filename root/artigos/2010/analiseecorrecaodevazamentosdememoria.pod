@@ -2,7 +2,7 @@
 
 =head1 Análise e correção de vazamentos de memória
 
-Um vazamento de memória ocorre quando um programa aloca memória e 
+Um vazamento de memória ocorre quando um programa aloca memória e
 não é capaz de liberar esta de volta ao sistema operational, ocasionando
 diminuição de desempenho da aplicação (ou até mesmo do sistema computacional
 como um todo). Muitas pessoas acreditam que qualquer crescimento inesperado do
@@ -114,7 +114,7 @@ Com L<Moose>, basta declarar o atributo como C<< weak_ref => 1 >>.
 =head2 Aplicações Web em L<Catalyst>
 
 Se você tem uma aplicação web desenvolvida em Catalyst, existem dois
-componentes que permitem geração de relatórios sobre vazamentos de 
+componentes que permitem geração de relatórios sobre vazamentos de
 forma rápida e indolor.
 
 =over

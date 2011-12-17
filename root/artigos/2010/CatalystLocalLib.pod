@@ -98,7 +98,7 @@ diretório qualquer e apontar para elas.
 
     <bzip2>
     Where is your bzip2 program? [/bin/bzip2]
- 
+
     <gzip>
     Where is your gzip program? [/bin/gzip]
     ...
@@ -120,7 +120,7 @@ UTF-8 é o charset default dos últimos Ubuntus que instalei.
     LATIN1) then you should say yes. If it supports neither, your answer
     does not matter because you will not be able to read the names of some
     authors anyway. If you answer no, names will be output in UTF-8.
-    
+
     <term_is_latin>
     Your terminal expects ISO-8859-1 (yes/no)? [yes] no
 
@@ -202,7 +202,7 @@ o admistrador ou com o monge mais próximo!
 
 Agora, antes de começar a instalar módulos, é uma boa atualizar o próprio
 módulo CPAN.pm. Atente para as maiúsculas e minúsculas.
-    
+
     user@host:~$ cpan CPAN
     ...
     Installing /home/catalyst/perl5/bin/cpan
@@ -598,7 +598,7 @@ instalação.
       /usr/bin/make install  -- NOT OK
     Warning (usually harmless): 'YAML' not installed, will not store persisten
     t state
-    user@host:~$ 
+    user@host:~$
 
 Há um warning avisando que o módulo YAML não está instalado. Mas como se
 acabamos de instalá-lo mais acima?

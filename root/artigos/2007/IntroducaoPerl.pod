@@ -166,18 +166,18 @@ Se vocE<ecirc> repetir o comando para verificar a versE<atilde>o
 novamente, verE<aacute> algo parecido com a saE<iacute>da abaixo:
 
  C:\> perl -v
- 
+
  This is perl, v5.8.8 built for MSWin32-x86-multi-thread
  (with 33 registered patches, see perl -V for more detail)
- 
+
  Copyright 1987-2006, Larry Wall
- 
+
  Binary build 819 [267479] provided by ActiveState http://www.ActiveState.com
  Built Aug 29 2006 12:42:41
- 
+
  Perl may be copied only under the terms of either the Artistic License or the
  GNU General Public License, which may be found in the Perl 5 source kit.
- 
+
  Complete documentation for Perl, including FAQ lists, should be found on
  this system using "man perl" or "perldoc perl".  If you have access to the
  Internet, point your browser at http://www.perl.org/, the Perl Home Page.
@@ -355,10 +355,10 @@ programaE<ccedil>E<atilde>o, de qualquer forma). Para evitar repetir
 linhas, apenas a parte modificada serE<aacute> mostrada, em destaque:
 
  use strict;
- 
+
  # versÃ£o do sistema
  my $version = 1;
- 
+
  print "Welcome to MP3 descriptor - $version\n";
 
 Executando novamente, teremos:
@@ -429,7 +429,7 @@ parE<acirc>metro, incluindo mais cE<oacute>digo. Para evitar repetir
 linhas, apenas a parte modificada serE<aacute> mostrada, em destaque:
 
  print "Welcome to MP3 descriptor Â version $version\n";
- 
+
  my $location = $ARGV[0];
  print "Will try to find program at $location\n" if ( defined($location) );
 
@@ -504,23 +504,23 @@ modificada serE<aacute> mostrada, em destaque:
 
  use strict;
  use Cwd;
- 
+
  # versÃ£o do sistema
  my $version = 1;
  print "Welcome to MP3 descriptor - $version\n";
- 
+
  my $location;
- 
+
  if (@ARGV) {
- 
+
      $location = $ARGV[0];
      print "Will try to find files at $location\n";
- 
+
  } else {
- 
+
      $location = getcwd;
      print "Will try to find files at current directory ($location)\n";
- 
+
  }
 
 Observe como foi testada B<@ARGV>: isso, no linguajar de Perl,
@@ -563,18 +563,18 @@ declaraE<ccedil>E<atilde>o dela ficaria da seguinte forma:
  # passado como argumento e retorna uma lista dos
  # arquivos encontrados
  sub find_mp3 {
- 
+
      my $location = shift;
          $location .= '/';
- 
+
      warn "No location passed as argument\n" unless ( defined($location) );
- 
+
      my @list = <$location*.mp3>;
- 
+
      warn "No MP3 files found\n" unless (@list);
- 
+
      return @list;
- 
+
  }
 
 Uma declaraE<ccedil>E<atilde>o de subrotina comeE<ccedil>a sempre com a
@@ -661,17 +661,17 @@ mostrado abaixo:
 
  my $location;
  my @mp3_list;
- 
+
  if (@ARGV) {
- 
+
      $location = $ARGV[0];
      print "Will try to find files at $location\n";
- 
+
  } else {
- 
+
      $location = getcwd;
      print "Will try to find files at current directory ($location)\n";
- 
+
  }
      @mp3_list = find_mp3($location);
 
@@ -742,40 +742,40 @@ parte modificada serE<aacute> mostrada, em destaque:
 
  use Cwd;
  use MP3::Info;
- 
+
  # parte do cÃ³digo foi omitida aqui
- 
+
  @mp3_list = find_mp3($location);
- 
+
  die "Cannot work without a valid list. Sorry\n" unless (@mp3_list);
- 
+
  foreach my $mp3_file (@mp3_list) {
- 
+
      my $mp3_tags = get_mp3tag($mp3_file) or die "Cannot retrieve tags from $mp3_file: $!\n";
      my %mp3_tags = %{$mp3_tags};
- 
+
      format STDOUT_TOP =
  Report about all mp3 files found.
  Total files found: @<<<<<<<<
                     scalar(@mp3_list)
- 
+
  .
- 
+
      format STDOUT =
  File @<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       $mp3_file
- 
+
  ARTIST         | TITLE          | ALBUM        | GENRE        | TRACK
  ---------------+----------------+--------------+--------------+------
  @<<<<<<<<<<<<< | @<<<<<<<<<<<<< | @<<<<<<<<<<< | @<<<<<<<<<<< | @||||
  $mp3_tags{ARTIST}, $mp3_tags{TITLE}, $mp3_tags{ALBUM}, $mp3_tags{GENRE}, $mp3_tags{TRACKNUM}
- 
+
  .
- 
+
      write;
- 
+
  }
- 
+
  # Essa funÃ§Ã£o procura por arquivos mp3 no diretÃ³rio
  # passado como argumento e retorna uma lista dos
  # arquivos encontrados

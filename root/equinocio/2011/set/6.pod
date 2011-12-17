@@ -1,4 +1,4 @@
-=pod 
+=pod
 
 =encoding utf-8
 
@@ -56,45 +56,45 @@ uma aplicação usando boas práticas de desenvolvimento.
 
 Simples tela com o módulo Tk:
 
-    #!/usr/bin/perl 
-    
+    #!/usr/bin/perl
+
     use Tk;
-    
-    my $mw = MainWindow->new( 
-        -title => "Minha aplicacao usando TK" 
+
+    my $mw = MainWindow->new(
+        -title => "Minha aplicacao usando TK"
     );
-    
+
     my $pnl_header = $mw->Frame->pack;
-    
+
     my $lbl_title = $pnl_header->Label(
         -text => "Minha aplicacao",
         -background => 'gray',
         -width => 50,
         -heigh => 2,
     )->pack;
-    
+
     my $txt_something = $mw->Entry(
         -width => 25,
         -borderwidth => 1,
         -background => 'white',
         -text => 'escreva alguma coisa...',
     )->pack;
-    
+
     my $btn_entrar = $mw->Button(
         -text => 'entrar',
         -borderwidth => 1,
         -width => 10,
         -command => sub { &write_something }
     )->pack;
-    
+
     my $lbl_something = $mw->Label(
         -text => '',
     )->pack;
-    
-    
+
+
     MainLoop;
-    
-    
+
+
     sub write_something {
         $lbl_something->configure( -text => $txt_something->get );
     }
@@ -135,35 +135,35 @@ comuns em uma classe base que será herdada por todas as nossas classes que vão
 implementar a criação das nossas telas.
 
     package MyApp::Form::Base;
-    
+
     use Moose;
     use Tk;
-    
+
     # this is a window property
-    has 'window' => ( 
+    has 'window' => (
         is => 'rw',
         lazy => 0,
         default => sub {
             return MainWindow->new;
         }
     );
-    
-    
+
+
     # configure screen widgets
     sub init {
         die "Method not implemented!";
     }
-    
-    
+
+
     # start to show window
     sub show {
         return MainLoop;
     }
-    
-    
+
+
     no Moose;
     __PACKAGE__->meta->make_immutable;
-    
+
     1;
 
 =head3 Main.pm
@@ -172,37 +172,37 @@ Agora vamos implementar uma classe que construa aquela mesma tela simples que
 criamos inicialmente, em nosso exemplo sobre o módulo Tk.
 
     package MyApp::Form::Main;
-    
+
     use Moose;
     extends 'MyApp::Form::Base';
-    
-    
+
+
     ## window widgets
     has 'txt_username' => ( is => 'rw' );
     has 'txt_password' => ( is => 'rw' );
     has 'btn_login' => ( is => 'rw' );
-    
-    
+
+
     ## configure widgets
     after 'init' => sub {
         my $self = shift;
-        
-        $self->window->configure( 
+
+        $self->window->configure(
             -title => 'Teste Tk Moose',
         );
-        
+
         $self->txt_username(
             $self->window->Entry(
                 -borderwidth => 1,
             )->pack
         );
-        
+
         $self->txt_password(
             $self->window->Entry(
                 -borderwidth => 1,
             )->pack
         );
-        
+
         $self->btn_login(
             $self->window->Button(
                 -text => 'Login',
@@ -211,18 +211,18 @@ criamos inicialmente, em nosso exemplo sobre o módulo Tk.
             )->pack
         );
     };
-    
-    
+
+
     ## widget actions
     sub do_login {
         my $self = shift;
         $self->btn_login->configure( -text => 'testando o moose com tk' );
     }
-    
-    
+
+
     no Moose;
     __PACKAGE__->meta->make_immutable;
-    
+
     1;
 
 
@@ -231,10 +231,10 @@ criamos inicialmente, em nosso exemplo sobre o módulo Tk.
 Agora vamos botar a nossa tela pra “dar as caras”...
 
     #!/usr/bin/perl
-    
+
     use MyApp::Form::Main;
-    
-    
+
+
     # build a new form object... and show it
     my $app = MyApp::Form::Main->new;
     $app->show;
@@ -257,18 +257,18 @@ No caso acima chamaríamos as classes segundo a demanda, instanciando as
 classes e chamando o método show conforme o exemplo abaixo:
 
     package MyApp::Form::Main;
-    
+
     use MyApp::Form::Client;
-    
+
     has ‘btn_client’ => ( is => ‘rw’ );
-    
+
     ...
-    
+
     after ‘init’ => sub {
         my $self = shift;
-        
+
         ...
-        
+
         $self->btn_client(
             $self->window->Button(
                 -text => ‘Open Client Form’,
@@ -279,7 +279,7 @@ classes e chamando o método show conforme o exemplo abaixo:
     ...
 
 E pronto, temos um botão que abre uma outra janela, de clientes, em nosso
-projeto. 
+projeto.
 
 Uma outra implementação que costumo usar é criar um hash e abrigar todos os
 widgets nele... imagino que desta forma fica mais simples e dinâmico o acesso

@@ -37,8 +37,8 @@ $VERSION = eval $VERSION;
 # with an external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( 
-    name => 'SPPM::Web', 
+__PACKAGE__->config(
+    name => 'SPPM::Web',
     default_view => 'TT',
 );
 

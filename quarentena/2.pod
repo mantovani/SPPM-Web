@@ -148,7 +148,7 @@ L<foi|https://github.com/russoz/Dist-Zilla-PluginBundle-Author-RUSSOZ/blob/6f843
 
       'OurPkgVersion',
       'AutoPrereqs',
-    
+
       'ReportVersions::Tiny',
       'CompileTests',
       'EOLTests',

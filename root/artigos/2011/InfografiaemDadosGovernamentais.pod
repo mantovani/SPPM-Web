@@ -206,7 +206,7 @@ O conhecimento sobre estas disposições pode facilitar o trabalho de quem for c
 
 Estatísticas utilizam-se das teorias de probabilidade e neste caso incialmente é muito interessante para ser usado na detecção a frequencia da ocorrência de um determinado evento, para que facilite os estudos observacionais e etc.
 
-Este processo geralmente esta associado à coleta, análise e interpretação dos dados. 
+Este processo geralmente esta associado à coleta, análise e interpretação dos dados.
 
 Com a computação, a prática de modelos estastísticos não-lineares está se tornando mais frequente, pois com o aumento da capacidade de processamento estamos obtendo habilidades para criar cálculos baseados em reamostragem, como testes de permutação e bootstrap.
 
@@ -238,11 +238,11 @@ Para isto é interessante que exista uma padronização relacionada ao tipo da m
 
 =back $ : Cifrão, valor monetário ;
 
-=back % : Porcentagem ; 
+=back % : Porcentagem ;
 
 =back N : Quantidade, Medidas unitárias ;
 
-=back C : Classificação ; 
+=back C : Classificação ;
 
 =back I : Índice .
 
@@ -250,7 +250,7 @@ Para isto é interessante que exista uma padronização relacionada ao tipo da m
 
 =head1 Algoritmos
 
-Não há como citar algoritmos em especificos, pois existe a necessidade inicialmente de coletar os dados que você tem disponível, verificar se estes dados representam algum conceito ou algo da forma mais absoluta possível - ou aproximada -. 
+Não há como citar algoritmos em especificos, pois existe a necessidade inicialmente de coletar os dados que você tem disponível, verificar se estes dados representam algum conceito ou algo da forma mais absoluta possível - ou aproximada -.
 O segundo passo é organizar estes dados para que eles sejam compilados e processados em formas reduzidas.
 
 Dependendo da quantidade de dados envolvidos, há a necessidade de "transformar" estes dados em outro formato para que a manipulação seja mais rápida.
@@ -261,14 +261,14 @@ Este artigo tem como objetivo oferecer um levantamento em relação às idéias 
 
 O trabalho não é só em ter os dados, mas organizar eles de forma que fique simples o trabalho do design de informação, além de que como foi abordado existe um interesse grande para que os dados sejam compartilhados, reutilizados e principalmente para que exista um ecosistema para formação de novas ideias baseado em um processo colaborativo.
 
-	Se você tem uma maçã e eu tenho uma maçã 
-	e nós trocamos essas maçãs, 
-	então eu e você ainda teremos uma maçã cada. 
+	Se você tem uma maçã e eu tenho uma maçã
+	e nós trocamos essas maçãs,
+	então eu e você ainda teremos uma maçã cada.
 
-	Mas se você tiver uma idéia e eu tiver uma idéia 
-	e nós trocamos idéias, 
+	Mas se você tiver uma idéia e eu tiver uma idéia
+	e nós trocamos idéias,
 	então cada um de nós terá duas idéias."
-	
+
 	-- George Bernard Shaw (1856-1950)
 
 =head1 Referências
@@ -290,7 +290,7 @@ Métricas de marketing, por Paul W. Farris & Neil T. Bendle & Phillip E. PFeifer
 
 Pela revisão do artigo, conversas e idéias:
 
-Alexei "russo" Znamensky 
+Alexei "russo" Znamensky
 
 Breno "garu" Oliveira.
 

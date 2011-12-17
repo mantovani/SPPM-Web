@@ -271,11 +271,11 @@ atravE<eacute>s de uma interface orientada a objetos. Segue um exemplo
 (extraE<iacute>do a documentaE<ccedil>E<atilde>o do mE<oacute>dulo):
 
  use IPC::Open2;
- 
+
  # Exemplo 1
  # essa é a forma incorreta de se evitar o shell!
  $pid = open2(\*RDRFH, \*WTRFH, 'some cmd and args');
- 
+
  # Exemplo 2
  # esta é a forma correta
  $pid = open2(\*RDRFH, \*WTRFH, 'some', 'cmd', 'and', 'args');
@@ -296,7 +296,7 @@ mE<oacute>dulo):
  use IPC::Open3;
  use strict;
  use warnings;
- 
+
  my($wtr, $rdr, $err);
  $pid = open3($wtr, $rdr, $err,'some cmd and args', 'optarg', ...);
 
@@ -312,11 +312,11 @@ B<STDERR> de forma separada, vocE<ecirc> pode simplesmente fazer assim:
  use IPC::Open3;
  use strict;
  use warnings;
- 
+
  my $pid = open3(\*WTRFH,\*FROMCHILD,\*FROMCHILD,"ps","ax");
- 
+
  while ( <FROMCHILD> ) {print;}
- 
+
  close(FROMCHILD);
  close(WTRFH);
 
@@ -352,17 +352,17 @@ dados para que a Perl passe a aceitE<aacute>-lo:
 
  use strict;
  use warnings;
- 
+
  my $arquivo = shift;
- 
+
  unless ($arquivo =~ /(^[\w\.\-\_]+$)/) {
- 
+
    die "Nome de arquivo inválido\n";
- 
+
  } else {
- 
+
    $arquivo = $1;
- 
+
  }
 
 Essas linhas somente permitirE<atilde>o que um nome de arquivo seja

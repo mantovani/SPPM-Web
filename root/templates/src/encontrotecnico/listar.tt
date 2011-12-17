@@ -17,7 +17,7 @@
             <th align="left">Local</th>
             <th align="left">Data - Hora</th>
             <th align="left">Inscrever</th></tr>
-            
+
                 [% FOREACH encontro IN encontros %]
                     <tr>
                         <td><font size="3">[% encontro.nome %]</font></td>
@@ -29,7 +29,7 @@
                 [% END %]
 
 
-            
+
 
             </table>
         [% END %]
@@ -46,7 +46,7 @@
 
             <table>
             <tr><th>Nome</th><th>Lugar</th><th>Data - Hora</th><th>Fotos</th></tr>
-            
+
                 [% FOREACH encontro IN encontros_encerrados %]
                     <tr>
                         <td><font size="3">[% encontro.nome %]</font></td>
@@ -58,10 +58,10 @@
                 [% END %]
 
 
-            
+
             </table>
         [% END %]
-            
+
 
 		</div>
           </div>

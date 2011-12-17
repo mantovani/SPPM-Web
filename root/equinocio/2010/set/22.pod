@@ -64,19 +64,19 @@ O fluxo de comunicação com um intermediador entre os publicadores (que inserem
 
 =over
 
-=item Point-to-point 
+=item Point-to-point
 
 Um publicador e um consumidor.
 
-=item Store-and-Forward 
+=item Store-and-Forward
 
 Vários publicadores e um consumidor.
 
-=item Publish-Subscribe 
+=item Publish-Subscribe
 
 Muitos publicadores e muitos consumidores.
 
-=item Topic/Content-based 
+=item Topic/Content-based
 
 Os consumidores podem analisar, dependendo do conteúdo do elemento.
 
@@ -118,11 +118,11 @@ Um aviso: Este é um exemplo muito simples, e não deve ser levado tão a sério
 
 É como o I<mailbox>, no qual é um arquivo contendo os e-mails que são recebidos pelo usuário em um servidor de e-mail.
 
-=item 2. Consumidor 
+=item 2. Consumidor
 
 É como se um leitor de e-mail, que pode buscar ou apagar e-mails.
 
-=item 3. Exchanges 
+=item 3. Exchanges
 
 São como um I<MTA>, no qual analisa o e-mail e decide, baseado na sua "tabela de roteamento" e então move a mensagem para uma ou mais B<mailbox>.
 
@@ -340,7 +340,7 @@ Um exemplo, prático utilizando o L<Net::RabbitMQ::Simple> seria o publicador en
 	# publicador.pl
 
 	use Net::RabbitMQ::Simple;
-	
+
 	mqconnect;
 
 	exchange {
@@ -370,7 +370,7 @@ Agora, o código para consumir a mensagem "foobar baz" na fila do exchange equin
 	use Net::RabbitMQ::Simple;
 	use Data::Dumper;
 
-	mqconnect;	
+	mqconnect;
 
 	exchange { name => "equinocio" };
 
@@ -392,7 +392,7 @@ O protocolo AMQP já tem uma herança de desenvolvimento ótima, para criação 
 
 Ele te oferece de modo simples, um modelo utilizado e confiante para a tarefa. Porém como toda solução "flex", você em determinados ambientes pode sofrer com a latência que as implementações adicionam.
 
-O RabbitMQ é uma excelente solução escrita em Erlang (para tentar combater o problema de latência), no qual há suporte comercial e já é utilizado por muitas empresas em suas soluções, e o grande motivo: ela simplesmente funciona muito bem. 
+O RabbitMQ é uma excelente solução escrita em Erlang (para tentar combater o problema de latência), no qual há suporte comercial e já é utilizado por muitas empresas em suas soluções, e o grande motivo: ela simplesmente funciona muito bem.
 
 A utilização dos módulos disponíveis para Perl são para lhe dar agilidade de desenvolvimento e recomendado para necessidades onde o envio de mensagens ou recebimentos não exigem alta perfomance.
 

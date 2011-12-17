@@ -215,7 +215,7 @@ C
        my %h = ();
        $h{ASDFGH} = $i;
        push @a, \%h;
- } 
+ }
 
         dSP;
         ENTER;
@@ -281,7 +281,7 @@ C
  require Storable;
 
  SV* module = newSVpv("Storable",8);
- load_module(PERL_LOADMOD_NOIMPORT,module,NULL); 
+ load_module(PERL_LOADMOD_NOIMPORT,module,NULL);
 
 Neste momento a flag PERL_LOADMOD_NOIMPORT E<eacute> importante, por
 que nE<oacute>s nE<atilde>o estaremos no contexto de uma
@@ -343,7 +343,7 @@ de um escopo:
          ENTER;
          SAVETMPS;
          STRLEN length;
- 
+
          LEAVE;
          FREETMPS;
          return length;
@@ -458,7 +458,7 @@ cE<oacute>digo final.
  #include <string.h>
  /***    The Perl interpreter    ***/
  static PerlInterpreter *my_perl;
- 
+
  int storable_freeze(char** output, SV* data) {
          dSP;
          ENTER;
@@ -478,7 +478,7 @@ cE<oacute>digo final.
          LEAVE;
          return len;
  }
- 
+
  void test_storable() {
          dSP;
          ENTER;
@@ -499,8 +499,8 @@ cE<oacute>digo final.
          FREETMPS;
          LEAVE;
  }
- 
- 
+
+
  EXTERN_C void xs_init (pTHX);
  EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
  EXTERN_C void xs_init(pTHX) {
@@ -508,7 +508,7 @@ cE<oacute>digo final.
     dXSUB_SYS;
     newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
  }
- 
+
  int main(int argc, char** argv, char** env) {
          PERL_SYS_INIT3(&argc,&argv,&env);
          my_perl = perl_alloc();
@@ -516,12 +516,12 @@ cE<oacute>digo final.
          PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
          char *embedding[] = { "", "-e", "0" };
          perl_parse(my_perl, xs_init, 3, embedding, (char **)NULL);
- 
+
          SV* module = newSVpv("Storable",8);
          load_module(PERL_LOADMOD_NOIMPORT,module,NULL);
-         
+
          test_storable();
- 
+
          perl_destruct(my_perl);
          perl_free(my_perl);
          PERL_SYS_TERM();

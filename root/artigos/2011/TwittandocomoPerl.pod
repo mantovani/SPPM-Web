@@ -59,7 +59,7 @@ Um primeiro acesso a uma aplicação que acesse o Twitter via linha de comando d
 
     use 5.12.0;
     use Net::Twitter;
-    
+
     my $t = Net::Twitter->new(
         traits          => [qw/OAuth API::REST/],
         consumer_key    => 'xxxxxxxxxxxxxxxxxxxxxxx',
@@ -75,16 +75,16 @@ Depois temos que solicitar que o usuário confirme que deseja que o nosso aplica
     # Solicita confirmação do usuário
     unless($t->authorized){
         my $url = $t->get_authorization_url();
-        
+
         say "Esta aplicação ainda não está autorizada para acessar o twitter" .
         " como se fosse você.";
-        
+
         say "Acesse o link ao lado. " . $url . "\n Ele vai lhe fornecer um PIN " .
         "que permitira que esta aplicação acesse suas informações no twitter.\n" .
         "Informe este PIN aqui: ";
-        
+
         chomp($pin = <STDIN>);
-        
+
         my ($access_token, $access_token_secret, $user_id, $screen_name) =
             $t->request_access_token(verifier => $pin);
     }
@@ -117,7 +117,7 @@ Retorna um valor verdadeiro se todos o dados para autenticação foram recebidos
 
 Informa a URL que o usuário deve utilizar para autorizar sua aplicação. Aplicações web utilizam um callbak, que é uma URL que o Twitter acessará para enviar os dados de autorização.
 
-=item C<access_token e access_token_secret>: 
+=item C<access_token e access_token_secret>:
 
 Informa ou configura o token e a senha relacionada ao token respectivamente. Se você já tiver os tokens de usuário armazenados, poderá configurar seu objeto com estes métodos.
 
@@ -131,7 +131,7 @@ A API Search é uma das mais simples e úteis, pois permite que pesquisemos term
 
     use 5.12.0;
 
-    use Net::Twitter; 
+    use Net::Twitter;
     use Data::Dumper;
 
     my $nt = Net::Twitter->new(
@@ -151,7 +151,7 @@ O método mais importante desta API é o search. O método search pode receber c
     page     => página
     since_id => posts a apartir da data especificada
     geocode  => localização dos posts
-    
+
     my $result = $nt->search('Clean Energy');
     say Dumper $result;
 
@@ -196,7 +196,7 @@ Uma outra coisa importantíssima é a paginação. Alguns métodos retornam resu
             lang    => 'pt',
             page    => $page
         });
-        
+
         say $_->{text} foreach @{$result->{results}};
     }
 
@@ -209,7 +209,7 @@ Já o cursor é uma referencia a próxima página:
             lang    => 'pt',
             cursor  => $cursor
         });
-        
+
         say $_->{text} foreach @{$result->{results}};
     }
 

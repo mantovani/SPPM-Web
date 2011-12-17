@@ -35,51 +35,51 @@
                     <div class="list_heading">
                       <h4>Mais Artigos</h4>
                     </div>
-                    
+
                             <ul>
                             <li><a href="[% c.uri_for('/artigos', 'catalyst') %]">Tutorial sobre o Catalyst</a></li>
                             </ul>
 
-                    
+
 
                   </div>
                   <div class="side">
                     <h2 class="blog"></h2>
-   
+
        <h3>Comunidade</h3>
 
 
 	<p>Em breve, iremos disponibilizar blogs para os membros do grupo.<p>
 
-   
+
                     <div class="list_heading">
 
                       <h4>Mais BLOGS</h4>
                     </div>
-   
+
       <ul>
 
       	<li> Blog do Solli</li>
 	</ul>
-   
+
 
                   </div>
                 </div>
         	<div class="left_section">
-		
-		</div>        
-	
+
+		</div>
+
 		<div class="right_section">
                   <div class="box1">
                     <h2 class="podcast"></h2>
                     <h3>Entrevistas</h3>
-			
+
 			<p>Perguntas relacionadas ao mercado, mundo, opni&otilde;es e Perl para pessoas ligadas a tecnologia.</p>
                   </div>
                   <div class="box1">
                     <h2 class="treinamento"></h2>
                     <h3>Onde encontrar?</h3>
-                	<p>nonononon</p>  
+                	<p>nonononon</p>
 		</div>
 
                 </div>

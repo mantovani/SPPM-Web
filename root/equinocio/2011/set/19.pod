@@ -34,8 +34,8 @@ há apenas o tempo como argumento, ou estocástica, quando a série envolve alé
 do tempo, termos aleatórios, "y = f(tempo, ...)".
 
 A idéia principal é poder oferecer um design para promover a portabilidade e
-reduzir o esforço na criação de aplicações em geral com o objetivo de gerenciar 
-estatísticas de seus dados. Evitando em alguns casos por exemplo, o acesso 
+reduzir o esforço na criação de aplicações em geral com o objetivo de gerenciar
+estatísticas de seus dados. Evitando em alguns casos por exemplo, o acesso
 direto a sua base de dados para realizar buscas por estatítiscas.
 
 E é justamente nestes casos, onde o estilo do statim se comunicar pode auxiliar e facilitar o uso de um servidor para armazenar este tipo de informação, onde os objetivos do desenvolvimento pretende:
@@ -147,11 +147,11 @@ dois "tempos", para obter o total deles.
     # procurar por "*" em bar.
     get collection bar:* foo
     OK 1
-    
+
     # não declarar o sub-grupo, é o mesmo que passar o parametro "*"
     get collection foo
     OK 1
-    
+
     # buscar por "j*z".
     get collection bar:j*z foo
     OK 1
@@ -180,7 +180,7 @@ séries que irão "casar" com os filtros.
 =head2 Outros comandos
 
 =head3 version
-	
+
 Mostrar a versão do servidor.
 
 =head3 quit
@@ -193,11 +193,11 @@ Há três tipos de erros de resposta, que são:
 
 =over 4
 
-=item * ERROR 
+=item * ERROR
 
 Comando não existente
 
-=item * CLIENT_ERROR <error> 
+=item * CLIENT_ERROR <error>
 
 Erro do cliente da leitura do comando enviado pelo cliente.
 
@@ -211,7 +211,7 @@ Todos os "<error>" é uma mensagem legível para interpretação do que ocorreu.
 
 =head3 Configuração
 
-Abaixo, um exemplo de configuração do servidor, com a definição de uma coleção de dados, 
+Abaixo, um exemplo de configuração do servidor, com a definição de uma coleção de dados,
 no qual vamos usar como exemplo no restante deste artigo, o arquivo de configuração hoje
 esta utilizando o formato JSON.
 
@@ -249,7 +249,7 @@ Há dois aplicativos para facilitar a inicialização do uso do statim.
 	-c,--config   set statim config file path
 
 	Examples:
-		                 
+
 		./statim-server --host 127.0.0.1 --port 12345 -c ~/my-statim/config.json
 
 
@@ -266,7 +266,7 @@ Há dois aplicativos para facilitar a inicialização do uso do statim.
 	--port        set statim server port
 
 	Examples:
-         
+
     		./statim-client add collection foo:bar count:1
 
 
@@ -282,7 +282,7 @@ Há disponível no pacote uma classe para você utilizar com o servidor do stati
 	});
 
 	$client->add('collection' => 'foo:bar', 'count:1');
-	
+
 	$client->get('collection' => 'foo:bar', 'count');
 
 Acredito pelo o que já abordado aqui, o código é auto explicado. :-)

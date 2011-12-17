@@ -109,7 +109,7 @@ O Catalyst vem com um servidor HTTP lightweight para testes
  | Catalyst::Plugin::ConfigLoader  0.13                                       |
  | Catalyst::Plugin::Static::Simple  0.14                                     |
  '----------------------------------------------------------------------------'
- 
+
  [debug] Loaded dispatcher "Catalyst::Dispatcher"
  [debug] Loaded engine "Catalyst::Engine::HTTP"
  [debug] Found home "/opt/eden/workspace/WebLog"
@@ -120,7 +120,7 @@ O Catalyst vem com um servidor HTTP lightweight para testes
  +-----------------------------------------------------------------+----------+
  | WebLog::Controller::Root                                        | instance |
  '-----------------------------------------------------------------+----------'
- 
+
  [debug] Loaded Private actions:
  .----------------------+--------------------------------------+--------------.
  | Private              | Class                                | Method       |
@@ -128,7 +128,7 @@ O Catalyst vem com um servidor HTTP lightweight para testes
  | /default             | WebLog::Controller::Root             | default      |
  | /end                 | WebLog::Controller::Root             | end          |
  '----------------------+--------------------------------------+--------------'
- 
+
  [info] WebLog powered by Catalyst 5.7006
  You can connect to your server at http://anubis:3000
 
@@ -192,7 +192,7 @@ com seu editor de cE<oacute>digo predileto:
 
  package WebLog::Schema::Post;
  use base qw/DBIx::Class/;
- 
+
  __PACKAGE__->load_components(qw/PK::Auto Core/);
  __PACKAGE__->table('post');
  __PACKAGE__->add_columns(
@@ -218,7 +218,7 @@ com seu editor de cE<oacute>digo predileto:
  __PACKAGE__->set_primary_key('id');
  __PACKAGE__->has_many( 'replies', 'WebLog::Schema::Post', 'parent_id' );
  __PACKAGE__->might_have('parent', 'WebLog::Schema::Post', 'parent_id');
- 
+
  1;
 
 Obs.: Deve haver um esquema melhor de banco de dados para este tipo de
@@ -299,7 +299,7 @@ inclua a seguinte Action:
 
  sub add : Local Form {
      my ( $self, $c, $parent_id ) = @_;
- 
+
      if ( $c->form->submitted && $c->form->validate ) {
          my %args = (
              title => $c->req->param('title'),
@@ -370,7 +370,7 @@ cE<oacute>digo.
  | Catalyst::Plugin::ConfigLoader  0.13                                       |
  | Catalyst::Plugin::Static::Simple  0.14                                     |
  '----------------------------------------------------------------------------'
- 
+
  [debug] Loaded dispatcher "Catalyst::Dispatcher"
  [debug] Loaded engine "Catalyst::Engine::HTTP"
  [debug] Found home "/opt/eden/workspace/WebLog"
@@ -385,7 +385,7 @@ cE<oacute>digo.
  | WebLog::Model::DB::Post                                         | class    |
  | WebLog::View::TT                                                | instance |
  '-----------------------------------------------------------------+----------'
- 
+
  [debug] Loaded Private actions:
  .----------------------+--------------------------------------+--------------.
  | Private              | Class                                | Method       |
@@ -395,14 +395,14 @@ cE<oacute>digo.
  | /post/index          | WebLog::Controller::Post             | index        |
  | /post/add            | WebLog::Controller::Post             | add          |
  '----------------------+--------------------------------------+--------------'
- 
+
  [debug] Loaded Path actions:
  .-------------------------------------+--------------------------------------.
  | Path                                | Private                              |
  +-------------------------------------+--------------------------------------+
  | /post/add                           | /post/add                            |
  '-------------------------------------+--------------------------------------'
- 
+
  [info] WebLog powered by Catalyst 5.7006
  You can connect to your server at http://anubis:3000
 
@@ -459,9 +459,9 @@ editor predileto e inclua a seguinte Action:
 
  sub list : Local {
      my ( $self, $c ) = @_;
- 
+
      my $posts = $c->model('DB::Post');
- 
+
      $c->stash->{posts} =
          $posts->search( undef, { where => { parent_id => undef } } );
  }
@@ -479,7 +479,7 @@ Agora, altere a Action add para:
 
  sub add : Local Form {
      my ( $self, $c, $parent_id ) = @_;
- 
+
      if ( $c->form->submitted && $c->form->validate ) {
          my %args = (
              title => $c->req->param('title'),
@@ -504,7 +504,7 @@ por esta:
 
  sub index : Private {
      my ( $self, $c ) = @_;
- 
+
      $c->res->redirect('/post/list');
  }
 
@@ -513,7 +513,7 @@ por esta:
 
  sub default : Private {
      my ( $self, $c ) = @_;
- 
+
      $c->res->redirect('/post/list');
  }
 
@@ -543,7 +543,7 @@ Crie as seguintes Actions no arquivo lib/WebLog/Controller/Post.pm:
      my ( $self, $c, $post_id ) = @_;
      $c->stash->{post} = $c->model('DB::Post')->find($post_id);
  }
- 
+
  sub delete : Chained('get') {
      my($self, $c) = @_;
      $c->stash->{post}->delete;
@@ -603,7 +603,7 @@ Crie essa Action no arquivo lib/WebLog/Controller/Post.pm:
 
  sub edit : Chained('get') Args(0) Form {
      my ( $self, $c ) = @_;
- 
+
      if ( $c->form->submitted && $c->form->validate ) {
          $c->stash->{post}->title( $c->req->param('title') );
          $c->stash->{post}->body( $c->req->param('body') );
@@ -657,7 +657,7 @@ Crie a seguinte Action no controller lib/WebLog/Controller/Post.pm:
 
  sub reply : Chained('get') Form('/post/edit') {
      my ( $self, $c ) = @_;
- 
+
      $c->res->redirect( '/post/add/' . $c->stash->{post}->id );
  }
 

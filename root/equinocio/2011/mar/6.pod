@@ -31,7 +31,7 @@ Enquanto que os cérebros humanos são capazes de se adaptar a novos códigos de
 Vejam do que os primatas são capazes[2]:
 
     3ST3 P3QU3N0 T3XT0 53RV3 4P3N45 P4R4 M05TR4R C0M0 4
-    N0554 C4B3Ç4 C0N53GU3 F4Z3R C0I545 IMPR355I0N4NT35! 
+    N0554 C4B3Ç4 C0N53GU3 F4Z3R C0I545 IMPR355I0N4NT35!
     R3P4R3 NI550! N0 C0M3Ç0 35T4V4 M3I0 C0MPLIC4DO, M4S
     4G0R4 N35T4 LINH4 5U4 M3NT3 V4I D3CIFR4ND0 0 C0DIGO
     QU4S3 QU3 AUT0M4TIC4M3NT3 S3M PR3CI54R P3NS4R MUIT0
@@ -74,14 +74,14 @@ Por último, o algoritmo dos n-gramas quebra as strings em tokens de comprimento
 
     'abacate' => 'aba', 'bac', 'aca', 'cat', 'ate';
     'abacaxi' => 'aba', 'bac', 'aca', 'cax', 'axi';
-    
+
     Total:      7   => 'aba', 'bac', 'aca', 'cat', 'ate', 'cax', 'axi';
     Comuns:     3   => 'aba', 'bac', 'aca';
     Semelhança: 3/7 => 42,86%;
-    
+
     'porta'   => 'por', 'ort', 'rta';
     'janela'  => 'jan', 'ane', 'nel', 'ela';
-    
+
     Total:      7
     Comuns:     0
     Semelhança: 0/7 => 0%
@@ -143,21 +143,21 @@ Utilizando o método dos n-gramas temos o L<String::Trigram>[9], o L<Algorithm::
 Em especial o String::Trigram permite a comparação entre uma determinada string contra um dicionário. Com o auxílio de um cache interno, os n-grams do dicionário são calculados somente uma vez o que acelera as buscas. Veja um exemplo típico:
 
     #!/usr/bin/env perl
-    
+
     use Modern::Perl;
     use String::Trigram;
-    
+
     my @dict = qw(
      rato boi tigre
      coelho dragao serpente
      cavalo carneiro macaco
      galo cao porco
     );
-    
+
     my @words = qw(ratos drogao cavalo caval carneir camelo galinha);
-    
+
     my $min_sim = 0.20;
-    
+
     my $trig = String::Trigram->new(
        "cmpBase"        => \@dict,
        "minSim"         => $min_sim,
@@ -167,12 +167,12 @@ Em especial o String::Trigram permite a comparação entre uma determinada strin
        "ngram"          => 3,
        "debug"          => 0,
      );
-    
+
     foreach my $animal (@words) {
        my ( @best_matches, $sim );
-    
+
        $sim = $trig->getBestMatch( $animal, \@best_matches );
-    
+
        $sim = int( 0.5 + 100 * $sim );
        say "Similaridade entre $animal e $best_matches[0]: $sim%"
          if $sim >= $min_sim;

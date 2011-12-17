@@ -6,7 +6,7 @@
           <div class="top">
             <h2>Artigos</h2>
             <div class="whois">
-   
+
     [% INCLUDE site/listar_artigos.tt %]
 
     [% INCLUDE site/disqus.tt %]

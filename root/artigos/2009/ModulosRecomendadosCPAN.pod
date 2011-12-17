@@ -86,12 +86,12 @@ construtor e metodos de acesso (setters e getters).
 Um exemplo simples. Ao inves de escrever codigo como este:
 
  package Dog;
- 
+
  sub new {
      my $self = shift;
      bless { @_ }, $self;
  }
- 
+
  sub name {
      my $self = shift;
      if ($@) {
@@ -103,7 +103,7 @@ Um exemplo simples. Ao inves de escrever codigo como este:
 Escreva apenas o seguinte:
 
  package Dog;
- 
+
  use base 'Class::Accessor';
  mk_accessors('name');
 
@@ -170,7 +170,7 @@ flexivel e poderosa do que o uso de strings em $@.
   eval {
       MyException->throw( error => 'I feel funny.' );
   };
- 
+
   if ( my $e = Exception::Class->caught('MyException') ) {
      warn $e->error, "\n", $e->trace->as_string, "\n";
      warn join ' ',  $e->euid, $e->egid, $e->uid, $e->gid, $e->pid, $e->time;
@@ -184,10 +184,10 @@ flexivel e poderosa do que o uso de strings em $@.
 Leia ou escreva arquivos de texto completos, de maneira eficiente.
 
   use File::Slurp;
- 
+
   my $text = read_file( 'filename' ) ;
   my @lines = read_file( 'filename' ) ;
- 
+
   write_file( 'filename', @lines ) ;
 
 =head2 JSON
@@ -218,7 +218,7 @@ depuraE<ccedil>E<atilde>o e categorias, de maneira simples e eficiente.
 Um modulo simples para enviar mensagens por email:
 
     use MIME::Lite;
- 
+
     $msg = MIME::Lite->new(
         From     =>'me@myhost.com',
         To       =>'you@yourhost.com',
@@ -226,7 +226,7 @@ Um modulo simples para enviar mensagens por email:
         Subject  =>'Helloooooo, nurse!',
         Data     =>"How's it goin', eh?"
     );
- 
+
     $msg->send();
 
 =head2 Module::Starter
@@ -245,15 +245,15 @@ sua prE<oacute>pria definiE<ccedil>E<atilde>o.
 
   package Point;
   use Moose; # automatically turns on strict and warnings
- 
+
   has 'x' => (is => 'rw', isa => 'Int');
   has 'y' => (is => 'rw', isa => 'Int');
- 
+
   package Point3D;
   use Moose;
- 
+
   extends 'Point';
- 
+
   has 'z' => (is => 'rw', isa => 'Int');
 
 (Veja o artigo Introducao ao Moose? .)

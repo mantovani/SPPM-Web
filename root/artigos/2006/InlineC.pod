@@ -104,7 +104,7 @@ o nosso script:
  16|
  17| #include <teste.h>
  18|
- 19| struct treetst *p1, *p1; 
+ 19| struct treetst *p1, *p1;
  20|
  21| int WrapFTest () { return Teste(); }
  22|
@@ -156,16 +156,16 @@ B<2)> Podemos instE<acirc>nciar as funE<ccedil>E<otilde>es diretamente
 da biblioteca e fazer uso no nosso script:
 
  01| #!/usr/bin/perl -w
- 02| 
+ 02|
  03| use warnings;
  04| use strict;
- 05| 
+ 05|
  06| use Inline C => Config => ENABLE => AUTOWRAP => LIBS => "-lteste";
  07| use Inline C => q{ struct treetst *p1, *p2; };
  08| use Inline C => q{ int Teste(); };
- 09| 
+ 09|
  10| my $retr = Teste();
- 11| 
+ 11|
  12| print $retr, "\n";
 
 Neste exemplo estamos acessando a I<libteste> diretamente do nosso

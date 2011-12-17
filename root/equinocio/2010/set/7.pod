@@ -283,7 +283,7 @@ Requisição enviada pelo browser e recebida pelo nosso "servidor" fake:
     Accept-Charset: iso-8859-1, utf-8, utf-16, *;q=0.1
     Accept-Encoding: deflate, gzip, x-gzip, identity, *;q=0
     Connection: Keep-Alive
-    
+
 
 Nesse caso não há resposta porque o C<nc> não é um servidor e não sabe o que
 responder :)
@@ -293,7 +293,7 @@ Agora vamos fazer uma outra requisição com C<nc>:
     user@host:~$ nc www.google.com.br 80
     GET / HTTP/1.1
     Host: www.google.com.br
-    
+
 E observar a resposta:
 
     HTTP/1.1 200 OK
@@ -305,7 +305,7 @@ E observar a resposta:
     Server: gws
     X-XSS-Protection: 1; mode=block
     Transfer-Encoding: chunked
-    
+
     1000
     <!doctype html><html><head><meta http-equiv="content-type" content="...
 
@@ -323,7 +323,7 @@ Por exemplo, a requisição:
     user@host:~$ nc www.google.com.br 80
     HEAD / HTTP/1.1
     Host: www.google.com.br
-    
+
 
 Resulta em:
 
@@ -336,7 +336,7 @@ Resulta em:
     Server: gws
     X-XSS-Protection: 1; mode=block
     Transfer-Encoding: chunked
-    
+
 
 ...que é o mesmo que a requisição anterior, exceto que esta não retorna o
 corpo da mensagem, o html da página inicial do google, no caso.
@@ -416,12 +416,12 @@ Considere a seguinte aplicação web:
 
     post '/login' => sub {
         my $self = shift;
-        
+
         $self->stash({
             'user' => $self->param('user'),
             'pass' => $self->param('pass'),
         });
-        
+
     } => 'index';
 
     shagadelic;
@@ -525,13 +525,13 @@ http://www.fei.edu.br/pt-BR/Paginas/home.aspx
 =over
 
 =item HTTP 0.9 - http://www.w3.org/Protocols/HTTP/AsImplemented.html
-        
+
 =item HTTP 1.0 - RFC 1945, http://www.ietf.org/rfc/rfc1945.txt
 
-=item HTTP 1.1 - RFC 2616, http://www.ietf.org/rfc/rfc1945.txt        
-        
+=item HTTP 1.1 - RFC 2616, http://www.ietf.org/rfc/rfc1945.txt
+
 =item Upload de arquivos baseados em forms HTML - RFC 1867, http://www.ietf.org/rfc/rfc1867.txt
-        
+
 =item HTTPS - RFC 2818, http://www.ietf.org/rfc/rfc2818.txt
 
 =back

@@ -7,7 +7,7 @@
 
 =head1 Abstração
 
-A web pode ser considerada um local universal para armazenar documentos e isto significa que podemos ter isto para dados, e tornar a web uma tabela de dados dinâmica definindo um formato para eles. 
+A web pode ser considerada um local universal para armazenar documentos e isto significa que podemos ter isto para dados, e tornar a web uma tabela de dados dinâmica definindo um formato para eles.
 
 Utilizando a infra-estrutura da web, os dados podem ir crescendo desde que haja uma identificação esperta para isto e a melhor forma é utilizado o esquema que é ofercido pelas URIs, ou seja os nossos dados serão identificandos por endereços na web.
 
@@ -66,7 +66,7 @@ Porém vamos utilizar neste exemplo o L<RDF::Simple::Serialiser>.
 	use RDF::Simple::Serialiser;
 
 	my $ser = RDF::Simple::Serialiser->new;
-	
+
 	# Qual o vocabulário que será usado ? Veja o RDF::Simple::NS
 	# para mais detalhes.
 	$ser->addns( foaf => 'http://xmlns.com/foaf/0.1/' );
@@ -82,7 +82,7 @@ Porém vamos utilizar neste exemplo o L<RDF::Simple::Serialiser>.
     		[ $node2, 'foaf:name', 'Alice Rondon'],
     		[ $node2, 'foaf:type', 'foaf:Person'],
 	);
-	
+
 	# Serializando em RDF.
 	print $ser->serialise(@triples);
 
@@ -121,7 +121,7 @@ RDF Primer - http://www.w3.org/TR/2004/REC-rdf-primer-20040210/
 
 Metadata Architecture - http://www.w3.org/DesignIssues/Metadata
 
-=head1 Autor 
+=head1 Autor
 
 I<Thiago Rondon>, B<thiago.rondon no e-mail gratuito do google>
 

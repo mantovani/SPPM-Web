@@ -7,7 +7,7 @@ Nesse artigo você irá aprender a criar I<daemons>. Acredito que ficará conten
 O termo "I<daemon>" foi cunhado pelos programadores do "L<Projeto MAC|https://secure.wikimedia.org/wikipedia/en/wiki/Project_MAC#Project_MAC>", do MIT, baseando-se no L<Demônio de Maxwell|https://secure.wikimedia.org/wikipedia/en/wiki/Maxwell%27s_demon>, um ser imaginário que realiza tarefas sem ser visto. O termo é derivado da palavra grega I<daimon> que significa "ser sobrenatural", "espírito". Mais tarde, algumas pessoas tentaram definir o termo como um acrônimo para "Disk And Execution MONitor".
 
 
-=head2 Um passo Para Esquerda 
+=head2 Um passo Para Esquerda
 
 Para o conteúdo deste artigo, presumimos que o leitor esteja usando um Sistema Operacional baseado em UNIX que siga o POSIX, como o Linux. Os exemplos desse artigo não funcionarão no Windows, talvez se você conheça alguma mágica que implemente C<fork()>, os exemplos funcionem.
 L<http://search.cpan.org/~rjbs/perl-5.12.3/pod/perlfork.pod>
@@ -105,7 +105,7 @@ Mudar o C<umask> para 0.
     }
     setsid;
     chdir '/';
-    umask 0; 
+    umask 0;
 
 Para que o I<daemon> possa escrever arquivos sem estar sujeito a restrições de permissão do processo pai, o C<umask> deve ser mudado para 0 (zero).
 
@@ -126,7 +126,7 @@ Fechar todos os descritores padrões: STDOUT, STDIN e STDERR.
     }
     setsid;
     chdir '/';
-    umask 0; 
+    umask 0;
     open STDIN,  '<', '/dev/null' or die $!;
     open STDOUT, '>', '/dev/null' or die $!;
     open STDERR, '<', '/dev/null' or die $!;
@@ -151,7 +151,7 @@ Usar algum tipo de log para ter informações sobre seu programa, já que fecham
     }
     setsid;
     chdir '/';
-    umask 0; 
+    umask 0;
     open STDIN,  '<', '/dev/null' or die $!;
     open STDOUT, '>', '/dev/null' or die $!;
     open STDERR, '<', '/dev/null' or die $!;
@@ -173,7 +173,7 @@ Agora que já sabemos todas as regras para criar um I<daemon>, podemos ter o nos
 =end pod:xhtml
 
 Abra um terminal e digite:
-	
+
 	$ touch /tmp/mylog.txt
 	$ tail -f /tmp/mylog.txt
 
@@ -192,20 +192,20 @@ O comando acima cria e monitora o arquivo de texto C</tmp/mylog.txt>, que por en
     }
     setsid;
     chdir '/';
-    umask 0; 
+    umask 0;
     open STDIN,  '<', '/dev/null' or die $!;
     open STDOUT, '>', '/dev/null' or die $!;
     open STDERR, '<', '/dev/null' or die $!;
 
     open my $log, '>>', '/tmp/mylog.txt' or die $!;
-    
+
     for ( 1 .. 10 ) {
         print $log "teste\n";
     }
     exit;
 
 Salve o arquivo e execute-o em outro terminal. Em seguida olhe o terminal em que o comando:
-	
+
 	tail -f /tmp/mylog.txt
 
 estava executando. Perceba que o morto acordou, aqui temos o nosso primeiro exemplo de I<daemon>.
@@ -219,10 +219,10 @@ Você já percebeu como iniciamos ou interrompemos daemons como o do apache?
 
 Bem, você deve estar se perguntando, "Como o meu I<daemon> faz isso?". Isso é o que vamos aprender agora!
 
-A partir desse ponto, vamos assumir que você está usando uma distribuição Linux similar ao Debian (como o Ubuntu). Na prática, a maioria das distribuições Linux tem os atalhos que serão ensinados abaixo. 
+A partir desse ponto, vamos assumir que você está usando uma distribuição Linux similar ao Debian (como o Ubuntu). Na prática, a maioria das distribuições Linux tem os atalhos que serão ensinados abaixo.
 
 =head3 Meu Esqueleto
-	
+
 O Ubuntu tem o arquivo C</etc/init.d/skeleton> que é para você ter uma base do script de iniciar ou parar o seu I<daemon>.
 
 	sudo cp /etc/init.d/skeleton /etc/init.d/meudaemon

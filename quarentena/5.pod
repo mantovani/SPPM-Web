@@ -41,7 +41,7 @@ simbólicas).
 
     > (display "Hello, World!")
     Hello, World!
-    
+
     > (+ 1 2)
     3
 
@@ -103,14 +103,14 @@ Outra convenção interessante é o uso de "?" para indicar funções booleanas:
     #f
     > (number? 123)
     #t
-    
+
 E procedures que modificam a variável usam o caractere "!":
 
     > (define x 1)
     > (set! x (+ x 1))
 
 É importante lembrar que estes símbolos são apenas uma convenção, e não parte
-da sintaxe. 
+da sintaxe.
 
 E isso significa também que nós podemos criar nossas próprias convenções:
 podemos usar $, @ e % em nossos nomes de variáveis:
@@ -129,7 +129,7 @@ C<cons>, C<car>, C<cdr>, etc. Nós vamos pular essa parte.
 Aqui está um exemplo prático de como criar uma lista em Scheme:
 
     > (define @list (list 1 2 3))
-    
+
 E aqui está o resultado:
 
     > @list
@@ -147,7 +147,7 @@ Estas duas linhas são completamente diferentes:
 
     > (1 2 3)
     ERROR: procedure application: expected procedure, given: 1
-    
+
     > '(1 2 3)
     '(1 2 3)
 
@@ -169,7 +169,7 @@ Nesse momento você poderia estar pensando em tentar algo como:
     > (define @list (list 1 2 3))
     > (+ @list)
     +: expects argument of type <number>; given '(1 2 3)
-    
+
 Por que isso não funcionou? Por que o código acima é o mesmo que:
 
     > (+ '(1 2 3))
@@ -188,10 +188,10 @@ O que mais podemos fazer com listas? Algumas procedures são parecidas com
 perl:
 
     > (define @list '(1 2 3 4 5))
-    
+
     > (length @list)
     5
-    
+
     > (reverse @list)
     '(5 4 3 2 1)
 
@@ -201,7 +201,7 @@ A sintaxe para obter o n-ésimo elemento da lista é um pouco mais obfuscada:
     3
 
 Mas você deve se lembrar que, assim como acontece com Perl, nós raramente
-precisamos nos referir aos elementos de uma lista pelo seu índice. 
+precisamos nos referir aos elementos de uma lista pelo seu índice.
 
 Aqui está um exemplo de como podemos iterar pelos elementos de uma lista:
 
@@ -267,7 +267,7 @@ são equivalentes ao C<map> e C<grep> de Perl:
 
     > (map (lambda (x) (* x 2)) @list)
     '(2 4 6 8 10)
-    
+
     > (filter (lambda (x) (<= x 3)) @list)
     '(1 2 3)
 
@@ -285,7 +285,7 @@ Existem diversas funções úteis para lidar com hashes:
 
     > (hash-ref %foo "a")
     1
-    
+
     > (hash-keys %foo)
     '("a" "b" "c")
 
@@ -358,7 +358,7 @@ E, no caso de sets, você pode usar C<set-add> e C<set-remove>:
 
     > (define %foo
         (set-add %foo 10))
-    
+
     > (define %bar
         (set-remove %bar 10))
 

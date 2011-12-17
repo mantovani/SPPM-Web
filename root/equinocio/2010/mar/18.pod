@@ -2,15 +2,15 @@
 =head1 HTML::FormHandler
 
 L<HTML::FormHandler> E<#233> um mE<#243>dulo de processamento de formulE<#225>rios web feito
-em Moose, suas origens remontam ao L<Form::Processor> e destaca-se pela 
+em Moose, suas origens remontam ao L<Form::Processor> e destaca-se pela
 automatizaE<#231>E<#227>o das trabalhosas e repetitivas etapas intrE<#237>nsecas ao processamento
 de formulE<#225>rios. A renderizaE<#231>E<#227>o do formulE<#225>rio em HTML, validaE<#231>E<#227>o e tratamento dos
 dados submetidos sE<#227>o excutados convenientemente e sem complicaE<#231>E<#245>es pelo
 L<HTML::FormHandler>
 
 Ao extender o L<HTML::FormHandle::Model::DBIC> torna-se possE<#237>vel usar o L<DBIx::Class>
-como modelo para o formulE<#225>rio mapeando os mE<#233>todos acessores e relacionamentos 
-do DBIC em campos HTML no formulE<#225>rio. 
+como modelo para o formulE<#225>rio mapeando os mE<#233>todos acessores e relacionamentos
+do DBIC em campos HTML no formulE<#225>rio.
 Por exemplo, um relacionamento do tipo C<belongs_to> pode se transformar num
 I<<<select>> onde cada linha da tabela relacionada seria usada pra compor a lista
 de I<<option>>.
@@ -23,13 +23,13 @@ processamento do formulE<#225>rio.
 
 =head1 Montado no alce
 
-Por ter sido escrito usando L<Moose>, o L<HTML::FormHandler> nos permite lanE<#231>ar 
-mE<#227>o de seus recursos simplificando o processo de criaE<#231>E<#227>o dos formulE<#225>rios. 
+Por ter sido escrito usando L<Moose>, o L<HTML::FormHandler> nos permite lanE<#231>ar
+mE<#227>o de seus recursos simplificando o processo de criaE<#231>E<#227>o dos formulE<#225>rios.
 A validaE<#231>E<#227>o dos campos pode ser feita atravE<#233>s da aplicaE<#231>E<#227>o de I<type constraints>,
-e usando a sintaxe intuitiva provida pelo L<Moose> E<#233> possE<#237>vel criar novos 
-formulE<#225>rios a partir de heranE<#231>a ou composiE<#231>E<#227>o de I<roles> alE<#233>m do uso dos 
-I<method modifiers> (C<before>, C<after>, C<around>), que sE<#227>o uma mE<#227>o na roda quando 
-E<#233> necessE<#225>ria uma certa customizaE<#231>E<#227>o no comportamento de certas classes de 
+e usando a sintaxe intuitiva provida pelo L<Moose> E<#233> possE<#237>vel criar novos
+formulE<#225>rios a partir de heranE<#231>a ou composiE<#231>E<#227>o de I<roles> alE<#233>m do uso dos
+I<method modifiers> (C<before>, C<after>, C<around>), que sE<#227>o uma mE<#227>o na roda quando
+E<#233> necessE<#225>ria uma certa customizaE<#231>E<#227>o no comportamento de certas classes de
 formulE<#225>rios.
 
 A seguir o exemplo de um formulE<#225>rio usando HTML::FormHandler:
@@ -39,21 +39,21 @@ A seguir o exemplo de um formulE<#225>rio usando HTML::FormHandler:
    extends 'HTML::FormHandler';
 
    use Moose::Util::TypeConstraints;
-   
+
    subtype 'Maioridade'
      => as 'Int'
      => where { $_ >= 18 }
      => message { "$_ !? NE<#227>o E<#233> permitido menores aqui. Meia volta, Mantovani!"};
 
    no Moose::Util::TypeConstraints;
-   
-   has_field 'nome' => ( 
-     type => 'Text', 
+
+   has_field 'nome' => (
+     type => 'Text',
      label => 'Nome do usuE<#225>rio',
    );
-   
-   has_field 'idade' => ( 
-     type => 'Integer', 
+
+   has_field 'idade' => (
+     type => 'Integer',
      label => 'Idade',
      apply => ['Maioridade']
    );
@@ -84,18 +84,18 @@ A seguir o exemplo de um formulE<#225>rio usando HTML::FormHandler:
 Nessa classe estE<#227>o presentes os atributos e palavras-chave mais comumente utilizadas
 na criaE<#231>E<#227>o de um formulE<#225>rio.
 
-A palavra-chave C<has_field> E<#233> usada para declarar os campos dos formulE<#225>rios, 
+A palavra-chave C<has_field> E<#233> usada para declarar os campos dos formulE<#225>rios,
 jE<#225> o atributo C<type> define o tipo do campo. C<label> define o rE<#243>tulo que
 deve aparecer em cada campo no formulE<#225>rio HTML.
 
 O L<HTML::FormHandler> jE<#225> traz consigo uma sE<#233>rie de tipos prE<#233>-definidos que
-especificam qual deve ser carregado para renderizar e processar cada campo. 
+especificam qual deve ser carregado para renderizar e processar cada campo.
 Dentre eles destacam-se o I<Text> e I<Integer< para I<strings> simples e inteiros,
-respectivamente, I<Select> para I<<input>> do tipo I<<select>> e I<Email> para 
-validaE<#231>E<#227>o de endereE<#231>os de emails, dentre outros como I<Money>, I<Password>, 
-I<Date>, etc. Toda essa gama de opE<#231>E<#245>es nE<#227>o impede que vocE<#234> possa criar seus 
+respectivamente, I<Select> para I<<input>> do tipo I<<select>> e I<Email> para
+validaE<#231>E<#227>o de endereE<#231>os de emails, dentre outros como I<Money>, I<Password>,
+I<Date>, etc. Toda essa gama de opE<#231>E<#245>es nE<#227>o impede que vocE<#234> possa criar seus
 prE<#243>prios tipos para servir aos seus propE<#243>sitos mais particulares, que por sinal
-E<#233> uma tarefa bem simples, instruE<#231>E<#245>es mais detalhadas podem ser encontradas nos 
+E<#233> uma tarefa bem simples, instruE<#231>E<#245>es mais detalhadas podem ser encontradas nos
 manuais do L<HTML::FormHandler>.
 
 AlE<#233>m da validaE<#231>E<#227>o I<default> presente nos campos vocE<#234> implementar a sua prE<#243>pria
@@ -158,9 +158,9 @@ de notE<#237>cias no EquinE<#243>cio.
       "Equinocio::Web::Schema::Result::Categoria",
       { id => "categoria" },
     );
-    
+
     __PACKAGE__->many_to_many( tags => 'noticia_tags', 'tag' );
-    
+
     #
     #
 
@@ -184,7 +184,7 @@ de notE<#237>cias no EquinE<#243>cio.
         size          => 255,
       }
     );
-      
+
 =head3 Nossa classe de formulE<#225>rio
 
   package Equinocio::Web::Form::Noticia;
@@ -195,9 +195,9 @@ de notE<#237>cias no EquinE<#243>cio.
   use namespace::autoclean;
   use Moose::Util::TypeConstraints;
 
-  subtype 'TextoCurto' 
-    => as 'Str' 
-    => where { length $_ < 1000 } 
+  subtype 'TextoCurto'
+    => as 'Str'
+    => where { length $_ < 1000 }
     => message { 'Texto muito longo' };
 
   has '+item_class' => ( default => 'DB::Noticia' );
@@ -230,13 +230,13 @@ de notE<#237>cias no EquinE<#243>cio.
 
 
 =head3 O que E<#233> que tE<#225> acontecendo aqui??
-    
-Como extende L<HTML::FormHandler::Model::DBIC> e por ter definido o atributo 
+
+Como extende L<HTML::FormHandler::Model::DBIC> e por ter definido o atributo
 C<+item_class>, o nosso form ao fim de uma validaE<#231>E<#227>o com suceso, vai inserir
 ou atualizar uma I<Row> de I<Noticia> em nosso banco de dados. Percebam a restriE<#231>E<#227>o
 de unicidade explicitada pelo atributo C<unique> no campo C<titulo>. Antes de
-inserir/atualizar os dados o L<HTML::FormHandler::Model::DBIC> verifica se jE<#225> 
-existe outra notE<#237>cia com o mesmo tE<#237>tulo, caso exista, a mensagem definida 
+inserir/atualizar os dados o L<HTML::FormHandler::Model::DBIC> verifica se jE<#225>
+existe outra notE<#237>cia com o mesmo tE<#237>tulo, caso exista, a mensagem definida
 em C<unique_message> serE<#225> exibida.
 
 No campo I<categoria> definimos atravE<#233>s do atributo C<column_label> qual coluna
@@ -245,7 +245,7 @@ do registro serE<#225> usada como I<label> no I<<select>> do formulE<#225>rio.
 JE<#225> o campo C<conteudo> possui o atributo C<required> setado, que faz com que o
 L<HTML::FormHandler> exiba a mensagem definida em C<required_message> se o campo for
 submetido vazio. Uma I<constraint> denominada C<TextoCurto> E<#233> declarada e aplicada
-ao valor submetido no campo, C<TextoCurto> E<#233> usado para restringir o tamanho do 
+ao valor submetido no campo, C<TextoCurto> E<#233> usado para restringir o tamanho do
 texto a 1000 caracteres.
 
 Por fim um campo do tipo C<Submit> que renderizarE<#225> o nosso botE<#227>o para submeter o
@@ -259,7 +259,7 @@ formulE<#225>rio.
   use Moose;
 
   BEGIN { extends 'Catalyst::Controller'}
-  
+
   use aliased 'Equinocio::Web::Form::Noticia' => 'FormNoticia';
 
   sub base :Chained('/') :PathParth('noticia'): CaptureArgs(0) {
@@ -273,11 +273,11 @@ formulE<#225>rio.
     $nova_noticia = $c->stash->{collection}->new_result({});
     my $form = FormNoticia->new( item => $nova_noticia );
     $c->stash( form => $form , template => 'noticia/nova.tt');
-    
+
     return unless $c->req->method eq 'POST');
 
     $form->process(params => $c->req->params);
-    
+
     return unless $form->validated;
 
     $c->res->redirect(
@@ -311,7 +311,7 @@ de notE<#237>cias.
 
 =end pod:xhtml
 
-Viu sE<#243> como foi fE<#225>cil construir um formulE<#225>rio? RE<#225>pido, simples, sem tocar em 
+Viu sE<#243> como foi fE<#225>cil construir um formulE<#225>rio? RE<#225>pido, simples, sem tocar em
 simplesmente uma E<#250>nica linha de HTML e acima de tudo usando os recursos mais
 avanE<#231>ados de Perl.
 
@@ -320,5 +320,5 @@ AtE<#233> a prE<#243>xima, e aproveitem o EquinE<#243>cio!
 
 =head1 AUTOR
 
-Gabriel Andrade Santana <gabiruh E<#63743> gmail E<#8226> com> E<#233> desenvolvedor Perl na Aware TI (www.aware.com.br). 
+Gabriel Andrade Santana <gabiruh E<#63743> gmail E<#8226> com> E<#233> desenvolvedor Perl na Aware TI (www.aware.com.br).
 
