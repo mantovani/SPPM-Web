@@ -28,8 +28,8 @@ A cada 60 segundos, este script pega a imagem atual da sua câmera e a salva em 
     use LWP::Simple;
 
     while (1) {
-        mirror( 'http://192.168.1.2:8080/wificam.jpg', 
-                '/var/www/MyApp/root/static/imagem.jpg' 
+        mirror( 'http://192.168.1.2:8080/wificam.jpg',
+                '/var/www/MyApp/root/static/imagem.jpg'
               ) or warn $!;
         sleep(60);
     }
@@ -47,7 +47,7 @@ Usando isso no controller vai ter quase o mesmo efeito. A principal diferença �
    sub imagem : Local {
         my ( $self, $c ) = @_;
         my $content = get('http://192.168.1.2:8080/wificam.jpg');
-        $c->res->header( 'Content-Type', 'image/jpeg' ); 
+        $c->res->header( 'Content-Type', 'image/jpeg' );
         $c->res->body($content);
     }
 
@@ -55,7 +55,7 @@ Usando isso no controller vai ter quase o mesmo efeito. A principal diferença �
 =head2 O Template
 
 Independente do método escolhido, a exibição é extremamente simples, com alguns meta-comandos HTML - para evitar cache, por exemplo.
-    
+
     <html>
      <head>
 	<meta http-equiv="Refresh" content="60">
@@ -63,7 +63,7 @@ Independente do método escolhido, a exibição é extremamente simples, com alg
       	<meta http-equiv="Pragma" content="no-cache">
       	<meta http-equiv="Cache-Control" content="no-cache">
      </head>
-     <body> 
+     <body>
      	<img src="imagem.jpg" />
      </body>
     </html>

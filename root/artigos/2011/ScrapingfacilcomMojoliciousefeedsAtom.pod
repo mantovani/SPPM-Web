@@ -39,7 +39,7 @@ encontrado:
        <h3>2009</h3>
        <ul>
          ...
-       
+
 
 Ótimo, a página parece ter toda a informação que precisamos. Hora de
 automatizar!
@@ -57,7 +57,7 @@ Fazer um programa que acessa a página em questão
 
 
 Pronto. L<Mojo::UserAgent|http://search.cpan.org/perldoc?Mojo::UserAgent> é
-um cliente HTTP 1.1 e WebSocket completo, com E/S assíncrona e suporte 
+um cliente HTTP 1.1 e WebSocket completo, com E/S assíncrona e suporte
 transparente a TLS, epoll e kqueue. Sua API é bastante simples e direta,
 como pudemos observar, e a partir desse ponto em nosso código o objeto
 C<$client> já carregou o site e estamos prontos para acessar seu conteúdo.
@@ -94,7 +94,7 @@ novamente o trecho da página que queremos analisar:
        <h3>2009</h3>
        <ul>
          ...
- 
+
 No código acima, o primeiro C<< <div> >> possui a classe "top" como atributo e
 podemos ver dois filhos: o C<< <h2> >>, sem atributos, com o texto "Artigos"
 e nenhum filho; e o outro C<< <div> >>, com a classe "whois" como atributo e
@@ -213,7 +213,7 @@ O código completo de nosso crawler fica:
    my $dom = $client->res->dom;
    my $artigos = $dom->find( 'div[class="whois"] > ul > li' );
 
-   
+
    foreach my $artigo (@$artigos) {
        my $titulo = $artigo->at('a')->text;
        my $url = $artigo->at('a')->attrs->{'href'};

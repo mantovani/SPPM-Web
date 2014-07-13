@@ -1,6 +1,6 @@
 =pod
 
-r7 - 17 Nov 2006 
+r7 - 17 Nov 2006
 
 =head1 Variáveis Especiais em Perl
 

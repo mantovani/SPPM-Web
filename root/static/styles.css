@@ -552,7 +552,7 @@ a.expand {
 #container .top_left {
     width:590px;
     float:left;
- 
+
     padding:0px 0px 0px 20px;
   }
 
@@ -623,7 +623,7 @@ a.expand {
 #container .top_right {
     width:320px;
     float:right;
-  
+
     padding:0px 0px 15px 20px;
 	margin-right:20px;
   }
@@ -669,7 +669,7 @@ a.expand {
 
 #container .bottom .left_section .side_largo {
     width:940px;
-    
+
   }
 
 #container .bottom .left_section .side .artigos {
@@ -902,7 +902,7 @@ fieldset.area legend{
     background-color:#FFF;
     padding:0 30px;
 }
- 
+
 #logos_perl {
     margin:0 auto;
     width:372px;
@@ -928,8 +928,8 @@ div.pagination a {
 	padding: 2px 5px 2px 5px;
 	margin-right: 2px;
 	border: 1px solid #9aafe5;
-	
-	text-decoration: none; 
+
+	text-decoration: none;
 	color: #2e6ab1;
 }
 div.pagination a:hover, div.pagination a:active {

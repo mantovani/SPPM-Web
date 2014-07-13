@@ -15,11 +15,11 @@
         <br/>
         [% form.render %]
         <br/><br/>
-        [% INCLUDE et2010_prog.tt %]	
+        [% INCLUDE et2010_prog.tt %]
 
 
-        [% INCLUDE et2010_faq.tt %]	
-		
+        [% INCLUDE et2010_faq.tt %]
+
         </div>
           </div>
         </div>

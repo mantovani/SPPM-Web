@@ -4,14 +4,14 @@
 
 =head2 Introdução
 
-Para trabalhar com testes de fumaça (eu sempre fico perdido com estas traduções), 
-no qual você precisa verificar se o teu aplicativo esta trabalhando corretamente, ou 
+Para trabalhar com testes de fumaça (eu sempre fico perdido com estas traduções),
+no qual você precisa verificar se o teu aplicativo esta trabalhando corretamente, ou
 para testes de integração para por exemplo verificar
 parametros de configuração, performance, e etc. Enfim, este módulo pode ser bem utilizado
-para estes casos, vamos primeiramente falar sobre o funcionamento geral e logo depois, colocar alguns 
+para estes casos, vamos primeiramente falar sobre o funcionamento geral e logo depois, colocar alguns
 exemplos de uso.
 
-Existem muitos casos onde é muito interessante adicionar testes para verificar o 
+Existem muitos casos onde é muito interessante adicionar testes para verificar o
 cenário no qual há uma conexão via tcp entre cliente e servidor, e é onde este módulo
 se encaixa, ele oferece uma simples interface para facilitar o desenvolvimento de
 testes entre clientes e servidores que se comunicam via TCP.
@@ -58,7 +58,7 @@ Você também pode se utilizar a interface orientada objetos:
 
 	use Test::TCP;
 
-	my $server1 = Test::TCP->new( 
+	my $server1 = Test::TCP->new(
 		code => sub {
 			my $port1 = shift;
 			#...
@@ -69,7 +69,7 @@ Você também pode se utilizar a interface orientada objetos:
 
 =back
 
-=head2 Cenários 
+=head2 Cenários
 
 Ambos os exemplos, você pode copiar e colar em um arquivo "teste-foo.t", no qual é
 extensão utilizada para os arquivos de teste na linguagem, e depois executar no
@@ -127,7 +127,7 @@ de uma simples implementação na linguagem para realizar as tarefas dos dois la
 
 =head3 Cliente ou Servidor externo
 
-Este é um teste simples com o memcached, no qual estamos utilizando o estilo baseado em OO 
+Este é um teste simples com o memcached, no qual estamos utilizando o estilo baseado em OO
 para escrever o teste. Veja que primeiramente eu estou executando o servidor, com a porta
 que o Test::TCP esta me passando para utilizar, eu execute o memecached com o parametro
 para escolher a porta desejada e então logo depois invoco o módulo de cliente para setar

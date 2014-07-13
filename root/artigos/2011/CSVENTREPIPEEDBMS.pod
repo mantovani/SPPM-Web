@@ -145,25 +145,25 @@ Segue um exemplo com funcionalidade similar ao anterior:
     use strict;
     use utf8;
     use warnings 'all';
-   
+
     use open ':locale';
-   
+
     use Data::Dumper;
     use Tie::Handle::CSV;
-   
+
     my $csv = new Tie::Handle::CSV(
         file        => '7marco2011.csv',
         header      => 1,
         key_case    => 'lower',
         open_mode   => '<:utf8',
     );
-   
+
     while (my $row = <$csv>) {
         $row->{link} =~ s/^.*=//;
         print STDERR Dumper $row;
         print $row . "\n";
     }
-   
+
     close $csv;
 
 Vantagem evidente: dispensa comentários. Considerar ambos os sentidos da frase C<;)>
@@ -183,11 +183,11 @@ Dessa vez, expandimos a sigla de UF para o nome do estado (através de um C<JOIN
     use strict;
     use utf8;
     use warnings 'all';
-   
+
     use open ':locale';
-   
+
     use DBI;
-   
+
     my $dbh = DBI->connect('dbi:CSV:', undef, undef, {
         f_encoding  => 'utf8',
         csv_tables  => {
@@ -197,7 +197,7 @@ Dessa vez, expandimos a sigla de UF para o nome do estado (através de um C<JOIN
         RaiseError  => 1,
         PrintError  => 1,
     }) or die "Erro com DBI/DBD::CSV: " . $DBI::errstr;
-   
+
     my $sth = $dbh->prepare(<<SQL_QUERY);
         SELECT cidade, estados.estado AS cidade_uf
         FROM llcb
@@ -211,7 +211,7 @@ Dessa vez, expandimos a sigla de UF para o nome do estado (através de um C<JOIN
             AND (longitude  < -46.10)
         ORDER BY cidade
     SQL_QUERY
-   
+
     $sth->execute;
     while (my $row = $sth->fetchrow_arrayref) {
         printf("%s, %s\n", @{$row});
@@ -234,7 +234,7 @@ Quando o módulo L<Text::CSV_XS> está instalado, o L<Text::CSV> automaticamente
 
 =head3 Retornando CSV via HTTP
 
-Em várias ocasiões, gostaríamos que os usuários pudessem exportar os dados dos sistemas online diretamente para os seus desktops. É só uma questão de configurar os I<headers> corretos para que o sistema do usuário encaminhe a planilha diretamente para o aplicativo especializado (Excel, LibreOffice), ao invés de exibir o conteúdo do CSV na tela do navegador. 
+Em várias ocasiões, gostaríamos que os usuários pudessem exportar os dados dos sistemas online diretamente para os seus desktops. É só uma questão de configurar os I<headers> corretos para que o sistema do usuário encaminhe a planilha diretamente para o aplicativo especializado (Excel, LibreOffice), ao invés de exibir o conteúdo do CSV na tela do navegador.
 
 Tomando o L<Catalyst> como exemplo:
 

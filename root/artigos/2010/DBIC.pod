@@ -583,7 +583,7 @@ Suponha o seguinte schema:
 
 O seguinte comando shell é o suficiente para iniciar:
 
-    perl -MDBIx::Class::Schema::Loader=make_schema_at -le'make_schema_at("MySchema", { use_namespaces => 1, dump_directory => "./lib" }, 
+    perl -MDBIx::Class::Schema::Loader=make_schema_at -le'make_schema_at("MySchema", { use_namespaces => 1, dump_directory => "./lib" },
     ["dbi:Pg:dbname=equinocio_students", "edenc", ""])'
 
 A opção C<use_namespaces> indica que queremos prefixar nossas classes com

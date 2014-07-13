@@ -55,11 +55,11 @@ A falha esta no fato do código acreditar que a variável C<$arquivo> conterá u
 
 	close( FILE );
 
-O código acima é facilmente explorado pelo usuário se a variável C<$arquivo> for preenchido com um comando ('C<rm -rf / |>', por exemplo) ao invés do nome de um arquivo válido. 
+O código acima é facilmente explorado pelo usuário se a variável C<$arquivo> for preenchido com um comando ('C<rm -rf / |>', por exemplo) ao invés do nome de um arquivo válido.
 
 Este problema é resolvido utilizando o comando C<open> declarando o filehandle, o modo de operação e o nome do arquivo, ou seja com três argumentos.
 
-O código re-escrito, e agora sem a falha de segurança, fica assim: 
+O código re-escrito, e agora sem a falha de segurança, fica assim:
 
         #!/usr/bin/perl
         print qq/Digite o nome do arquivo: /;
@@ -108,13 +108,13 @@ Filehandle é uma variável global representando um recurso externo ao programa,
 
 	}
 
-O inocente código acima esconde um problema sério e de difícil análise. A rotina C<minha_funcao()> abre o C<$arquivo> e o associa com o I<filehandle> C<FH>. O C<while> processa o arquivo e em algum momento carrega a rotina C<debug()>. Agora no contexto da rotina C<debug()> o arquivo C<$debug_file> é aberto e associado ao I<filehande> C<FH>,  já neste momento o I<filehandle> da rotina C<minha_funcao()> perderá o acesso (ou a referência) do C<$arquivo>, e por último a rotina finaliza fechando o I<filehandle>. Quando o fluxo retornar para a próxima linha da rotina C<minha_funcao>, o C<FH> já não existe mais, o quê provocará a interrupção prematura, e indesejada, do C<while>. O código é de difícil análise porquê ele funciona, não tem erro de compilação e nem erro de lógica. O erro é 'comportamental' e que pode variar conforme outras variáveis do sistema. 
+O inocente código acima esconde um problema sério e de difícil análise. A rotina C<minha_funcao()> abre o C<$arquivo> e o associa com o I<filehandle> C<FH>. O C<while> processa o arquivo e em algum momento carrega a rotina C<debug()>. Agora no contexto da rotina C<debug()> o arquivo C<$debug_file> é aberto e associado ao I<filehande> C<FH>,  já neste momento o I<filehandle> da rotina C<minha_funcao()> perderá o acesso (ou a referência) do C<$arquivo>, e por último a rotina finaliza fechando o I<filehandle>. Quando o fluxo retornar para a próxima linha da rotina C<minha_funcao>, o C<FH> já não existe mais, o quê provocará a interrupção prematura, e indesejada, do C<while>. O código é de difícil análise porquê ele funciona, não tem erro de compilação e nem erro de lógica. O erro é 'comportamental' e que pode variar conforme outras variáveis do sistema.
 
 A primeira coisa que nós vem a cabeça é alterar o nome de um dos I<filehandle>, que neste caso resolverá o problema, mas não é a melhor solução. Talvez algum gerente de projeto louco em especificações tente criar um padrão para nomenclatura aleatória dos I<filehandle>, mas esta também não é a melhor alternativa. A melhor alternativa para este caso é informar ao perl que o I<filehandle> está no escopo local, e existe duas maneira de fazer isto. A primeira é utilizar o operador C<local> da seguinte maneira :
 
 	sub minha_funcao {
 	  local FH*;
-	  .... 
+	  ....
 	}
 
 	# ...
@@ -122,7 +122,7 @@ A primeira coisa que nós vem a cabeça é alterar o nome de um dos I<filehandle
 	sub debug {
 	  my $mensagem = shift;
 	  local FH*;
-	  .... 
+	  ....
 	}
 
 A segunda maneira, e na minha opinião a mais elegante, é utilizar uma scalar para armazenar a referência do I<filehandle>. Esta é a solução definitiva porquê a scalar está restrita no escopo declarado. O programa re-escrito e imune ao bug do I<filehandle> global é apresentado abaixo.
@@ -148,7 +148,7 @@ Nesta versão do código, além da substituição do I<filehandle> B<FILE> pela 
 
 =head3 Verificar o sucesso do comando C<open>
 
-Sempre verifique se o comando C<open> foi executado com sucesso. A variável C<$!> possui a mensagem de erro para o caso de uma falha na execução do comando. 
+Sempre verifique se o comando C<open> foi executado com sucesso. A variável C<$!> possui a mensagem de erro para o caso de uma falha na execução do comando.
 
 O usual é utilizar o C<or die> logo após o comando C<open>, abortando a execução do sistema caso ocorra alguma falha ao abrir o arquivo.
 
@@ -168,29 +168,29 @@ O conteúdo capturado pelo operador diamante pode ser armazenado numa scalar ou 
 
 	# lê uma linha da entrada
 	my $linha  = <>;
-	
+
 	#lê tudo para um array ...
 	my @linhas = <>;
 
 O código padrão para a leitura de um arquivo, sequencialmente do início ao final é apresentado abaixo.
 
-	#!/usr/bin/perl 
+	#!/usr/bin/perl
 	use strict;
 
 	my $file_name = q/arquivo.txt/;
-	
+
 	open my $handle, '<', $file_name or die qq/Error : $!/;
 
 	while( defined ( my $line = <$handle> ) ) {
 	  # ... código ...
 	}
 
-Ler o arquivo linha a linha como no código acima possui a vantagem de utilizar limitado recurso de memória e a habilidade de trabalhar com 
+Ler o arquivo linha a linha como no código acima possui a vantagem de utilizar limitado recurso de memória e a habilidade de trabalhar com
 arquivos de qualquer tamanho, além de ser facilmente interpretado pelos novatos no Perl.
 
 =head3 Slurp
 
-Outra alternativa é ler todo o conteúdo de um arquivo em uma scalar ou numa array, técnica conhecida como B<slurp>. Slurping possui vantagens e desvantagens. 
+Outra alternativa é ler todo o conteúdo de um arquivo em uma scalar ou numa array, técnica conhecida como B<slurp>. Slurping possui vantagens e desvantagens.
 
 A principal desvantagem do B<slurp> está relacionado ao tamanho do arquivo. Carregar arquivo muito grande pode ser desastroso para o consumo da memória e pode causar paginação em disco. Efetuar o B<slurp> de uma arquivo de alguns megabytes pode não ser um problema para a maioria dos sistemas que tem memória RAM em gigabytes.
 
@@ -203,7 +203,7 @@ Com o arquivo inteiro na memória é possível efetuar pesquisa/substituição, 
 O Perl sempre suportou o B<slurp> de arquivos com o mínimo de código, tal como carregar o arquivo para um array:
 
 	open my $fh, '<', $file or die "Error : $!";
-	# lê várias linhas da entrada, finalizando a leitura com 
+	# lê várias linhas da entrada, finalizando a leitura com
 	# o EOF, com CTRL+D (no Linux) ou CTRL+Z (no Windows)
 	# e armazena tudo no array ...
 	my @linhas = <$fh>;
@@ -215,7 +215,7 @@ O Perl sempre suportou o B<slurp> de arquivos com o mínimo de código, tal como
 
 ou para uma scalar :
 
-	$conteudo = do { 
+	$conteudo = do {
 		local ($/);
 		open my $fh, '<', $file or die "Error : $!";
 		<$fh> };
@@ -226,8 +226,8 @@ No código acima, é definido a variável C<$/> para C<undef> dentro do bloco C<
 A versão resumida do código acima é :
 
 	$conteudo = do { local ( @ARGV, $/ ) = $file; <> };
-		
-Neste código estamos utilizando o C<open> implícito populando a variável C<@ARGV> (já discutido acima) com o nome do arquivo e definindo 
+
+Neste código estamos utilizando o C<open> implícito populando a variável C<@ARGV> (já discutido acima) com o nome do arquivo e definindo
 o C<$/> como o valor C<undef>. Em seguida carrego o conteúdo do arquivo com o C<<>>.
 
 Com o arquivo em memória, é possível efetuar o I<parse> de uma única vez, tal como :
@@ -242,7 +242,7 @@ Utilizar os comando C<read> ou C<sysread> são técnicas alternativas, para efet
 
 =head3 read vs sysread
 
-A documentação do Perl não é clara sobre a diferença entre o C<read> e o C<sysread>, e nem é o objetivo deste artigo clarificar estas diferenças. A principal diferença, e a mais importante para nós neste momento, é saber que o C<read> faz buffer de I/O enquanto que o C<sysread> acessa o sistema de I/O diretamente, sem o buffer. A utilização, ou não, de buffer vai depender de várias variáveis e para isto é necessário realizar I<benchmarks> e análise da utilização do sistema, mas na dúvida utilize o sistema I<buferizado> como regra geral.  
+A documentação do Perl não é clara sobre a diferença entre o C<read> e o C<sysread>, e nem é o objetivo deste artigo clarificar estas diferenças. A principal diferença, e a mais importante para nós neste momento, é saber que o C<read> faz buffer de I/O enquanto que o C<sysread> acessa o sistema de I/O diretamente, sem o buffer. A utilização, ou não, de buffer vai depender de várias variáveis e para isto é necessário realizar I<benchmarks> e análise da utilização do sistema, mas na dúvida utilize o sistema I<buferizado> como regra geral.
 
 Esta diferença significa, entre outras coisas, que você nunca deverá misturar os comandos da família sys* (C<sysopen>, C<syswrite>, C<sysseek> e C<sysread>) com  os comandos C<open>, C<read>, C<print>, C<write>, C<tell>, C<eof> e C<seek>. Misturar a utilização de comando que faz buffer com comando que não utiliza buffer pode provocar erros de difícil depuração.
 
@@ -250,7 +250,7 @@ Para o nosso artigo a outra característica interessante do comando C<read>, ou 
 
 O exemplo de efetuar um I<slurp> com de um arquivo com o C<sysread> seria assim :
 
- 	sysopen my $handle, $nome_arquivo, O_RDONLY  
+ 	sysopen my $handle, $nome_arquivo, O_RDONLY
 	     or die "Falha ao abrir o $nome_arquivo : $!" ;
 
  	my $tamanho    = -s $handle;
@@ -269,7 +269,7 @@ arquivo. Existe duas alternativas para este trabalho. A primeira, e a mais usual
 
 O código para a primeira opção não possui nenhuma diferença do que já escrevermos até o momento, uma versão simples seria assim:
 
-	open my $log, '<', $nome_arquivo 
+	open my $log, '<', $nome_arquivo
            or die qq/Falha ao abrir o arquivo.\nError : $!/;
 
 	my $buffer_size = 4096;
@@ -297,13 +297,13 @@ O principal ponto para a segunda alternativa é continuar o processamento a part
           $posicao = 0;
           warn "O arquivo foi rotacionado ?\n";
         }
-        
+
         # posiciona o arquivo
         if ( sysseek $log, $posicao, SEEK_SET ) {
           my $conteudo;
 
           while ( defined ( my $bytes = sysread $log, $conteudo, $buffer_size ) ) {
-          # faça alguma coisa com o $conteudo 
+          # faça alguma coisa com o $conteudo
           }
 
           # e por último armazena a última posição processada
@@ -335,7 +335,7 @@ ou a versão de código que faz acesso posicionado no arquivo para o processamen
         }
 
         map_file my $log, $nome_arquivo, '<', $posicao;
-        # faça alguma coisa com o $log, que tem o conteúdo do arquivo 
+        # faça alguma coisa com o $log, que tem o conteúdo do arquivo
         grava_posicao_do_arquivo_em_algum_lugar( $file_size );
 
 O Tim Bray possue um I<benchmark> interessante no link L<http://www.tbray.org/ongoing/When/200x/2007/10/30/WF-Results> que compara o processamento de um arquivo utilizando mmap em diversas linguagens de programação.
@@ -348,7 +348,7 @@ Para este I<benchmark> pensei em criar arquivos com três tamanho diferentes rep
 
 Neste I<benchmark> foi aferido o tempo apenas para ler o arquivo, com exceção do arquivo grande, e o tempo para ler e processar o arquivo. O módulo L<Benchmark>, utilizado neste código, apresenta os resultado do pior para o melhor valor baseado na quantidade de operações realizada com o menor recurso dentro do tempo estabelecido.
 
-=head3 Arquivo pequeno  
+=head3 Arquivo pequeno
 
 O arquivo pequeno tem o tamanho de 87.385 bytes (85 KBytes), e objetiva simular o processamento de arquivos de configuração que podem ser I<parseado> via expressão regular em uma única vez.
 
@@ -368,9 +368,9 @@ A leitura nua e crua do resultado do I<benchamark> para ler arquivos pequenos no
         p_a_p_slurp_read        844/s                     57%          3%         2%               --                 -2%
         p_a_p_slurp_sysread     860/s                     60%          5%         4%               2%                  --
 
-Com o processamento do arquivo, podemos observar que o sistema de I/O do Perl não é tão lento assim e que o maior impacto no I<parse> do arquivo esta relacionado ao próprio I<parse>. Comparando com o tempo de leitura e o temp de leitura e processamento, observamos que mesmo com o arquivo totalmente em memória, a aplicação de uma expressão regular é o maior responsável pelo consumo de tempo. 
+Com o processamento do arquivo, podemos observar que o sistema de I/O do Perl não é tão lento assim e que o maior impacto no I<parse> do arquivo esta relacionado ao próprio I<parse>. Comparando com o tempo de leitura e o temp de leitura e processamento, observamos que mesmo com o arquivo totalmente em memória, a aplicação de uma expressão regular é o maior responsável pelo consumo de tempo.
 
-=head3 Arquivo médio  
+=head3 Arquivo médio
 
 O arquivo médio tem o tamanho de 136.296.657 bytes (133 MBytes), e objetiva simular o processamento de arquivos de log que podem ser I<parseado> via expressão regular em uma única vez, como o log de um servidor de web.
 
@@ -381,7 +381,7 @@ O arquivo médio tem o tamanho de 136.296.657 bytes (133 MBytes), e objetiva sim
         le_slurp_read         7.91/s                 303%      51%              19%            --   -100%
         le_mmap              31495/s             1604558%  600677%          473732%       397948%      --
 
-Novamente o L<File::Map> mostra um comportamento fora do contexto do teste de carregar todo o arquivo em memória. 
+Novamente o L<File::Map> mostra um comportamento fora do contexto do teste de carregar todo o arquivo em memória.
 
                                 s/iter p_a_m_operador_diamante p_a_m_slurp p_a_m_slurp_sysread p_a_m_slurp_read p_a_m_mmap
         p_a_m_operador_diamante   2.00                      --        -30%                -32%             -35%       -37%
@@ -390,7 +390,7 @@ Novamente o L<File::Map> mostra um comportamento fora do contexto do teste de ca
         p_a_m_slurp_read          1.31                     53%          7%                  5%               --        -3%
         p_a_m_mmap                1.27                     58%         10%                  8%               3%         --
 
-O processamento deste arquivo mostra que o sistema de buffer mostrou-se mais eficiente, mesmo eu lendo o arquivo sequencialmente (estou lendo o byte 0 até o byte 136.296.657 em uma única vez). 
+O processamento deste arquivo mostra que o sistema de buffer mostrou-se mais eficiente, mesmo eu lendo o arquivo sequencialmente (estou lendo o byte 0 até o byte 136.296.657 em uma única vez).
 
 =head3 Arquivo grande
 
@@ -416,7 +416,7 @@ Nesta análise apresento também a lista de recursos utilizado durante o process
 
 A primeira conclusão após a análise de todos estes dados é que o processamento linear é sempre a pior opção em todos os casos aqui apresentado.
 
-Com relação ao processamento de arquivo pequeno, o slurp via sysread mostrou-se com o melhor desempenho, mas considerando a quantidade de linhas de código em comparação com o slurp em uma única linha eu ainda prefiro o slurp tradicional para arquivos pequenos e com processamento esporádico (como arquivo de configuração). Já se eu estiver processando milhares de arquivos pequenos para carregar no sistema, aí a diferença de I/O justifica a codificação baseado no sysread/read. 
+Com relação ao processamento de arquivo pequeno, o slurp via sysread mostrou-se com o melhor desempenho, mas considerando a quantidade de linhas de código em comparação com o slurp em uma única linha eu ainda prefiro o slurp tradicional para arquivos pequenos e com processamento esporádico (como arquivo de configuração). Já se eu estiver processando milhares de arquivos pequenos para carregar no sistema, aí a diferença de I/O justifica a codificação baseado no sysread/read.
 
 Na comparação com entre o sysread e o read, tivemos um empate técnico na minha opnião. Tem situações em que o sysread é a única opção, como receptor em serviços (daemon), mas tenho dúvida se este é a situação para o processamento de arquivos. Na dúvida eu recomendo utilizar o read para esta função, e o sysread apenas após alguns testes para o ambiente em questão.
 
@@ -444,7 +444,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 	use File::Map  qw/map_file/;
 	use File::Temp qw/tempfile tempdir/;
 	use Benchmark  qw/timethese cmpthese/;
-	
+
 	my $duracao = -10;
 	my ($short_file, $medium_file, $large_file) = cria_arquivos();
 
@@ -469,7 +469,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 			le_slurp_sysread     => sub { le_slurp_sysread( $medium_file ) },
 		} );
 	say '=' x 80;
-	
+
 	say '=' x 80;
 	say "= Processa arquivo pequeno, tamanho : ", -s $short_file;
 	my $resultado = cmpthese( $duracao, {
@@ -480,7 +480,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 			p_a_p_slurp_read        => sub { processa_slurp_read( $short_file ) },
 		} );
 	say '=' x 80;
-	
+
 	say '=' x 80;
 	say "= Processa arquivo medio, tamanho : ", -s $medium_file ;
 	my $resultado = cmpthese( $duracao, {
@@ -506,7 +506,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 	sub le_operador_diamante {
 	  my $file_name = shift;
 
-	  open my $handle, '<', $file_name 
+	  open my $handle, '<', $file_name
 	    or carp "Erro ao abrir o arquivo $file_name : $! ";
 
 	  while( <$handle> ) {
@@ -516,7 +516,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 	sub processa_operador_diamante {
 	  my $file_name = shift;
 
-	  open my $handle, '<', $file_name 
+	  open my $handle, '<', $file_name
 	    or carp "Erro ao abrir o arquivo $file_name : $! ";
 
 	  while( <$handle> ) {
@@ -531,12 +531,12 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 
 	sub le_mmap {
 	  my $file_name = shift;
-	  map_file my $handle, $file_name; 
+	  map_file my $handle, $file_name;
 	}
 
 	sub processa_mmap {
 	  my $file_name = shift;
-	  map_file my $handle, $file_name; 
+	  map_file my $handle, $file_name;
 
 	  while( $handle =~ /^(\d+) (\w+) (\d+) (\w+)$/mg ) {
 	  }
@@ -553,7 +553,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 	sub le_slurp_read{
 	  my $file_name = shift;
 
-	  open my $handle, '<', $file_name 
+	  open my $handle, '<', $file_name
 	    or carp "Erro ao abrir o arquivo $file_name : $! ";
 
 	  my $conteudo;
@@ -568,7 +568,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 	sub processa_slurp_read{
 	  my $file_name = shift;
 
-	  open my $handle, '<', $file_name 
+	  open my $handle, '<', $file_name
 	    or carp "Erro ao abrir o arquivo $file_name : $! ";
 
 	  my $conteudo;
@@ -586,7 +586,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 	sub le_slurp_sysread{
 	  my $file_name = shift;
 
-	  sysopen my $handle, $file_name, O_RDONLY  
+	  sysopen my $handle, $file_name, O_RDONLY
 	    or carp "Erro ao abrir o arquivo $file_name : $! ";
 
 	  my $conteudo;
@@ -601,7 +601,7 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
 	sub processa_slurp_sysread{
 	  my $file_name = shift;
 
-	  sysopen my $handle, $file_name, O_RDONLY  
+	  sysopen my $handle, $file_name, O_RDONLY
 	    or carp "Erro ao abrir o arquivo $file_name : $! ";
 
 	  my $conteudo;
@@ -634,8 +634,8 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
             while ( $conteudo =~ /^(\d+) (\w+) (\d+) (\w+)$/mg ) {
             }
           }
-        }       
- 
+        }
+
         sub processa_grade_arquivo_sysread {
           my $file_name = shift;
 
@@ -657,22 +657,22 @@ O código gera três arquivos com aproximadamente 85KB, 130 MB e 1.3 GB respecti
         }
 
 	sub cria_arquivos {
-	  my ($fh_short, $short_filename)   = tempfile(); 
-	  my ($fh_large, $large_filename)   = tempfile(); 
-	  my ($fh_medium, $medium_filename) = tempfile(); 
-	
-	  say $fh_short  ( (int rand 10) x ( (int rand 20) || 20 ), " ", 
+	  my ($fh_short, $short_filename)   = tempfile();
+	  my ($fh_large, $large_filename)   = tempfile();
+	  my ($fh_medium, $medium_filename) = tempfile();
+
+	  say $fh_short  ( (int rand 10) x ( (int rand 20) || 20 ), " ",
 	                   "paoiuf"      x ( (int rand 10) || 10 ), " ",
-	                   (int rand 20) x ( (int rand 11) || 11 ), " ", 
+	                   (int rand 20) x ( (int rand 11) || 11 ), " ",
 	                   "asda"        x ( (int rand 20) || 20 )) for (0..900);
 
-	  say $fh_medium ( (int rand 20) x ( (int rand 30) || 30 ), " ", 
-	                   "qwvr"        x ( (int rand 22) || 22 ), " ", 
-	                   (int rand 33) x ( (int rand 11) || 11 ), " ", 
+	  say $fh_medium ( (int rand 20) x ( (int rand 30) || 30 ), " ",
+	                   "qwvr"        x ( (int rand 22) || 22 ), " ",
+	                   (int rand 33) x ( (int rand 11) || 11 ), " ",
 	                   "pknj"        x ( (int rand 33) || 33 )) for (0..900_000);
 
-	  say $fh_large  ( (int rand 20) x ( (int rand 30) || 30 ), " ", 
-	                   "uhbt"        x ( (int rand 22) || 22 ), " ",    
+	  say $fh_large  ( (int rand 20) x ( (int rand 30) || 30 ), " ",
+	                   "uhbt"        x ( (int rand 22) || 22 ), " ",
 	                   (int rand 33) x ( (int rand 11) || 11 ), " ",
 	                   "vbgt"        x ( (int rand 33) || 33 )) for (0..9_000_000);
 	  return ($short_filename, $medium_filename, $large_filename );

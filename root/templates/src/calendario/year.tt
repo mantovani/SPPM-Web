@@ -5,7 +5,7 @@
           <div class="top">
             <h2>Calend&aacute;rio [% year %]</h2>
             <div class="whois">
-<p>            
+<p>
 
 <ul>
 [% FOREACH item = events %]

@@ -30,8 +30,8 @@ VocE<ecirc> deverE<aacute> ver a mensagem na tela.
 
 Experimente agora digitar o seguinte programa (print2.pl):
 
- print "Olá, 
- mundo!!!"; 
+ print "Olá,
+ mundo!!!";
 
 Execute o programa (perl print2.pl) e veja o resultado.
 
@@ -45,7 +45,7 @@ vocE<ecirc> deseja.)
 
 Este terceiro programa faz a mesma coisa:
 
- print "Olá,\nmundo!!!"; 
+ print "Olá,\nmundo!!!";
 
 O sE<iacute>mbolo C<\n> indica uma quebra de linha, o equivalente a
 digitar C<enter>. Sempre que vocE<ecirc> quiser imprimir um texto em
@@ -163,7 +163,7 @@ repetiE<ccedil>E<otilde>es em Perl.
 Digite o seguinte programa e salve-o como "foreach.pl":
 
  use strict;
- 
+
  for my $i (1..10) {
    print "$i\n";
  }
@@ -219,7 +219,7 @@ Uma possibilidade seria utilizar diversas variE<aacute>veis escalares:
  my $nome2 = "Newton";
  my $nome3 = "Gauss";
  my $nome4 = "Maxwell";
- 
+
  print "$nome1\n";
  print "$nome2\n";
  print "$nome3\n";
@@ -231,9 +231,9 @@ I<arrays>, em inglE<ecirc>s).
 Digite o seguinte programa:
 
  use strict;
- 
+
  @nomes = ("Kepler","Newton","Gauss","Maxwell");
- 
+
  print "$_\n" for @nomes;
 
 Assim como as variE<aacute>veis escalares comeE<ccedil>am com C<$>, as
@@ -247,7 +247,7 @@ misturar itens numE<eacute>ricos e alfanumE<eacute>ricos:
 Digite agora o seguinte programa, e salve-o como "csv.pl":
 
  use strict;
- 
+
  @lista = <>;
  print join (",",@lista);
 
@@ -323,14 +323,14 @@ O comando C<if> faz uma comparaE<ccedil>E<atilde>o e, dependendo do
 resultado, executa uma sequE<ecirc>ncia de comandos. Ele funciona mais
 ou menos assim:
 
- 
+
    se (expressão é verdadeira) {
       execute uma série de comandos
    }
 
 Um exemplo simples, em Perl:
 
- 
+
    if ($idade < 18) {
       die "Este programa é proibido para menores de 18 anos!";
    }
@@ -342,7 +342,7 @@ tambE<eacute>m quando a expressE<atilde>o for falsa. Para isso, usamos
 a expressE<atilde>o C<else> ("caso contrE<aacute>rio", em
 inglE<ecirc>s):
 
- 
+
    if ($saldo > 0) {
       print "Saldo positivo!";
    } else {
@@ -371,11 +371,11 @@ comparaE<ccedil>E<otilde>es numE<eacute>ricas, e quando estivermos
 trabalhando com strings, utilizaremos as comparaE<ccedil>E<otilde>es
 literais:
 
- 
+
    # Comparações numéricas
    if ($idade == 18) { ... }
    if ($idade > 100) { ... }
- 
+
    # Comparações literais
    if ($resposta eq "s") { ... }
    if ($nome ne "Larry") { ... }
@@ -390,9 +390,9 @@ Veja o seguinte exemplo:
    # Confirma
    print "Você deseja continuar? (s/n) ";
    my $resposta = getc();
- 
+
    die "O programa termina aqui.\n" if $resposta ne "s";
- 
+
    print "Vamos continuar...";
 
 Mas lembre-se: apenas por que vocE<ecirc> I<pode> fazer algo,
@@ -434,14 +434,14 @@ Um hash E<eacute> semelhante a um dicionE<aacute>rio: para cada item
 Digite o seguinte programa:
 
  use strict;
- 
+
  my %birthday = (
           "Johannes Kepler" => "27/12/1571",
              "Isaac Newton" => "25/12/1642",
      "Carl Friedrich Gauss" => "30/04/1777",
       "James Clerk Maxwell" => "13/06/1831"
  );
- 
+
  foreach (sort keys %birthday) {
    print "$_ nasceu em $birthday{$_}.\n";
  }

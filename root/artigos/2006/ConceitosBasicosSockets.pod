@@ -92,7 +92,7 @@ porta 80 (HTTP).
    2 my $socket = IO::Socket::INET->new(
    3                                    PeerAddr => "www.servidor.com.br",
    4                                    PeerPort => "80",
-   5                                    Proto => "tcp"   
+   5                                    Proto => "tcp"
    6                                   );
 
 Na linha 5 estamos definindo o protocolo, utilizaremos o TCP.
@@ -103,7 +103,7 @@ Na linha 5 estamos definindo o protocolo, utilizaremos o TCP.
    2 my $socket = IO::Socket::INET->new(
    3                                    PeerAddr => "www.servidor.com.br",
    4                                    PeerPort => "80",
-   5                                    Proto => "tcp"   
+   5                                    Proto => "tcp"
    6                                   );
    7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
 
@@ -117,7 +117,7 @@ operaE<ccedil>E<atilde>o sera abandonada.
    2 my $socket = IO::Socket::INET->new(
    3                                    PeerAddr => "www.servidor.com.br",
    4                                    PeerPort => "80",
-   5                                    Proto => "tcp"   
+   5                                    Proto => "tcp"
    6                                   );
    7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    8 if ($socket) {
@@ -139,12 +139,12 @@ simplesmente um:
    2 my $socket = IO::Socket::INET->new(
    3                                    PeerAddr => "www.servidor.com.br",
    4                                    PeerPort => "80",
-   5                                    Proto => "tcp"   
+   5                                    Proto => "tcp"
    6                                   );
    7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    8 if ($socket) {
    9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
-  10 while (<$socket>) {    
+  10 while (<$socket>) {
   11 print "$_";
   12 }}
 
@@ -160,12 +160,12 @@ do servidor.
    2 my $socket = IO::Socket::INET->new(
    3                                    PeerAddr => "www.servidor.com.br",
    4                                    PeerPort => "80",
-   5                                    Proto => "tcp"   
+   5                                    Proto => "tcp"
    6                                   );
    7 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    8 if ($socket) {
    9 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
-  10 while (<$socket>) {    
+  10 while (<$socket>) {
   11 print "$_";
   12 }}
   13 close($socket);
@@ -180,12 +180,12 @@ serE<aacute> fechada.
    3 my $socket = IO::Socket::INET->new(
    4                                    PeerAddr => "www.servidor.com.br",
    5                                    PeerPort => "80",
-   6                                    Proto => "tcp"   
+   6                                    Proto => "tcp"
    7                                   );
    8 die "NÃ£o foi possivel criar a socket\n" unless $socket;
    9 if ($socket) {
   10 print $socket "GET /index.html HTTP/1.0\r\n\r\n";
-  11 while (<$socket>) {    
+  11 while (<$socket>) {
   12 print "$_";
   13 }}
   14 close($socket);

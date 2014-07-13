@@ -63,7 +63,7 @@ dos métodos que serão utilizados pelo nosso código.
 =over
 
 =item new
-	
+
 Cria uma nova conexão com o ElasticSearch. Você pode conectar-se com vários
 servidores ao mesmo tempo.
 
@@ -74,7 +74,7 @@ será gerado um número único), e seu conteúdo (que deve estar em forma de
 HASHREF).
 
 =item searchqs
-	
+
 Procura através dos dados indexados. Recebe o nome do índice, um tipo
 (você também pode indexar por tipo, por exemplo, tweet, texto, e-mail), e a
 sua consulta. Existem vários parâmetros da consulta. Neste artigo, usaremos
@@ -114,11 +114,11 @@ Código:
 				servers     => 'localhost:9200',    # aqui tambem pode receber
 				                                    # uma arrayref com todos os
 				                                    # servidores
-				                                    
+
 				transport   => 'http',              # alterei do original que
 				                                    # era httplite porque o
 				                                    # mesmo não funciona
-				                                    
+
 				trace_calls => '/tmp/log_file',     # na verdade, ainda não
 				                                    # descobri para que este
 				                                    # log é util! /dev/null
@@ -142,7 +142,7 @@ Código:
 		my $results =  $self->es_object->searchqs(
 			index => $p{'index'},
 			type  => $p{'type'},
-			'q'  =>  $p{'terms'} 
+			'q'  =>  $p{'terms'}
 		);
 		$results;
 	}
@@ -169,7 +169,7 @@ E agora crie um modelo:
 		my $self = $class->new(%{ $config });
 
 		return $self;
-	}    
+	}
 
 	sub results {
 		my ($class, %params) = @_;
@@ -292,8 +292,8 @@ Crie um controlador chamado Search, e adicione o seguinte código:
 
 
 		my $results = $c->model('Search')->results(
-			'terms' => $data->{'q'} , 
-			'index' => ($data->{'index'} ||  "books"), 
+			'terms' => $data->{'q'} ,
+			'index' => ($data->{'index'} ||  "books"),
 			'type'  =>  ($data->{'type'} || "book_or_author" )
 		);
 
@@ -315,7 +315,7 @@ Crie um controlador chamado Search, e adicione o seguinte código:
 
 		}
 
-		$c->stash( results => \@results ); 
+		$c->stash( results => \@results );
 
 	}
 
@@ -327,7 +327,7 @@ Crie um controlador chamado Search, e adicione o seguinte código:
 
 	sub index_GET {
 		my ($self, $c) = @_;
-		$self->status_ok($c, 
+		$self->status_ok($c,
 			entity => {
 				results => $c->stash->{'results'} ,
 			},
@@ -340,17 +340,17 @@ Crie um controlador chamado Search, e adicione o seguinte código:
 Mas, a parte que importa é:
 
 	my $results = $c->model('Search')->results(
-		'terms' => 'SUA PESQUISA' , 
-		'index' => 'NOME DO INDEXE ONDE FOI SALVO', 
+		'terms' => 'SUA PESQUISA' ,
+		'index' => 'NOME DO INDEXE ONDE FOI SALVO',
 		'type'  => 'TAG DO TIPO' ou ['TAG1', 'TAG2']
 	);
 
 Agora, você pode subir sua aplicação catalyst (C<perl script/server>) e
 acessar L<localhost:3000/search?q=richard>. O resultado deve ser parecido com:
 
-	--- 
-	results: 
-	- 
+	---
+	results:
+	-
 		author: ~
 		body: "TCPIP_Illustrated_Vol-2 of  with id "
 		created: ~

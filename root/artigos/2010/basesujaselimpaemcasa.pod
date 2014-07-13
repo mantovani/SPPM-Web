@@ -26,7 +26,7 @@ esse problema.
 
 Todo esse problema começou porque você confiou nos seus usuários, ou mesmo nos
 seus funcionários que cadastram esses tipos de dados, campos
-livres de texto para preenchimento de estado/cidade é um perigo! 
+livres de texto para preenchimento de estado/cidade é um perigo!
 Uma boa pratica para diminuir esse problema é colocar combos pré-definidos de
 estado/cidade, para o tipo de logradouro (Avenida, Rua, etc ) essas
 coisas não mudam tanto, e a única que pode mudar é a cidade , mas você pode
@@ -70,7 +70,7 @@ acho que as cidades/municípios do site do IBGE são suficientes.
 
 Esse já é especifico para palavras ele procura palavras parecidas usando o
 trigram, que consiste em dividir a palavras de 3 em 3 letras, e ele faz a
-comparação usando essas "trigram" 
+comparação usando essas "trigram"
 
 Ex: a palavra campinas tem os trigrams
 
@@ -126,7 +126,7 @@ no parâmetro 'ngram'.
 Esse é o algoritmo de Levenshtein! como é bom quando você cria um algoritmo e
 o seu nome é maneiro para usar como nome do algoritmo :)
 Essa na verdade é uma das 'n' implementações da técnica de edit distance, ou
-distancia de edição que diz assim: 
+distancia de edição que diz assim:
 
 "A distância de edição entre dois "strings" (duas sequências de caracteres) é
 dada pelo número mínimo de operações necessárias para transformar um string no
@@ -199,7 +199,7 @@ http://en.wikipedia.org/wiki/Data_cleansing
 
 http://pt.wikipedia.org/wiki/Distância_Levenshtein
 
-=head1 AUTHOR 
+=head1 AUTHOR
 
 Lindolfo "Lorn" Rodrigues
 

@@ -307,7 +307,7 @@ Além de oferecer os arquivos para serem visualizados ou para download, a necess
 No documento "Design Issues: Linked Data" de Tim Berners-Lee, ele faz uma explicação para que os dados sejam facilmente interligados através da web eles devem resumidamente :
 
 =over
-     
+
 =item * Utilizar URI para identificar "coisas"
 
 =item * Utilizar HTTP URI para que as "coisas" possam ser localizadas por pessoas ou aplicativos

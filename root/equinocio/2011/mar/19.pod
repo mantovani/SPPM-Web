@@ -20,7 +20,7 @@ L<Refractions Research|http://www.refractions.net/>
 o PostGIS adiciona suporte espacial ao L<PostgreSQL|http://www.postgresql.org/>
 permitindo a manipulação e análise de atributos numéricos e textuais em
 interação com o espaço geográfico. O PostGIS pode ser usado para obter
-informações sobre uma determinada localidade, como por exemplo, distância até 
+informações sobre uma determinada localidade, como por exemplo, distância até
 outra localidade, a densidade da malha viária ou taxa de criminalidade.
 
 Para realizar tais tarefas o PostGIS dispõe de tipos de dados, funções e
@@ -155,7 +155,7 @@ Algumas das principais funções de análises espaciais no PostGIS são:
 
 =item ST_Disjoint(obj1, obj2)
 
-Analisa se dois objetos possuem pontos em comum e retorna verdadeiro em 
+Analisa se dois objetos possuem pontos em comum e retorna verdadeiro em
 caso positivo.
 
 =item ST_Intersects(obj1, obj2)
@@ -244,7 +244,7 @@ podemos fazer outra filtragem, desta vez utilizando as condições de junção
 disponíveis no PostGIS, para filtrar somente as antenas do estado de São
 Paulo. Vamos criar uma tabela contendo somente as antenas presentes em SP:
 
-  exemplo=# CREATE TABLE sp_cell AS 
+  exemplo=# CREATE TABLE sp_cell AS
   exemplo-# SELECT cell.* FROM cell
   exemplo-# JOIN mapa_sp on ST_Within(cell.position,mapa_sp.the_geom);
 
@@ -256,15 +256,15 @@ Agora que já temos nossos dados prontos, vamos realizar algumas consultas.
 
 =item Quantas antenas existem em cada microregião do Estado de São Paulo?
 
-  SELECT nome_micro, COUNT (module.id) AS count 
-  FROM saopaulo, module 
-  WHERE ST_Within(module.position, saopaulo.the_geom) 
+  SELECT nome_micro, COUNT (module.id) AS count
+  FROM saopaulo, module
+  WHERE ST_Within(module.position, saopaulo.the_geom)
   GROUP BY nome_micro
   ORDER BY count desc;
 
   Saída:
- 
-    nome_micro | count 
+
+    nome_micro | count
    ------------+-------
     São Paulo  |  6895
     Campinas   |   801
@@ -282,7 +282,7 @@ Agora que já temos nossos dados prontos, vamos realizar algumas consultas.
   WHERE ST_distance_sphere(sp_cell.position, 'POINT(-48.5186233520508 -27.6062755584717)') < 1000.0;
 
   Saída:
-    count 
+    count
    -------
        18
 

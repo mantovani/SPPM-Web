@@ -40,11 +40,11 @@ O cache é utilizado para sua aplicação ser escalavel, ou seja para manter res
 
 =item Tabela hash
 
-Memcached se utiliza de uma gigante tabela hash distribuida em múltiplos servidores. Uma visão resumida de uma tabela hash caso você não saiba, ela implementa uma "matriz (array) com elementos", no qual cada elemento contém uma lista de nós, com cada nó contendo chave e valor. 
+Memcached se utiliza de uma gigante tabela hash distribuida em múltiplos servidores. Uma visão resumida de uma tabela hash caso você não saiba, ela implementa uma "matriz (array) com elementos", no qual cada elemento contém uma lista de nós, com cada nó contendo chave e valor.
 
 A maioria dos hashes começa pequeno e vão aumentando dinamicamente ao longo do tempo, dependendo da necessidade.
 
-Mas o que isto tem haver com o memcached ? Memcached apresenta ao usuário uma inteface de dicionário (chave => valor), mas é implementado internamente como uma mistura de duas camadas. 
+Mas o que isto tem haver com o memcached ? Memcached apresenta ao usuário uma inteface de dicionário (chave => valor), mas é implementado internamente como uma mistura de duas camadas.
 
 A primeira camada é implementada na biblioteca do cliente, ele decide para qual servidor irá enviar a solicitação com um algoritimo baseado em caracteristicas das matrizes. A segunda camada é como nos visualizamos na programação.
 
@@ -105,7 +105,7 @@ Por isso se os limites são exagerados você terá uma perda de rendimento, este
 
 =over
 
-=item TTL 
+=item TTL
 
 TTL e um acrônimo do inglês para "Time-to-Live", que neste caso significamente especificamente o tempo de vida da informação no memcached.
 
@@ -134,7 +134,7 @@ A segunda é por conta do algoritimo slab, como já foi discutido.
 
 Um breve algoritimo para implementação do memcached para ser usado como cache de informações que sao obtidas de um banco de dados.
 
-	1. [Conectar ao servidor Memcached]  
+	1. [Conectar ao servidor Memcached]
 	2. [Buscar $chave] - Caso exista, ir para 6.
 	3. [Conectar ao banco de dados]
 	4. [Buscar informação]
@@ -148,7 +148,7 @@ Lembre-se: Você pode utilizar o memcached em outras situações, não apenas pa
 	use Cache::Memcached;
 
 	# 1. [Conectar ao servidor Memcached]
-	my $memd = new Cache::Memcached { 
+	my $memd = new Cache::Memcached {
 		'servers' => [ "10.1.1.1:11211" ],
 		'debug' => 0,
 	};
@@ -157,7 +157,7 @@ Lembre-se: Você pode utilizar o memcached em outras situações, não apenas pa
 		# 6. Retornando $valor
 		return $valor;
 	}
-	
+
 	# 3. [Conectar ao banco de dados]
 	# -- (codigo para conectar ao banco de dados) --
 
@@ -166,7 +166,7 @@ Lembre-se: Você pode utilizar o memcached em outras situações, não apenas pa
 
 	# 5. [Armazenar no memcached]
 	$memd->set("$chave", "$valor");
-	
+
 	# 6. [Retornando $valor].
 	return $valor;
 
@@ -184,7 +184,7 @@ Existem outros métodos disponíveis para facilitar sua implementação, veja o 
 
 Existem outras implementações para te auxiliar na implementação de um cache, veja algumas sugestões abaixo:
 
-=over 
+=over
 
 =item L<Cache::FastMmap>
 

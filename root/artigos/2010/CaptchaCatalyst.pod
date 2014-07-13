@@ -91,7 +91,7 @@ Adicione essas duas linhas B<com as suas chaves>:
     user@host:~/MyCaptcha$ vim lib/MyCaptcha.pm
     __PACKAGE__->config->{recaptcha}->{pub_key}
         = '6LcsbAAAAAAAAPDSlBaVGXjMo1kJHwUiHzO2TDze';
-    
+
     __PACKAGE__->config->{recaptcha}->{priv_key}
         = '6LcsbAAAAAAAANQQGqwsnkrTd7QTGRBKQQZwBH-L';
 
@@ -110,12 +110,12 @@ O método que checa o captcha chama "checkcaptcha", veremos mais sobre ele quand
 	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
-	
+
 	<head>
 	<title>Untitled Document</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	</head>
-	
+
 	<body>
 
 	<form name="meucaptcha" action="[% c.uri_for('checkcaptcha') %]" method="POST">
@@ -126,7 +126,7 @@ O método que checa o captcha chama "checkcaptcha", veremos mais sobre ele quand
 	</form>
 
 	</body>
-	
+
 	</html>
 
 

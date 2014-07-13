@@ -209,7 +209,7 @@ Exemplo de uso:
 
 ou:
 
-  
+
   my $var = "321" ;
   if ( $var =~ /[\d\.]/ ) { print "Possuo nÃºmero(s) ou ponto(s).\n" ;}
 
@@ -444,7 +444,7 @@ capturadas/retornadas:
 
 capturas mE<uacute>ltiplas:
 
-  
+
   my $var = "aaa BbB ccc" ;
   if ( $var =~ /(b+)\s*(c+)/i ) { print "capturas: $1 # $2\n" ;}
 
@@ -552,7 +552,7 @@ este problema temos o parE<acirc>metro 'x':
 
   my $var = "nome: fulano" ;
   ## ou: my $var = "nome = fulano" ;
-  
+
   $var =~ s/
   (
     (?:nome|email|tel)
@@ -562,7 +562,7 @@ este problema temos o parE<acirc>metro 'x':
   )
   (\S+)
   /$1<$2>/xi ;
-  
+
   print "$var\n" ;
 
 =over
@@ -629,7 +629,7 @@ sequE<ecirc>ncia de 'b' capturada:
   BbB: ccc
   bBb: ddd
   b: fff
-  BB: 
+  BB:
 
 =over
 
@@ -734,9 +734,9 @@ indica o fim.
 
   sub is_quoted {
     my $data = shift ;
-    
+
     $data =~ s/\\\\//gs ;   #1# Ignora \\
-    
+
     if (
     $data =~ /^             #2# InÃ­cio
       \s*                   #3# Ignora espaÃ§os no inÃ­cio.

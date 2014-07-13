@@ -51,7 +51,7 @@ Abaixo irei descrever alguns elementos da arquitetura proposta na sua definiçã
 
 =end pod:xhtml
 
-Clientes e servidores são separados por uma interface por razões de interesses (SoC), isto significa que o cliente não implica em como os dados são armazenados pois é uma responsabilidade interna do servidor, assim como os servidores não se importam com a interface do usuário. 
+Clientes e servidores são separados por uma interface por razões de interesses (SoC), isto significa que o cliente não implica em como os dados são armazenados pois é uma responsabilidade interna do servidor, assim como os servidores não se importam com a interface do usuário.
 
 Esta caracteristica torna o desenvolvimento independente entre as partes.
 
@@ -63,23 +63,23 @@ Esta caracteristica torna o desenvolvimento independente entre as partes.
 
 =end pod:xhtml
 
-Este é um dos conceitos mais importantes na minha opnião para os desenvolvedores em relação aos elementos do estilo desta arquitetura. 
+Este é um dos conceitos mais importantes na minha opnião para os desenvolvedores em relação aos elementos do estilo desta arquitetura.
 
 Iremos adicionar uma restrição as interações entre o cliente e o servidor, a comunicação será cliente-stateless-servidor (CSS) e isto significa que para cada requisição será enviada toda informação necessaria para o entendimento da requisição e não poderá re-utilizar nenhum contexto armazenado no servidor.
 
 Toda requisição deve ser auto-suficiente e você deve manter o estado da sessão no cliente. Com este conceito você tem alguns beneficios, tais eles como:
 
-=over 
+=over
 
-=item Visibilidade 
+=item Visibilidade
 
 O I<pacote> de requisição de dados contém todas as informações necessarias para responder a solicitação, diminuindo o trabalho do servidor.
 
-=item Confiabilidade 
+=item Confiabilidade
 
 É melhorada porque facilita a tarefa de recuperação de falhas.
 
-=item Escalabilidade 
+=item Escalabilidade
 
 Não há necessidade de manter o estado das solicitações, permitindo que o servidor se livre dos recursos alocados rapidamente e ainda simplificando a implementação.
 
@@ -117,7 +117,7 @@ Como em todos os aspectos, isto deve ser levado em conta na implementação para
 
 =head2 Usufruindo do REST na web.
 
-RESTful é uma implementação de um "web service" simples utilizando o HTTP e os principios REST. 
+RESTful é uma implementação de um "web service" simples utilizando o HTTP e os principios REST.
 
 Você não necessariamente deve se utilizar de todos os elementos propostos pelo REST, mas o melhor que ele pode te oferecer na resolução do seu trabalho.
 
@@ -126,7 +126,7 @@ Você não necessariamente deve se utilizar de todos os elementos propostos pelo
 O L<Catalyst::Controller::REST> é um facilitador para implementação de serviços RESTful em Catalyst. Basicamente, isto ocorre com o sistema de I<dispatch> para redirecionar a requisição para o bloco do código especifico dependendo do metódo HTTP utilizado também.
 
 Veja abaixo um exemplo de implementação:
-	
+
 	package Foo::Controller::Bar;
 	use Moose;
 	use namespace::autoclean;
@@ -161,17 +161,17 @@ Veja abaixo um exemplo de implementação:
 				radiohead => $radiohead,
 			}
 		);
-	} 
+	}
 
 O exemplo acima foi retirado do manual do próprio módulo, porem observe como é muito simples a implementação.
 
 Neste exemplo estamos criando um controlador e declaramos uma "action" em I<sub thing>, no qual é utilizada pela classe REST (ActionClass('REST')). Declarando I<thing_GET> e I<thing_PUT> e a explicação é trivial, qualquer requisição GET é enviado para o bloco de código thing_GET, assim como acontece com PUT.
 
-Todos os metódos não declarados, serão respondidos com uma mensagem "405 Method Not Allowed". 
+Todos os metódos não declarados, serão respondidos com uma mensagem "405 Method Not Allowed".
 
 Todo o conteúdo no $c->stash->{rest} será serializado para você, e o formato irá depender do "content-type" na mensagem de requisição.
 
-A documentação do módulo é boa, compreendendo os conceitos e principios do REST, você não terá dificuldade nenhuma em utilizar os exemplos do módulo, assim como ele. Recomendo a leitura do módulo em questão, para você verificar as opções de configuração, comportamentos e etc. 
+A documentação do módulo é boa, compreendendo os conceitos e principios do REST, você não terá dificuldade nenhuma em utilizar os exemplos do módulo, assim como ele. Recomendo a leitura do módulo em questão, para você verificar as opções de configuração, comportamentos e etc.
 
 =head1 Exemplo de implementação.
 
@@ -199,7 +199,7 @@ Vamos criar nossa aplicação e um banco de dados, seguem os comandos:
 		user_id TYPE text NOT NULL PRIMARY KEY,
 		fullname TYPE text NOT NULL,
 		phone TYPE text NOT NULL
-	); 
+	);
 
 	$ mkdir db
 	$ sqlite3 db/rest.db < db.sql
@@ -214,8 +214,8 @@ Vamos criar nossa aplicação e um banco de dados, seguem os comandos:
 		    - DBI:SQLite:dbname=__path_to(db/rest.db)__
 		    - ""
 		    - ""
-	
-	$ cat lib/equinocio/Schema.pm 
+
+	$ cat lib/equinocio/Schema.pm
 	package equinocio::Schema;
 	use base qw/DBIx::Class::Schema::Loader/;
 
@@ -227,7 +227,7 @@ Vamos criar nossa aplicação e um banco de dados, seguem os comandos:
 
 Ok, até aqui nada de novo. Criamos nossa aplicação catalyst, veja abaixo um exemplo de um controlador. (lib/Controller/User.pm)
 
-	
+
 	package equinocio::Controller::User;
 
 	use strict;
@@ -236,13 +236,13 @@ Ok, até aqui nada de novo. Criamos nossa aplicação catalyst, veja abaixo um e
 
 	sub user : Path('/user') : Args(1) : ActionClass('REST') {
     		my ( $self, $c, $user_id ) = @_;
-    		my $user = $c->stash->{'collection'} = 
+    		my $user = $c->stash->{'collection'} =
        			$c->model('DB::User')->find($user_id);
-   
+
 	     	if ($user) {
 		        my %data;
-		        $data{"$_"} = $user->$_ for 
-				grep { defined($user->$_) } 
+		        $data{"$_"} = $user->$_ for
+				grep { defined($user->$_) }
 				qw(user_id fullname phone);
         		%{$c->stash->{'data'}} = %data;
     		}
@@ -265,7 +265,7 @@ Ok, até aqui nada de novo. Criamos nossa aplicação catalyst, veja abaixo um e
         		$self->status_ok( $c, entity => $c->stash->{'data'} );
     		}
     		else {
-        		$self->status_not_found( $c, 
+        		$self->status_not_found( $c,
 				message => "Not found: $user_id!" );
     		}
 	}
@@ -286,26 +286,26 @@ Ok, até aqui nada de novo. Criamos nossa aplicação catalyst, veja abaixo um e
 
 Pronto ! Agora, vamos testar nossa aplicação.
 
-	$ cat new.yml 
+	$ cat new.yml
 	user_id: thiago
 	fullname: Thiago Rondon
 	phone: 1111-44444
 
 	$ curl -X PUT -H 'Content-Type: text/x-yaml' -T new.yml http://localhost:3000/user/thiago
 	---
-	user_id: thiago        
+	user_id: thiago
 	fullname: Thiago Rondon
 	phone: 1111-44444
 
 	$ curl -X GET -H 'Content-Type: text/x-yaml' http://localhost:3000/user/thiago
 	---
-	user_id: thiago        
+	user_id: thiago
 	fullname: Thiago Rondon
 	phone: 1111-44444
 
 	$ curl -X DELETE -H 'Content-Type: text/x-yaml' http://localhost:3000/user/thiago
 	---
-	user_id: thiago        
+	user_id: thiago
 	fullname: Thiago Rondon
 	phone: 1111-44444
 

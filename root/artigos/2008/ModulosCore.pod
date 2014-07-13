@@ -59,7 +59,7 @@ codificaE<ccedil>E<otilde>es de caracteres (utf8, latin1, etc). Por
 exemplo:
 
     use Encode;
- 
+
     while ( my $line = <> ) {
         Encode::from_to( $line, 'latin1', 'utf8' ); # converte de latin1 para utf8
         print $line;
@@ -116,19 +116,19 @@ exemplo, imagine que vocE<ecirc> tem um mE<oacute>dulo chamado
 Email::Examiner, e deseja que ele possa ser extendido por plugins:
 
     package Email::Examiner;
- 
+
     use strict;
     use Email::Simple;
     use Module::Pluggable require => 1;
- 
+
     sub handle_email {
         my $self  = shift;
         my $email = shift;
- 
+
         foreach my $plugin ($self->plugins) { # Para cada plugin encontrado...
             $plugin->examine($email);
         }
- 
+
         return 1;
     }
 
@@ -144,7 +144,7 @@ Exiba uma mensagem de uso a partir da documentaE<ccedil>E<atilde>o pod.
 
  use Pod::Usage;
  use Getopt::Long;
- 
+
  ## Define options
  my %options = ();
  my @opt_specs = (
@@ -153,7 +153,7 @@ Exiba uma mensagem de uso a partir da documentaE<ccedil>E<atilde>o pod.
      'foo=s',
      'bar=s',
  );
- 
+
  ## Parse options
  GetOptions(\%options, @opt_specs)  ||  pod2usage(2);
  pod2usage(1)  if $options{help};
@@ -195,11 +195,11 @@ AlE<eacute>m disso, o Time::HiRes E<eacute> E<uacute>til para descobrir
 quanto tempo seu programa levou para executar uma determinada tarefa:
 
   my $t0 = [gettimeofday];
- 
+
   # seu codigo aqui
- 
+
   my $interval = tv_interval ( $t0 );
- 
+
   print "Tempo de execucao: $interval segundos\n";
 
 =head1 AUTOR

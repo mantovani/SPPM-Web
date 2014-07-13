@@ -81,7 +81,7 @@ seus valores padrão:
         show_tainted   => 1,       # expor variáveis manchadas (tainted)
         show_weak      => 1,       # expor referências fracas (weak refs)
         return_value   => 'dump',  # tipo do valor de retorno (mais detalhes abaixo no artigo)
-     
+
         caller_info    => 0,       # incluir informação sobre o que está sendo exibido
         use_prototypes => 1,       # usar protótipos: permite p(%foo) (sem referência),
                                    # mas impede passagem de dados anônimos
@@ -101,26 +101,26 @@ seus valores padrão:
              weak        => 'cyan',          # referências fracas (weak refs)
              tainted     => 'red',           # conteúdo manchado (tainted)
         },
-     
+
         class_method   => '_data_printer', # permite que classes usem métodos com esse nome
                                            # para exibir a si próprias
-     
+
         class => {
             internals  => 1,       # exibir estrutura interna de classes
-     
+
             inherited  => 'none',  # exibir métodos herdados. Valores possíveis são
                                    # 'none' (nenhum), 'all' (todos), 'private' (apenas métodos privados)
                                    # ou 'public' (apenas métodos públicos)
-     
+
             parents    => 1,       # exibir classes pai
             linear_isa => 1,       # exibir toda a hierarquia @ISA, linearizada
-     
+
             expand     => 1,       # quão fundo percorrer objeto (caso ele contenha outros objetos).
                                    # '1' para apenas se expandir. '0' para não se expandir, e 'all'
                                    # para expandir a si e a todos os sub-objetos
-     
+
             sort_methods => 1,     # ordenar métodos públicos e privados
-     
+
             show_methods => 'all'  # exibir métodos. 'all' para todos, 'none' para nenhum,
                                    # 'public' para exibir apenas métodos públicos e 'private'
                                    # para privados
@@ -143,7 +143,7 @@ O meu arquivo de configuração, por exemplo, hoje está assim:
     filters        => {
       -external => [ 'DateTime', 'DB' ],
     },
-  }; 
+  };
 
 Assim, na hora de usar o Data::Printer basta escrever:
 
@@ -211,7 +211,7 @@ HTML colorido, pronto para ser exibido no navegador:
 
    use HTML::FromANSI;
    use DDP;
- 
+
    my $objeto = ...;
 
    my $html = ansi2html( p($objeto) );

@@ -1,9 +1,9 @@
 =head1 Gráficos de sua Aplicação Catalyst
 
-Há casos em que nossos aplicativos em Catalyst são tão extensos, com 
-regras de negócio tão complexas, que podemos nos sentir um pouco 
-soterrados pela enorme quantidade de componentes e correlações. Ou talvez 
-fiquemos tão concentrados em uma pequena parte que acabamos perdendo a 
+Há casos em que nossos aplicativos em Catalyst são tão extensos, com
+regras de negócio tão complexas, que podemos nos sentir um pouco
+soterrados pela enorme quantidade de componentes e correlações. Ou talvez
+fiquemos tão concentrados em uma pequena parte que acabamos perdendo a
 visão geral do aplicativo. Nada tema!
 
 O mundo Perl oferece uma série de ferramentas de visualização. No artigo
@@ -13,10 +13,10 @@ para ilustrar os resultados.
 
 =head2 Gráficos do 'Model'
 
-O incrível módulo L<SQL::Translator|http://search.cpan.org/perldoc?SQL::Translator> 
+O incrível módulo L<SQL::Translator|http://search.cpan.org/perldoc?SQL::Translator>
 pode facilmente mostrar como o esquema de seu modelo se parece, diretamente
-do esquema de seu banco de dados - seja MySQL, Oracle, PostreSQL, SQLite, 
-ou qualquer um dos diversos parsers de bancos de dados disponíveis. Basta 
+do esquema de seu banco de dados - seja MySQL, Oracle, PostreSQL, SQLite,
+ou qualquer um dos diversos parsers de bancos de dados disponíveis. Basta
 especificá-lo no campo 'from', escolhendo 'GraphViz' como destino.
 
   use SQL::Translator;
@@ -28,8 +28,8 @@ especificá-lo no campo 'from', escolhendo 'GraphViz' como destino.
 
   $translator->translate( 'MySchema.sql' );
 
-Se sua aplicação Catalyst usa o popular DBIx::Class (DBIC), você pode 
-obter informações sobre o banco diretamente dos módulos de esquema! Para 
+Se sua aplicação Catalyst usa o popular DBIx::Class (DBIC), você pode
+obter informações sobre o banco diretamente dos módulos de esquema! Para
 isso, escolha 'C<< SQL::Translator::Parser::DBIx::Class >>' como 'C<parser>',
 e passe o esquema já carregado no parâmetro 'C<parser_args>'. O código abaixo
 mostra como fazer isso, incluindo algumas personalizações da imagem de
@@ -79,7 +79,7 @@ O resultado? Veja por si mesmo :)
 
 <a style="border-bottom:none" href="http://www.catalystframework.org/calendar/static/images/2009/asgraph/mojomojo-schema.png">
 <img src="http://www.catalystframework.org/calendar/static/images/2009/asgraph/mojomojo-schema-thumb.png" alt="schema padrao do MojoMojo" />
-</a> 
+</a>
 
 =end pod:xhtml
 
@@ -89,16 +89,16 @@ Talvez o 'I<model>' não seja seu (único) problema, e a quantidade de
 controllers e actions de sua aplicação cresceu tanto que precisam de
 mais documentação, um guia de referência rápida, ou até mesmo alguma
 refatoração de código. Embora a estrutura de controllers do Catalyst
-costume levar a uma boa organização por parte do programador, 
+costume levar a uma boa organização por parte do programador,
 acidentes de percurso podem ocorrer.
 
-Felizmente para nós, L<Franck Cuny|http://lumberjaph.net/blog/> criou 
-um módulo muito conveniente chamado L<CatalystX::Dispatcher::AsGraph|http://search.cpan.org/perldoc?CatalystX::Dispatcher::AsGraph>, 
+Felizmente para nós, L<Franck Cuny|http://lumberjaph.net/blog/> criou
+um módulo muito conveniente chamado L<CatalystX::Dispatcher::AsGraph|http://search.cpan.org/perldoc?CatalystX::Dispatcher::AsGraph>,
 que exibe suas I<actions> privadas em um belo grafo direcionado (digrafo),
 com apenas algumas linhas de código!
 
   use CatalystX::Dispatcher::AsGraph;
-   
+
   my $graph = CatalystX::Dispatcher::AsGraph->new(
         appname => 'MyApp',
         output  => 'minhas_actions.png',
@@ -106,7 +106,7 @@ com apenas algumas linhas de código!
   $graph->run;
 
 Se o código acima for executado com sucesso, a variável C<$graph> contém
-um objeto C<< Graph::Easy >> contendo o grafo das I<actions>. Podemos 
+um objeto C<< Graph::Easy >> contendo o grafo das I<actions>. Podemos
 usar o programa C<dot> para exportar nosso grafo para um arquivo png:
 
   if ( open( my $png, '|-', 'dot -Tpng -o ' . $graph->output ) ) {
@@ -114,16 +114,16 @@ usar o programa C<dot> para exportar nosso grafo para um arquivo png:
       close $png;
   }
 
-Um programa de exemplo, que vem com a distribuição do módulo, faz 
+Um programa de exemplo, que vem com a distribuição do módulo, faz
 exatamente isso, mas utiliza o módulo C<< MooseX::GetOpt >> para deixar
 que o usuário especifique os parâmetros do módulo como opções de linha
 de comando.
 
-B<Nota:> Khisanth mencionou que, como esse módulo utiliza C<< MooseX::Declare >> 
+B<Nota:> Khisanth mencionou que, como esse módulo utiliza C<< MooseX::Declare >>
 e não possui informações de pacote, o indexador do CPAN não o registra,
 e a shell do CPAN não o encontra. Até que o autor corrija isso, você precisará
-usar o caminho completo para instalar a distribuição (por exemplo, digitando 
-C<< install FRANCKC/CatalystX-Dispatcher-AsGraph-0.02.tar.gz >> na shell do 
+usar o caminho completo para instalar a distribuição (por exemplo, digitando
+C<< install FRANCKC/CatalystX-Dispatcher-AsGraph-0.02.tar.gz >> na shell do
 CPAN), ou obter o .tar.gz diretamente da web.
 
 =begin pod:xhtml
@@ -137,8 +137,8 @@ CPAN), ou obter o .tar.gz diretamente da web.
 
 =head2 Gráficos da 'View'
 
-Assim como o I<schema> e as I<actions>, você pode ver toda a sua estrutura 
-de templates como um grafo direcionado. O módulo 
+Assim como o I<schema> e as I<actions>, você pode ver toda a sua estrutura
+de templates como um grafo direcionado. O módulo
 L<Template::AsGraph|http://search.cpan.org/perldoc?Template::AsGraph>
 mode ser facilmente chamado para gerar esses dados a partir de qualquer
 template:
@@ -156,8 +156,8 @@ do Controller:
       close $png;
   }
 
-Agora, se você precisa entender como seus templates se relacionam 
-entre si, então seu fluxo de exibição é tão intricado que você 
+Agora, se você precisa entender como seus templates se relacionam
+entre si, então seu fluxo de exibição é tão intricado que você
 provavelmente carrega diferentes partes dinamicamente, conforme os
 dados passados pelo Controller. Não se preocupe: o método C<< graph() >>
 também pode receber configurações do TT como segundo argumento, e
@@ -175,17 +175,17 @@ variáveis como terceiro:
 
   my %vars = (
        foo => 'bar',
-       bar => 'baz', 
+       bar => 'baz',
   );
 
 Como alternativa se você tem acesso a um objeto de contexto do Catalyst,
-podemos ter maior precisão passando nossas variáveis para os templates 
+podemos ter maior precisão passando nossas variáveis para os templates
 exatamente como o C<< View::TT >> faz:
 
-  my %vars = ( %{ $c->stash() }, 
-                  c    => $c, 
-                  base => $c->req->base, 
-                  name => $c->config->{name} 
+  my %vars = ( %{ $c->stash() },
+                  c    => $c,
+                  base => $c->req->base,
+                  name => $c->config->{name}
              );
 
   my $graph = Template::AsGraph->graph('meu_template.tt2', \%config, \%vars);
@@ -199,7 +199,7 @@ exatamente como o C<< View::TT >> faz:
 
 =head2 Conclusão
 
-Esperamos que, ao gerar e analisar os gráficos de seu I<schema>, 
+Esperamos que, ao gerar e analisar os gráficos de seu I<schema>,
 I<actions> e I<templates>, você consiga um entendimento ainda maior
 da aplicação em que está trabalhando. Lembre-se do que fez certo,
 revise o que pode melhorar, e aja em cima do que encontrou. Dessa forma,
@@ -213,5 +213,5 @@ Breno G. de Oliveira C<< <garu@cpan.org> >>
 
 Bogdan Lucaciu C<< <bogdan@sinapticode.ro> >>
 
-Traduzido e adaptado para o português por Breno G. de Oliveira 
+Traduzido e adaptado para o português por Breno G. de Oliveira
 a partir do L<< original em inglês|http://www.catalystframework.org/calendar/2009/14 >>.

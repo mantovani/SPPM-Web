@@ -5,19 +5,19 @@
 Este último ano foi regado de novidades! Do Catalyst usando Moose a
 toda a atenção que Perl ganhou com o L<< Desafio Iron Man
 |http://ironman.enlightenedperl.org/ >> além de
-L<muitos|http://blogs.perl.org/> L<novos|http://sao-paulo.pm.org> 
+L<muitos|http://blogs.perl.org/> L<novos|http://sao-paulo.pm.org>
 L<designs|http://www.perl.org/> L<bacanas|http://perldoc.perl.org/>,
 a comunidade Perl no mundo todo nunca esteve tão integrada, e programar
 nunca foi tão fácil e divertido.
 
 Um dos projetos que realmente se destacaram foi o L<< Padre, a IDE Perl
-|http://padre.perlide.org >>. E na edição de hoje do Calendário de 
+|http://padre.perlide.org >>. E na edição de hoje do Calendário de
 Equinócio vamos aprender um pouco mais sobre o Padre e como ele pode
 ser usado para criarmos aplicações web em nosso framework favorito :)
 
 =head2 O que é o Padre?
 
-Padre é um ambiente de desenvolvimento integrado (IDE, do inglês 
+Padre é um ambiente de desenvolvimento integrado (IDE, do inglês
 Integrated Development Environment) escrito em Perl e feito especialmente
 para auxiliar desenvolvimento em Perl, de pequenos scripts de iniciantes
 a aplicativos complexos.
@@ -30,7 +30,7 @@ a aplicativos complexos.
 
 Apesar do Padre ser em si um aplicativo bastante novo, está crescendo
 e evoluindo a uma velocidade impressionante. Já temos mais de 50 versões
-lançadas e mais de 10 mil commits pelos 55 desenvolvedores espalhados 
+lançadas e mais de 10 mil commits pelos 55 desenvolvedores espalhados
 por todo o mundo, e esses números não param de crescer (duvida? compare
 com os números da versão original deste artigo, de apenas 2 meses atrás).
 
@@ -40,14 +40,14 @@ longe do terminal, em uma IDE completa disponível em todos os principais
 sistemas operacionais do mercado - incluindo L<< pacotes pré-compilados|
 http://padre.perlide.org/download.html >> para Windows, MacOS X e Linux.
 
-Padre suporta detalhamento de Classes e criação rápida de módulos, é 
+Padre suporta detalhamento de Classes e criação rápida de módulos, é
 totalmente integrado à documentação Perl em seu sistema e ao CPAN, e
 oferece ainda uma série de opções de refatoração de código como renomear
 variáveis lexicalmente e extrair subrotinas. Mesmo que você seja um
 experiente usuário do vim ou Emacs, vale a pena conferir! De fato, uma
 das principais características do Padre é que, por ser escrito em Perl 5,
 permite que você facilmente extenda e corrija sua IDE sempre que encontrar
-algo que sente falta ou não gosta. Outra grande vantagem  para 
+algo que sente falta ou não gosta. Outra grande vantagem  para
 desenvolvedores é a possibilidade de adicionar ainda mais funcionalidades
 ao Padre através de seu poderoso sistema de plugins.
 
@@ -66,7 +66,7 @@ aprimorando ainda mais (esperamos!) a experiência do desenvolvedor.
 
 =end pod:xhtml
 
-O plugin do Catalyst está disponível em mais de 10 idiomas (obrigado, 
+O plugin do Catalyst está disponível em mais de 10 idiomas (obrigado,
 pessoal!), incluindo suporte oficial ao Português Brasileiro - então
 não há desculpas para não experimentá-lo :)
 
@@ -74,13 +74,13 @@ não há desculpas para não experimentá-lo :)
 
    cpan> install Padre::Plugin::Catalyst
 
-Se você já tem o L<Padre|http://search.cpan.org/perldoc?Padre> e o 
+Se você já tem o L<Padre|http://search.cpan.org/perldoc?Padre> e o
 L<Catalyst::Devel|http://search.cpan.org/perldoc?Catalyst::Devel>
 instalados, o processo de instalação do plugin deve correr tranquilamente.
 Caso contrário, você pode querer dar uma olhada nas L<< Instruções de
-instalação do Padre|http://padre.perlide.org/download.html >> para seu 
-sistema (que, como mencionado anteriormente, contém pacotes prontos para 
-Windows, Linux e MacOS X), uma vez que a instalação de pacotes de 
+instalação do Padre|http://padre.perlide.org/download.html >> para seu
+sistema (que, como mencionado anteriormente, contém pacotes prontos para
+Windows, Linux e MacOS X), uma vez que a instalação de pacotes de
 desenvolvimento do wxWidgets pode ocasionalmente tornar-se complicada.
 
 Uma vez instalado, rode o Padre e escolha "Plugins->Gerenciador de Plugins"
@@ -104,7 +104,7 @@ painel "Servidor Desenv. Catalyst" na parte de baixo da janela principal do
 Padre - provavelmente ao lado da aba "Saída".
 
 O painel permite que você ative/desative o servidor web de desenvolvimento
-de seu aplicativo e monitore sua saída. Você pode ainda marcar a caixa 
+de seu aplicativo e monitore sua saída. Você pode ainda marcar a caixa
 "auto-reiniciar" para que o servidor de desenvolvimento seja reiniciado sempre
 que arquivos do projeto forem modificados (o equivalente à opção C<-r> do
 servidor de desenvolvimento de sua aplicação).
@@ -125,7 +125,7 @@ As seguintes opções estão disponíveis no menu:
 
 Como o próprio nome denuncia, essa opção permite que você crie um novo
 aplicativo Catalyst em um diretório a sua escolha. Fique de olho no
-painel C<Saída> do Padre, pois todas as informações a respeito da 
+painel C<Saída> do Padre, pois todas as informações a respeito da
 criação do novo projeto aparecerão por lá.
 
 =begin pod:xhtml
@@ -136,19 +136,19 @@ criação do novo projeto aparecerão por lá.
 
 =head3'Criar um novo...'
 
-B<Nota:> As opções abaixo só estarão disponíveis se o documento ativo 
+B<Nota:> As opções abaixo só estarão disponíveis se o documento ativo
 pertence a um projeto Catalyst.
 
-Os módulos auxiliares do Catalyst permitem a criação automática de 
+Os módulos auxiliares do Catalyst permitem a criação automática de
 esqueletos para os componentes MVC de seu aplicativo. Através deste menu
 você pode não apenas escolher o nome de seu novo componente como também
 seu tipo. Por exemplo, ao escolher a criação de uma nova Vista (View),
-o tipo "TT" aparecerá como opção caso você tenha o módulo 
+o tipo "TT" aparecerá como opção caso você tenha o módulo
 L<< Catalyst::Helper::View::TT >> instalado.
 
 Os componentes disponíveis são:
 
-=over 
+=over
 
 =item * Modelo
 
@@ -171,10 +171,10 @@ permitem controlar o servidor de desenvolvimento de sua aplicação.
 
 =head3 'Atualizar Script da Aplicação'
 
-Se, ao ativar o servidor de desenvolvimento, o painel do Catalyst acusar 
+Se, ao ativar o servidor de desenvolvimento, o painel do Catalyst acusar
 que você está executando um script antigo, você pode usar essa opção para
 atualizar os scripts de seu aplicativo. Mensagens informacionais a respeito
-das modificações feitas serão enviadas diretamente ao painel de C<Saída> 
+das modificações feitas serão enviadas diretamente ao painel de C<Saída>
 do Padre.
 
 =head3 'Referências Online do Catalyst'
@@ -202,7 +202,7 @@ entre em um dos diversos canais brasileiros como o #rio-pm, #sao-paulo.pm ou
 A medida em que o plugin Catalyst começa a expandir seus horizontes e
 explorar o documento aberto, surge uma nova habilidade: se sua I<Action>
 define um template, clicar com o botão direito na linha em que ela está
-definida habilitará a opção "Abrir Template", que abrirá o arquivo de 
+definida habilitará a opção "Abrir Template", que abrirá o arquivo de
 template automaticamente para você.
 
 
@@ -218,21 +218,21 @@ falta, e o que mais puder imaginar para auxiliar o desenvolvimento Catalyst
 dentro do Padre. Relatórios de problemas e lista de desejos são sempre
 bons - patches mais ainda!
 
-O C<Padre::Plugin::Catalyst> é desenvolvido no L<< repositório principal 
+O C<Padre::Plugin::Catalyst> é desenvolvido no L<< repositório principal
 do Padre|http://svn.perlide.org/padre/trunk/Padre-Plugin-Catalyst/ >>,
 e estamos todos no #padre (irc.perl.org), então dê um pulo por lá e nos diga
-o que achou. Caso não se sinta confortável com o inglês, pode nos procurar nos 
-canais nacionais como #brasil-pm, #rio-pm e #sao-paulo.pm, todos também em 
+o que achou. Caso não se sinta confortável com o inglês, pode nos procurar nos
+canais nacionais como #brasil-pm, #rio-pm e #sao-paulo.pm, todos também em
 irc.perl.org.
 
 Bem, por hoje é só pe-pe-pessoal. Espero que tenham gostado :-)
 
 Tenham todos um ótimo equinócio, aproveitem o calendário e divirtam-se!
 
-=head2 AUTOR 
+=head2 AUTOR
 
 Breno G. de Oliveira C<< <garu@cpan.org> >>
 
-Traduzido e adaptado para o português por Breno G. de Oliveira 
+Traduzido e adaptado para o português por Breno G. de Oliveira
 a partir do L<< original em inglês|http://www.catalystframework.org/calendar/2009/9 >>.
 

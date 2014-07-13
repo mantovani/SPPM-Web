@@ -86,7 +86,7 @@ Uma das consequências naturais dos outros itens nesta lista é que você vai pr
 
 Eu não sou um programador. Eu sou um administrador de bases de dados MySQL trabalhando para uma grande empresa de anúncios classificados na Internet.
 
-Como eu não quero que código que eu escrevo com finalidade didática termine copiado acidentalmente para algum programa que você está escrevendo, eu escolhi não escrever nenhum código, e fazer um artigo conceitual. 
+Como eu não quero que código que eu escrevo com finalidade didática termine copiado acidentalmente para algum programa que você está escrevendo, eu escolhi não escrever nenhum código, e fazer um artigo conceitual.
 
 Claro, isso não me impede de recomendar eventuais módulos da minha preferência:
 
@@ -96,7 +96,7 @@ Claro, isso não me impede de recomendar eventuais módulos da minha preferênci
 
 Os módulos L<DBI> são a interface de acesso a bases de dados padrão do Perl. Se você não está usando estes, tem problemas muito sérios no seu código.
 
-=head3 Família L<DBIx::Class>  
+=head3 Família L<DBIx::Class>
 
 Se você tem familiaridade com o modelo de mapeamento de objetos em bases de dados relacionais parece atrativo para você, a minha recomendação é que você uso o L<DBIx::Class> como base para os seus objetos de base de dados. Como DBA, eu tenho de avisar que a perda de controle sobre as I<queries> que são executadas é um pouco ruim, e eu recomendo cautela no escrever código: SQL escrito pelo seu DBA tem geralmente a garantia de usar os índices corretos e manter um perfil de consumo de recursos baixo - se você tem muitos clientes, vai achar isso uma coisa muito boa.
 

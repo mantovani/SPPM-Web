@@ -44,14 +44,14 @@ na sintaxe do Xslate pode não ser uma opção. Nada tema! O Xslate já possui
 não uma, mas duas camadas diferentes de compatibilidade com o TT :)
 
    use Text::Xslate;
-   
+
    my $template = Text::Xslate->new(
        syntax => "TTerse",
        module => [ 'Text::Xslate::Bridge::TT2Like' ],
    );
-   
+
    my $tt_string = 'Bem-vindos ao [% evento %]!';
-   
+
    print $template->render_string( $tt_string, { evento => 'Equinócio' } );
 
 A camada de compatibilidade abrange ~90% de todo o TT, incluindo
@@ -176,7 +176,7 @@ Algumas funções úteis:
   : macro alo -> $cidade {
       Alo, <: $cidade :> !
   : }
-  
+
   Minha mensagem: <: alo("são paulo") :>
 
 =head3 Métodos
@@ -263,17 +263,17 @@ Podemos extender tantos templates quanto quisermos, exatamente como
 extenderíamos um método no L<Moose>! Veja outro exemplo agora, I<myapp/bar.tx>:
 
   : cascade myapp::foo
-  
+
   : around titulo -> {
       ----------
       : super
       ----------
   : }
-  
+
   : before conteudo -> {
       Isso é renderizado ANTES do conteúdo!
   : }
-  
+
   : after conteudo -> {
       E isso vem DEPOIS!
   : }
@@ -327,7 +327,7 @@ Se preferir "fazer na mão", a I<View> é exatamente como qualquer outra:
   package MyApp::View::Xslate;
   use strict;
   use parent 'Catalyst::View::Xslate';
-  
+
   1;
 
 ou ainda:
@@ -335,7 +335,7 @@ ou ainda:
   package MyApp::View::Xslate;
   use Moose;
   extends 'Catalyst::View::Xslate';
-  
+
   has '+module' => (
       default => sub { [ 'Text::Xslate::Bridge::TT2Lite' ] }
   );
@@ -359,7 +359,7 @@ de sua aplicação:
 ou simplesmente carregue o renderizador como um plugin do Mojolicious:
 
   $self->plugin('xslate_renderer');
-  
+
 No L<Mojolicious::Lite> então, é mais fácil ainda! Basta adicionar no início de seu programa:
 
   plugin 'xslate_renderer';

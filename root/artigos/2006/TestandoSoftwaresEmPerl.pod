@@ -49,7 +49,7 @@ imprime uma das seguintes respostas: "ok" ou "not ok".
 Por exemplo:
 
         print "1..1\n";
- 
+
         if (1 == 1) {
                 print "ok\n";
         } else {
@@ -74,13 +74,13 @@ numerar as respostas ("ok 1", "not ok 2", etc), de forma a facilitar a
 identificacao dos testes:
 
         print "1..2\n";
- 
+
         if (1 == 1) {
                 print "ok 1\n";
         } else {
                 print "not ok 1\n";
         }
- 
+
         if ('abc' eq 'abc') {
                 print "ok 2\n";
         } else {
@@ -142,7 +142,7 @@ verificar a criaE<ccedil>E<atilde>o de um objeto e testar algumas de
 suas propriedades:
 
         use_ok( 'My::Module' );
- 
+
         my $foo = My::Module->new();
         can_ok( $foo->boo() );
         isa_ok( $foo, 'My::Module' );

@@ -13,8 +13,8 @@ L<PAUSE|http://pause.perl.org/>[1], e de lá para o
 L<CPAN|http://www.cpan.org>[2].
 
 Especificamente do ponto de vista de documentação, há a chata tarefa de
-atualizar a versão do módulo em todos os arquivos que fazem parte dele - 
-se forem muitos, a chateação também será muita. 
+atualizar a versão do módulo em todos os arquivos que fazem parte dele -
+se forem muitos, a chateação também será muita.
 Adicionar seções com informações "repetidas", como B<AUTHOR>, B<LICENSE>,
 B<SUPPORT>, entre outras, é também algo repetitivo e sujeito a erros bobos
 se feito manualmente. Alguns módulos fornecem um arquivo C<README> que é a
@@ -22,11 +22,11 @@ renderização em texto do POD do arquivo principal do módulo - também é uma
 tarefa que poderia ser facilmente automatizada.
 
 Por fim, quando estamos trabalhando em equipe, precisamos ter um maior cuidado
-com o sistema de controle de versões, criando I<branches> específicos para 
+com o sistema de controle de versões, criando I<branches> específicos para
 times e/ou tarefas específicas, e realizando o I<merge> dos mesmos depois.
 O sistema de controle de versão que, se ainda não é, está se tornando o mais
-popular na comunidade Perl (e de outras linguagens também) é o 
-L<git|http://git-scm.com>[3], I<software> originalmente escrito pelo próprio 
+popular na comunidade Perl (e de outras linguagens também) é o
+L<git|http://git-scm.com>[3], I<software> originalmente escrito pelo próprio
 L<Linus Torvalds|http://en.wikipedia.org/wiki/Linus_Torvalds>[4].
 
 As principais vantagens do B<git> são:
@@ -55,7 +55,7 @@ do B<git> estão L<disponíveis publicamente|https://github.com/git/git>[6].
 
 =head2 E agora, quem irá nos defender?
 
-Em 
+Em
 L<Maio de 2008(?)|https://github.com/rjbs/dist-zilla/commit/f3854f7c675a11c6b3832dc111f72e6d705c09fa>[7],
 Ricardo Signes, (RJBS), desenvolvedor norte-americano, membro atuante da comunidade
 Perl, contribuidor do B<CPAN>,
@@ -70,7 +70,7 @@ estamos falando de Perl - iremos usar o Dist::Zilla para escrever
 módulos e/ou aplicativos em Perl.
 
 Este artigo não pretende ser um guia completo sobre o Dist::Zilla. Para uma
-documentação mais abrangente, sugerimos ler 
+documentação mais abrangente, sugerimos ler
 L<os tutoriais do Dist::Zilla|http://dzil.org/tutorial/start.html>[11]. Vamos
 mostrar aqui o básico, e um pouco além.
 
@@ -118,7 +118,7 @@ informações solicitadas. Por exemplo:
 	[%User]
 	name  = Alexei Znamensky
 	email = russoz@cpan.org
-	
+
 	[%Rights]
 	license_class    = Perl_5
 	copyright_holder = Alexei Znamensky
@@ -131,7 +131,7 @@ no arquivo C<< ~/.pause >>:
 	user russoz
 	password p0t@toe5
 
-Você não é obrigado a ter essa informação em nenhum desses arquivos, isso é 
+Você não é obrigado a ter essa informação em nenhum desses arquivos, isso é
 estritamente opcional, mas, naturalmente, não será possível fazer o upload
 automático do módulo para o CPAN sem esses dados.
 
@@ -158,18 +158,18 @@ Basicamente os passos para conversão foram:
 O C<Makefile.PL> continha o seguinte código:
 
 	use inc::Module::Install;
-	
+
 	name     'Queue-Base';
 	all_from 'lib/Queue/Base.pm';
 	author   q{Alexei Znamensky <russoz@cpan.org>};
 	license  'perl';
-	
+
 	requires 'version' => 0.77;
-	
+
 	build_requires 'Test::More';
-	
+
 	auto_install;
-	
+
 	WriteAll;
 
 Esse arquivo pode ser removido. Não será mais necessário.
@@ -191,7 +191,7 @@ Ao invés dele, teremos um C<dist.init>:
 Um C<dist.ini> irá conter I<tags> de seções e definições, como
 informações sobre o módulo e o autor.
 
-Notem nesse trecho anotado do 
+Notem nesse trecho anotado do
 L<< primeiro C<dist.ini> do Queue::Base | https://github.com/russoz/Queue-Base/blob/3702c381595c0dfa6e7644bd945987b95af2e20c/dist.ini >>[14],
 que colocamos uma I<tag> de seção na qual especificamos o uso do
 L<Module::Install>[15].
@@ -252,7 +252,7 @@ C<[MetaYAML]>, C<[License]>, C<[Readme]>, C<[ExtraTests]>, C<[ExecDir]>,
 C<[ShareDir]>, C<[MakeMaker]>, C<[Manifest]>, C<[TestRelease]>,
 C<[ConfirmRelease]>, C<[UploadToCPAN]>.
 
-Utilizando o C<[@Basic]> podemos (devemos!) remover os arquivos: 
+Utilizando o C<[@Basic]> podemos (devemos!) remover os arquivos:
 C<README>, C<LICENSE>, C<MANIFEST> e, se estivermos usando o
 C<[ModuleInstall]>, podemos também remover o diretório C<inc/> - ele será
 gerado automaticamente durante o I<build> com os arquivos necessários.
@@ -267,7 +267,7 @@ I<plugins> você precisa instalar, basta rodar:
 É possível criar novos I<bundles>, e é uma prática comum que os autores criem
 I<bundles> com seus grupos de I<plugins> prediletos.
 
-Existem I<plugins> que realizam a mesma tarefa que algum I<plugin> que já faz 
+Existem I<plugins> que realizam a mesma tarefa que algum I<plugin> que já faz
 parte de um I<bundle> que esteja em uso. Nesse caso, o I<plugin> declarado no
 I<bundle> será ignorado e o I<plugin> declarado no C<dist.ini> será utilizado.
 
@@ -395,7 +395,7 @@ O I<bundle> C<[@Git]>, criado por
 L<Jerome Quelin|http://search.cpan.org/~jquelin/>[26], engloba os I<plugins>:
 C<[Git::Check]>, C<[Git::Commit]>, C<[Git::CommitBuild]>, C<[Git::Init]>,
 C<[Git::NextVersion]>, C<[Git::Push]>, C<[Git::Tag]>. Obviamente, com ele
-podemos automatizar várias atividade relacionadas ao B<git>, das quais 
+podemos automatizar várias atividade relacionadas ao B<git>, das quais
 destacam-se a "checagem" (se houver arquivos não I<"commitados"> no B<git>,
 ele irá interromper o I<release>), a aplicação de I<tag> com o número da
 versão, e o I<push> automático para o repositório remoto. Similarmente,
@@ -415,7 +415,7 @@ o L<Mercurial|http://mercurial.selenic.com/>[28].
 	[MetaTests]
 	[PodSyntaxTests]
 
-Podemos incluir testes padronizados de código, compilação, documentação e 
+Podemos incluir testes padronizados de código, compilação, documentação e
 estilo, adicionando I<tags> no C<dist.ini>, como pode ser visto acima. Duas
 das principais vantagens são: não termos de copiar arquivos de teste
 manualmente e não termos de mantê-los atualizados (sempre que fazemos o
@@ -424,7 +424,7 @@ instalação atualizada) dos módulos.
 
 =head2 Conclusão
 
-Ainda existe espaço para várias melhorias, e para vários I<plugins>, o 
+Ainda existe espaço para várias melhorias, e para vários I<plugins>, o
 Dist::Zilla é um projeto em andamento. Mas é uma ferramenta indispensável
 para um desenvolvedor em Perl Moderno, que não pode ou não tem mais tempo
 para ficar repetindo as mesmas tarefas "burocráticas" a cada novo módulo.

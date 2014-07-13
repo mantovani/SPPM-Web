@@ -55,7 +55,7 @@ a identidade do usuário, geralmente comparando a informação provida por este 
 informação encontrada no C<Store>.
 Estes módulos são carregados em conjunto por meio de I<realms>, permitindo assim à aplicação
 ter múltiplos métodos de autenticação de usuários. Toda aplicação que realize autenticação
-deve ter ao menos um C<realm> que é o C<default>, mas pode-se ter quantos forem necessários. 
+deve ter ao menos um C<realm> que é o C<default>, mas pode-se ter quantos forem necessários.
 
 =head2 Configuração
 

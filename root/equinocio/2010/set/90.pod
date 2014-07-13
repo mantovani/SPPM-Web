@@ -189,7 +189,7 @@ O conhecimento sobre estas disposiE<ccedil>E<otilde>es podem facilitar o trabalh
 
 O uso de estatisticas utiliza-se das teorias de probabilidade e neste caso incialmente E<eacute> muito interessante para ser usado para detectar a frequencia da ocorrE<ecirc>ncia de um determinado evento, para que facilite os estudos observacionais e etc.
 
-Este processo geralmente esta associado à coleta, anE<aacute>lise e interpretaE<ccedil>E<atilde>o dos dados. 
+Este processo geralmente esta associado à coleta, anE<aacute>lise e interpretaE<ccedil>E<atilde>o dos dados.
 
 Com a computaE<ccedil>E<atilde>o a pratica de modelos estasticas nE<atilde>o-lineares esta se tornando mais frequente, pois com o aumento da capacidade de processamento estamos obtendo habilidades para criar cE<aacute>lculos baseados em reamostragem, como testes de permutaE<ccedil>E<atilde>o e bootstrap.
 
@@ -221,11 +221,11 @@ Para isto E<eacute> interessante que exista uma padronizaE<ccedil>E<atilde>o rel
 
 =back $ (CifrE<atilde>o): Valor monetE<aacute>rio
 
-=back % (Porcentagem): 
+=back % (Porcentagem):
 
 =back N (Quantidade): Medidas unitE<aacute>rias
 
-=back C (ClassificaE<ccedil>E<atilde>o) : 
+=back C (ClassificaE<ccedil>E<atilde>o) :
 
 =back I (Índice) :
 
@@ -233,7 +233,7 @@ Para isto E<eacute> interessante que exista uma padronizaE<ccedil>E<atilde>o rel
 
 =head1 Algoritimos
 
-NE<atilde>o hE<aacute> como citar algoritimos em especificos, pois existe a necessidade inicialmente de coletar os dados que vocE<ecirc> tem disponE<iacute>vel, verificar se estes dados representam algum conceito ou algo da forma mais absoluta possivel - ou aproximada -. 
+NE<atilde>o hE<aacute> como citar algoritimos em especificos, pois existe a necessidade inicialmente de coletar os dados que vocE<ecirc> tem disponE<iacute>vel, verificar se estes dados representam algum conceito ou algo da forma mais absoluta possivel - ou aproximada -.
 O segundo passo E<eacute> organizar estes dados para que eles sejam compilados e processados em formas reduzidas.
 
 Dependendo da quantidade de dados envolvendo, hE<aacute> a necessidade de "transformar" estes dados em outro formato para que a manipulaE<ccedil>E<atilde>o seja mais rE<aacute>pida.
@@ -244,14 +244,14 @@ Este artigo tem como oferecer um levantamento em relaE<ccedil>E<atilde>o as idei
 
 O trabalho nE<atilde>o E<eacute> sE<oacute> em ter os dados, mas organizar eles de forma que fique simples o trabalho do design de informaE<ccedil>E<atilde>o, alE<eacute>m de que como foi abordado existe um interesse grande para que os dados sejam compartilhados, reutilizados e principalmente para que exista um ecosistema para formaE<ccedil>E<atilde>o de novas ideias baseado em um processo colaborativo.
 
-	Se vocE<ecirc> tem uma maE<ccedil>E<atilde> e eu tenho uma maE<ccedil>E<atilde> 
-	e nE<oacute>s trocamos essas maE<ccedil>E<atilde>s, 
-	entE<atilde>o eu e vocE<ecirc> ainda teremos uma maE<ccedil>E<atilde> cada. 
+	Se vocE<ecirc> tem uma maE<ccedil>E<atilde> e eu tenho uma maE<ccedil>E<atilde>
+	e nE<oacute>s trocamos essas maE<ccedil>E<atilde>s,
+	entE<atilde>o eu e vocE<ecirc> ainda teremos uma maE<ccedil>E<atilde> cada.
 
-	Mas se vocE<ecirc> tiver uma idE<eacute>ia e eu tiver uma idE<eacute>ia 
-	e nE<oacute>s trocamos idE<eacute>ias, 
+	Mas se vocE<ecirc> tiver uma idE<eacute>ia e eu tiver uma idE<eacute>ia
+	e nE<oacute>s trocamos idE<eacute>ias,
 	entE<atilde>o cada um de nE<oacute>s terE<aacute> duas idE<eacute>ias."
-	
+
 	-- George Bernard Shaw (1856-1950)
 
 =head1 Autor

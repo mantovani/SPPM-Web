@@ -55,17 +55,17 @@ Depois da teoria inicial, vai ser conduzida uma análise profunda e uma
 discussão
 da solução baseada em RabbitMQ (a qual o palestrante é o autor). Cada etapa no
 tempo de vida de uma mensagem será examinada e explicada para casos práticos,
-com referências à módulos CPAN que podem ser usados para construir um sistema 
+com referências à módulos CPAN que podem ser usados para construir um sistema
 similar. Assim, será concluída com um demo do Firehose, uma aplicação escrita
 em Javascript para monitoramento e visualização altamente customizável de
-eventos 
+eventos
 AMQP em tempo real.</p>
 
 <p>Tags: MooseX::Storage, Joose, Javascript, Flash, RabbitMQ, ExtJS, YUI,
 AMQP, JSON, AnyEvent, Coro</p>
 
 <h4>17:10 - "Arquitetura de grandes plataformas em Perl - um passeio
-ilustrado" 
+ilustrado"
 por Tomas Doran. (Inglês)</h4>
 
 <p>Tomas Doran trabalha para uma empresa chamada state51 (www.state51.co.uk)

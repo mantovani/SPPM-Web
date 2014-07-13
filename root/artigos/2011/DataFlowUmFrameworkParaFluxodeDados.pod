@@ -7,8 +7,8 @@
 Tudo começou com um e-mail na L<lista da SP-PM|http://sao-paulo.pm.org/lista>,
 no qual se falou de "hackear" dados públicos. Logo isso evoluiu para a idéia
 de produzir um framework para buscar e analisar dados públicos. Sem demora, o
-L<Thiago Rondon|http://www.maluco.com.br/blog/> montou um 
-L<repositório no GitHub|https://github.com/maluco/OpenData-BR> e começou a 
+L<Thiago Rondon|http://www.maluco.com.br/blog/> montou um
+L<repositório no GitHub|https://github.com/maluco/OpenData-BR> e começou a
 rabiscar umas idéias de código. Em seguida nasceu o site do
 L<OpenData-BR|http://www.opendatabr.org/>.
 
@@ -61,7 +61,7 @@ comportamento: recebem algo na entrada, fazem alguma coisa com esses dados, e
 Assim surgiu a idéia de fazer um sub-projeto de fluxo de dados.
 
 Em meados de Dezembro de 2010, a primeira idéia foi codificada em termos de
-"caixas", que teriam um entrada e uma saída - de uma forma bem genérica: 
+"caixas", que teriam um entrada e uma saída - de uma forma bem genérica:
 "entra porquinho, sai salsicha".
 
 =begin pod:xhtml
@@ -260,10 +260,10 @@ sancionadas por algum órgão do governo:
 	            first_page => -1,
 	            produce_last_page => sub {
 	                my $url = shift;
-	
+
 	                my $get  = DataFlow::Node::URLRetriever::Get->new;
 	                my $html = $get->get($url);
-	
+
 	                my $texto =
 	                  HTML::TreeBuilder::XPath->new_from_content($html)
 	                  ->findvalue('//p[@class="paginaAtual"]');
@@ -273,7 +273,7 @@ sancionadas por algum órgão do governo:
 	            },
 	            make_page_url => sub {
 	                my ( $self, $url, $page ) = @_;
-	
+
 	                my $u = URI->new($url);
 	                $u->query_form( $u->query_form, Pagina => $page );
 	                return $u->as_string;
@@ -511,7 +511,7 @@ Estas e outras idéias de melhorias estão no arquivo de
 L<TODO|https://github.com/russoz/DataFlow/blob/master/TODO> no repositório
 do projeto.
 
-B<Você pode ajudar!> De várias formas: escrevendo código, tanto para os módulos 
+B<Você pode ajudar!> De várias formas: escrevendo código, tanto para os módulos
 quanto testes. Executando testes e enviando I<reports> - neste momento há, por
 exemplo, alguns reports de erro em FreeBSD que não estão ocorrendo no sistema
 dos mantenedores (Linux).

@@ -14,18 +14,18 @@
 Obrigado pelo interesse ! <br/><br/>
 	As inscri&ccedil;&otilde;es foram encerradas para este encontro,
 
-	mas haver&aacute; pr&oacute;ximas oportunidades. Fique ligado 
+	mas haver&aacute; pr&oacute;ximas oportunidades. Fique ligado
 	no site da comunidade, assim como na lista de discuss&atilde;o para
 	novidades e noticias.
 	<br/>
 </p></b>
 
 	<br/><br/>
-        [% INCLUDE et2010_prog.tt %]	
+        [% INCLUDE et2010_prog.tt %]
 
 
-        [% INCLUDE et2010_faq.tt %]	
-		
+        [% INCLUDE et2010_faq.tt %]
+
         </div>
           </div>
         </div>

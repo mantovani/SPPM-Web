@@ -13,7 +13,7 @@
 [% USE date %]
 [% calc = date.calc %]
 
-[% FOR week = fcalendar %] 
+[% FOR week = fcalendar %]
 
 <tr>
     [% FOR day = week %]

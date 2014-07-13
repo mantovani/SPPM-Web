@@ -334,7 +334,7 @@ L<DBD::mysql> possui um mecanismo próprio para "conversar" em C<utf8>:
 
  use DBI;
 
- my $dbh = DBI->connect("DBI:mysql:${database}:${hostname}", $username, $password) 
+ my $dbh = DBI->connect("DBI:mysql:${database}:${hostname}", $username, $password)
     or die "Erro de conexão: $DBI::errstr";
 
  $dbh->{'mysql_enable_utf8'} = 1;

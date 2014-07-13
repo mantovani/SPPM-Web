@@ -41,13 +41,13 @@ Extender view e control implementando o plugin fckeditor
 
 =head3 Uma visE<atilde>o do produto
 
-Um CMS (Content Management System) ou Sistema de Gerenciamento de conteE<uacute>do pode ser uma ferramenta web usada em alguns negE<oacute>cios na Internet para publicaE<ccedil>E<atilde>o e administraE<ccedil>E<atilde>o de multimE<iacute>dia. O lE<iacute>der deste mercado E<eacute> certamente o B<Drupal>, um CMS baseado em php, produto de referE<ecirc>ncia usado por todos, considerado ferramenta chave na campanha de Obama E<agrave> presidE<ecirc>ncia dos Estados Unidos. O nE<uacute>mero de usuE<aacute>rios do CMS B<Drupal> ampliou consideravelmente (inclusive como escolha de designers e desenvolvedores), assim como o nE<uacute>mero de contribuiE<ccedil>E<otilde>es provindas da comunidade, um grande esforE<ccedil>o de programaE<ccedil>E<atilde>o fruto da demanda significativa por estes cE<oacute>digos devido ao seu sucesso. 
+Um CMS (Content Management System) ou Sistema de Gerenciamento de conteE<uacute>do pode ser uma ferramenta web usada em alguns negE<oacute>cios na Internet para publicaE<ccedil>E<atilde>o e administraE<ccedil>E<atilde>o de multimE<iacute>dia. O lE<iacute>der deste mercado E<eacute> certamente o B<Drupal>, um CMS baseado em php, produto de referE<ecirc>ncia usado por todos, considerado ferramenta chave na campanha de Obama E<agrave> presidE<ecirc>ncia dos Estados Unidos. O nE<uacute>mero de usuE<aacute>rios do CMS B<Drupal> ampliou consideravelmente (inclusive como escolha de designers e desenvolvedores), assim como o nE<uacute>mero de contribuiE<ccedil>E<otilde>es provindas da comunidade, um grande esforE<ccedil>o de programaE<ccedil>E<atilde>o fruto da demanda significativa por estes cE<oacute>digos devido ao seu sucesso.
 
 Geralmente a multimE<iacute>dia servida em um CMS precisa se integrar com outros sistemas como CRMs, ERPs ou outros sistemas legados da empresa. A maior oportunidade em CMS's para programadores estE<aacute> justamente no desenvolvimento destas ferramentas de integraE<ccedil>E<atilde>o, sistemas de plugin e extensE<otilde>es. Este E<eacute> o caso do  B<Drupal>. Sua simplicidade minimalE<iacute>stica E<eacute> seu maior valor. Programadores podem desenvolver ganchos de seus sistemas no CMS e usuE<aacute>rios finais podem plugE<aacute>-los no website instantaneamente.
 
 O segredo: O designer (ou qualquer um) pode criar um website funcional sem qualquer cE<oacute>digo. Um CMS precisa de uma interface de usuE<aacute>rio simples e clara. Mas a integraE<ccedil>E<atilde>o com outros sistemas, talvez o principal foco do desenvolvedor esteja nesta aplicaE<ccedil>E<atilde>o externa, precisa ser simples tambE<eacute>m. Resultado final: Produtividade.
 
-Nos mundos Java, Python, Ruby e Asp encontramos similares: Typo, OpenCms, Django, Plone. Alguns simples, outros com mais recursos. 
+Nos mundos Java, Python, Ruby e Asp encontramos similares: Typo, OpenCms, Django, Plone. Alguns simples, outros com mais recursos.
 
 =head3 Concorrentes
 
@@ -82,7 +82,7 @@ L<http://plone.org/>
 
 =head3 OpE<ccedil>E<otilde>es em Perl
 
-Uma das principais caracterE<iacute>stica do Perl e eu diria uma virtude de qualquer pessoa inteligente E<eacute> poder fazer a mesma coisa de diversas formas. 
+Uma das principais caracterE<iacute>stica do Perl e eu diria uma virtude de qualquer pessoa inteligente E<eacute> poder fazer a mesma coisa de diversas formas.
 
 Entre as ferramentas Perl nE<atilde>o podemos deixar de falar do MovableType. O YAC nE<atilde>o E<eacute> concorrente direto do MovableType, que se integra no Catalyst e da mesma forma irE<aacute> integrar-se em nossa implementaE<ccedil>E<atilde>o. O paradigma do YAC E<eacute> diferente pelo foco na simplicidade e minimalismo. SerE<aacute> tranquilo iniciar um projeto com YAC e integrar o MovableType a qualquer momento.
 
@@ -90,14 +90,14 @@ Entre as ferramentas Perl nE<atilde>o podemos deixar de falar do MovableType. O 
 
 O projeto Catalyst seria muito enriquecido com esta distribuiE<ccedil>E<atilde>o. Um CMS bE<aacute>sico e extensivel, com os olhos no usuE<aacute>rio final e interfaces que podem facilitar tambE<eacute>m o trabalho dos desenvolvedores. Um CMS mais simples que B<Drupal> mas com o poder do B<CPAN> e do B<Catalyst>.
 
-Vamos considerar tambE<eacute>m a integraE<ccedil>E<atilde>o com as ferramentas perl disponE<iacute>vies via cpan como Reaction, Mojo e Dancer. 
+Vamos considerar tambE<eacute>m a integraE<ccedil>E<atilde>o com as ferramentas perl disponE<iacute>vies via cpan como Reaction, Mojo e Dancer.
 
 =head2 Infra estrutura
 
 =over 4
 
 =item *
-instalar o Catalyst e criar a base do YAC 
+instalar o Catalyst e criar a base do YAC
 
     $> sudo cpan Catalyst
     $> sudo cpan Catalyst::Model::DBIC::Schema
@@ -195,15 +195,15 @@ Agora vamos criar a base de dados
 
 =head3 Arquitetura
 
-A unidade bE<aacute>sica do YAC E<eacute> o B<Stack>, um objeto com 3 mE<eacute>todos: 
+A unidade bE<aacute>sica do YAC E<eacute> o B<Stack>, um objeto com 3 mE<eacute>todos:
 
 =over 2
 
-=item * url 
+=item * url
 
 A url E<uacute>nica deste stack. Acessar a url retornarE<aacute> o mesmo que o mE<eacute>todo content();
 
-=item * content 
+=item * content
 
 Os dados do conteE<uacute>do. Uma string. Provavelmente em html.
 
@@ -219,7 +219,7 @@ AlE<eacute>m da interface default (Play), a mE<aacute>quina de estados do YAC ap
 
 =over 2
 
-=item Play 
+=item Play
 
 Default, apresenta os Stacks.
 
@@ -227,7 +227,7 @@ Default, apresenta os Stacks.
 
 Interface de ediE<ccedil>E<atilde>o de Stack.
 
-=item Hack 
+=item Hack
 
 Interface de desenvolvimento de Stack.
 
@@ -242,9 +242,9 @@ Interface de administraE<ccedil>E<atilde>o e gestE<atilde>o de usuE<aacute>rios.
     use YAC::Stack;
 
 Instanciar um Stack:
- 
+
     my $coolStack = new YAC::Stack;
-  
+
 Montar o Stack, editando url e conteudo
 
     $coolStack->url ('my/coolStack');
@@ -252,7 +252,7 @@ Montar o Stack, editando url e conteudo
 
     $html = "<p>Oi gente!";
     $coolStack->content($html);
-    
+
 Acessar o Stack na Web
 
     use LWP::Curl;
@@ -299,11 +299,11 @@ B<Colofon:>
 
 YAC lembra "Yeast Artificial Chromosome. Yeah!
 A levedura E<eacute> o nosso mascote.
-See L<http://en.wikipedia.org/wiki/Yeast> 
+See L<http://en.wikipedia.org/wiki/Yeast>
 
 =head1 VERSE<Atilde>O
 
-VersE<atilde>o 0.01    
+VersE<atilde>o 0.01
 
 =head1 AUTOR
 
@@ -319,7 +319,7 @@ O CMS mais simples que existe.
     $web->run();
     # go to web!
 
-=head2 Design Pattern 
+=head2 Design Pattern
 
 O ponto de vista do usuE<aacute>rio leigo E<eacute> o foco do YAC. Eu nE<atilde>o tenho dE<uacute>vida que seria muito mais fE<aacute>cil para o nosso pequeno YAC se nE<atilde>o tivesse que lidar com usuE<aacute>rios. Especialmente os que sE<atilde>o leigos nas aventuras da TI. Mas nada disto teria sentido se o YAC nE<atilde>o fosse pensado para ser usado por alguE<eacute>m.
 
@@ -338,16 +338,16 @@ O nosso mascote, o fungo, apresenta uma estrutura muito parecida. Uma colE<ocirc
   ----------
       |       ----------
       |---->  | Stack  |----->  URL               # CabeE<ccedil>alho
-      |       ----------           
+      |       ----------
       |          |       ----------
       |          |---->  | Stack  |----->  URL    # Logomarca
-      |          |       ----------           
+      |          |       ----------
       |          |       ----------
       |          |---->  | Stack  |----->  URL    # Menu
-      |                  ----------          
+      |                  ----------
       |       ----------
       |---->  | Stack  |----->  URL               # Texto em html
-              ----------           
+              ----------
 
 
 Um Stack estE<aacute> relacionado a uma URL, retorna um array de Stacks e pode ser herdado e livremente modificado.
@@ -364,7 +364,7 @@ Agora voE<ecirc> pode rodar ou parar o YAC.
 =head2 run
 
 Roda o daemon http na porta $port. Default em 80.
-    
+
     my $port = 80 ;
     $web->run ($port) ;
 
@@ -374,7 +374,7 @@ Roda o daemon http na porta $port. Default em 80.
 
 Para o daemon.
 
-=head1 YAC 
+=head1 YAC
 
 =head2 ImnplementaE<ccedil>E<atilde>o em Catalyst
 
@@ -401,12 +401,12 @@ Cada mE<aacute>quina exige que o usuE<aacute>rio possua determinados funE<ccedil
 
 =item * ME<aacute>quina Play
 
-A ME<aacute>quina Play ou controlador Root serE<aacute> sempre a I<default>. Aqui o usuE<aacute>rio poderE<aacute> visualizar os conteE<uacute>dos em mE<iacute>dia e acessar os menus bE<aacute>sicos para navegaE<ccedil>E<atilde>o. 
+A ME<aacute>quina Play ou controlador Root serE<aacute> sempre a I<default>. Aqui o usuE<aacute>rio poderE<aacute> visualizar os conteE<uacute>dos em mE<iacute>dia e acessar os menus bE<aacute>sicos para navegaE<ccedil>E<atilde>o.
 
 =item * ME<aacute>quina Edit
 
 Um usuE<aacute>rio logado com direitos de ediE<ccedil>E<atilde>o pode acessar a mE<aacute>quina Edit para editar seu trabalho.
- 
+
 O editor default E<eacute> html. Outros editores como link, cE<oacute>digo, imagem, animaE<ccedil>E<atilde>, xml, svg, json e outros podem ser adicionados como extensões.
 
 O menu E<eacute> o mesmo que o da mE<aacute>quina Play mais os menus de dados pessoais e de ediE<ccedil>E<atilde>o. TambE<eacute>m serE<atilde>o acrescentadas interfaces para ediE<ccedil>E<atilde>o de dados pessoais e outros em extensE<otilde>es. Estes novos editores serE<atilde>o integrados na mesma interface.
@@ -415,7 +415,7 @@ O menu E<eacute> o mesmo que o da mE<aacute>quina Play mais os menus de dados pe
 
 Com direitos de administrador o usuE<aacute>rio poderE<aacute> acessar a mE<aacute>quina Admin.
 
-Apresenta interfaces para editar e administrar usuE<aacute>rios, seus dados e trabalhos. Permite atividades administrativas no CMS's como startup/shutdown do servidor e habilitar/desabilitar extensE<otilde>es. 
+Apresenta interfaces para editar e administrar usuE<aacute>rios, seus dados e trabalhos. Permite atividades administrativas no CMS's como startup/shutdown do servidor e habilitar/desabilitar extensE<otilde>es.
 
 Menus sE<atilde>o os mesmos da mE<aacute>quina Edit mais os menus de usuE<aacute>rios e administrativos.
 
@@ -423,7 +423,7 @@ Menus sE<atilde>o os mesmos da mE<aacute>quina Edit mais os menus de usuE<aacute
 
 Com direitos de hacker o usuE<aacute>rio poderE<aacute> usar a ME<aacute>quina Hack.
 
-Apresenta interfaces para o desenvolvimento de plugins, acesso ao Catalyst: hooks e helpers. Objetiva o design e construE<ccedil>E<atilde>o da arquitetura do CMS como criar widgets, desenvolver novas funcionalidades ou uma nova extensE<atilde>o. 
+Apresenta interfaces para o desenvolvimento de plugins, acesso ao Catalyst: hooks e helpers. Objetiva o design e construE<ccedil>E<atilde>o da arquitetura do CMS como criar widgets, desenvolver novas funcionalidades ou uma nova extensE<atilde>o.
 
 Uma idE<eacute>ia interessante E<eacute> desenvolver interface para servidores de versionamento, como git, svn e cvs.
 
@@ -437,11 +437,11 @@ Uma idE<eacute>ia interessante E<eacute> desenvolver interface para servidores d
 
 O acesso ao conteE<uacute>do. A E<uacute>nica coisa sem a qual o YAC nE<atilde>o existe.
 
-Voce certamente vai criar stacks sensacionais!! 
+Voce certamente vai criar stacks sensacionais!!
 
 Os stacks especiais implementados no core do YAC: Content, Control e Widget.
 
-=over 4 
+=over 4
 
 
 =item Control
@@ -499,9 +499,9 @@ fkceditor
 
 =item *
 
-jsLinb visual editor 
+jsLinb visual editor
 
-=back 
+=back
 
 
 =head1 AGRADECIMENTOS

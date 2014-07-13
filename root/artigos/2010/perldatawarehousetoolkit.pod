@@ -184,7 +184,7 @@ Por exemplo:
     WHERE                       WHERE
         year=2010                   year=2010
     GROUP BY                    GROUP BY
-        brand                       brand 
+        brand                       brand
     ----------------------------------------------------------
     SELECT                      SELECT
         month,                      month,
@@ -196,7 +196,7 @@ Por exemplo:
         year=2010                   year=2010
     GROUP BY                    GROUP BY
         month,                      month,
-        brand                       brand 
+        brand                       brand
     ----------------------------------------------------------
 
 O Aggregate Navigator, que faz essa substituição, permitirá que os

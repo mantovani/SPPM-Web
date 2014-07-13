@@ -110,11 +110,11 @@ Vamos criar nossa aplicação de teste contendo somente as linhas:
 
     get '/' => sub {
         my $self = shift;
-        
+
         $self->stash({
             'message' => 'Hello World!!!',
         });
-        
+
     } => 'index';
 
     shagadelic;
@@ -190,7 +190,7 @@ o FastCGI e precisa obter explicitamente os caminhos para os módulos que
 foram instalados no diretório do usuário. Assim o código da aplicação fica:
 
     #!/usr/bin/perl
-    
+
     use lib qw{
         /home/user/perl5/lib/perl5
         /home/user/perl5/lib/perl5/x86_64-linux-gnu-thread-multi
@@ -202,11 +202,11 @@ foram instalados no diretório do usuário. Assim o código da aplicação fica:
 
     get '/' => sub {
         my $self = shift;
-        
+
         $self->stash({
             'message' => 'Hello World!!!',
         });
-        
+
     } => 'index';
 
     shagadelic('fastcgi');
@@ -242,7 +242,7 @@ Dreamhost quando da criação do sub-domínio e não tem nada a ver com a nossa
 aplicação.
 
 Agora podemos testar a aplicação diretamente no sub-domínio:
-    
+
     user@host:~$ nc test.blabos.org 80
     GET / HTTP/1.1
     Host: test.blabos.org

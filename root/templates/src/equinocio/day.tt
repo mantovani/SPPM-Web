@@ -41,7 +41,7 @@
     [% END %]
 
     <span class="current">[% day %]</span>
-    
+
     [% TRY %]
         [% USE File( c.path_to( 'root', 'equinocio', year, month, "${tomorrow}.pod" ) ) %]
         <a class="next" href="/equinocio/[% year %]/[% month %]/[% tomorrow %]">Pr&oacute;ximo »</a>

@@ -10,7 +10,7 @@ Eu escrevi este módulo para suprir uma necessidade pessoal há alguns meses atr
 eu precisava procurar por chaves de uma forma especifica, efetuar backup e até restaurar
 os dados de um servidor redis para outro.
 
-Enfim, desta necessidade saiu o aplicativo Redis::Dump que esta disponível no CPAN, e 
+Enfim, desta necessidade saiu o aplicativo Redis::Dump que esta disponível no CPAN, e
 pode ser considero já estável.
 
 Para instalar ele, basta:
@@ -64,12 +64,12 @@ direcionar a saída para um arquivo.
 
 =head1 redis-restore
 
-Para restaurar o backup gerado pelo redis-dump, basta utilizar este aplicativo com a 
+Para restaurar o backup gerado pelo redis-dump, basta utilizar este aplicativo com a
 seguinte linha de comando:
 
 	redis-restore --file redis.dump --flushall
 
-A opção  "--flushall" irá apagar todos os registros existentes no banco antes de 
+A opção  "--flushall" irá apagar todos os registros existentes no banco antes de
 restaurar os dados que estão presentes no arquivo redis.dump.
 
 =head1 Desenvolvimento.

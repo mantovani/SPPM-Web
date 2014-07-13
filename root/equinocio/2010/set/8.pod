@@ -1,6 +1,6 @@
 =head1 Benchmark
 
-Para algumas aplicações a eficiência é um fator decisivo na resolução de um 
+Para algumas aplicações a eficiência é um fator decisivo na resolução de um
 problema. Do que adianta querer saber se vai chover hoje se os cáculos envolvidos
 na previsão só terminam amanhã?
 
@@ -8,13 +8,13 @@ Sabemos que em Perl há sempre um outro jeito de se fazer, mas como
 comparar 2... 3... 4 soluções para um mesmo problema? Como saber se a solução
 escolhida é mesmo a mais rápida?
 
-No episódio de hoje vamos conhecer um módulo usado para comparar o tempo de 
+No episódio de hoje vamos conhecer um módulo usado para comparar o tempo de
 execução de diferentes trechos de código.
 
 
 =head1 Descrição
 
-Depois de identificado o gargalo da sua aplicação com um profiler, como o 
+Depois de identificado o gargalo da sua aplicação com um profiler, como o
 L<Devel::NYTProf> -- não, na maioria das vezes você *não* sabe onde realmente
 está o hotspot em seu código. Isso é normal, acontece também com o g-spot -- e
 desenvoldido algumas versões de código para solução do problema, o próximo
@@ -43,9 +43,9 @@ trecho de código a ser medido, e tomando a diferença do tempo antes e depois
 de executado.
 
        use Benchmark;
-       
+
        my $t0 = Benchmark->new;
-       
+
        # ... aqui fica o código a ser medido ...
 
 
@@ -54,7 +54,7 @@ de executado.
        my $t1 = Benchmark->new;
 
        my $td = timediff($t1, $t0);
-       
+
        print "O código levou: ",timestr($td),"\n";
 
 Legal, né? Agora faça isso com 9 versões diferentes do código e imprima uma tabela
@@ -68,7 +68,7 @@ no exemplor anterior, mas de forma mais intuitiva e com algumas firulas muito ú
 
 Dentre as rotinas descritas, timeit(), timethis(), timethese(), timediff() e
 timestr() são exportadas automaticamente para o namespace atual assim que o
-Benchmark é importado. As demais são opcionais e devem ser importadas 
+Benchmark é importado. As demais são opcionais e devem ser importadas
 explicitamente ou usando o alias ':all' para importar todas.
 
 
@@ -108,15 +108,15 @@ Exemplo:
         my $t2 = timeit(1_000, $code2);
         print timestr(timediff($t2, $t1));
 
-   
+
 
 =head3 timethis(COUNT, CODE,[ TITLE, [ STYLE ] ] )
 
-Funciona de maneira parecida ao timeit() mas imprime o resultado ao invés de 
-somente retornar um objeto Benchmark. TITLE tem seu default setado para 
+Funciona de maneira parecida ao timeit() mas imprime o resultado ao invés de
+somente retornar um objeto Benchmark. TITLE tem seu default setado para
 'timethis for COUNT'.
 
-COUNT pode ser um número negativo ou zero. Um número negativo significa o tempo 
+COUNT pode ser um número negativo ou zero. Um número negativo significa o tempo
 CPU mínimo a ser executado o código, portanto, o seguinte trecho:
 
     timethis(-4, $code)
@@ -127,8 +127,8 @@ Zero faria com que o tempo default (3 segundos) fosse utilizado.
 
 =head3 timethese(COUNT, CODEHASHREF, [ STYLE ] )
 
-Funciona de maneira análoga ao timethis(), adicionalmente é possível comparar 
-vários trechos de código. Imprime o resultado e retorna um hashref com os 
+Funciona de maneira análoga ao timethis(), adicionalmente é possível comparar
+vários trechos de código. Imprime o resultado e retorna um hashref com os
 objetos Benchmark correspondentes aos trechos de código. O códigos são executados
 em ordem de comparação das chaves do CODEHASHREF.
 
@@ -168,9 +168,9 @@ O código acima retornaria uma estrutura como a seguinte:
 
 Essa estrutura poderia ser utilizado para gerar uma tabela HTML usando um módulo como
 Data::Table.
-        
 
-        (...)        
+
+        (...)
 
         my $ref = cmpthese(-1, { test1=> $code, test2 => $code2});
 
@@ -201,10 +201,10 @@ E o resultado:
 =head1 Conclusão
 
 Usando o módulo Benchmark você não precisa se preocupar com detalhes ao tomar o
-tempo de execução do código. Como, por exemplo, a eliminação do 
-overhead presente numa abordagem mais "boba" envolvendo o uso de um loop 
+tempo de execução do código. Como, por exemplo, a eliminação do
+overhead presente numa abordagem mais "boba" envolvendo o uso de um loop
 para conter o código em questão ou sucessivas chamadas à função time() que
-não retorna o tempo que a CPU realmente levou pra executar o código. Além de 
+não retorna o tempo que a CPU realmente levou pra executar o código. Além de
 também oferecer uma forma organizada na apresentação dos resultados obtidos
 na comparação.
 

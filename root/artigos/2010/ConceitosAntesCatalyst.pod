@@ -62,11 +62,11 @@ O objeto controlador gerencia o processo da requisiE<ccedil>E<atilde>o, incluind
 
 As regras de negE<oacute>cio, a especificaE<ccedil>E<atilde>o do seu aplicativo nE<atilde>o deve estar no objeto view.
 
-=item * 
+=item *
 
 Model nE<atilde>o deve realizar nenhuma tarrefa "web".
 
-=item * 
+=item *
 
 VocE<ecirc> deve separar as tarrefas de web e de outros componentes reutilizados em serviE<ccedil>os como o 'cron jobs' e etc.
 
@@ -97,7 +97,7 @@ Ele E<eacute> um mE<oacute>dulo opcional do Apache, no qual consiste em embutir 
 
 =head3 FastCGI
 
-FastCGI E<eacute> um protocolo variante do CGI. 
+FastCGI E<eacute> um protocolo variante do CGI.
 
 A diferenE<ccedil>a bE<aacute>sica E<eacute> que os processos no protocolo CGI sE<atilde>o executados separadamente, ou seja um "processo para cada requisiE<ccedil>E<atilde>o", alE<eacute>m de que existem outros limitadores no processo como reutilizaE<ccedil>E<atilde>o de conexE<otilde>es ao banco de dados, cache de memE<oacute>ria e etc. FastCGI pode utilizar um processo persistente para cada processo que pode manipular muitas conexE<otilde>es em seu ciclo (multiplexing).
 
@@ -154,7 +154,7 @@ Abaixo um pequeno script Perl que utiliza a TT:
 
     my $template = Template->new();
 
-    $template->process($file, $vars) 
+    $template->process($file, $vars)
     || die 'Template process failed ', $template->error, "\n";
 
 Agora, um exemplo para demonstrar a utilizaE<ccedil>E<atilde>o das diretrizes da template:
@@ -201,9 +201,9 @@ Abaixo um exemplo de utilizaE<ccedil>E<atilde>o do L<DBIx::Class>:
 	# Buscando todos os CDs que sao do ano "2000".
 	my $millennium_cds_rs = $schema->resultset('CD')->search(
   		{ year => 2000 }
-	)	
+	)
 
-Observe que nE<atilde>o foi utilizada a linguagem SQL. 
+Observe que nE<atilde>o foi utilizada a linguagem SQL.
 
 =head2 Catalyst
 

@@ -24,7 +24,7 @@ mas apenas fornecer um ponto de partida para quem quer trabalhar com o assunto.
 O LDAP é um protocolo utilizado para consultar e modificar dados em diretórios
 hierárquicos de informação, através de redes
 L<"TCP/IP"|http://pt.wikipedia.org/wiki/TCP/IP>. O protocolo
-está em sua versão 3 (I<Version 3>), especificado em várias 
+está em sua versão 3 (I<Version 3>), especificado em várias
 L<RFCs|http://pt.wikipedia.org/wiki/RFC> listadas na
 L<RFC 4510|http://tools.ietf.org/html/rfc4510>.
 
@@ -102,7 +102,7 @@ como:
     |
     +---- o=empresa
           |
-          +---- ou=financeiro 
+          +---- ou=financeiro
           |     |
           |     +---- cn=zeca
           |
@@ -169,7 +169,7 @@ Para mais detalhes leiam a L<RFC 4512|http://tools.ietf.org/html/rfc4512>.
 As classes podem definir virtualmente qualquer tipo de informação: dados
 relacionados a uma pessoa (nome, sobrenome, foto - codificada em base64, etc),
 a um usuário de rede (id, senha, diretório I<home>, etc), informações de
-um cliente B2B, grupos de usuários para permissões, etc... 
+um cliente B2B, grupos de usuários para permissões, etc...
 
 =head3 Busca
 
